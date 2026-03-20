@@ -1,0 +1,174 @@
+#!/usr/bin/env sh
+set -eu
+
+BASE_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+CACHE_ROOT="${DQLCHECK_CACHE_DIR:-$BASE_DIR/.cache}"
+REMOTE_ROOT="${DQLCHECK_BASE_URL:-https://static.guance.com/guancedb}"
+REMOTE_VERSION_URL="${DQLCHECK_VERSION_URL:-$REMOTE_ROOT/version}"
+
+log() {
+  printf '%s\n' "$*" >&2
+}
+
+fail() {
+  log "$*"
+  exit 1
+}
+
+download_to() {
+  url="$1"
+  target="$2"
+
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$url" -o "$target"
+    return 0
+  fi
+
+  if command -v wget >/dev/null 2>&1; then
+    wget -qO "$target" "$url"
+    return 0
+  fi
+
+  fail "missing downloader: install curl or wget first"
+}
+
+fetch_text() {
+  url="$1"
+  tmp_file="$2"
+  download_to "$url" "$tmp_file"
+  tr -d '\r' < "$tmp_file"
+}
+
+resolve_os() {
+  os_name="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  case "$os_name" in
+    darwin)
+      local_os="darwin"
+      remote_os="macos"
+      ;;
+    linux)
+      local_os="linux"
+      remote_os="linux"
+      ;;
+    mingw*|msys*|cygwin*)
+      local_os="windows"
+      remote_os="windows"
+      ;;
+    *)
+      fail "unsupported OS: $os_name (expected darwin, linux, or windows)"
+      ;;
+  esac
+}
+
+resolve_arch() {
+  arch_name="$(uname -m)"
+  case "$arch_name" in
+    x86_64|amd64)
+      arch_name="amd64"
+      ;;
+    aarch64|arm64)
+      arch_name="arm64"
+      ;;
+    *)
+      fail "unsupported architecture: $arch_name (expected amd64 or arm64)"
+      ;;
+  esac
+}
+
+read_file_trimmed() {
+  file_path="$1"
+  if [ ! -f "$file_path" ]; then
+    return 1
+  fi
+  tr -d '\r\n' < "$file_path"
+}
+
+install_binary() {
+  install_version="$1"
+  version_label="$2"
+  archive_url="$REMOTE_ROOT/guancedb-dqlcheck-${remote_os}-${arch_name}-${version_label}.tar.gz"
+  tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/dqlcheck.XXXXXX")"
+  archive_file="$tmp_dir/archive.tar.gz"
+  extracted_entry=''
+
+  cleanup() {
+    rm -rf "$tmp_dir"
+  }
+
+  trap cleanup EXIT HUP INT TERM
+
+  log "syncing dqlcheck ${install_version} for ${local_os}-${arch_name}"
+  download_to "$archive_url" "$archive_file"
+
+  extracted_entry="$(tar -tzf "$archive_file" | sed -n '1p')"
+  if [ -z "$extracted_entry" ]; then
+    fail "downloaded archive is empty: $archive_url"
+  fi
+
+  tar -xzf "$archive_file" -C "$tmp_dir"
+  extracted_path="$tmp_dir/$extracted_entry"
+  if [ ! -f "$extracted_path" ]; then
+    fail "failed to extract dqlcheck from: $archive_url"
+  fi
+
+  mkdir -p "$install_dir"
+  cp "$extracted_path" "$target_binary.tmp"
+  chmod +x "$target_binary.tmp"
+  mv -f "$target_binary.tmp" "$target_binary"
+  printf '%s\n' "$install_version" > "$version_file.tmp"
+  mv -f "$version_file.tmp" "$version_file"
+  trap - EXIT HUP INT TERM
+  cleanup
+}
+
+resolve_os
+resolve_arch
+
+binary_name='dqlcheck'
+if [ "$local_os" = 'windows' ]; then
+  binary_name='dqlcheck.exe'
+fi
+
+install_dir="$CACHE_ROOT/${local_os}-${arch_name}"
+target_binary="$install_dir/$binary_name"
+version_file="$install_dir/.version"
+requested_version="${DQLCHECK_VERSION:-}"
+desired_version=''
+version_label=''
+
+if [ -n "$requested_version" ]; then
+  desired_version="$requested_version"
+  version_label="$requested_version"
+else
+  version_tmp="$(mktemp "${TMPDIR:-/tmp}/dqlcheck-version.XXXXXX")"
+  if remote_version="$(fetch_text "$REMOTE_VERSION_URL" "$version_tmp" 2>/dev/null | sed -n '1p')" && [ -n "$remote_version" ]; then
+    desired_version="$remote_version"
+    version_label="$remote_version"
+  else
+    desired_version='latest'
+    version_label='latest'
+  fi
+  rm -f "$version_tmp"
+fi
+
+current_version=''
+if current_version="$(read_file_trimmed "$version_file" 2>/dev/null)"; then
+  :
+fi
+
+if [ -x "$target_binary" ]; then
+  if [ "$desired_version" = 'latest' ] || [ "$current_version" = "$desired_version" ]; then
+    if [ "${DQLCHECK_BOOTSTRAP_ONLY:-0}" = '1' ]; then
+      exit 0
+    fi
+    exec "$target_binary" "$@"
+  fi
+fi
+
+install_binary "$desired_version" "$version_label"
+
+if [ "${DQLCHECK_BOOTSTRAP_ONLY:-0}" = '1' ]; then
+  exit 0
+fi
+
+exec "$target_binary" "$@"

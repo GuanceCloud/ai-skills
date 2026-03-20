@@ -1,0 +1,98 @@
+#!/usr/bin/env sh
+set -eu
+
+BASE_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+SKILL_DIR="$(CDPATH= cd -- "$BASE_DIR/.." && pwd)"
+REF_DIR="$SKILL_DIR/references"
+REMOTE_ROOT="${DQLCHECK_BASE_URL:-https://static.guance.com/guancedb}"
+REMOTE_VERSION_URL="${DQLCHECK_VERSION_URL:-$REMOTE_ROOT/version}"
+REF_VERSION_FILE="$REF_DIR/.guancedb-version"
+
+log() {
+  printf '%s\n' "$*" >&2
+}
+
+fail() {
+  log "$*"
+  exit 1
+}
+
+download_to() {
+  url="$1"
+  target="$2"
+
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$url" -o "$target"
+    return 0
+  fi
+
+  if command -v wget >/dev/null 2>&1; then
+    wget -qO "$target" "$url"
+    return 0
+  fi
+
+  fail "missing downloader: install curl or wget first"
+}
+
+fetch_version() {
+  tmp_file="$(mktemp "${TMPDIR:-/tmp}/dql-assets-version.XXXXXX")"
+  trap 'rm -f "$tmp_file"' EXIT HUP INT TERM
+  download_to "$REMOTE_VERSION_URL" "$tmp_file"
+  tr -d '\r\n' < "$tmp_file"
+  trap - EXIT HUP INT TERM
+  rm -f "$tmp_file"
+}
+
+force='0'
+requested_version=''
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --force)
+      force='1'
+      ;;
+    --version)
+      shift
+      [ "$#" -gt 0 ] || fail "missing value for --version"
+      requested_version="$1"
+      ;;
+    *)
+      fail "unsupported argument: $1"
+      ;;
+  esac
+  shift
+done
+
+target_version="$requested_version"
+if [ -z "$target_version" ]; then
+  target_version="$(fetch_version)"
+fi
+
+if [ -f "$REF_VERSION_FILE" ] && [ "$force" != '1' ]; then
+  current_version="$(tr -d '\r\n' < "$REF_VERSION_FILE")"
+  if [ "$current_version" = "$target_version" ]; then
+    log "references already synced at ${target_version}"
+    DQLCHECK_VERSION="$target_version" DQLCHECK_BOOTSTRAP_ONLY=1 "$BASE_DIR/dqlcheck"
+    exit 0
+  fi
+fi
+
+tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/dql-assets.XXXXXX")"
+cleanup() {
+  rm -rf "$tmp_dir"
+}
+trap cleanup EXIT HUP INT TERM
+
+mkdir -p "$REF_DIR"
+download_to "$REMOTE_ROOT/docs/DQL.md" "$tmp_dir/DQL.md"
+download_to "$REMOTE_ROOT/docs/DQL%20Functions.md" "$tmp_dir/DQL Functions.md"
+
+mv -f "$tmp_dir/DQL.md" "$REF_DIR/DQL.md"
+mv -f "$tmp_dir/DQL Functions.md" "$REF_DIR/DQL Functions.md"
+printf '%s\n' "$target_version" > "$REF_VERSION_FILE"
+
+DQLCHECK_VERSION="$target_version" DQLCHECK_BOOTSTRAP_ONLY=1 "$BASE_DIR/dqlcheck"
+log "synced DQL references and dqlcheck ${target_version}"
+
+trap - EXIT HUP INT TERM
+cleanup
