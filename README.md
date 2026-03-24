@@ -103,6 +103,11 @@ memory_util,float,%,host
   - 至少 1 个实例级 `table`
   - 至少 1 行 `singlestat` 概览（4~8 KPI）
   - 至少 6 个 `sequence` 趋势图
+- 生成后必须先执行样式自动修正：
+  - `groupUnfoldStatus` 中所有分组强制为 `true`
+  - `概览` 固定第一，列表类分组紧随其后
+  - 移除 `dashboardExtend.groupColor` 和 `main.groups[].extend.colorKey`
+  - 分组使用科技蓝色盘，概览 `singlestat` 使用多彩数据色盘
 - 生成后必须对图表 DQL 逐条执行校验。
 
 ### `monitor`
@@ -110,6 +115,8 @@ memory_util,float,%,host
 - 从 CSV 中选择 5~10 个关键指标设置告警。
 - 告警应覆盖可用性、资源、性能、异常等核心维度。
 - 监控器 JSON 必须包含清晰 `groupBy`、规则阈值和告警消息模板。
+- 生成后必须同时校验 `checkers[].jsonScript.targets[].dql` 和 `checkers[].extend.querylist[].query.q`。
+- 若 DQL 修复过，必须同步回两个位置，不能出现结构内语句不一致。
 
 ### `dql`
 

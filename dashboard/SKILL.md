@@ -22,12 +22,81 @@ description: 生成观测云 Dashboard 仪表板。根据 CSV 指标文件生成
         ↓
      [生成 JSON]
         ↓
+   [样式自动修正] ← 强制补齐分组与配色
+        ↓
    [DQL 验证] ← 使用 dqlcheck 逐条验证
         ↓
 输出：output/dashboard/{{type}}/{{type}}.json
 ```
 
-### 第四步：DQL 验证（强制）
+### 第四步：样式自动修正（强制）
+
+**严格规则**：生成 Dashboard JSON 后，必须先执行样式自动修正，再进入 DQL 验证。
+
+**自动修正项**（必须全部执行）：
+
+1. **分组展开修正**：`dashboardExtend.groupUnfoldStatus` 中所有分组强制设为 `true`
+2. **分组顺序修正**：`概览` 固定第一；若存在列表分组（`*列表`），固定第二；其他分组按业务顺序排后
+3. **分组配色修正（科技蓝）**：
+   - 移除 `dashboardExtend.groupColor`
+   - `main.groups[].extend.bgColor` 强制使用科技蓝色盘按顺序生成的 `rgba(...)`
+   - 移除 `main.groups[].extend.colorKey`
+4. **概览配色修正（多彩数据）**：
+   - 每个 singlestat 强制补齐 `extend.settings.bgColor`（使用多彩调色盘对应的 14% 透明背景）
+   - 每个 singlestat 强制补齐 `extend.settings.valueColor`，并按多彩调色盘轮换
+5. **回写修正结果**：自动修正后的 JSON 才能作为最终输出与后续校验输入
+
+**自动修正伪代码**：
+
+```python
+def to_alpha_bg(hex_color, alpha=0.12):
+    h = hex_color.lstrip('#')
+    r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    return f"rgba({r}, {g}, {b}, {alpha})"
+
+def autofix_dashboard_style(dashboard):
+    groups = [g['name'] for g in dashboard['main']['groups']]
+
+    # 1) 不折叠
+    dashboard['dashboardExtend']['groupUnfoldStatus'] = {name: True for name in groups}
+
+    # 2) 分组顺序：概览 -> 列表 -> 其他
+    list_groups = [g for g in groups if '列表' in g and g != '概览']
+    other_groups = [g for g in groups if g not in (['概览'] + list_groups)]
+    ordered = (['概览'] if '概览' in groups else []) + list_groups + other_groups
+
+    # 3) 分组科技蓝（严格顺序）
+    tech = ['#3B82F6', '#60A5FA', '#22C55E', '#F59E0B', '#EF4444', '#06B6D4']
+    dashboard['dashboardExtend'].pop('groupColor', None)
+
+    # 4) 概览多彩（严格顺序）
+    multi = ['#06B6D4', '#10B981', '#EAB308', '#F97316', '#EF4444', '#8B5CF6', '#EC4899']
+    i = 0
+    for chart in dashboard['main']['charts']:
+        gname = chart.get('group', {}).get('name')
+        st = chart.setdefault('extend', {}).setdefault('settings', {})
+        if chart.get('type') == 'singlestat' and gname == '概览':
+            st['valueColor'] = multi[i % len(multi)]
+            st['bgColor'] = to_alpha_bg(st['valueColor'], 0.66)
+            st['borderColor'] = '#E5E7EB'
+            i += 1
+        else:
+            # 分组图背景
+            if gname == '概览':
+                st.setdefault('bgColor', to_alpha_bg('#3B82F6', 0.08))
+            else:
+                st.setdefault('bgColor', to_alpha_bg('#3B82F6', 0.08))
+
+    # 5) 分组 UI 兼容修正：仅保留 bgColor（移除 colorKey）
+    for idx, g in enumerate(dashboard['main']['groups']):
+        g_ext = g.setdefault('extend', {})
+        g_ext['bgColor'] = to_alpha_bg(tech[idx % len(tech)], 0.10)
+        g_ext.pop('colorKey', None)
+
+    return dashboard
+```
+
+### 第五步：DQL 验证（强制）
 
 **严格规则**：生成 Dashboard JSON 后，**必须**使用 `dqlcheck` 工具验证所有 DQL 查询。
 
@@ -220,8 +289,7 @@ def get_variable_code(csv_row):
   "title": "MySQL 监控",
   "dashboardType": "CUSTOM",
   "dashboardExtend": {
-    "groupUnfoldStatus": {"InnoDB": false},
-    "groupColor": {"概览": "#3B82F6", "性能": "#EF4444"}
+    "groupUnfoldStatus": {"概览": true, "性能": true, "实例列表": true}
   },
   "dashboardMapping": [],
   "dashboardOwnerType": "node",
@@ -310,15 +378,19 @@ def get_variable_code(csv_row):
       {
         "name": "概览",
         "extend": {
-          "colorKey": "default",
-          "bgColor": "rgba(59, 130, 246, 0.05)"
+          "bgColor": "rgba(59, 130, 246, 0.10)"
+        }
+      },
+      {
+        "name": "实例列表",
+        "extend": {
+          "bgColor": "rgba(96, 165, 250, 0.10)"
         }
       },
       {
         "name": "性能",
         "extend": {
-          "colorKey": "style_key4",
-          "bgColor": "rgba(239, 68, 68, 0.05)"
+          "bgColor": "rgba(34, 197, 94, 0.10)"
         }
       }
     ]
@@ -326,12 +398,40 @@ def get_variable_code(csv_row):
 }
 ```
 
-**颜色映射**：
-- `default` → #3B82F6 (蓝色)
-- `style_key1` → #10B981 (绿色)
-- `style_key2` → #8B5CF6 (紫色)
-- `style_key3` → #F59E0B (橙色)
-- `style_key4` → #EF4444 (红色)
+**分组展开规则（强制）**：
+- ✅ 不折叠分组：`dashboardExtend.groupUnfoldStatus` 中所有分组均为 `true`
+- ✅ 概览组默认展开，其他组也保持展开，不再使用默认折叠
+
+**分组顺序规则（强制）**：
+- ✅ `概览` 组必须排在第一位
+- ✅ 若存在列表类分组（如 `实例列表`、`主机列表`、`库表列表`），必须紧跟在 `概览` 后面
+- ✅ 其他趋势/明细分组排在列表组之后
+
+**配色体系（强制）**：
+
+1) **分组图使用「科技蓝」**（严格按下列顺序轮换）
+- 次主色 `#3B82F6`
+- 高亮 `#60A5FA`
+- 成功 `#22C55E`
+- 警告 `#F59E0B`
+- 错误 `#EF4444`
+- 信息 `#06B6D4`
+- 背景 `#F1F5F9`
+- 边框 `#CBD5E1`
+
+2) **概览图使用「多彩数据」**（严格按下列顺序）
+- 调色盘：`#06B6D4`、`#10B981`、`#EAB308`、`#F97316`、`#EF4444`、`#8B5CF6`、`#EC4899`
+- 背景：`#F9FAFB`
+- 边框：`#E5E7EB`
+- 概览多卡片应按调色盘轮换，避免全部同色
+
+**配色落地规则（强制）**：
+- ✅ `dashboardExtend.groupColor` 必须移除
+- ✅ `main.groups[].extend.bgColor` 必须使用 `rgba(...)`（按科技蓝色盘顺序生成）
+- ✅ `main.groups[].extend.colorKey` 必须移除
+- ✅ 每个 singlestat 的 `extend.settings.bgColor` 必须使用 `rgba(...)`（由 valueColor 按 14% 透明度生成）
+- ✅ 每个 singlestat 的 `extend.settings.borderColor` 必须固定为 `#E5E7EB`
+- ✅ 每个 singlestat 的 `extend.settings.valueColor` 必须来自多彩调色盘，并按面板顺序轮换
 
 ### 4. 图表结构（必须配置单位）
 
@@ -426,7 +526,7 @@ def get_variable_code(csv_row):
       "colors": [],
       "decimalPlaces": 0,
       "valueColor": "#3B82F6",
-      "bgColor": "rgba(59, 130, 246, 0.1)"
+      "bgColor": "rgba(59, 130, 246, 0.12)"
     }
   },
   "queries": [{
@@ -460,6 +560,19 @@ def get_variable_code(csv_row):
 - ✅ **必须配置 units**
 - ✅ DQL 中**不要**使用 `AVG()`、`SUM()` 等聚合函数，**直接写字段名**
 - ❌ **不能使用 rollup 语法**
+
+**概览图 UI 渲染稳定性规则**（强制）：
+- ✅ `queries[]` 外层必须包含：`name`、`type`、`unit`、`color`、`qtype`
+- ✅ `queries[].type` 必须为 `singlestat`，`queries[].qtype` 必须为 `dql`
+- ✅ `query.filters` 必须存在，且 `name/value` 与变量 code 一致（如 `instanceId` / `#{instanceId}`）
+- ✅ `extend.settings` 建议固定包含：`alias`、`levels`、`density`、`showTitle`、`titleDesc`、`showLegend`、`currentChartType`、`showFieldMapping`
+- ✅ `extend.settings.bgColor` 必须存在且使用与 valueColor 对应的透明背景
+- ✅ `extend.settings.valueColor` 必须命中多彩调色盘
+
+**概览图单位规则（强制）**：
+- ✅ 若 CSV 单位可映射（如 `%`、`ms`、`B/S`、`reqps`、`ops`、`iops`），`units[].units` 必须使用标准映射，不可默认 `custom`
+- ✅ 仅当 CSV 单位为 `-` 或确实无法识别时，才允许使用 `["custom", ""]`
+- ✅ `units[].unit` 必须与 `units[].units` 语义一致（如 `%` ↔ `["percent", "percent"]`）
 
 **对比示例**：
 
@@ -609,6 +722,9 @@ def get_variable_code(csv_row):
 - [ ] JSON 格式有效
 - [ ] `main` 中**没有** `chartGroupPos` 字段
 - [ ] `main.groups` 存在且配置完整
+- [ ] 已执行样式自动修正（autofix）并回写结果
+- [ ] 所有分组在 `groupUnfoldStatus` 中为 `true`（不折叠）
+- [ ] 若存在列表分组，其顺序紧跟 `概览` 分组
 
 ### 变量验证
 - [ ] 变量使用 `SHOW_TAG_VALUE` + `keyin`
@@ -620,6 +736,9 @@ def get_variable_code(csv_row):
 - [ ] singlestat 使用 `series_sum` + `BY 变量code`
 - [ ] singlestat 的 `fill` 为 `null`
 - [ ] singlestat **没有** rollup 语法
+- [ ] singlestat 的 `queries[]` 外层包含 `name/type/unit/color/qtype`
+- [ ] singlestat 的 `query.filters` 存在且与变量 code 一致
+- [ ] singlestat 的单位映射正确（可识别单位不允许落为 `custom`）
 
 ### sequence 验证
 - [ ] 时序图计数器优先使用 rollup（如 `irate`）
@@ -637,13 +756,19 @@ def get_variable_code(csv_row):
 
 ### 通用验证
 - [ ] **所有图表配置了 units**（关键）
-- [ ] 所有分组配置 `bgColor` 和 `colorKey`
+- [ ] 所有分组配置 `bgColor`（不包含 `colorKey`）
 - [ ] 图表配置 `chartGroupUUID`（同组相同）
 - [ ] 图表配置 `prevGroupName`
 - [ ] filters 的 `op` 使用 `"="`（不是 `"=~"`）
 - [ ] query 结构包含 `name`、`type`、`unit`、`color`、`qtype`
 - [ ] 至少 1 个实例级 table 面板
 - [ ] MySQL 场景包含用户/库表维度 table（有对应 CSV 时）
+- [ ] 分组图（sequence/table）采用科技蓝体系
+- [ ] 概览图（singlestat）采用多彩数据体系（valueColor 不全同色）
+- [ ] `dashboardExtend.groupColor` 已移除
+- [ ] `main.groups[].extend.bgColor` 使用 `rgba(...)`，且按科技蓝色盘顺序
+- [ ] `main.groups[].extend.colorKey` 已移除
+- [ ] 所有 singlestat 都有 `bgColor=rgba(...)` 和 `borderColor=#E5E7EB`
 
 ### DQL 验证（强制）
 - [ ] 提取所有 charts 中的 DQL 语句
