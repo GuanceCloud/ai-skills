@@ -6,6 +6,8 @@
 
 ```text
 ai-skills/
+├── alert_manager/
+│   └── SKILL.md
 ├── dashboard/
 │   └── SKILL.md
 ├── dql/
@@ -21,6 +23,7 @@ ai-skills/
 
 | Skill | 作用 | 关键输入 | 关键输出 |
 |---|---|---|---|
+| `alert_manager` | 将 alertmanager rule 转换为观测云监控器 JSON | alertmanager rule 语句或 rule 文件 + 指标映射 | `output/monitor/{{component}}/{{component}}.json` |
 | `dashboard` | 根据 CSV 指标生成观测云 Dashboard JSON | `csv/{{type}}*.csv` | `output/dashboard/{{type}}/{{type}}.json` |
 | `monitor` | 根据 CSV 指标生成观测云监控器 JSON | `csv/{{component}}*.csv` | `output/monitor/{{component}}/{{component}}.json` |
 | `dql` | 解释、评审、生成、修复 DQL | 用户查询需求 / DQL 语句 | 通过校验的最终 DQL |
@@ -118,6 +121,15 @@ memory_util,float,%,host
 - 生成后必须同时校验 `checkers[].jsonScript.targets[].dql` 和 `checkers[].extend.querylist[].query.q`。
 - 若 DQL 修复过，必须同步回两个位置，不能出现结构内语句不一致。
 
+### `alert_manager`
+
+- 输入必须是告警规则定义（`alert / expr / for / labels / annotations`），不能是 `alertmanager.yml` 的路由配置。
+- 没有指标映射时，必须先补映射（`dataSource / field / groupBy / fieldType / fieldFunc`），不能硬写 DQL。
+- 每条规则都要同时生成 `targets[].dql` 和 `extend.querylist[].query.q`，两处查询语义必须一致。
+- `checkerOpt.rules` 与 `extend.rules` 必须同步。
+- 最终 JSON 中不能残留 PromQL。
+- 所有 DQL 必须通过 `dqlcheck`。
+
 ### `dql`
 
 - 分两种模式：
@@ -147,6 +159,7 @@ memory_util,float,%,host
 
 ## 参考
 
+- [alert_manager/SKILL.md](alert_manager/SKILL.md)
 - [dashboard/SKILL.md](dashboard/SKILL.md)
 - [monitor/SKILL.md](monitor/SKILL.md)
 - [dql/SKILL.md](dql/SKILL.md)
