@@ -9,7 +9,7 @@ description: Convert Grafana dashboard JSON into Guance dashboard JSON with a fu
 
 Use this skill when working on Grafana dashboard to Guance dashboard conversion as a standalone package.
 
-This skill is self-contained. Use only the files under `skills/grafana-to-guance-dashboard/` unless the user explicitly asks to compare with older repository code or migrate logic elsewhere.
+This skill is self-contained. Use only the files in this skill directory unless the user explicitly asks to compare with older repository code or migrate logic elsewhere.
 
 This is not just a script-running skill. Use the LLM before and after conversion to analyze risk, explain missing mappings, compare Grafana and Guance structures, infer likely units when Grafana leaves them implicit, audit PromQL dialect differences, and propose or implement converter fixes.
 
@@ -26,7 +26,7 @@ The skill directory now includes its own:
 
 ## Core Workflow
 
-1. Change into `skills/grafana-to-guance-dashboard/`.
+1. Change into the skill root directory.
 2. Install standalone dependencies with `npm install` when needed.
 3. Read the input Grafana dashboard and perform a preflight analysis before running the converter.
 4. Identify the output path and choose conversion flags.
@@ -103,7 +103,7 @@ Choose the mode that matches the user request.
 
 ## Commands
 
-Use these commands from `skills/grafana-to-guance-dashboard/`.
+Use these commands from the skill root directory.
 
 ```bash
 npm install
@@ -369,27 +369,27 @@ User-facing summary
 
 The skill script directory contains two files:
 
-- `skills/grafana-to-guance-dashboard/scripts/convert-grafana-dashboard.mjs`
+- `scripts/convert-grafana-dashboard.mjs`
   - executable wrapper
   - parses CLI args
   - validates output against local schemas
   - imports `./convert-grafana-dashboard-core.js`
-- `skills/grafana-to-guance-dashboard/scripts/convert-grafana-dashboard-core.js`
+- `scripts/convert-grafana-dashboard-core.js`
   - pure conversion logic
   - no file-system or schema-validation responsibilities
 
 The skill directory also includes:
 
-- `skills/grafana-to-guance-dashboard/scripts/validate-file.mjs`
+- `scripts/validate-file.mjs`
   - standalone validation entrypoint
   - always validates against the skill-local `schemas/`
-- `skills/grafana-to-guance-dashboard/schemas/`
+- `schemas/`
   - local schema copy used for standalone validation
-- `skills/grafana-to-guance-dashboard/fixtures/`
+- `fixtures/`
   - bundled sample Grafana dashboard for standalone smoke tests
-- `skills/grafana-to-guance-dashboard/test/`
+- `test/`
   - bundled standalone regression tests
-- `skills/grafana-to-guance-dashboard/package.json`
+- `package.json`
   - standalone runtime dependencies and convenience scripts
 
 Treat these two files as the source of truth for this skill.
@@ -399,9 +399,9 @@ Treat these two files as the source of truth for this skill.
 This skill must remain usable on its own. Do not rely on repository sync/build steps as the default workflow.
 
 - For conversion behavior changes:
-  - edit `skills/grafana-to-guance-dashboard/scripts/convert-grafana-dashboard-core.js`
+  - edit `scripts/convert-grafana-dashboard-core.js`
 - For CLI / validation behavior changes:
-  - edit `skills/grafana-to-guance-dashboard/scripts/convert-grafana-dashboard.mjs`
+  - edit `scripts/convert-grafana-dashboard.mjs`
 - After editing:
   - re-run the standalone converter command from this skill
   - re-run validation against the target output file
@@ -468,8 +468,8 @@ When conversion fails or output is incomplete, read [references/converter-notes.
 ## Standalone Use Rules
 
 - Default to the standalone converter shipped in this skill.
-- Keep all conversion logic needed by the skill inside `skills/grafana-to-guance-dashboard/scripts/`.
-- Keep validation schemas needed by the skill inside `skills/grafana-to-guance-dashboard/schemas/`.
+- Keep all conversion logic needed by the skill inside `scripts/`.
+- Keep validation schemas needed by the skill inside `schemas/`.
 - Keep smoke-test inputs and regression tests inside this skill directory.
 - Do not make the skill depend on `lib/scripts/*`, sync steps, root-level schemas, repository fixtures, or build steps for normal use.
 - If behavior is duplicated elsewhere in the repository, treat that as optional follow-up work, not part of the default skill workflow.

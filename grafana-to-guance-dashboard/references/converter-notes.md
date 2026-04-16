@@ -2,13 +2,13 @@
 
 ## Skill Files
 
-- `skills/grafana-to-guance-dashboard/package.json`: standalone dependencies and convenience scripts
-- `skills/grafana-to-guance-dashboard/scripts/convert-grafana-dashboard.mjs`: standalone converter shipped by this skill
-- `skills/grafana-to-guance-dashboard/scripts/convert-grafana-dashboard-core.js`: standalone conversion core used by this skill
-- `skills/grafana-to-guance-dashboard/scripts/validate-file.mjs`: standalone validator for generated output
-- `skills/grafana-to-guance-dashboard/schemas/dashboard-schema.json`: standalone Guance dashboard schema entrypoint
-- `skills/grafana-to-guance-dashboard/fixtures/grafana-dashboard.json`: bundled standalone fixture dashboard
-- `skills/grafana-to-guance-dashboard/test/convert.test.mjs`: bundled end-to-end regression test
+- `package.json`: standalone dependencies and convenience scripts
+- `scripts/convert-grafana-dashboard.mjs`: standalone converter shipped by this skill
+- `scripts/convert-grafana-dashboard-core.js`: standalone conversion core used by this skill
+- `scripts/validate-file.mjs`: standalone validator for generated output
+- `schemas/dashboard-schema.json`: standalone Guance dashboard schema entrypoint
+- `fixtures/grafana-dashboard.json`: bundled standalone fixture dashboard
+- `test/convert.test.mjs`: bundled end-to-end regression test
 
 ## Current Mapping Notes
 
@@ -129,7 +129,7 @@ npm run validate:file -- ./output/guance-dashboard.json
 ```
 
 7. Run `npm test` to verify the bundled standalone fixture still converts and validates cleanly.
-8. If the behavior itself is wrong, patch the standalone files under `skills/grafana-to-guance-dashboard/scripts/` directly instead of relying on repository sync/build flows.
+8. If the behavior itself is wrong, patch the standalone files under `scripts/` directly instead of relying on repository sync/build flows.
 
 ## Audit Prompts
 
