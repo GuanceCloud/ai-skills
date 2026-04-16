@@ -128,6 +128,13 @@ npm run convert -- \
   --validate \
   --keep-grafana-meta
 
+# Keep Grafana job variables and job filters only when the target Guance dashboard still depends on job
+npm run convert -- \
+  --input ./fixtures/grafana-dashboard.json \
+  --output ./output/guance-dashboard.keep-job.json \
+  --validate \
+  --keep-job-variable
+
 # Validate an already-generated output file against the skill-local schemas
 npm run validate:file -- ./output/guance-dashboard.json
 
@@ -155,6 +162,8 @@ Call out:
 - dashboards likely to benefit from `--guance-promql-compatible`
 - panels whose unit is likely implicit and should be inferred during audit
 - dashboards likely to need manual cleanup after conversion
+- whether Grafana datasource variables such as `ds_prometheus` can be dropped outright
+- whether the target Guance dashboard still needs a `job` variable; if not, drop the variable and its query filters
 
 ## Post-Conversion Audit
 
@@ -221,6 +230,9 @@ Use these defaults unless the user asks otherwise.
   - plugin-specific options or complex transformations are present
   - the conversion result needs a detailed forensic comparison
 - Do not enable `--keep-grafana-meta` by default for final output unless debugging context is explicitly useful
+- Drop Grafana datasource selector variables such as `ds_prometheus` by default because Guance does not need datasource parameters.
+- Drop the Grafana `job` variable and related query filters by default.
+- Use `--keep-job-variable` only when the user confirms the target Guance dashboard still depends on `job`.
 
 ## Confidence Rules
 
@@ -411,7 +423,8 @@ Only touch repository-level converters or build scripts when the user explicitly
 
 ## What The Standalone Skill Converter Supports
 
-- Grafana variables of type `query`, `custom`, `textbox`, `constant`, `interval`, and `datasource`
+- Grafana variables of type `query`, `custom`, `textbox`, `constant`, and `interval`
+- Grafana datasource variables such as `ds_prometheus` are intentionally skipped because Guance dashboards do not need datasource selector params
 - Grafana row panels mapped to Guance groups
 - Row collapse state mapped to `dashboardExtend.groupUnfoldStatus`
 - Panel links gathered from panel links, default links, and override links

@@ -23,7 +23,7 @@
           "sort": 0
         },
         "datasource": "dataflux",
-        "type": "QUERY",
+        "type": "PROMQL_QUERY",
         "definition": {
           "tag": "",
           "field": "",

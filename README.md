@@ -158,9 +158,11 @@ memory_util,float,%,host
 - Skill 自带独立脚本、Schema、测试、fixtures 和 `package.json`，可在目录内独立运行。
 - 默认流程应覆盖：
   - 转换前预检：面板类型、变量、数据源、PromQL 风险、隐式单位
-  - 转换执行：按需选择 `--guance-promql-compatible`、`--keep-grafana-meta`
+  - 转换执行：按需选择 `--guance-promql-compatible`、`--keep-grafana-meta`、`--keep-job-variable`
   - 转换后校验：输出 JSON 必须通过 skill 内置 schema 校验
   - 审计报告：说明成功转换、丢失面板、部分映射、单位推断置信度、兼容性风险
+- 默认应跳过 Grafana datasource 变量，例如 `ds_prometheus`
+- 默认应删除 `job` 变量及其查询条件；只有目标观测云 Dashboard 明确仍依赖 `job` 时才保留
 - 常用命令：
 
 ```bash

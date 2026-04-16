@@ -33,7 +33,11 @@ For PromQL review heuristics and rewrite-risk patterns, also read [promql-compat
   - `query` -> `PROMQL_QUERY`
   - `custom` -> `CUSTOM_LIST`
 
-Additional Grafana variable types such as `textbox`, `constant`, `interval`, and `datasource` are converted into Guance custom-list style variables by the standalone script.
+Additional Grafana variable types such as `textbox`, `constant`, and `interval` are converted into Guance custom-list style variables by the standalone script.
+
+Grafana datasource selector variables such as `ds_prometheus` should be dropped during conversion because Guance dashboards do not expose datasource params.
+
+The Grafana `job` variable should be dropped by default together with its query filters. Only keep it when the target Guance dashboard still depends on `job`.
 
 The standalone script also preserves extra variable metadata such as `refresh`, `skipUrlSync`, `sort`, `description`, and raw option lists under `var.extend`.
 

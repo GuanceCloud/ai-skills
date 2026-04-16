@@ -68,14 +68,14 @@ const COMPARE_OPTIONS = {
 };
 export function convertDashboard(grafanaDashboard, options = {}) {
     var _a, _b;
-    const variableNames = new Set((((_a = grafanaDashboard.templating) === null || _a === void 0 ? void 0 : _a.list) || []).map((item) => item === null || item === void 0 ? void 0 : item.name).filter(Boolean));
+    const variableContext = buildVariableContext((((_a = grafanaDashboard.templating) === null || _a === void 0 ? void 0 : _a.list) || []), options);
     const state = {
         groups: [],
         groupUnfoldStatus: {},
         charts: [],
     };
     const sortedPanels = sortPanels(grafanaDashboard.panels || []);
-    collectPanels(sortedPanels, state, null, variableNames, options);
+    collectPanels(sortedPanels, state, null, variableContext.variableNames, options);
     return pruneEmpty({
         title: grafanaDashboard.title || '',
         description: grafanaDashboard.description || undefined,
@@ -85,12 +85,40 @@ export function convertDashboard(grafanaDashboard, options = {}) {
             groupUnfoldStatus: state.groupUnfoldStatus,
         },
         main: {
-            vars: convertVariables(((_b = grafanaDashboard.templating) === null || _b === void 0 ? void 0 : _b.list) || [], variableNames),
+            vars: convertVariables(variableContext.variables, variableContext.variableNames, options),
             charts: state.charts,
             groups: state.groups,
             type: 'template',
         },
     });
+}
+function buildVariableContext(variables, options = {}) {
+    const keptVariables = [];
+    const variableNames = new Set();
+    for (const variable of Array.isArray(variables) ? variables : []) {
+        if (shouldSkipVariable(variable, options)) {
+            continue;
+        }
+        keptVariables.push(variable);
+        if (variable === null || variable === void 0 ? void 0 : variable.name) {
+            variableNames.add(variable.name);
+        }
+    }
+    return {
+        variables: keptVariables,
+        variableNames,
+    };
+}
+function shouldSkipVariable(variable, options = {}) {
+    const variableType = String(variable === null || variable === void 0 ? void 0 : variable.type).toLowerCase();
+    const variableName = normalizeVariableIdentifier(variable === null || variable === void 0 ? void 0 : variable.name);
+    if (variableType === 'datasource' || variableName === 'ds_prometheus') {
+        return true;
+    }
+    if (options.keepJobVariable === true) {
+        return false;
+    }
+    return variableName === 'job';
 }
 function collectPanels(panels, state, inheritedGroup = null, variableNames = new Set(), options = {}) {
     let activeRow = inheritedGroup;
@@ -135,13 +163,14 @@ function sortPanels(panels) {
         return (left.id || 0) - (right.id || 0);
     });
 }
-function convertVariables(variables, variableNames) {
+function convertVariables(variables, variableNames, options = {}) {
     return variables
-        .map((variable, index) => convertVariable(variable, index, variableNames))
+        .map((variable, index) => convertVariable(variable, index, variableNames, options))
         .filter(Boolean);
 }
-function convertVariable(variable, index, variableNames) {
+function convertVariable(variable, index, variableNames, options = {}) {
     const variableType = String(variable.type || '');
+    const queryString = sanitizeVariableQuery(extractVariableQuery(variable), options);
     const current = variable.current || {};
     const currentText = stringifyCurrent(current.text);
     const currentValue = stringifyCurrent(current.value);
@@ -193,8 +222,7 @@ function convertVariable(variable, index, variableNames) {
         });
     }
     if (variableType === 'query') {
-        const queryString = extractVariableQuery(variable);
-        const queryKind = inferVariableQueryType(variable, queryString);
+        const queryKind = inferVariableQueryType(variable);
         return pruneEmpty({
             ...base,
             datasource: queryKind === 'FIELD' ? 'object' : 'dataflux',
@@ -274,7 +302,7 @@ function buildQueries(panel, chartType, variableNames, options = {}) {
     const targets = Array.isArray(panel.targets) ? panel.targets : [];
     for (let index = 0; index < targets.length; index++) {
         const target = targets[index];
-        const queryText = extractTargetQuery(target);
+        const queryText = sanitizeTargetQuery(extractTargetQuery(target), options);
         if (!queryText)
             continue;
         const qtype = inferQueryLanguage(target, queryText);
@@ -413,7 +441,7 @@ function buildSettings(panel, chartType, queries, variableNames) {
         bgColor: options.colorMode === 'background' ? (_s = defaults.color) === null || _s === void 0 ? void 0 : _s.fixedColor : undefined,
         sequenceChartType: chartType === 'singlestat' && graphMode ? inferSequenceChartType(panel, graphMode) : undefined,
         showLineAxis: chartType === 'singlestat' ? graphMode !== 'none' : undefined,
-        repeatChartVariable: typeof panel.repeat === 'string' && panel.repeat ? panel.repeat : undefined,
+        repeatChartVariable: typeof panel.repeat === 'string' && panel.repeat && variableNames.has(panel.repeat) ? panel.repeat : undefined,
         repeatChartRowLimit: typeof panel.maxPerRow === 'number' ? panel.maxPerRow : undefined,
         compares: compareInfo.compares,
         compareType: compareInfo.compareType,
@@ -1077,7 +1105,7 @@ function inferQueryLanguage(target, queryText) {
         return 'dql';
     return 'promql';
 }
-function inferVariableQueryType(variable, queryString) {
+function inferVariableQueryType(variable) {
     var _a;
     const datasourceType = getDatasourceType(variable.datasource);
     const explicitQtype = String(((_a = variable.query) === null || _a === void 0 ? void 0 : _a.qtype) || '').toLowerCase();
@@ -1086,15 +1114,7 @@ function inferVariableQueryType(variable, queryString) {
     if (explicitQtype === 'promql')
         return 'PROMQL_QUERY';
     if (explicitQtype === 'dql')
-        return 'QUERY';
-    if (isDqlLikeDatasource(datasourceType) && /^\s*(with|select)\b/i.test(queryString))
-        return 'QUERY';
-    if (/field_values\(/i.test(queryString) || /label_values\(/i.test(queryString))
-        return 'QUERY';
-    if (/^[A-Z]::/.test(queryString) || /L\('/.test(queryString))
-        return 'QUERY';
-    if (/^\s*(with|select)\b/i.test(queryString))
-        return 'QUERY';
+        return 'PROMQL_QUERY';
     return 'PROMQL_QUERY';
 }
 function extractVariableQuery(variable) {
@@ -1114,6 +1134,150 @@ function extractTargetQuery(target) {
             return candidate;
     }
     return '';
+}
+function sanitizeVariableQuery(queryText, options = {}) {
+    return sanitizeQueryText(queryText, options);
+}
+function sanitizeTargetQuery(queryText, options = {}) {
+    return sanitizeQueryText(queryText, options);
+}
+function sanitizeQueryText(queryText, options = {}) {
+    if (typeof queryText !== 'string' || !queryText.trim()) {
+        return queryText;
+    }
+    if (options.keepJobVariable === true) {
+        return queryText;
+    }
+    if (looksLikeDqlQuery(queryText)) {
+        return sanitizeDqlJobFilters(queryText).trim();
+    }
+    return sanitizePromqlJobFilters(queryText).trim();
+}
+function looksLikeDqlQuery(queryText) {
+    return /^\s*(with|select)\b/i.test(queryText) || /^[A-Z]::/.test(queryText) || /[A-Z]\('/.test(queryText);
+}
+function sanitizePromqlJobFilters(queryText) {
+    let result = queryText.replace(/\{([^{}]*)\}/g, (match, content) => sanitizePromqlSelector(content));
+    result = result.replace(/([A-Za-z_:][A-Za-z0-9_:]*)\{\}/g, '$1');
+    return result;
+}
+function sanitizePromqlSelector(content) {
+    const parts = splitTopLevel(content, ',');
+    const filtered = parts.filter((part) => !isJobPromqlMatcher(part));
+    return `{${filtered.join(',')}}`;
+}
+function isJobPromqlMatcher(segment) {
+    const match = String(segment).match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*(=~|!~|=|!=)/);
+    if (!match) {
+        return false;
+    }
+    return normalizeVariableIdentifier(match[1]) === 'job';
+}
+function sanitizeDqlJobFilters(queryText) {
+    return queryText.replace(/\{([^{}]*)\}/g, (match, content) => {
+        const filtered = splitTopLevelLogical(content).filter((clause) => !isJobDqlClause(clause));
+        if (filtered.length === 0) {
+            return '';
+        }
+        return `{ ${filtered.join(' AND ')} }`;
+    });
+}
+function isJobDqlClause(segment) {
+    const match = String(segment).match(/^\s*`?([A-Za-z_][A-Za-z0-9_]*)`?\s*(=~|!~|=|!=|>=|<=|>|<|\bIN\b|\bNOT IN\b|\blike\b)/i);
+    if (!match) {
+        return false;
+    }
+    return normalizeVariableIdentifier(match[1]) === 'job';
+}
+function splitTopLevel(input, separator) {
+    const segments = [];
+    let current = '';
+    let quote = '';
+    let depth = 0;
+    for (let index = 0; index < input.length; index++) {
+        const char = input[index];
+        const previous = index > 0 ? input[index - 1] : '';
+        if (quote) {
+            current += char;
+            if (char === quote && previous !== '\\') {
+                quote = '';
+            }
+            continue;
+        }
+        if (char === '"' || char === '\'' || char === '`') {
+            quote = char;
+            current += char;
+            continue;
+        }
+        if (char === '(' || char === '[') {
+            depth++;
+            current += char;
+            continue;
+        }
+        if ((char === ')' || char === ']') && depth > 0) {
+            depth--;
+            current += char;
+            continue;
+        }
+        if (char === separator && depth === 0) {
+            if (current.trim()) {
+                segments.push(current.trim());
+            }
+            current = '';
+            continue;
+        }
+        current += char;
+    }
+    if (current.trim()) {
+        segments.push(current.trim());
+    }
+    return segments;
+}
+function splitTopLevelLogical(input) {
+    const segments = [];
+    let current = '';
+    let quote = '';
+    let depth = 0;
+    for (let index = 0; index < input.length; index++) {
+        const char = input[index];
+        const previous = index > 0 ? input[index - 1] : '';
+        if (quote) {
+            current += char;
+            if (char === quote && previous !== '\\') {
+                quote = '';
+            }
+            continue;
+        }
+        if (char === '"' || char === '\'' || char === '`') {
+            quote = char;
+            current += char;
+            continue;
+        }
+        if (char === '(' || char === '[') {
+            depth++;
+            current += char;
+            continue;
+        }
+        if ((char === ')' || char === ']') && depth > 0) {
+            depth--;
+            current += char;
+            continue;
+        }
+        if (depth === 0 && input.slice(index).match(/^(AND|OR)\b/i) && /\s/.test(previous || ' ')) {
+            const operatorMatch = input.slice(index).match(/^(AND|OR)\b/i);
+            if (operatorMatch && current.trim()) {
+                segments.push(current.trim());
+                current = '';
+                index += operatorMatch[0].length - 1;
+                continue;
+            }
+        }
+        current += char;
+    }
+    if (current.trim()) {
+        segments.push(current.trim());
+    }
+    return segments;
 }
 function extractWorkspaceInfo(targets) {
     const workspaceUUIDs = [];
@@ -1591,6 +1755,9 @@ function normalizeTemplateVariable(expression) {
     if (!/^[A-Za-z0-9_.]+$/.test(beforeFormat))
         return '';
     return beforeFormat;
+}
+function normalizeVariableIdentifier(value) {
+    return String(value || '').trim().toLowerCase();
 }
 function normalizeQueryCode(refId, index) {
     if (typeof refId === 'string' && refId.trim())
