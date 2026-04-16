@@ -6,33 +6,48 @@
     "type": "object",
     "properties": {
         "timeInterval": {
-            "type": "string",
             "default": "auto",
-            "enum": [
-                "auto",
-                "1ms",
-                "10ms",
-                "50ms",
-                "100ms",
-                "500ms",
-                "1s",
-                "10s",
-                "20s",
-                "30s",
-                "1m",
-                "5m",
-                "10m",
-                "30m",
-                "1h",
-                "6h",
-                "12h",
-                "1d",
-                "7d",
-                "30d"
+            "anyOf": [
+                {
+                    "type": "string",
+                    "const": ""
+                },
+                {
+                    "type": "string",
+                    "enum": [
+                        "auto",
+                        "1ms",
+                        "10ms",
+                        "50ms",
+                        "100ms",
+                        "500ms",
+                        "1s",
+                        "10s",
+                        "20s",
+                        "30s",
+                        "1m",
+                        "5m",
+                        "10m",
+                        "30m",
+                        "1h",
+                        "6h",
+                        "12h",
+                        "1d",
+                        "7d",
+                        "30d"
+                    ]
+                }
             ]
         },
         "maxPointCount": {
-            "type": "integer",
+            "anyOf": [
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "null"
+                }
+            ],
             "description": "返回最大数据电枢",
             "default": 720
         },

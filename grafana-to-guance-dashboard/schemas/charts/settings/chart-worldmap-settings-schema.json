@@ -30,6 +30,7 @@
                     "description": "区间颜色选择色系的唯一对应健",
                     "enum": [
                         "light-blue",
+                        "blue",
                         "light-red",
                         "dark-red",
                         "dark-yellow",

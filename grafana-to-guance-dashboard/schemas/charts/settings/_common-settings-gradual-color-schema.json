@@ -34,11 +34,25 @@
                 },
                 "minVal": {
                     "description": "在自动模式下，可以手动设置区间范围最小值",
-                    "type": "integer"
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
                 },
                 "maxVal": {
                     "description": "在自动模式下，可以手动设置的区间范围最大值",
-                    "type": "integer"
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
                 },
                 "levelCount": {
                     "type": "integer",

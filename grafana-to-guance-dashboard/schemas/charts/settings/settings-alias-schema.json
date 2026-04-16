@@ -34,6 +34,13 @@
                 "examples": [
                     "avg(load5s)"
                 ]
+            },
+            "queryCode": {
+                "type": "string",
+                "description": "当别名绑定到具体查询时，对应的查询编码，例如 A/B/C",
+                "examples": [
+                    "A"
+                ]
             }
         },
         "examples": [
@@ -41,6 +48,12 @@
                 "alias": "{{tags}}",
                 "key": "avg(load5s)",
                 "name": "avg(load5s)"
+            },
+            {
+                "alias": "Busy System",
+                "key": "promql_1",
+                "name": "promql_1",
+                "queryCode": "A"
             }
         ]
     }

@@ -14,18 +14,26 @@
             "description": "是否开启同环比功能"
         },
         "compareType": {
-            "type": "array",
             "description": "选择的同环比类型",
-            "items": {
-                "type": "string",
-                "enum": [
-                    "hourCompare",
-                    "dayCompare",
-                    "weekCompare",
-                    "monthCompare",
-                    "circleCompare"
-                ]
-            }
+            "anyOf": [
+                {
+                    "type": "string",
+                    "const": ""
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "hourCompare",
+                            "dayCompare",
+                            "weekCompare",
+                            "monthCompare",
+                            "circleCompare"
+                        ]
+                    }
+                }
+            ]
         },
         "compares": {
             "type": "array",

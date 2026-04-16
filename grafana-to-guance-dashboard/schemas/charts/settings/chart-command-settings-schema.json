@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-command-settings-schema.json",
+    "title": "ChartCommandSettings",
+    "description": "命令图表配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        }
+    ]
+}

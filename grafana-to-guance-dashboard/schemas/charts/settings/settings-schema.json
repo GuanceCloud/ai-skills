@@ -16,6 +16,12 @@
             "$ref": "chart-chinamap-settings-schema.json"
         },
         {
+            "$ref": "chart-change-settings-schema.json"
+        },
+        {
+            "$ref": "chart-command-settings-schema.json"
+        },
+        {
             "$ref": "chart-funnel-settings-schema.json"
         },
         {
@@ -35,6 +41,9 @@
         },
         {
             "$ref": "chart-log-settings-schema.json"
+        },
+        {
+            "$ref": "chart-monitor-settings-schema.json"
         },
         {
             "$ref": "chart-object-settings-schema.json"
@@ -68,6 +77,9 @@
         },
         {
             "$ref": "chart-topology-settings-schema.json"
+        },
+        {
+            "$ref": "chart-video-settings-schema.json"
         },
         {
             "$ref": "chart-treemap-settings-schema.json"

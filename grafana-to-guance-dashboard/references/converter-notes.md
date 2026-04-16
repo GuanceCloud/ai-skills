@@ -9,6 +9,7 @@
 - `schemas/dashboard-schema.json`: standalone Guance dashboard schema entrypoint
 - `fixtures/grafana-dashboard.json`: bundled standalone fixture dashboard
 - `test/convert.test.mjs`: bundled end-to-end regression test
+- `test/guance-all-charts.json`: real Guance export sample used to keep local schemas aligned with current product output
 
 ## Current Mapping Notes
 
@@ -23,6 +24,23 @@ Two especially useful LLM-only review areas are:
 
 For unit inference heuristics and confidence patterns, also read [unit-inference-cheatsheet.md](unit-inference-cheatsheet.md).
 For PromQL review heuristics and rewrite-risk patterns, also read [promql-compatibility-cheatsheet.md](promql-compatibility-cheatsheet.md).
+
+## Schema Contract Notes
+
+The local schemas are expected to accept both:
+
+- converter output produced by this skill
+- real Guance dashboard exports represented by `test/guance-all-charts.json`
+
+Current schema rules that matter in practice:
+
+- dedicated chart settings schemas should be bound from `schemas/charts/chart-schema.json` by `chart.type`
+- real exported empty states such as `globalUnit: []`, `legendValues: ""`, `compareType: ""`, `timeInterval: ""`, and `maxPointCount: null` are valid
+- map palette enums should follow real exported values such as `rangeColorKey: "blue"` when confirmed by the sample
+- topology color settings may appear as an empty object
+- content-style charts such as `text`, `video`, and `command` should carry `query.content` when they emit query payloads
+
+Do not weaken schemas arbitrarily. Relax only the shapes confirmed by real Guance exports or by stable converter output already accepted by product.
 
 ### Variables
 
@@ -133,7 +151,13 @@ npm run validate:file -- ./output/guance-dashboard.json
 ```
 
 7. Run `npm test` to verify the bundled standalone fixture still converts and validates cleanly.
-8. If the behavior itself is wrong, patch the standalone files under `scripts/` directly instead of relying on repository sync/build flows.
+8. If schema work is involved, also validate the real export sample:
+
+```bash
+npm run validate:file -- ./test/guance-all-charts.json
+```
+
+9. If the behavior itself is wrong, patch the standalone files under `scripts/` directly instead of relying on repository sync/build flows.
 
 ## Audit Prompts
 
@@ -207,6 +231,12 @@ The standalone script attempts to convert:
   - `textMode`
   - `reduceCalcs`
   - `gaugeMode`
+
+`levels` are chart-type specific in the current standalone contract:
+
+- `gauge` -> `{ value: [number], lineColor, operation: "<=" }`
+- `singlestat` -> `{ value: [...], bgColor, fontColor, operation }`
+- most other supported threshold-style charts -> `{ title, value, bgColor }`
 
 This is heuristic conversion. For plugin-specific panels, validate the generated JSON and then refine the script with a real sample.
 

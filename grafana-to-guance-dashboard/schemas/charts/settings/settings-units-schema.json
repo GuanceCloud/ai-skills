@@ -4,9 +4,6 @@
     "title": "ChartUnitsSettings",
     "description": "图表单位配置完整结构。",
     "type": "object",
-    "required": [
-        "unitType"
-    ],
     "properties": {
         "unitType": {
             "type": "string",

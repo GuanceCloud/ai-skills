@@ -1,0 +1,68 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-change-settings-schema.json",
+    "title": "ChartChangeSettings",
+    "description": "变化图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "levels": {
+                    "$ref": "settings-levels-schema.json"
+                },
+                "calcType": {
+                    "type": "string",
+                    "enum": [
+                        "absolute",
+                        "relative"
+                    ],
+                    "description": "变化值计算方式"
+                },
+                "queryCodes": {
+                    "type": "array",
+                    "description": "参与变化图计算的查询 code",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "colorScheme": {
+                    "type": "integer",
+                    "description": "颜色方案"
+                },
+                "legendPosition": {
+                    "type": "string",
+                    "enum": [
+                        "left",
+                        "right",
+                        "top",
+                        "bottom",
+                        "none"
+                    ],
+                    "description": "图例位置"
+                },
+                "legendIncludeBaseValue": {
+                    "type": "boolean",
+                    "description": "图例中是否包含基准值"
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": false
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        }
+    ]
+}

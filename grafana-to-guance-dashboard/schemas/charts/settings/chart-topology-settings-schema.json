@@ -30,11 +30,6 @@
         "color": {
             "type": "object",
             "description": "颜色配置",
-            "required": [
-                "key",
-                "min",
-                "max"
-            ],
             "properties": {
                 "key": {
                     "type": "string",

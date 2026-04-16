@@ -44,6 +44,13 @@ The skill directory now includes its own:
 10. Produce a concise conversion report for the user.
 11. Only inspect older repository converters if the user explicitly asks to compare outputs or port behavior.
 
+Schema maintenance follows these defaults:
+
+- treat `test/guance-all-charts.json` as the baseline real Guance export sample
+- when a local schema disagrees with that sample, first decide whether the schema is too strict before changing converter output
+- prefer binding `chart.type -> extend.settings` in `schemas/charts/chart-schema.json` whenever a dedicated settings schema exists
+- prefer allowing explicit empty or null states that appear in real exports, instead of rejecting them just because they are unset
+
 ## LLM Responsibilities
 
 Use the model for the parts that the deterministic converter cannot do reliably on its own.
@@ -459,6 +466,7 @@ Only touch repository-level converters or build scripts when the user explicitly
 - Complex transformations and non-standard datasource payloads may still need manual cleanup.
 - Standalone validation depends on installing the skill-local `package.json` dependencies.
 - The bundled tests cover conversion plus schema validation for the bundled fixture dashboard.
+- The bundled tests also validate `test/guance-all-charts.json` as a real export compatibility sample.
 - LLM-based audit and repair suggestions are heuristic; confirm proposed fixes against a real dashboard sample and schema validation.
 - LLM-based unit inference and PromQL compatibility advice should be treated as guided review, not silent truth, unless confidence is high.
 
@@ -468,8 +476,11 @@ When conversion fails or output is incomplete, read [references/converter-notes.
 
 - Only change schemas when the generated Guance JSON is valid real data but the schema is too strict.
 - Prefer changing the standalone converter before relaxing schemas.
+- Prefer relaxing schemas only for shapes confirmed by a real Guance export sample or stable product output.
 - Prefer validating the concrete output file first:
   - `npm run validate:file -- ./output/guance-dashboard.json`
+- When schema work is involved, also validate:
+  - `npm run validate:file -- ./test/guance-all-charts.json`
 - For substantial converter changes, also run:
   - `npm test`
 - When adding support for a new Grafana panel type, update the standalone script's panel type map first, then validate an example dashboard.
@@ -483,6 +494,7 @@ When conversion fails or output is incomplete, read [references/converter-notes.
 - Default to the standalone converter shipped in this skill.
 - Keep all conversion logic needed by the skill inside `scripts/`.
 - Keep validation schemas needed by the skill inside `schemas/`.
+- Keep the local schemas aligned with both converter output and the real export sample `test/guance-all-charts.json`.
 - Keep smoke-test inputs and regression tests inside this skill directory.
 - Do not make the skill depend on `lib/scripts/*`, sync steps, root-level schemas, repository fixtures, or build steps for normal use.
 - If behavior is duplicated elsewhere in the repository, treat that as optional follow-up work, not part of the default skill workflow.

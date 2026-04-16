@@ -58,8 +58,7 @@
                 },
                 "mainMeasurementQueryCode": {
                     "type": "string",
-                    "description": "主指标对应的code 名称，在时序图中固定为 A",
-                    "const": "A"
+                    "description": "主指标对应的code 名称"
                 }
             }
         },

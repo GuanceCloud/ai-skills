@@ -44,9 +44,11 @@ const PROMQL_RESERVED_WORDS = new Set([
 ]);
 const UNIT_MAP = {
     percent: ['percent', 'percent'],
+    percentunit: ['percent', 'percent_decimal'],
     bytes: ['digital', 'B'],
     decbytes: ['digital', 'B'],
     bits: ['digital', 'b'],
+    decbits: ['digital', 'b'],
     deckbytes: ['digital', 'KB'],
     decgbytes: ['digital', 'GB'],
     ms: ['time', 'ms'],
@@ -54,10 +56,16 @@ const UNIT_MAP = {
     m: ['time', 'min'],
     h: ['time', 'h'],
     d: ['time', 'd'],
-    short: ['custom', 'short'],
+    short: ['number', 'short_scale'],
     none: ['custom', 'none'],
-    reqps: ['custom', 'reqps'],
-    ops: ['custom', 'ops'],
+    reqps: ['throughput', 'reqps'],
+    ops: ['throughput', 'ops'],
+    iops: ['throughput', 'iops'],
+    bps: ['bandWidth', 'bps'],
+    Bps: ['traffic', 'B/S'],
+    hertz: ['frequency', 'Hz'],
+    rotrpm: ['frequency', 'rpm'],
+    celsius: ['temperature', 'C'],
 };
 const COMPARE_OPTIONS = {
     hourCompare: { label: '小时同比', value: 'hourCompare' },
@@ -255,7 +263,7 @@ function convertPanel(panel, groupName, rowPanel, variableNames, options) {
         return null;
     }
     const queries = buildQueries(panel, chartType, variableNames, options);
-    const settings = buildSettings(panel, chartType, queries, variableNames);
+    const settings = buildSettings(panel, chartType, queries, variableNames, options);
     const links = extractPanelLinks(panel, variableNames);
     const group = groupName !== null && groupName !== void 0 ? groupName : null;
     const position = buildPosition(panel, rowPanel);
@@ -302,13 +310,14 @@ function buildQueries(panel, chartType, variableNames, options = {}) {
     const targets = Array.isArray(panel.targets) ? panel.targets : [];
     for (let index = 0; index < targets.length; index++) {
         const target = targets[index];
+        const targetAlias = normalizeQueryAlias(target.legendFormat || target.alias || '');
         const queryText = sanitizeTargetQuery(extractTargetQuery(target), options);
         if (!queryText)
             continue;
         const qtype = inferQueryLanguage(target, queryText);
         const normalizedQueryText = normalizeTargetQuery(queryText, qtype, options);
         queries.push(pruneEmpty({
-            name: target.legendFormat || target.alias || '',
+            name: targetAlias || undefined,
             type: chartType,
             qtype,
             datasource: 'dataflux',
@@ -318,7 +327,6 @@ function buildQueries(panel, chartType, variableNames, options = {}) {
                 code: normalizeQueryCode(target.refId, index),
                 type: qtype,
                 promqlCode: qtype === 'promql' ? index + 1 : undefined,
-                alias: target.legendFormat || target.alias || '',
                 field: target.field || undefined,
             },
             extend: pruneEmpty({
@@ -338,14 +346,15 @@ function buildQueries(panel, chartType, variableNames, options = {}) {
     }
     return queries;
 }
-function buildSettings(panel, chartType, queries, variableNames) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+function buildSettings(panel, chartType, queries, variableNames, converterOptions = {}) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
     const defaults = ((_a = panel.fieldConfig) === null || _a === void 0 ? void 0 : _a.defaults) || {};
     const custom = defaults.custom || {};
     const options = panel.options || {};
     const legend = options.legend || panel.legend || {};
     const transformationInfo = parseTransformations(panel.transformations || []);
-    const aliases = buildAliases(queries);
+    const aliasInfo = buildAliases(queries, panel.fieldConfig, variableNames);
+    const aliases = aliasInfo.items;
     const tableColumns = buildTableColumns(panel.fieldConfig, transformationInfo.organize, variableNames);
     const fieldOverrides = buildFieldOverrides(panel.fieldConfig, variableNames);
     const legacyGauge = panel.gauge || {};
@@ -380,6 +389,12 @@ function buildSettings(panel, chartType, queries, variableNames) {
     const valColorMappings = buildValColorMappings(panel.fieldConfig, transformationInfo.organize);
     const effectiveUnitType = customUnits.length ? 'custom' : unit ? 'global' : undefined;
     const slimit = inferSeriesLimit(queries, options, chartType);
+    const levelFontColor = normalizeColor(firstDefined((_q = defaults.color) === null || _q === void 0 ? void 0 : _q.fixedColor, ''));
+    const levels = buildLevels(defaults.thresholds, chartType, {
+        min,
+        max,
+        fontColor: levelFontColor,
+    });
     const settings = {
         showTitle: true,
         titleDesc: panel.description || '',
@@ -392,7 +407,7 @@ function buildSettings(panel, chartType, queries, variableNames) {
         precision: typeof precision === 'number' ? String(precision) : '2',
         timeInterval: normalizeTimeInterval(firstDefined(panel.interval, (_k = (_j = panel.targets) === null || _j === void 0 ? void 0 : _j.find((item) => item.interval)) === null || _k === void 0 ? void 0 : _k.interval, 'auto')),
         fixedTime: panel.timeFrom || '',
-        maxPointCount: (_l = panel.maxDataPoints) !== null && _l !== void 0 ? _l : null,
+        maxPointCount: (_l = panel.maxDataPoints) !== null && _l !== void 0 ? _l : undefined,
         showLegend: legend.showLegend,
         legendPostion: mapLegendPlacement(legend.placement),
         legendValues,
@@ -410,7 +425,7 @@ function buildSettings(panel, chartType, queries, variableNames) {
         units: customUnits.length ? customUnits : undefined,
         colors: customColors.length ? customColors : undefined,
         colorMappings: colorMappings.length ? colorMappings : undefined,
-        levels: buildLevels(defaults.thresholds),
+        levels,
         slimit,
         mappings: mappingItems,
         alias: aliases,
@@ -436,9 +451,9 @@ function buildSettings(panel, chartType, queries, variableNames) {
         scientificNotation: unit === 'short' ? true : undefined,
         mainMeasurementQueryCode: ((_p = (_o = queries[0]) === null || _o === void 0 ? void 0 : _o.query) === null || _p === void 0 ? void 0 : _p.code) || undefined,
         mainMeasurementLimit: chartType === 'pie' ? extractReduceLimit(options) : undefined,
-        color: ((_q = defaults.color) === null || _q === void 0 ? void 0 : _q.fixedColor) || undefined,
-        fontColor: options.colorMode === 'value' ? (_r = defaults.color) === null || _r === void 0 ? void 0 : _r.fixedColor : undefined,
-        bgColor: options.colorMode === 'background' ? (_s = defaults.color) === null || _s === void 0 ? void 0 : _s.fixedColor : undefined,
+        color: ((_r = defaults.color) === null || _r === void 0 ? void 0 : _r.fixedColor) || undefined,
+        fontColor: options.colorMode === 'value' ? (_s = defaults.color) === null || _s === void 0 ? void 0 : _s.fixedColor : undefined,
+        bgColor: options.colorMode === 'background' ? (_t = defaults.color) === null || _t === void 0 ? void 0 : _t.fixedColor : undefined,
         sequenceChartType: chartType === 'singlestat' && graphMode ? inferSequenceChartType(panel, graphMode) : undefined,
         showLineAxis: chartType === 'singlestat' ? graphMode !== 'none' : undefined,
         repeatChartVariable: typeof panel.repeat === 'string' && panel.repeat && variableNames.has(panel.repeat) ? panel.repeat : undefined,
@@ -472,13 +487,13 @@ function buildSettings(panel, chartType, queries, variableNames) {
             drawStyle: custom.drawStyle || undefined,
             lineStyle: custom.lineStyle || undefined,
             spanNulls: custom.spanNulls,
-            stackingGroup: ((_t = custom.stacking) === null || _t === void 0 ? void 0 : _t.group) || undefined,
+            stackingGroup: ((_u = custom.stacking) === null || _u === void 0 ? void 0 : _u.group) || undefined,
             graphMode,
             colorMode: options.colorMode || undefined,
-            fieldColorMode: ((_u = defaults.color) === null || _u === void 0 ? void 0 : _u.mode) || undefined,
-            fixedColor: ((_v = defaults.color) === null || _v === void 0 ? void 0 : _v.fixedColor) || undefined,
-            thresholdsMode: ((_w = defaults.thresholds) === null || _w === void 0 ? void 0 : _w.mode) || undefined,
-            thresholdsStyleMode: ((_x = custom.thresholdsStyle) === null || _x === void 0 ? void 0 : _x.mode) || undefined,
+            fieldColorMode: ((_v = defaults.color) === null || _v === void 0 ? void 0 : _v.mode) || undefined,
+            fixedColor: ((_w = defaults.color) === null || _w === void 0 ? void 0 : _w.fixedColor) || undefined,
+            thresholdsMode: ((_x = defaults.thresholds) === null || _x === void 0 ? void 0 : _x.mode) || undefined,
+            thresholdsStyleMode: ((_y = custom.thresholdsStyle) === null || _y === void 0 ? void 0 : _y.mode) || undefined,
             textMode: options.textMode || legacyTextMode,
             reduceCalcs: Array.isArray(reduceOptions.calcs) ? reduceOptions.calcs : undefined,
             reduceFields: reduceOptions.fields || undefined,
@@ -516,25 +531,98 @@ function buildSettings(panel, chartType, queries, variableNames) {
             : undefined,
         text: textInfo || undefined,
         tableColumns: chartType === 'table' && tableColumns.length ? tableColumns : undefined,
-        fieldOverrides: fieldOverrides.length ? fieldOverrides : undefined,
-        transformations: transformationInfo.normalized.length ? transformationInfo.normalized : undefined,
-        fieldFilterPattern: transformationInfo.fieldFilterPattern || undefined,
-        valueFilters: transformationInfo.valueFilters.length ? transformationInfo.valueFilters : undefined,
+        fieldOverrides: converterOptions.keepGrafanaMeta && fieldOverrides.length ? fieldOverrides : undefined,
+        transformations: converterOptions.keepGrafanaMeta && transformationInfo.normalized.length ? transformationInfo.normalized : undefined,
+        fieldFilterPattern: converterOptions.keepGrafanaMeta ? transformationInfo.fieldFilterPattern || undefined : undefined,
+        valueFilters: converterOptions.keepGrafanaMeta && transformationInfo.valueFilters.length ? transformationInfo.valueFilters : undefined,
         layout: pruneEmpty({
             repeatDirection: panel.repeatDirection || undefined,
         }),
+        aliasReview: converterOptions.keepGrafanaMeta ? aliasInfo.review : undefined,
     });
     return pruneEmpty(settings);
 }
-function buildLevels(thresholds) {
+function buildLevels(thresholds, chartType, options = {}) {
+    if (chartType === 'gauge') {
+        return buildGaugeLevels(thresholds, options.max);
+    }
+    if (chartType === 'singlestat') {
+        return buildSinglestatLevels(thresholds, options.fontColor);
+    }
+    return buildGenericLevels(thresholds);
+}
+function buildGenericLevels(thresholds) {
     const steps = Array.isArray(thresholds === null || thresholds === void 0 ? void 0 : thresholds.steps) ? thresholds.steps : [];
     return steps
-        .filter((step) => typeof step.value === 'number' || typeof step.color === 'string')
+        .filter((step) => typeof normalizeLevelNumber(step.value) === 'number' || typeof step.color === 'string')
         .map((step, index) => ({
         title: `Level ${index + 1}`,
-        value: typeof step.value === 'number' ? step.value : 0,
+        value: normalizeLevelNumber(step.value) !== undefined ? normalizeLevelNumber(step.value) : 0,
         bgColor: normalizeColor(step.color),
     }));
+}
+function buildGaugeLevels(thresholds, max) {
+    const steps = Array.isArray(thresholds === null || thresholds === void 0 ? void 0 : thresholds.steps) ? thresholds.steps : [];
+    const levels = [];
+    for (let index = 0; index < steps.length; index++) {
+        const current = steps[index];
+        const next = steps[index + 1];
+        const nextValue = normalizeLevelNumber(next === null || next === void 0 ? void 0 : next.value);
+        const fallbackMax = normalizeLevelNumber(max);
+        const currentValue = normalizeLevelNumber(current === null || current === void 0 ? void 0 : current.value);
+        const upperBound = nextValue !== undefined ? nextValue : fallbackMax !== undefined ? fallbackMax : currentValue;
+        if (upperBound === undefined)
+            continue;
+        levels.push(pruneEmpty({
+            value: [upperBound],
+            lineColor: normalizeColor(current === null || current === void 0 ? void 0 : current.color),
+            operation: '<=',
+        }));
+    }
+    return levels;
+}
+function buildSinglestatLevels(thresholds, fontColor) {
+    const steps = Array.isArray(thresholds === null || thresholds === void 0 ? void 0 : thresholds.steps) ? thresholds.steps : [];
+    const levels = [];
+    for (let index = 0; index < steps.length; index++) {
+        const current = steps[index];
+        const next = steps[index + 1];
+        const currentValue = normalizeLevelNumber(current === null || current === void 0 ? void 0 : current.value);
+        const nextValue = normalizeLevelNumber(next === null || next === void 0 ? void 0 : next.value);
+        const color = normalizeColor(current === null || current === void 0 ? void 0 : current.color);
+        if (currentValue === undefined && nextValue === undefined)
+            continue;
+        if (currentValue === undefined && nextValue !== undefined) {
+            levels.push({
+                value: [nextValue],
+                bgColor: color,
+                fontColor: fontColor || color,
+                operation: '<',
+            });
+            continue;
+        }
+        if (currentValue !== undefined && nextValue !== undefined) {
+            levels.push({
+                value: [currentValue, nextValue],
+                bgColor: color,
+                fontColor: fontColor || color,
+                operation: 'between',
+            });
+            continue;
+        }
+        levels.push({
+            value: [currentValue],
+            bgColor: color,
+            fontColor: fontColor || color,
+            operation: '>=',
+        });
+    }
+    return levels;
+}
+function normalizeLevelNumber(value) {
+    if (typeof value !== 'number' || !Number.isFinite(value))
+        return undefined;
+    return Math.round(value);
 }
 function buildMappings(mappings) {
     var _a;
@@ -653,14 +741,119 @@ function buildTableColumns(fieldConfig, organize, variableNames = new Set()) {
     }
     return finalizeTableColumns([...columns.values()]);
 }
-function buildAliases(queries) {
-    return queries
-        .filter((query) => { var _a; return (_a = query.query) === null || _a === void 0 ? void 0 : _a.alias; })
-        .map((query) => ({
-        alias: query.query.alias,
-        key: query.query.code || query.name || '',
-        name: query.query.code || query.name || '',
-    }));
+function buildAliases(queries, fieldConfig, variableNames = new Set()) {
+    const aliases = [];
+    const seen = new Set();
+    const review = [];
+    const queryAliasTargets = buildQueryAliasTargets(queries);
+    for (const queryAliasTarget of queryAliasTargets) {
+        if (!queryAliasTarget.alias)
+            continue;
+        const aliasItem = pruneEmpty({
+            alias: queryAliasTarget.alias,
+            key: queryAliasTarget.key,
+            name: queryAliasTarget.name,
+            queryCode: queryAliasTarget.queryCode,
+        });
+        pushAliasItem(aliases, seen, aliasItem);
+        pushAliasReviewItem(review, aliasItem.alias, aliasItem.key);
+    }
+    const overrides = Array.isArray(fieldConfig === null || fieldConfig === void 0 ? void 0 : fieldConfig.overrides) ? fieldConfig.overrides : [];
+    for (const override of overrides) {
+        const matcherId = String((override === null || override === void 0 ? void 0 : override.matcher) && override.matcher.id || '');
+        const matcherOptions = String((override === null || override === void 0 ? void 0 : override.matcher) && override.matcher.options || '').trim();
+        if (matcherId !== 'byName' || !matcherOptions)
+            continue;
+        for (const property of Array.isArray(override === null || override === void 0 ? void 0 : override.properties) ? override.properties : []) {
+            if (!['displayName', 'displayNameFromDS'].includes(property === null || property === void 0 ? void 0 : property.id))
+                continue;
+            if (typeof property.value !== 'string' || !property.value.trim())
+                continue;
+            const aliasItem = {
+                alias: replaceVariables(property.value, variableNames),
+                key: matcherOptions,
+                name: matcherOptions,
+            };
+            pushAliasItem(aliases, seen, aliasItem);
+            pushAliasReviewItem(review, aliasItem.alias, aliasItem.key);
+        }
+    }
+    return {
+        items: aliases,
+        review: review.length ? review : undefined,
+    };
+}
+function pushAliasItem(aliases, seen, aliasItem) {
+    const normalized = pruneEmpty(aliasItem);
+    if (!(normalized === null || normalized === void 0 ? void 0 : normalized.alias) || !(normalized === null || normalized === void 0 ? void 0 : normalized.key) || !(normalized === null || normalized === void 0 ? void 0 : normalized.name))
+        return;
+    const key = JSON.stringify(normalized);
+    if (seen.has(key))
+        return;
+    seen.add(key);
+    aliases.push(normalized);
+}
+function buildQueryAliasTargets(queries) {
+    const targets = [];
+    for (let index = 0; index < (Array.isArray(queries) ? queries : []).length; index++) {
+        const query = queries[index];
+        const alias = normalizeQueryAlias((query === null || query === void 0 ? void 0 : query.name) || '');
+        if (!alias)
+            continue;
+        const queryInfo = (query === null || query === void 0 ? void 0 : query.query) || {};
+        const qtype = typeof (query === null || query === void 0 ? void 0 : query.qtype) === 'string' ? query.qtype : 'query';
+        const queryCode = typeof queryInfo.code === 'string' ? queryInfo.code : '';
+        const key = buildAliasSeriesKey(qtype, queryInfo, index);
+        targets.push({
+            alias,
+            key,
+            name: key,
+            queryCode: queryCode || undefined,
+        });
+    }
+    return targets;
+}
+function buildAliasSeriesKey(qtype, queryInfo, index) {
+    const normalizedType = typeof qtype === 'string' && qtype.trim() ? qtype.trim() : 'query';
+    if (normalizedType === 'promql') {
+        const promqlCode = Number.isInteger(queryInfo === null || queryInfo === void 0 ? void 0 : queryInfo.promqlCode) ? queryInfo.promqlCode : index + 1;
+        return `promql_${promqlCode}`;
+    }
+    return `${normalizedType}_${index + 1}`;
+}
+function normalizeQueryAlias(value) {
+    const alias = String(value || '').trim();
+    if (!alias || alias === '__auto')
+        return '';
+    return alias;
+}
+function pushAliasReviewItem(review, alias, key) {
+    const normalizedAlias = String(alias || '').trim();
+    const normalizedKey = String(key || '').trim();
+    if (!normalizedAlias || !normalizedKey)
+        return;
+    const classification = classifyAliasTemplate(normalizedAlias);
+    if (classification === 'safe_fixed')
+        return;
+    const item = {
+        alias: normalizedAlias,
+        key: normalizedKey,
+        classification,
+    };
+    const serialized = JSON.stringify(item);
+    if (review.some((current) => JSON.stringify(current) === serialized))
+        return;
+    review.push(item);
+}
+function classifyAliasTemplate(alias) {
+    if (!alias.includes('{{'))
+        return 'safe_fixed';
+    const tokens = [...alias.matchAll(/\{\{\s*([^}]+?)\s*\}\}/g)].map((match) => match[1].trim());
+    if (tokens.length === 0)
+        return 'safe_fixed';
+    if (tokens.every((token) => token === 'host' || token === 'tags'))
+        return 'safe_guance';
+    return 'compat_grafana_template';
 }
 function buildCustomUnits(fieldConfig) {
     var _a;
@@ -1679,10 +1872,11 @@ function normalizeConnectNulls(value) {
 function mapUnit(unit) {
     if (!unit)
         return [];
-    const mapped = UNIT_MAP[String(unit).toLowerCase()];
+    const rawUnit = String(unit);
+    const mapped = UNIT_MAP[rawUnit] || UNIT_MAP[rawUnit.toLowerCase()];
     if (mapped)
         return mapped;
-    return ['custom', String(unit)];
+    return ['custom', rawUnit];
 }
 function buildLegacyValueMappings(valueMaps) {
     if (!Array.isArray(valueMaps))

@@ -1,0 +1,3415 @@
+{
+  "title": "全图表",
+  "dashboardType": "CUSTOM",
+  "dashboardExtend": {},
+  "dashboardMapping": [],
+  "dashboardOwnerType": "node",
+  "iconSet": {},
+  "dashboardBindSet": [],
+  "thumbnail": "",
+  "tagInfo": [],
+  "summary": "",
+  "main": {
+    "vars": [
+      {
+        "name": "a",
+        "seq": 0,
+        "datasource": "object",
+        "code": "a",
+        "type": "FIELD",
+        "definition": {
+          "tag": "",
+          "field": "region",
+          "value": "",
+          "metric": "",
+          "object": "HOST",
+          "defaultVal": {
+            "label": "*",
+            "value": "*"
+          }
+        },
+        "valueSort": "asc",
+        "hide": 0,
+        "isHiddenAsterisk": 0,
+        "multiple": true,
+        "includeStar": true,
+        "extend": {
+          "starMeaning": "*"
+        }
+      },
+      {
+        "name": "host",
+        "seq": 1,
+        "datasource": "dataflux",
+        "code": "host",
+        "type": "QUERY",
+        "definition": {
+          "tag": "",
+          "field": "",
+          "value": "L('default')::RE(`.*`):(field_values(`host`)) LIMIT 50",
+          "metric": "",
+          "object": "",
+          "defaultVal": {
+            "label": "192.168.0.230",
+            "value": "192.168.0.230"
+          }
+        },
+        "valueSort": "asc",
+        "hide": 0,
+        "isHiddenAsterisk": 0,
+        "multiple": true,
+        "includeStar": true,
+        "extend": {
+          "starMeaning": "*"
+        }
+      },
+      {
+        "name": "b",
+        "seq": 2,
+        "datasource": "dataflux",
+        "code": "b",
+        "type": "PROMQL_QUERY",
+        "definition": {
+          "tag": "",
+          "field": "",
+          "value": "avg(cpu:load5s)",
+          "metric": "",
+          "object": "",
+          "defaultVal": {
+            "label": "",
+            "value": ""
+          }
+        },
+        "valueSort": "asc",
+        "hide": 0,
+        "isHiddenAsterisk": 0,
+        "multiple": true,
+        "includeStar": true,
+        "extend": {
+          "starMeaning": "*"
+        }
+      }
+    ],
+    "charts": [
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "lineType": "linear",
+            "showLine": false,
+            "unitType": "global",
+            "chartType": "line",
+            "fixedTime": "",
+            "isPercent": false,
+            "openStack": false,
+            "precision": "2",
+            "showLabel": false,
+            "showTitle": true,
+            "stackType": "time",
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "compareType": [],
+            "openCompare": false,
+            "yAxixMaxVal": null,
+            "yAxixMinVal": null,
+            "connectNulls": true,
+            "legendValues": "",
+            "timeInterval": "auto",
+            "legendPostion": "none",
+            "maxPointCount": null,
+            "sorderByOrder": "desc",
+            "xAxisShowType": "time",
+            "isCombineChart": false,
+            "isTimeInterval": true,
+            "changeWorkspace": false,
+            "openRepeatChart": false,
+            "currentChartType": "sequence",
+            "showFieldMapping": false,
+            "onlyShowGroupName": false,
+            "scientificNotation": true,
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "yAxixOpenIncludeZero": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": null
+        },
+        "chartGroupUUID": "default",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 0,
+          "y": 0
+        },
+        "type": "sequence",
+        "queries": [
+          {
+            "name": "",
+            "type": "sequence",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) { `host` = '#{host}' }",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [
+                {
+                  "id": "1df9dbc0-28bd-11f1-86ed-5da2e1626d15",
+                  "op": "=",
+                  "name": "host",
+                  "type": "keyword",
+                  "logic": "and",
+                  "value": "#{host}",
+                  "values": []
+                }
+              ],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": null,
+        "uuid": "chrt_539973fa51764e26aa16a29493d7f6a1"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "lineType": "linear",
+            "showLine": false,
+            "unitType": "global",
+            "chartType": "areaLine",
+            "fixedTime": "",
+            "isPercent": false,
+            "openStack": false,
+            "precision": "2",
+            "showLabel": false,
+            "showTitle": true,
+            "stackType": "time",
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "compareType": [],
+            "openCompare": false,
+            "yAxixMaxVal": null,
+            "yAxixMinVal": null,
+            "connectNulls": true,
+            "legendValues": "",
+            "timeInterval": "auto",
+            "legendPostion": "none",
+            "maxPointCount": null,
+            "sorderByOrder": "desc",
+            "xAxisShowType": "time",
+            "isCombineChart": false,
+            "isTimeInterval": true,
+            "changeWorkspace": false,
+            "openRepeatChart": false,
+            "currentChartType": "sequence",
+            "showFieldMapping": false,
+            "onlyShowGroupName": false,
+            "scientificNotation": true,
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "yAxixOpenIncludeZero": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": null
+        },
+        "chartGroupUUID": "default",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 9,
+          "y": 0
+        },
+        "type": "sequence",
+        "queries": [
+          {
+            "name": "",
+            "type": "sequence",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": null,
+        "uuid": "chrt_899f2efc882749f0a19dc7ad7b14fad0"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "lineType": "linear",
+            "showLine": false,
+            "unitType": "global",
+            "chartType": "bar",
+            "fixedTime": "",
+            "isPercent": false,
+            "openStack": false,
+            "precision": "2",
+            "showLabel": false,
+            "showTitle": true,
+            "stackType": "time",
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "compareType": [],
+            "openCompare": false,
+            "yAxixMaxVal": null,
+            "yAxixMinVal": null,
+            "connectNulls": true,
+            "legendValues": "",
+            "timeInterval": "auto",
+            "legendPostion": "none",
+            "maxPointCount": null,
+            "sorderByOrder": "desc",
+            "xAxisShowType": "time",
+            "isCombineChart": false,
+            "isTimeInterval": true,
+            "changeWorkspace": false,
+            "openRepeatChart": false,
+            "currentChartType": "sequence",
+            "showFieldMapping": false,
+            "onlyShowGroupName": false,
+            "scientificNotation": true,
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "yAxixOpenIncludeZero": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 0,
+          "y": 0
+        },
+        "type": "sequence",
+        "queries": [
+          {
+            "name": "",
+            "type": "sequence",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`))",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_08ecccfe26a94d1980efeca934f6c7c5"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "topSize": 10,
+            "showLine": false,
+            "unitType": "global",
+            "direction": "vertical",
+            "fixedTime": "",
+            "openStack": false,
+            "precision": "2",
+            "showTitle": true,
+            "stackType": "time",
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "openCompare": false,
+            "showTopSize": false,
+            "xAxixMaxVal": null,
+            "xAxixMinVal": null,
+            "yAxixMaxVal": null,
+            "yAxixMinVal": null,
+            "stackContent": "group",
+            "timeInterval": "auto",
+            "xAxisShowType": "groupBy",
+            "isCombineChart": false,
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "openRepeatChart": false,
+            "currentChartType": "bar",
+            "showFieldMapping": false,
+            "xAxisLabelRotate": 0,
+            "showTopWithMetric": "",
+            "scientificNotation": true,
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 8,
+          "y": 0
+        },
+        "type": "bar",
+        "queries": [
+          {
+            "name": "",
+            "type": "bar",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_987658df06294242940ef859b4e88040"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "topSize": 10,
+            "showLine": false,
+            "unitType": "global",
+            "direction": "horizontal",
+            "fixedTime": "",
+            "openStack": false,
+            "precision": "2",
+            "showTitle": true,
+            "stackType": "time",
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "openCompare": false,
+            "showTopSize": false,
+            "xAxixMaxVal": null,
+            "xAxixMinVal": null,
+            "yAxixMaxVal": null,
+            "yAxixMinVal": null,
+            "stackContent": "group",
+            "timeInterval": "auto",
+            "xAxisShowType": "groupBy",
+            "isCombineChart": false,
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "openRepeatChart": false,
+            "currentChartType": "bar",
+            "showFieldMapping": false,
+            "xAxisLabelRotate": 0,
+            "showTopWithMetric": "",
+            "scientificNotation": true,
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 0,
+          "y": 10
+        },
+        "type": "bar",
+        "queries": [
+          {
+            "name": "",
+            "type": "bar",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_ed7ecef1f9c94b648f4d948092a21938"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "bar": {
+              "direction": "horizontal",
+              "xAxisShowType": "groupBy"
+            },
+            "alias": [],
+            "color": "",
+            "table": {
+              "queryMode": "toGroupColumn"
+            },
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "topSize": 10,
+            "unitType": "global",
+            "chartType": "bar",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "openCompare": false,
+            "showTopSize": true,
+            "timeInterval": "auto",
+            "showTableHead": true,
+            "tableSortType": "top",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "openRepeatChart": false,
+            "showFieldMapping": false,
+            "scientificNotation": true,
+            "mainMeasurementSort": "top",
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "tableSortMetricName": "",
+            "mainMeasurementLimit": 20,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 9,
+          "y": 10
+        },
+        "type": "toplist",
+        "queries": [
+          {
+            "name": "",
+            "type": "toplist",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_22dd66f368ef4d85966c09c86dc7b5e2"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "unitType": "global",
+            "chartType": "customized",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "otherColor": "#F56610",
+            "timeInterval": "auto",
+            "legendPostion": "bottom",
+            "isCombineChart": false,
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "legendValueOpen": true,
+            "openRepeatChart": false,
+            "currentChartType": "pie",
+            "showFieldMapping": false,
+            "onlyShowGroupName": false,
+            "scientificNotation": true,
+            "mainMeasurementSort": "top",
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "mainMeasurementLimit": 20,
+            "legendValuePercentOpen": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "chartCombineDefaultColor": "#F56610",
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 0,
+          "y": 20
+        },
+        "type": "pie",
+        "queries": [
+          {
+            "name": "",
+            "type": "pie",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_eeb1a61d0fd44a948ca1f20812387dfe"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "unitType": "global",
+            "chartType": "doughnut",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "otherColor": "#F56610",
+            "timeInterval": "auto",
+            "legendPostion": "bottom",
+            "isCombineChart": false,
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "legendValueOpen": true,
+            "openRepeatChart": false,
+            "currentChartType": "pie",
+            "showFieldMapping": false,
+            "onlyShowGroupName": false,
+            "scientificNotation": true,
+            "mainMeasurementSort": "top",
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "mainMeasurementLimit": 20,
+            "legendValuePercentOpen": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "chartCombineDefaultColor": "#F56610",
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 10,
+          "x": 8,
+          "y": 20
+        },
+        "type": "pie",
+        "queries": [
+          {
+            "name": "",
+            "type": "pie",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_8519d8a730b249cf96d3ed779962ae36"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "unitType": "global",
+            "chartType": "pie",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "otherColor": "#F56610",
+            "timeInterval": "auto",
+            "legendPostion": "bottom",
+            "isCombineChart": false,
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "legendValueOpen": true,
+            "openRepeatChart": false,
+            "currentChartType": "pie",
+            "showFieldMapping": false,
+            "onlyShowGroupName": false,
+            "scientificNotation": true,
+            "mainMeasurementSort": "top",
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "mainMeasurementLimit": 20,
+            "legendValuePercentOpen": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "chartCombineDefaultColor": "#F56610",
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 0,
+          "y": 30
+        },
+        "type": "pie",
+        "queries": [
+          {
+            "name": "",
+            "type": "pie",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_ade3526038bd469fafc98a54faea73b3"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "bgColor": "",
+            "mappings": [],
+            "showLine": false,
+            "unitType": "global",
+            "fixedTime": "",
+            "fontColor": "",
+            "lineColor": "#3AB8FF",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "downsample": "last",
+            "globalUnit": [],
+            "isSampling": true,
+            "compareType": "",
+            "openCompare": false,
+            "showLineAxis": false,
+            "timeInterval": "auto",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "openRepeatChart": false,
+            "showFieldMapping": false,
+            "sequenceChartType": "line",
+            "scientificNotation": true,
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 10,
+          "x": 8,
+          "y": 30
+        },
+        "type": "singlestat",
+        "queries": [
+          {
+            "name": "",
+            "type": "singlestat",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`))",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_fae7fbfd869e43f387882047c5f66457"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "pageSize": 0,
+            "unitType": "global",
+            "fixedTime": "",
+            "precision": "2",
+            "queryMode": "toGroupColumn",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "pageEnable": false,
+            "showColumns": [],
+            "valMappings": [],
+            "timeInterval": "auto",
+            "isCombineChart": false,
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "openRepeatChart": false,
+            "currentChartType": "table",
+            "showFieldMapping": false,
+            "valColorMappings": [],
+            "scientificNotation": true,
+            "mainMeasurementSort": "top",
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "mainMeasurementField": "avg(load5s)",
+            "mainMeasurementLimit": 20,
+            "openThousandsSeparator": false,
+            "enablePreflightEstimate": false,
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 18,
+          "w": 12,
+          "x": 0,
+          "y": 40
+        },
+        "type": "table",
+        "queries": [
+          {
+            "name": "",
+            "type": "table",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": [
+                "load5s"
+              ],
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_d70b12ab825b491ab36606f9efa341d9"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "pageSize": 0,
+            "unitType": "global",
+            "fixedTime": "",
+            "precision": "2",
+            "queryMode": "toOneColumn",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "pageEnable": false,
+            "showColumns": [],
+            "valMappings": [],
+            "timeInterval": "auto",
+            "isCombineChart": false,
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "disableFuncList": true,
+            "openRepeatChart": false,
+            "currentChartType": "table",
+            "showFieldMapping": false,
+            "valColorMappings": [],
+            "scientificNotation": true,
+            "repeatChartRowLimit": 3,
+            "repeatChartVariable": "",
+            "openThousandsSeparator": false,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 18,
+          "w": 12,
+          "x": 12,
+          "y": 40
+        },
+        "type": "table",
+        "queries": [
+          {
+            "name": "",
+            "type": "table",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": [
+                "load5s"
+              ],
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_2b24f33f0e47478e802246f3d6f9d2f5"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "levelArr": [
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#AFE1F2",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#7DCBF0",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#5CAEE5",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#3E8FD6",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#216DC4",
+                "isAuto": true
+              }
+            ],
+            "unitType": "global",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "colorLevel": 5,
+            "globalUnit": [],
+            "isSampling": true,
+            "isVariable": false,
+            "showLegend": "none",
+            "provinceKey": "",
+            "showTopList": false,
+            "timeInterval": "auto",
+            "variableCode": "",
+            "rangeColorKey": "blue",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "currentChartType": "chinamap",
+            "showFieldMapping": false,
+            "scientificNotation": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 18,
+          "w": 12,
+          "x": 0,
+          "y": 58
+        },
+        "type": "chinamap",
+        "queries": [
+          {
+            "name": "",
+            "type": "chinamap",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_8f63a02709b34407945438c28884b898"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "levelArr": [
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#AFE1F2",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#7DCBF0",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#5CAEE5",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#3E8FD6",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#216DC4",
+                "isAuto": true
+              }
+            ],
+            "unitType": "global",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "colorLevel": 5,
+            "globalUnit": [],
+            "isSampling": true,
+            "isVariable": false,
+            "showLegend": "none",
+            "provinceKey": "",
+            "showTopList": false,
+            "timeInterval": "auto",
+            "variableCode": "",
+            "rangeColorKey": "blue",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "currentChartType": "worldmap",
+            "showFieldMapping": false,
+            "scientificNotation": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 18,
+          "w": 12,
+          "x": 12,
+          "y": 58
+        },
+        "type": "worldmap",
+        "queries": [
+          {
+            "name": "",
+            "type": "worldmap",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_55d42fd0ee63444f8206f442f814f7ca"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "xQuery": {
+              "name": "",
+              "index": null
+            },
+            "yQuery": {
+              "name": "",
+              "index": null
+            },
+            "unitType": "global",
+            "chartType": "",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "queryCodes": [
+              "A",
+              "B"
+            ],
+            "timeInterval": "auto",
+            "isTimeInterval": false,
+            "bubbleSizeQuery": {
+              "name": "",
+              "index": null
+            },
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "scientificNotation": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 0,
+          "y": 76
+        },
+        "type": "scatter",
+        "queries": [
+          {
+            "name": "",
+            "type": "scatter",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::ailyun_mail_push:(avg(`faild_count`))",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "faild_count",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "ailyun_mail_push",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          },
+          {
+            "name": "",
+            "type": "scatter",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::ailyun_sms_service:(avg(`noresponded_count`))",
+              "code": "B",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "noresponded_count",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "ailyun_sms_service",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_31542a91ef5340d880095e108d4803ce"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "xQuery": {
+              "name": "",
+              "index": null
+            },
+            "yQuery": {
+              "name": "",
+              "index": null
+            },
+            "unitType": "global",
+            "chartType": "",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "queryCodes": [
+              "A",
+              "B",
+              "C"
+            ],
+            "timeInterval": "auto",
+            "isTimeInterval": false,
+            "bubbleSizeQuery": {
+              "name": "",
+              "index": null
+            },
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "scientificNotation": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 9,
+          "y": 76
+        },
+        "type": "bubble",
+        "queries": [
+          {
+            "name": "",
+            "type": "bubble",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::ailyun_mail_push:(avg(`faild_count`))",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "faild_count",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "ailyun_mail_push",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          },
+          {
+            "name": "",
+            "type": "bubble",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::ailyun_acs_privatelink:(avg(`avg_eni_in_bps_5m`))",
+              "code": "B",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "avg_eni_in_bps_5m",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "ailyun_acs_privatelink",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          },
+          {
+            "name": "",
+            "type": "bubble",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::ailyun_mail_push:(avg(`faild_count`))",
+              "code": "C",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "faild_count",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "ailyun_mail_push",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_b17f4c22b2a24528b400323f12f3ca6f"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "unitType": "global",
+            "chartType": "histogram",
+            "direction": "vertical",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "yAxixType": "value",
+            "globalUnit": [],
+            "isSampling": true,
+            "xAxixMaxVal": null,
+            "xAxixMinVal": null,
+            "yAxixMaxVal": null,
+            "yAxixMinVal": null,
+            "timeInterval": "auto",
+            "legendPostion": "none",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "legendValueOpen": true,
+            "showFieldMapping": false,
+            "scientificNotation": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 0,
+          "y": 86
+        },
+        "type": "histogram",
+        "queries": [
+          {
+            "name": "",
+            "type": "histogram",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`))[:::avg]",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "rollup": "avg",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "auto",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_84ed16ae1d5a4dacbfda9221db2dbdda"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "levelArr": [],
+            "unitType": "global",
+            "fixedTime": "",
+            "precision": "2",
+            "showLabel": true,
+            "showTitle": true,
+            "titleDesc": "",
+            "colorLevel": 3,
+            "globalUnit": [],
+            "isSampling": true,
+            "rangeColor": "",
+            "showLegend": false,
+            "showPercent": false,
+            "timeInterval": "auto",
+            "rangeColorKey": "light-blue",
+            "isTimeInterval": false,
+            "showLabelValue": true,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "scientificNotation": true,
+            "mainMeasurementSort": "top",
+            "mainMeasurementLimit": 20,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 15.5,
+          "w": 8,
+          "x": 10,
+          "y": 86
+        },
+        "type": "treemap",
+        "queries": [
+          {
+            "name": "",
+            "type": "treemap",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_008783003d214b37ab107de5c6955641"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "levelArr": [
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#AFE1F2",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#7DCBF0",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#5CAEE5",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#3E8FD6",
+                "isAuto": true
+              },
+              {
+                "max": -1,
+                "min": -1,
+                "color": "#216DC4",
+                "isAuto": true
+              }
+            ],
+            "unitType": "global",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "colorLevel": 3,
+            "globalUnit": [],
+            "isSampling": true,
+            "rangeColor": "",
+            "showLegend": "bottom",
+            "timeInterval": "auto",
+            "rangeColorKey": "blue",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "currentChartType": "hexgon",
+            "showFieldMapping": false,
+            "scientificNotation": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 15.5,
+          "w": 8,
+          "x": 0,
+          "y": 96
+        },
+        "type": "hexgon",
+        "queries": [
+          {
+            "name": "",
+            "type": "hexgon",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_73af5ffb61eb4e15a83605dc574c2ad9"
+      },
+      {
+        "extend": {
+          "links": [
+            {
+              "url": "/logIndi/log/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "logging",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/docker_containers?routerTabActive=ObjectadminDocker&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "container",
+              "showChanged": false
+            },
+            {
+              "url": "/objectadmin/host_processes?routerTabActive=ObjectadminProcesses&time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "processes",
+              "showChanged": false
+            },
+            {
+              "url": "/tracing/link/all?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "tracing",
+              "showChanged": false
+            },
+            {
+              "url": "/scene/builtinview/detail?time=#{TR}&query=#{T}",
+              "open": "newWin",
+              "show": true,
+              "type": "host",
+              "showChanged": false
+            }
+          ],
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "slimit": 20,
+            "unitType": "global",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "yAxisType": "value",
+            "globalUnit": [],
+            "isSampling": true,
+            "showLegend": "bottom",
+            "yAxixMaxVal": null,
+            "yAxixMinVal": null,
+            "gradualColor": {
+              "type": "auto",
+              "levels": [],
+              "maxVal": null,
+              "minVal": null,
+              "colorKey": "interpolateYlOrBr",
+              "levelCount": 60
+            },
+            "timeInterval": "auto",
+            "maxPointCount": null,
+            "isTimeInterval": true,
+            "changeWorkspace": false,
+            "currentChartType": "heatmap",
+            "showFieldMapping": false,
+            "yAxixSplitNumber": null,
+            "scientificNotation": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false,
+            "mainMeasurementQueryCode": "A"
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test2"
+        },
+        "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
+        "name": "新建图表",
+        "pos": {
+          "h": 15.5,
+          "w": 8,
+          "x": 10,
+          "y": 101.5
+        },
+        "type": "heatmap",
+        "queries": [
+          {
+            "name": "",
+            "type": "heatmap",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`)) BY `host`",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [
+                "host"
+              ],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test2",
+        "uuid": "chrt_e674d29a1421453cb3c9a0dbe46a625d"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "color": {},
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "unitType": "global",
+            "fixedTime": "",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "showLegend": "bottom",
+            "timeInterval": "auto",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test1"
+        },
+        "chartGroupUUID": "chtg_defb199a8e03421a9c48dd1a84aa1929",
+        "name": "新建图表",
+        "pos": {
+          "h": 18,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "type": "topology",
+        "queries": [
+          {
+            "name": "",
+            "type": "topology",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "fill": "avg_per_second",
+              "type": "default",
+              "filters": [],
+              "service": "cpu",
+              "resource": "",
+              "chartType": "serviceMap"
+            },
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test1",
+        "uuid": "chrt_a693287a051640b69d2a4805d2b94358"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "calcType": "absolute",
+            "unitType": "global",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "queryCodes": [
+              "A",
+              "1h"
+            ],
+            "colorScheme": 0,
+            "timeInterval": "auto",
+            "isTimeInterval": false,
+            "legendPosition": "left",
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "scientificNotation": true,
+            "legendIncludeBaseValue": false,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test"
+        },
+        "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 0,
+          "y": 0
+        },
+        "type": "change",
+        "queries": [
+          {
+            "name": "",
+            "type": "change",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`))",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test",
+        "uuid": "chrt_0a3a71ebaf81498f8291e42ba9e48890"
+      },
+      {
+        "extend": {
+          "settings": {
+            "max": 100,
+            "min": 0,
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [
+              {
+                "value": [
+                  20
+                ],
+                "lineColor": "#1CA774",
+                "operation": "<="
+              },
+              {
+                "value": [
+                  80
+                ],
+                "lineColor": "#F9AE41",
+                "operation": "<="
+              },
+              {
+                "value": [
+                  100
+                ],
+                "lineColor": "#EE5E70",
+                "operation": "<="
+              }
+            ],
+            "unitType": "global",
+            "fixedTime": "",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "timeInterval": "auto",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test"
+        },
+        "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
+        "name": "新建图表",
+        "pos": {
+          "h": 13,
+          "w": 8,
+          "x": 0,
+          "y": 10
+        },
+        "type": "gauge",
+        "queries": [
+          {
+            "name": "",
+            "type": "gauge",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`))",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test",
+        "uuid": "chrt_99d147ff8a494e4283aadcfad95e0972"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "unitType": "global",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "queryCodes": [
+              "A",
+              "B"
+            ],
+            "timeInterval": "auto",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "scientificNotation": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test"
+        },
+        "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 14,
+          "y": 0
+        },
+        "type": "funnel",
+        "queries": [
+          {
+            "name": "",
+            "type": "funnel",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`))",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          },
+          {
+            "name": "",
+            "type": "funnel",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::ailyun_mail_push:(avg(`faild_count`))",
+              "code": "B",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "faild_count",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "ailyun_mail_push",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "disabled": false,
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test",
+        "uuid": "chrt_8525568185fd4b7597f776cd006bac98"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "unitType": "global",
+            "fixedTime": "",
+            "precision": "2",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "timeInterval": "auto",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "scientificNotation": true,
+            "openThousandsSeparator": true,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test"
+        },
+        "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 10,
+          "y": 10
+        },
+        "type": "sankey",
+        "queries": [
+          {
+            "name": "",
+            "type": "sankey",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "M::cpu:(avg(`load5s`))",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "",
+              "field": "load5s",
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "avg",
+              "fieldType": "float",
+              "namespace": "metric",
+              "dataSource": "cpu",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "additionalFields": null
+            },
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test",
+        "uuid": "chrt_2ee650fe0d3544fa84075b13b4c72e1c"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [
+              {
+                "key": "message",
+                "name": "message",
+                "alias": "内容"
+              },
+              {
+                "key": "status",
+                "name": "status"
+              },
+              {
+                "key": "__docid",
+                "name": "__docid"
+              }
+            ],
+            "index": "default",
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "unitType": "global",
+            "fixedTime": "",
+            "inColumns": [
+              {
+                "field": "time",
+                "headerName": "时间"
+              }
+            ],
+            "multiRows": 0,
+            "showTitle": true,
+            "titleDesc": "",
+            "addColumns": [
+              {
+                "hide": true,
+                "field": "status"
+              },
+              {
+                "hide": true,
+                "field": "__docid"
+              },
+              {
+                "field": "message",
+                "headerName": "内容"
+              }
+            ],
+            "globalUnit": [],
+            "isSampling": true,
+            "valMappings": [],
+            "timeInterval": "",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "currentChartType": "log",
+            "showFieldMapping": false,
+            "valColorMappings": [],
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test"
+        },
+        "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
+        "name": "新建图表",
+        "pos": {
+          "h": 18,
+          "w": 12,
+          "x": 0,
+          "y": 23
+        },
+        "type": "log",
+        "queries": [
+          {
+            "name": "",
+            "type": "log",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "L('default')::RE(`.*`):(`status`, `__docid`, `message`, `index`)",
+              "alias": "",
+              "field": null,
+              "fields": [
+                {
+                  "hide": true,
+                  "field": "status"
+                },
+                {
+                  "hide": true,
+                  "field": "__docid"
+                },
+                {
+                  "field": "message"
+                }
+              ],
+              "orderby": [
+                {
+                  "time": "desc"
+                }
+              ],
+              "funcList": [],
+              "highlight": true,
+              "namespace": "logging",
+              "dataSource": "*",
+              "indexFilter": "default",
+              "templateName": "logging__*",
+              "filterSearchQuery": "",
+              "disableMultipleField": false
+            },
+            "datasource": "dataflux",
+            "noTimeRange": false
+          }
+        ],
+        "prevGroupName": "test",
+        "uuid": "chrt_7f34256cc46b4ee89f410e5286cc3351"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "index": "",
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "pageSize": 50,
+            "showPart": "all",
+            "unitType": "global",
+            "fixedTime": "",
+            "inColumns": [
+              {
+                "field": "time",
+                "headerName": "时间"
+              }
+            ],
+            "showTitle": true,
+            "titleDesc": "",
+            "addColumns": [
+              {
+                "field": "df_status",
+                "headerName": "状态"
+              },
+              {
+                "field": "df_title",
+                "headerName": "事件"
+              }
+            ],
+            "globalUnit": [],
+            "isSampling": true,
+            "timeInterval": "",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "currentChartType": "alarm",
+            "showFieldMapping": false,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test"
+        },
+        "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
+        "name": "新建图表",
+        "pos": {
+          "h": 18,
+          "w": 12,
+          "x": 12,
+          "y": 20
+        },
+        "type": "alarm",
+        "queries": [
+          {
+            "name": "",
+            "type": "alarm",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "q": "E::monitor:(`df_status` AS `状态`, `df_title` AS `事件`)",
+              "code": "A",
+              "fill": null,
+              "type": "simple",
+              "alias": "事件",
+              "field": null,
+              "fields": [
+                {
+                  "alias": "状态",
+                  "field": "df_status"
+                },
+                {
+                  "alias": "事件",
+                  "field": "df_title"
+                }
+              ],
+              "filters": [],
+              "groupBy": [],
+              "funcList": [],
+              "fieldFunc": "",
+              "fieldType": "float",
+              "namespace": "event",
+              "dataSource": "monitor",
+              "queryFuncs": [],
+              "groupByTime": "",
+              "indexFilter": "",
+              "disableMultipleField": false
+            },
+            "datasource": "dataflux",
+            "noTimeRange": false
+          }
+        ],
+        "prevGroupName": "test",
+        "uuid": "chrt_03760d72f53f48c8b063dc030211604c"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "pageSize": 50,
+            "showPart": "all",
+            "unitType": "global",
+            "fixedTime": "",
+            "inColumns": [],
+            "showTitle": true,
+            "titleDesc": "",
+            "addColumns": [],
+            "globalUnit": [],
+            "isSampling": true,
+            "timeInterval": "",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "enablePreflightEstimate": false
+          },
+          "fixedTime": ""
+        },
+        "group": {
+          "name": "test"
+        },
+        "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
+        "name": "新建图表",
+        "pos": {
+          "h": 18,
+          "w": 12,
+          "x": 1,
+          "y": 41
+        },
+        "type": "monitor",
+        "queries": [
+          {
+            "name": "",
+            "type": "monitor",
+            "unit": "",
+            "color": "",
+            "qtype": "dql",
+            "query": {
+              "sort": {
+                "field": "status",
+                "order": "asc"
+              },
+              "filter": {
+                "tagsUUIDs": [
+                  "tag_5cea06efed6847e19d7aacbcc8aee22b"
+                ],
+                "checkerTypes": [],
+                "checkerStatus": [],
+                "alertPolicyUUIDs": []
+              },
+              "search": ""
+            },
+            "datasource": "dataflux"
+          }
+        ],
+        "prevGroupName": "test",
+        "uuid": "chrt_8b1532be019c4d1a883d857372d5e2b7"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "unitType": "global",
+            "fixedTime": "",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "enablePreflightEstimate": false
+          }
+        },
+        "group": {
+          "name": "test"
+        },
+        "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 13,
+          "y": 38
+        },
+        "type": "text",
+        "queries": [
+          {
+            "name": "",
+            "query": {
+              "content": "#1111\n"
+            }
+          }
+        ],
+        "prevGroupName": "test",
+        "uuid": "chrt_0df8924955af4ee5b2996302860ab89d"
+      },
+      {
+        "extend": {
+          "settings": {
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "volume": 50,
+            "autoplay": false,
+            "unitType": "global",
+            "fixedTime": "",
+            "maxVolume": 100,
+            "minVolume": 0,
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "repeatPlay": false,
+            "timeInterval": "auto",
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "enablePreflightEstimate": false
+          }
+        },
+        "group": {
+          "name": "test"
+        },
+        "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 7,
+          "y": 59
+        },
+        "type": "video",
+        "queries": [
+          {
+            "name": "",
+            "query": {
+              "content": "得到的"
+            }
+          }
+        ],
+        "prevGroupName": "test",
+        "uuid": "chrt_c07ed4e8882348dabc61553de28cae34"
+      },
+      {
+        "extend": {
+          "links": [],
+          "settings": {
+            "url": "xxxx",
+            "type": "fill",
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "unitType": "global",
+            "fixedTime": "",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "timeInterval": "auto",
+            "isTimeInterval": false,
+            "backgroundStyle": {
+              "backgroundSize": "cover"
+            },
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "enablePreflightEstimate": false
+          },
+          "isRefresh": true
+        },
+        "group": {
+          "name": "test"
+        },
+        "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
+        "name": "新建图表",
+        "pos": {
+          "h": 8,
+          "w": 6,
+          "x": 0,
+          "y": 59
+        },
+        "type": "picture",
+        "queries": [],
+        "prevGroupName": "test",
+        "uuid": "chrt_26430a82f652427c98b84e0aae587ab7"
+      },
+      {
+        "extend": {
+          "links": [],
+          "settings": {
+            "url": "https://www.baidu.com",
+            "alias": [],
+            "units": [],
+            "colors": [],
+            "levels": [],
+            "unitType": "global",
+            "fixedTime": "",
+            "showTitle": true,
+            "titleDesc": "",
+            "globalUnit": [],
+            "isSampling": true,
+            "isTimeInterval": false,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "enablePreflightEstimate": false
+          },
+          "isRefresh": false
+        },
+        "group": {
+          "name": "test"
+        },
+        "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
+        "name": "新建图表",
+        "pos": {
+          "h": 10,
+          "w": 8,
+          "x": 16,
+          "y": 48
+        },
+        "type": "iframe",
+        "queries": [],
+        "prevGroupName": "test",
+        "uuid": "chrt_4c5c6cd0d5544c6ea8317e23cf395d6b"
+      }
+    ],
+    "chartGroupPos": [
+      "chtg_b1128d0b37e14967b2c466a312e37416",
+      "chtg_defb199a8e03421a9c48dd1a84aa1929",
+      "chtg_fa9073f2b42a4443b081621bce807686",
+      "default"
+    ],
+    "groups": [
+      {
+        "name": "test2",
+        "extend": {
+          "colorKey": "style_key7"
+        }
+      },
+      {
+        "name": "test1",
+        "extend": {
+          "colorKey": "style_key1"
+        }
+      },
+      {
+        "name": "test",
+        "extend": {
+          "colorKey": "style_key7"
+        }
+      }
+    ],
+    "type": "template"
+  },
+  "identifier": ""
+}
