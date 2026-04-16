@@ -1,0 +1,72 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/_common-settings-gradual-color-schema.json",
+    "title": "CommonGradualColorSettings",
+    "description": "热力图配置信息",
+    "type": "object",
+    "properties": {
+        "gradualColor": {
+            "description": "颜色匹配设置",
+            "type": "object",
+            "required": [
+                "type",
+                "colorKey",
+                "levelCount"
+            ],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "auto",
+                        "custom"
+                    ],
+                    "description": "颜色匹配设置模式，可以根据颜色色系，自动匹配数值对应色块"
+                },
+                "colorKey": {
+                    "type": "string",
+                    "description": "提供选择的色系",
+                    "enum": [
+                        "interpolateYlOrBr",
+                        "interpolateBuPu",
+                        "interpolatePuBu",
+                        "interpolateBuGn"
+                    ]
+                },
+                "minVal": {
+                    "description": "在自动模式下，可以手动设置区间范围最小值",
+                    "type": "integer"
+                },
+                "maxVal": {
+                    "description": "在自动模式下，可以手动设置的区间范围最大值",
+                    "type": "integer"
+                },
+                "levelCount": {
+                    "type": "integer",
+                    "description": "在渐变区间发范围内，可以手动填写生成的色块数量"
+                },
+                "levels": {
+                    "type": "array",
+                    "description": "自定义模式下，设置的区间映射列表",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "color"
+                        ],
+                        "properties": {
+                            "min": {
+                                "description": "自定义区间块最小值"
+                            },
+                            "max": {
+                                "description": "自定义区间块最大值"
+                            },
+                            "color": {
+                                "description": "自定义区间块颜色色值"
+                            }
+                        }
+                    }
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}

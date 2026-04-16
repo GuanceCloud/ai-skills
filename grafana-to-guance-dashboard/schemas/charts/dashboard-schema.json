@@ -1,0 +1,80 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/dashboard-schema.json",
+    "type": "object",
+    "title": "DashboardData",
+    "description": "观测云仪表板完整结构",
+    "additionalProperties": true,
+    "properties": {
+        "title": {
+            "type": "string",
+            "description": "仪表板标题"
+        },
+        "main": {
+            "type": "object",
+            "description": "仪表板图表结构",
+            "properties": {
+                "vars": {
+                    "$ref": "common/common-vars-schema.json"
+                },
+                "charts": {
+                    "type": "array",
+                    "description": "图表合集配置",
+                    "items": {
+                        "$ref": "chart-schema.json"
+                    }
+                },
+                "groups": {
+                    "type": "array",
+                    "description": "分组配置",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "图表分组名称"
+                            },
+                            "extend": {
+                                "type": "object",
+                                "description": "分组的额外配置，比如背景颜色",
+                                "properties": {
+                                    "bgColor": {
+                                        "type": "string",
+                                        "description": "分组块的背景颜色"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "type": {
+                    "description": "仪表板主体类型，现有数据中常缺省，存在时固定为 template",
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "const": "template"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                }
+            }
+        },
+        "dashboardExtend": {
+            "description": "仪表板额外配置信息",
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "groupUnfoldStatus": {
+                    "type": "object",
+                    "description": "分组是否收起打开配置信息,图表名称为 key， value 为 boolean。 false 为关闭，true 为打开",
+                    "additionalProperties": {
+                        "type": "boolean",
+                        "description": "图表名称"
+                    }
+                }
+            }
+        }
+    }
+}

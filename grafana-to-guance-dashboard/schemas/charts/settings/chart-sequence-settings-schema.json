@@ -1,0 +1,76 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-sequence-settings-schema.json",
+    "title": "ChartSequenceSettings",
+    "description": "时序图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "levels": {
+                    "$ref": "settings-levels-schema.json"
+                },
+                "showLine": {
+                    "$ref": "_common-settings-show-line-schema.json"
+                },
+                "chartType": {
+                    "$ref": "settings-chart-type-schema.json"
+                },
+                "showLabel": {
+                    "$ref": "_common-settings-show-label-schema.json"
+                },
+                "stackType": {
+                    "$ref": "_common-settings-stack-type-schema.json"
+                },
+                "openStack": {
+                    "type": "boolean",
+                    "description": "是否开启堆叠模式",
+                    "default": false
+                },
+                "connectNulls": {
+                    "$ref": "_common-settings-connect-null-schema.json"
+                },
+                "legendValues": {
+                    "$ref": "_common-settings-legend-values-schema.json"
+                },
+                "legendPostion": {
+                    "$ref": "_common-settings-legend-position-schema.json"
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片，时序图固定开启",
+                    "const": true
+                },
+                "xAxisShowType": {
+                    "type": "string",
+                    "description": " 横坐标显示数据类型，时序图柱状图固定显示时间",
+                    "const": "time"
+                },
+                "mainMeasurementQueryCode": {
+                    "type": "string",
+                    "description": "主指标对应的code 名称，在时序图中固定为 A",
+                    "const": "A"
+                }
+            }
+        },
+        {
+            "$ref": "_common-settings-groupby-schema.json"
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        },
+        {
+            "$ref": "settings-compare-schema.json"
+        }
+    ]
+}

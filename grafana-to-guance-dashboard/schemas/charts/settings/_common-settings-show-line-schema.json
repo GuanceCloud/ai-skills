@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/_common-settings-show-line-schema.json",
+    "title": "CommonChartShowLineSettings",
+    "type": "boolean",
+    "description": "是否开启混合图模式，柱状图或者概览图可以开启该选项。",
+    "default": false
+}

@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/_common-settings-groupby-schema.json",
+    "title": "CommonChartGroupbySettings",
+    "type": "object",
+    "description": "图表分组排序相关配置",
+    "properties": {
+        "slimit": {
+            "type": "integer",
+            "description": "当分组存在时，最大显示分组数量"
+        },
+        "sorderByOrder": {
+            "type": "string",
+            "description": "当分组存在时，分组返回的排序",
+            "enum": [
+                "asc",
+                "desc"
+            ],
+            "default": "desc"
+        }
+    }
+}

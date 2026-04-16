@@ -1,0 +1,163 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-singlestat-settings-schema.json",
+    "title": "ChartSinglestatSettings",
+    "description": "概览图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "levels": {
+                    "type": "array",
+                    "description": "概览图规则映射对应颜色配置数据",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "value",
+                            "bgColor",
+                            "operation",
+                            "fontColor"
+                        ],
+                        "properties": {
+                            "value": {
+                                "type": "array",
+                                "description": "",
+                                "items": {
+                                    "anyOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "integer"
+                                        }
+                                    ]
+                                }
+                            },
+                            "bgColor": {
+                                "type": "string",
+                                "description": "映射对应的背景颜色"
+                            },
+                            "fontColor": {
+                                "type": "string",
+                                "description": "映射对应的字体颜色"
+                            },
+                            "operation": {
+                                "description": "映射指标数据值的计算规则",
+                                "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "=",
+                                    "!=",
+                                    "between",
+                                    "=~",
+                                    "!=~",
+                                    "nodata"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "mappings": {
+                    "type": "array",
+                    "description": "概览图规则映射对应显示指标配置",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "originalVal": {
+                                "type": "array",
+                                "description": "",
+                                "items": {
+                                    "anyOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "integer"
+                                        }
+                                    ]
+                                }
+                            },
+                            "operation": {
+                                "description": "映射指标数据值的计算规则",
+                                "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "=",
+                                    "!=",
+                                    "between",
+                                    "=~",
+                                    "!=~",
+                                    "nodata"
+                                ]
+                            },
+                            "mappingVal": {
+                                "description": "映射对应的显示文本",
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "integer"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "showLine": {
+                    "$ref": "_common-settings-show-line-schema.json"
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": false
+                },
+                "xAxisShowType": {
+                    "type": "string",
+                    "description": " 横坐标显示数据类型，时序图柱状图固定显示时间",
+                    "const": "time"
+                },
+                "fontColor": {
+                    "type": "string",
+                    "description": "字体颜色的色值"
+                },
+                "bgColor": {
+                    "type": "string",
+                    "description": "概览图背景颜色色值"
+                },
+                "sequenceChartType": {
+                    "description": "混合图开启后，显示背景图表类型，可以选择柱状图或者折线图",
+                    "enum": [
+                        "line",
+                        "bar"
+                    ]
+                },
+                "showLineAxis": {
+                    "type": "boolean",
+                    "description": "混合图开启后，是否显示背景图表的坐标轴",
+                    "default": false
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        },
+        {
+            "$ref": "settings-compare-schema.json"
+        }
+    ]
+}

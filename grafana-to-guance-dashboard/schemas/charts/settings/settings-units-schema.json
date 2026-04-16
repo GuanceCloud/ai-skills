@@ -1,0 +1,59 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/settings-units-schema.json",
+    "title": "ChartUnitsSettings",
+    "description": "图表单位配置完整结构。",
+    "type": "object",
+    "required": [
+        "unitType"
+    ],
+    "properties": {
+        "unitType": {
+            "type": "string",
+            "description": "单位设置类型，分为全局和自定义两种类型",
+            "enum": [
+                "global",
+                "custom"
+            ]
+        },
+        "globalUnit": {
+            "description": "图表全局设置单位",
+            "$ref": "settings-unit-items-schema.json"
+        },
+        "units": {
+            "type": "array",
+            "description": "根据指标自定义单位",
+            "items": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "key",
+                    "unit"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "需要设置的指标名称,冗余字段",
+                        "examples": [
+                            "avg(load5s)"
+                        ]
+                    },
+                    "key": {
+                        "type": "string",
+                        "description": "需要设置的指标名称",
+                        "examples": [
+                            "avg(load5s)"
+                        ]
+                    },
+                    "unit": {
+                        "type": "string",
+                        "description": "自定义类型的单位,填充的单位名称"
+                    },
+                    "units": {
+                        "$ref": "settings-unit-items-schema.json"
+                    }
+                }
+            }
+        }
+    }
+}

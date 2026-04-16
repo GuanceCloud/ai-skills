@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-object-settings-schema.json",
+    "title": "ChartObjectSettings",
+    "description": "对象列表图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": false
+                },
+                "currentChartType": {
+                    "type": "string",
+                    "const": "object",
+                    "readOnly": true,
+                    "description": "冗余字段，在对象列表图中，固定为 object"
+                },
+                "addColumns": {
+                    "type": "array",
+                    "description": "添加显示列",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "field": {
+                                "type": "string",
+                                "description": "需要添加列的字段名称"
+                            },
+                            "headerName": {
+                                "type": "string",
+                                "description": "显示表头的名称"
+                            },
+                            "hide": {
+                                "type": "boolean",
+                                "description": "是否需要隐藏列"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        }
+    ]
+}

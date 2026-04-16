@@ -1,0 +1,1029 @@
+{
+  "title": "test-0324 Copy1",
+  "uid": "prhbkx5Dk",
+  "dashboardExtend": {
+    "groupUnfoldStatus": {
+      "Row title": true
+    }
+  },
+  "main": {
+    "vars": [
+      {
+        "name": "hostABC",
+        "seq": 0,
+        "code": "host",
+        "hide": 0,
+        "multiple": false,
+        "includeStar": false,
+        "valueSort": "desc",
+        "extend": {
+          "originalType": "query",
+          "refresh": 1,
+          "skipUrlSync": false,
+          "sort": 0
+        },
+        "datasource": "dataflux",
+        "type": "QUERY",
+        "definition": {
+          "tag": "",
+          "field": "",
+          "value": "O::HOST:(distinct('host')){'os'='linux'}[10m]",
+          "metric": "",
+          "object": "",
+          "defaultVal": {
+            "label": "iZuf6bhp22agaui9uldhz4Z",
+            "value": "iZuf6bhp22agaui9uldhz4Z"
+          }
+        }
+      },
+      {
+        "name": "主机",
+        "seq": 1,
+        "code": "var_host",
+        "hide": 0,
+        "multiple": false,
+        "includeStar": true,
+        "valueSort": "desc",
+        "extend": {
+          "originalType": "query",
+          "starMeaning": "*",
+          "refresh": 1,
+          "skipUrlSync": false,
+          "sort": 0
+        },
+        "datasource": "dataflux",
+        "type": "PROMQL_QUERY",
+        "definition": {
+          "tag": "",
+          "field": "",
+          "value": "label_values(cpu:load5s,host)",
+          "metric": "cpu:load5s",
+          "object": "",
+          "defaultVal": {
+            "label": "all values",
+            "value": "__all__"
+          }
+        }
+      }
+    ],
+    "charts": [
+      {
+        "name": "Panel Title",
+        "type": "sequence",
+        "group": {
+          "name": null
+        },
+        "pos": {
+          "x": 0,
+          "y": 0.5,
+          "w": 12,
+          "h": 15.3
+        },
+        "extend": {
+          "settings": {
+            "showTitle": true,
+            "titleDesc": "",
+            "isSampling": true,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "openThousandsSeparator": true,
+            "precision": "2",
+            "timeInterval": "auto",
+            "fixedTime": "",
+            "maxPointCount": null,
+            "showLegend": true,
+            "legendPostion": "bottom",
+            "showLine": true,
+            "lineType": "linear",
+            "connectNulls": false,
+            "openStack": false,
+            "stackType": "time",
+            "chartType": "line",
+            "isTimeInterval": true,
+            "xAxisShowType": "time",
+            "levels": [
+              {
+                "title": "Level 1",
+                "value": 0,
+                "bgColor": "green"
+              },
+              {
+                "title": "Level 2",
+                "value": 80,
+                "bgColor": "red"
+              }
+            ],
+            "mainMeasurementQueryCode": "A",
+            "extend": {
+              "appearance": {
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "pointMode": "auto",
+                "pointSize": 5,
+                "axisPlacement": "auto",
+                "axisColorMode": "text",
+                "axisCenteredZero": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "drawStyle": "line",
+                "spanNulls": false,
+                "stackingGroup": "A",
+                "fieldColorMode": "palette-classic",
+                "thresholdsMode": "absolute",
+                "thresholdsStyleMode": "off",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "legend": {
+                "displayMode": "list"
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          }
+        },
+        "queries": [
+          {
+            "name": "",
+            "type": "sequence",
+            "qtype": "dql",
+            "datasource": "dataflux",
+            "disabled": false,
+            "query": {
+              "q": "M::datadog:(avg(`dogstatsd_client_aggregated_context`)) BY `host`",
+              "code": "A",
+              "type": "dql",
+              "alias": ""
+            },
+            "extend": {
+              "refId": "A",
+              "datasource": {
+                "type": "guance-guance-datasource",
+                "uid": "o9PpQVUHz"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Panel Title",
+        "type": "sequence",
+        "group": {
+          "name": null
+        },
+        "pos": {
+          "x": 12,
+          "y": 0.5,
+          "w": 12,
+          "h": 15.3
+        },
+        "extend": {
+          "settings": {
+            "showTitle": true,
+            "titleDesc": "",
+            "isSampling": true,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "openThousandsSeparator": true,
+            "precision": "2",
+            "timeInterval": "auto",
+            "fixedTime": "",
+            "maxPointCount": null,
+            "showLegend": true,
+            "legendPostion": "bottom",
+            "showLine": true,
+            "lineType": "linear",
+            "connectNulls": false,
+            "openStack": false,
+            "stackType": "time",
+            "chartType": "line",
+            "isTimeInterval": true,
+            "xAxisShowType": "time",
+            "unitType": "global",
+            "globalUnit": [
+              "custom",
+              "short"
+            ],
+            "levels": [
+              {
+                "title": "Level 1",
+                "value": 0,
+                "bgColor": "green"
+              },
+              {
+                "title": "Level 2",
+                "value": 80,
+                "bgColor": "red"
+              }
+            ],
+            "alias": [
+              {
+                "alias": "add",
+                "key": "A",
+                "name": "A"
+              }
+            ],
+            "scientificNotation": true,
+            "mainMeasurementQueryCode": "A",
+            "extend": {
+              "appearance": {
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "pointMode": "auto",
+                "pointSize": 5,
+                "axisPlacement": "auto",
+                "axisColorMode": "text",
+                "axisCenteredZero": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "drawStyle": "line",
+                "spanNulls": false,
+                "stackingGroup": "A",
+                "fieldColorMode": "palette-classic",
+                "thresholdsMode": "absolute",
+                "thresholdsStyleMode": "off",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "legend": {
+                "displayMode": "list"
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          }
+        },
+        "queries": [
+          {
+            "name": "add",
+            "type": "sequence",
+            "qtype": "dql",
+            "datasource": "dataflux",
+            "disabled": false,
+            "query": {
+              "q": "M::`cpu`:(avg(`load5s`)) by host",
+              "code": "A",
+              "type": "dql",
+              "alias": "add"
+            },
+            "extend": {
+              "refId": "A",
+              "datasource": {
+                "type": "guance-guance-datasource",
+                "uid": "o9PpQVUHz"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Panel Title",
+        "type": "sequence",
+        "group": {
+          "name": null
+        },
+        "pos": {
+          "x": 0,
+          "y": 15.7,
+          "w": 12,
+          "h": 15.3
+        },
+        "extend": {
+          "settings": {
+            "showTitle": true,
+            "titleDesc": "",
+            "isSampling": true,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "openThousandsSeparator": true,
+            "precision": "2",
+            "timeInterval": "auto",
+            "fixedTime": "",
+            "maxPointCount": null,
+            "showLegend": true,
+            "legendPostion": "bottom",
+            "showLine": true,
+            "lineType": "linear",
+            "connectNulls": false,
+            "openStack": false,
+            "stackType": "time",
+            "chartType": "line",
+            "isTimeInterval": true,
+            "xAxisShowType": "time",
+            "unitType": "global",
+            "globalUnit": [
+              "custom",
+              "short"
+            ],
+            "levels": [
+              {
+                "title": "Level 1",
+                "value": 0,
+                "bgColor": "green"
+              },
+              {
+                "title": "Level 2",
+                "value": 80,
+                "bgColor": "red"
+              }
+            ],
+            "scientificNotation": true,
+            "mainMeasurementQueryCode": "A",
+            "extend": {
+              "appearance": {
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "pointMode": "auto",
+                "pointSize": 5,
+                "axisPlacement": "auto",
+                "axisColorMode": "text",
+                "axisCenteredZero": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "drawStyle": "line",
+                "spanNulls": false,
+                "stackingGroup": "A",
+                "fieldColorMode": "palette-classic",
+                "thresholdsMode": "absolute",
+                "thresholdsStyleMode": "off",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "legend": {
+                "displayMode": "list"
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          }
+        },
+        "queries": [
+          {
+            "name": "",
+            "type": "sequence",
+            "qtype": "promql",
+            "datasource": "dataflux",
+            "disabled": false,
+            "query": {
+              "q": "avg(cpu:load5s) by (region)",
+              "code": "A",
+              "type": "promql",
+              "promqlCode": 1,
+              "alias": ""
+            },
+            "extend": {
+              "refId": "A",
+              "datasource": {
+                "type": "guance-guance-datasource",
+                "uid": "o9PpQVUHz"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Panel Title",
+        "type": "sequence",
+        "group": {
+          "name": null
+        },
+        "pos": {
+          "x": 12,
+          "y": 15.7,
+          "w": 12,
+          "h": 15.3
+        },
+        "extend": {
+          "settings": {
+            "showTitle": true,
+            "titleDesc": "",
+            "isSampling": true,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "openThousandsSeparator": true,
+            "precision": "2",
+            "timeInterval": "auto",
+            "fixedTime": "",
+            "maxPointCount": null,
+            "showLegend": true,
+            "legendPostion": "bottom",
+            "showLine": true,
+            "lineType": "linear",
+            "connectNulls": false,
+            "openStack": false,
+            "stackType": "time",
+            "chartType": "line",
+            "isTimeInterval": true,
+            "xAxisShowType": "time",
+            "unitType": "global",
+            "globalUnit": [
+              "custom",
+              "short"
+            ],
+            "levels": [
+              {
+                "title": "Level 1",
+                "value": 0,
+                "bgColor": "green"
+              },
+              {
+                "title": "Level 2",
+                "value": 80,
+                "bgColor": "red"
+              }
+            ],
+            "alias": [
+              {
+                "alias": "test别别别别别别别别别名别别别别名别别别别别别别别别名 {{host}}---------{{region}} ",
+                "key": "A",
+                "name": "A"
+              }
+            ],
+            "scientificNotation": true,
+            "mainMeasurementQueryCode": "A",
+            "extend": {
+              "appearance": {
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "pointMode": "auto",
+                "pointSize": 5,
+                "axisPlacement": "auto",
+                "axisColorMode": "text",
+                "axisCenteredZero": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "drawStyle": "line",
+                "spanNulls": false,
+                "stackingGroup": "A",
+                "fieldColorMode": "palette-classic",
+                "thresholdsMode": "absolute",
+                "thresholdsStyleMode": "off",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "legend": {
+                "displayMode": "list"
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          }
+        },
+        "queries": [
+          {
+            "name": "test别别别别别别别别别名别别别别名别别别别别别别别别名 {{host}}---------{{region}} ",
+            "type": "sequence",
+            "qtype": "promql",
+            "datasource": "dataflux",
+            "disabled": false,
+            "query": {
+              "q": "avg(cpu:load5s)  by (host,region)",
+              "code": "A",
+              "type": "promql",
+              "promqlCode": 1,
+              "alias": "test别别别别别别别别别名别别别别名别别别别别别别别别名 {{host}}---------{{region}} "
+            },
+            "extend": {
+              "refId": "A",
+              "datasource": {
+                "type": "guance-guance-datasource",
+                "uid": "o9PpQVUHz"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Panel Title",
+        "type": "sequence",
+        "group": {
+          "name": null
+        },
+        "pos": {
+          "x": 0,
+          "y": 30.9,
+          "w": 12,
+          "h": 17.2
+        },
+        "extend": {
+          "settings": {
+            "showTitle": true,
+            "titleDesc": "",
+            "isSampling": true,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "openThousandsSeparator": true,
+            "precision": "2",
+            "timeInterval": "auto",
+            "fixedTime": "",
+            "maxPointCount": null,
+            "showLegend": true,
+            "legendPostion": "bottom",
+            "showLine": true,
+            "lineType": "linear",
+            "connectNulls": false,
+            "openStack": false,
+            "stackType": "time",
+            "chartType": "line",
+            "isTimeInterval": true,
+            "xAxisShowType": "time",
+            "levels": [
+              {
+                "title": "Level 1",
+                "value": 0,
+                "bgColor": "green"
+              },
+              {
+                "title": "Level 2",
+                "value": 80,
+                "bgColor": "red"
+              }
+            ],
+            "alias": [
+              {
+                "alias": "别名123+test {{host}}",
+                "key": "A",
+                "name": "A"
+              }
+            ],
+            "mainMeasurementQueryCode": "A",
+            "extend": {
+              "appearance": {
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "pointMode": "auto",
+                "pointSize": 5,
+                "axisPlacement": "auto",
+                "axisColorMode": "text",
+                "axisCenteredZero": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "drawStyle": "line",
+                "spanNulls": false,
+                "stackingGroup": "A",
+                "fieldColorMode": "palette-classic",
+                "thresholdsMode": "absolute",
+                "thresholdsStyleMode": "off",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "legend": {
+                "displayMode": "list"
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          }
+        },
+        "queries": [
+          {
+            "name": "别名123+test {{host}}",
+            "type": "sequence",
+            "qtype": "dql",
+            "datasource": "dataflux",
+            "disabled": false,
+            "query": {
+              "q": "M::disk:(avg(`free`))  BY `host`",
+              "code": "A",
+              "type": "dql",
+              "alias": "别名123+test {{host}}"
+            },
+            "extend": {
+              "refId": "A",
+              "datasource": {
+                "type": "guance-guance-datasource",
+                "uid": "-HcExU8Hk"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Panel Title",
+        "type": "sequence",
+        "group": {
+          "name": null
+        },
+        "pos": {
+          "x": 12,
+          "y": 30.9,
+          "w": 12,
+          "h": 15.3
+        },
+        "extend": {
+          "settings": {
+            "showTitle": true,
+            "titleDesc": "",
+            "isSampling": true,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "openThousandsSeparator": true,
+            "precision": "2",
+            "timeInterval": "auto",
+            "fixedTime": "",
+            "maxPointCount": null,
+            "showLegend": true,
+            "legendPostion": "bottom",
+            "showLine": true,
+            "lineType": "linear",
+            "connectNulls": false,
+            "openStack": false,
+            "stackType": "time",
+            "chartType": "line",
+            "isTimeInterval": true,
+            "xAxisShowType": "time",
+            "unitType": "global",
+            "globalUnit": [
+              "custom",
+              "none"
+            ],
+            "levels": [
+              {
+                "title": "Level 1",
+                "value": 0,
+                "bgColor": "green"
+              },
+              {
+                "title": "Level 2",
+                "value": 80,
+                "bgColor": "red"
+              }
+            ],
+            "mainMeasurementQueryCode": "A",
+            "extend": {
+              "appearance": {
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "pointMode": "auto",
+                "pointSize": 5,
+                "axisPlacement": "auto",
+                "axisColorMode": "text",
+                "axisCenteredZero": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "drawStyle": "line",
+                "spanNulls": false,
+                "stackingGroup": "A",
+                "fieldColorMode": "palette-classic",
+                "thresholdsMode": "absolute",
+                "thresholdsStyleMode": "off",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "legend": {
+                "displayMode": "list"
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          }
+        },
+        "queries": [
+          {
+            "name": "",
+            "type": "sequence",
+            "qtype": "dql",
+            "datasource": "dataflux",
+            "disabled": false,
+            "query": {
+              "q": "M::datadog:(avg(`dogstatsd_client_aggregated_context`), avg(`dogstatsd_client_aggregated_context_by_type`), avg(`dogstatsd_client_bytes_dropped_queue`)) BY `host`",
+              "code": "A",
+              "type": "dql",
+              "alias": ""
+            },
+            "extend": {
+              "refId": "A",
+              "datasource": {
+                "type": "guance-guance-datasource",
+                "uid": "o9PpQVUHz"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Panel Title",
+        "type": "sequence",
+        "group": {
+          "name": "Row title"
+        },
+        "pos": {
+          "x": 0,
+          "y": 2.4,
+          "w": 12,
+          "h": 15.3
+        },
+        "extend": {
+          "settings": {
+            "showTitle": true,
+            "titleDesc": "",
+            "isSampling": true,
+            "changeWorkspace": false,
+            "showFieldMapping": false,
+            "openThousandsSeparator": true,
+            "precision": "2",
+            "timeInterval": "auto",
+            "fixedTime": "",
+            "maxPointCount": null,
+            "showLegend": true,
+            "legendPostion": "bottom",
+            "showLine": true,
+            "lineType": "linear",
+            "connectNulls": false,
+            "openStack": false,
+            "stackType": "time",
+            "chartType": "line",
+            "isTimeInterval": true,
+            "xAxisShowType": "time",
+            "unitType": "global",
+            "globalUnit": [
+              "percent",
+              "percent"
+            ],
+            "levels": [
+              {
+                "title": "Level 1",
+                "value": 0,
+                "bgColor": "green"
+              },
+              {
+                "title": "Level 2",
+                "value": 80,
+                "bgColor": "red"
+              }
+            ],
+            "mainMeasurementQueryCode": "A",
+            "extend": {
+              "appearance": {
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "pointMode": "auto",
+                "pointSize": 5,
+                "axisPlacement": "auto",
+                "axisColorMode": "text",
+                "axisCenteredZero": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "drawStyle": "line",
+                "spanNulls": false,
+                "stackingGroup": "A",
+                "fieldColorMode": "palette-classic",
+                "thresholdsMode": "absolute",
+                "thresholdsStyleMode": "off",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "legend": {
+                "displayMode": "list"
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          }
+        },
+        "queries": [
+          {
+            "name": "",
+            "type": "sequence",
+            "qtype": "promql",
+            "datasource": "dataflux",
+            "disabled": false,
+            "query": {
+              "q": "(sum(rate(container_cpu_usage_seconds_total{ pod=~\"act-internal-tool-v00001600-5d78984d9f-v5gpj|act-internal-tool-v00001694-6c78897c97-j9b9g|act-internal-tool-v00001694-6c78897c97-whjkb\", image!=\"\", cluster_name_k8s=~\".*\", namespace=~\"act|agent|apisix|asset|com|crm|cswap|datakit|default|devops-operator-system|feed|growth|hivesec|infra|istio-ingress|istio-system|kirin|kube-system|liquidity|risk|spot|std|str|swap|wealth|web|web3\"}[1m]))by(pod,container)) / (sum(kube_pod_container_resource_limits{ pod=~\"act-internal-tool-v00001600-5d78984d9f-v5gpj|act-internal-tool-v00001694-6c78897c97-j9b9g|act-internal-tool-v00001694-6c78897c97-whjkb\", resource=~\"cpu\",  cluster_name_k8s=~\".*\", namespace=~\"act|agent|apisix|asset|com|crm|cswap|datakit|default|devops-operator-system|feed|growth|hivesec|infra|istio-ingress|istio-system|kirin|kube-system|liquidity|risk|spot|std|str|swap|wealth|web|web3\"})by(pod,container))",
+              "code": "A",
+              "type": "promql",
+              "promqlCode": 1,
+              "alias": ""
+            },
+            "extend": {
+              "refId": "A",
+              "datasource": {
+                "type": "guance-guance-datasource",
+                "uid": "o9PpQVUHz"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Panel Title",
+        "type": "sequence",
+        "group": {
+          "name": "Row title"
+        },
+        "pos": {
+          "x": 0,
+          "y": 17.6,
+          "w": 12,
+          "h": 15.3
+        },
+        "extend": {
+          "settings": {
+            "showTitle": true,
+            "titleDesc": "",
+            "isSampling": true,
+            "changeWorkspace": true,
+            "workspaceUUID": "wksp_aef7103dc5a44397a9f4d0442517a15e,wksp_3e4be8bfca7f4149889b83805caf16c3",
+            "workspaceName": [
+              "huangdong的测试空间",
+              "测试另一个【ScopeDB】开发测试一起用"
+            ],
+            "showFieldMapping": false,
+            "openThousandsSeparator": true,
+            "precision": "2",
+            "timeInterval": "auto",
+            "fixedTime": "",
+            "maxPointCount": null,
+            "showLegend": true,
+            "legendPostion": "bottom",
+            "showLine": true,
+            "lineType": "linear",
+            "connectNulls": false,
+            "openStack": false,
+            "stackType": "time",
+            "chartType": "line",
+            "isTimeInterval": true,
+            "xAxisShowType": "time",
+            "unitType": "global",
+            "globalUnit": [
+              "custom",
+              "short"
+            ],
+            "levels": [
+              {
+                "title": "Level 1",
+                "value": 0,
+                "bgColor": "green"
+              },
+              {
+                "title": "Level 2",
+                "value": 80,
+                "bgColor": "red"
+              }
+            ],
+            "scientificNotation": true,
+            "mainMeasurementQueryCode": "B",
+            "extend": {
+              "appearance": {
+                "lineWidth": 1,
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "pointMode": "auto",
+                "pointSize": 5,
+                "axisPlacement": "auto",
+                "axisColorMode": "text",
+                "axisCenteredZero": false,
+                "barAlignment": 0,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "drawStyle": "line",
+                "spanNulls": false,
+                "stackingGroup": "A",
+                "fieldColorMode": "palette-classic",
+                "thresholdsMode": "absolute",
+                "thresholdsStyleMode": "off",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "legend": {
+                "displayMode": "list"
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          }
+        },
+        "queries": [
+          {
+            "name": "",
+            "type": "sequence",
+            "qtype": "dql",
+            "datasource": "dataflux",
+            "disabled": true,
+            "query": {
+              "q": "D::RE(`.*`):(count(`*`))",
+              "code": "B",
+              "type": "dql",
+              "alias": ""
+            },
+            "extend": {
+              "refId": "B",
+              "datasource": {
+                "type": "guance-guance-datasource",
+                "uid": "2270qUUNz"
+              }
+            }
+          },
+          {
+            "name": "",
+            "type": "sequence",
+            "qtype": "dql",
+            "datasource": "dataflux",
+            "disabled": true,
+            "query": {
+              "q": "D::RE(`.*`):(count(`*`))",
+              "code": "A",
+              "type": "dql",
+              "alias": ""
+            },
+            "extend": {
+              "refId": "A",
+              "datasource": {
+                "type": "guance-guance-datasource",
+                "uid": "2270qUUNz"
+              }
+            }
+          },
+          {
+            "name": "",
+            "type": "sequence",
+            "qtype": "dql",
+            "datasource": "dataflux",
+            "disabled": false,
+            "query": {
+              "q": "M::`cpu`:(avg(`load5s`))",
+              "code": "C",
+              "type": "dql",
+              "alias": ""
+            },
+            "extend": {
+              "refId": "C",
+              "datasource": {
+                "type": "guance-guance-datasource",
+                "uid": "2270qUUNz"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "groups": [
+      {
+        "name": "Row title"
+      }
+    ],
+    "type": "template"
+  }
+}

@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/_common-settings-legend-values-schema.json",
+    "title": "CommonChartLegendValuesSettings",
+    "type": "array",
+    "items": {
+        "type": "string",
+        "description": "图表图列需要显示的统计指标",
+        "enum": [
+            "first",
+            "last",
+            "avg",
+            "min",
+            "max",
+            "sum",
+            "count"
+        ]
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/settings-levels-schema.json",
+    "title": "ChartLevelsSettings",
+    "description": "图表基线配置完整结构。",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "title",
+            "value",
+            "bgColor"
+        ],
+        "properties": {
+            "bgColor": {
+                "type": "string",
+                "description": "颜色色值",
+                "examples": [
+                    "#dddddd",
+                    "rgba(10,10,10,30)"
+                ]
+            },
+            "value": {
+                "type": "integer",
+                "description": "需要设置基线对应等级的指标值"
+            },
+            "title": {
+                "type": "string",
+                "description": "基线显示名称"
+            }
+        }
+    }
+}

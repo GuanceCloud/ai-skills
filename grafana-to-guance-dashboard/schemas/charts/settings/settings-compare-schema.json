@@ -1,0 +1,58 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/settings-compare-schema.json",
+    "title": "ChartCompare",
+    "description": "图表同期对比配置完整结构。",
+    "type": "object",
+    "properties": {
+        "compareChartType": {
+            "$ref": "../common/common-chart-types-schema.json"
+        },
+        "openCompare": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否开启同环比功能"
+        },
+        "compareType": {
+            "type": "array",
+            "description": "选择的同环比类型",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "hourCompare",
+                    "dayCompare",
+                    "weekCompare",
+                    "monthCompare",
+                    "circleCompare"
+                ]
+            }
+        },
+        "compares": {
+            "type": "array",
+            "description": "选择同环比对比的详细映射信息，与 compareType 对应",
+            "items": {
+                "type": "object",
+                "required": [
+                    "label",
+                    "value"
+                ],
+                "properties": {
+                    "label": {
+                        "type": "string",
+                        "description": "对比名称"
+                    },
+                    "value": {
+                        "type": "string",
+                        "enum": [
+                            "hourCompare",
+                            "dayCompare",
+                            "weekCompare",
+                            "monthCompare",
+                            "circleCompare"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}

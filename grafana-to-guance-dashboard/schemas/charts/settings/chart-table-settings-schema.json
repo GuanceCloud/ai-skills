@@ -1,0 +1,184 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-table-settings-schema.json",
+    "title": "ChartTableSettings",
+    "description": "表格图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "levels": {
+                    "$ref": "settings-levels-schema.json"
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": false
+                },
+                "queryMode": {
+                    "type": "string",
+                    "description": "表格类型：支持分组模式和时序模式",
+                    "enum": [
+                        "toGroupColumn",
+                        "toOneColumn"
+                    ]
+                },
+                "showColumns": {
+                    "type": "array",
+                    "description": "需要显示的列，指标名称列表",
+                    "items": {
+                        "type": "string",
+                        "examples": [
+                            "avg(load5s)"
+                        ]
+                    }
+                },
+                "valMappings": {
+                    "type": "array",
+                    "description": "表格图规则映射配置",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "field": {
+                                "type": "string",
+                                "description": "需要映射的指标字段名称"
+                            },
+                            "originalVal": {
+                                "type": "array",
+                                "description": "",
+                                "items": {
+                                    "anyOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "integer"
+                                        }
+                                    ]
+                                }
+                            },
+                            "mappingVal": {
+                                "description": "映射对应的显示文本",
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "integer"
+                                    }
+                                ]
+                            },
+                            "operation": {
+                                "description": "映射表达式操作符",
+                                "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "=",
+                                    "!=",
+                                    "between",
+                                    "=~",
+                                    "!=~",
+                                    "nodata"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "valColorMappings": {
+                    "type": "array",
+                    "description": "表格图规则映射对应颜色配置数据",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "field",
+                            "value",
+                            "bgColor",
+                            "operation",
+                            "fontColor"
+                        ],
+                        "properties": {
+                            "field": {
+                                "type": "string",
+                                "description": "需要映射的指标字段名称"
+                            },
+                            "value": {
+                                "type": "array",
+                                "description": "",
+                                "items": {
+                                    "anyOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "integer"
+                                        }
+                                    ]
+                                }
+                            },
+                            "bgColor": {
+                                "type": "string",
+                                "description": "映射对应的背景颜色"
+                            },
+                            "fontColor": {
+                                "type": "string",
+                                "description": "映射对应的字体颜色"
+                            },
+                            "operation": {
+                                "description": "映射指标数据值的计算规则",
+                                "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "=",
+                                    "!=",
+                                    "between",
+                                    "=~",
+                                    "!=~",
+                                    "nodata"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "mainMeasurementQueryCode": {
+                    "type": "string",
+                    "description": "选择指标对应的code 名称,根据查询语句顺序以大些字母命名",
+                    "default": "A"
+                },
+                "mainMeasurementSort": {
+                    "type": "string",
+                    "enum": [
+                        "top",
+                        "bottom"
+                    ],
+                    "description": "选择指标的排序方式"
+                },
+                "mainMeasurementLimit": {
+                    "type": "integer",
+                    "description": "选择指标排序返回数据线的限制条数"
+                },
+                "disableFuncList": {
+                    "type": "boolean",
+                    "description": "冗余字段, 时序表格图为true, 分组表格图为false",
+                    "readOnly": true
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        }
+    ]
+}

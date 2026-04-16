@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-text-settings-schema.json",
+    "title": "ChartTextSettings",
+    "description": "文本图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "properties": {
+        "showTitle": {
+            "type": "boolean",
+            "description": "是否显示图表标题",
+            "default": true
+        },
+        "titleDesc": {
+            "type": "string",
+            "description": "图表的描述信息",
+            "default": ""
+        }
+    }
+}

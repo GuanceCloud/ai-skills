@@ -1,0 +1,79 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/settings-schema.json",
+    "title": "ChartSettings",
+    "description": "图表设置配置完整结构。",
+    "type": "object",
+    "additionalProperties": true,
+    "anyOf": [
+        {
+            "$ref": "chart-alarm-settings-schema.json"
+        },
+        {
+            "$ref": "chart-bar-settings-schema.json"
+        },
+        {
+            "$ref": "chart-chinamap-settings-schema.json"
+        },
+        {
+            "$ref": "chart-funnel-settings-schema.json"
+        },
+        {
+            "$ref": "chart-gauge-settings-schema.json"
+        },
+        {
+            "$ref": "chart-heatmap-settings-schema.json"
+        },
+        {
+            "$ref": "chart-hexgon-settings-schema.json"
+        },
+        {
+            "$ref": "chart-histogram-settings-schema.json"
+        },
+        {
+            "$ref": "chart-iframe-settings-schema.json"
+        },
+        {
+            "$ref": "chart-log-settings-schema.json"
+        },
+        {
+            "$ref": "chart-object-settings-schema.json"
+        },
+        {
+            "$ref": "chart-picture-settings-schema.json"
+        },
+        {
+            "$ref": "chart-pie-settings-schema.json"
+        },
+        {
+            "$ref": "chart-sankey-settings-schema.json"
+        },
+        {
+            "$ref": "chart-scatter-bubble-settings-schema.json"
+        },
+        {
+            "$ref": "chart-sequence-settings-schema.json"
+        },
+        {
+            "$ref": "chart-singlestat-settings-schema.json"
+        },
+        {
+            "$ref": "chart-table-settings-schema.json"
+        },
+        {
+            "$ref": "chart-text-settings-schema.json"
+        },
+        {
+            "$ref": "chart-toplist-settings-schema.json"
+        },
+        {
+            "$ref": "chart-topology-settings-schema.json"
+        },
+        {
+            "$ref": "chart-treemap-settings-schema.json"
+        },
+        {
+            "$ref": "chart-worldmap-settings-schema.json"
+        }
+    ]
+}

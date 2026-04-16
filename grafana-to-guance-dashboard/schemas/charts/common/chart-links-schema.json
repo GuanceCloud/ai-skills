@@ -1,0 +1,9 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/common/chart-links-schema.json",
+    "type": "array",
+    "description": "图表跳转链接列表",
+    "items": {
+        "$ref": "chart-link-item-schema.json"
+    }
+}

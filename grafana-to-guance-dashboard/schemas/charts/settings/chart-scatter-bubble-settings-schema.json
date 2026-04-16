@@ -1,0 +1,31 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-scatter-bubble-settings-schema.json",
+    "title": "ChartScatterBubbleSettings",
+    "description": "散点图气泡图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": false
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        }
+    ]
+}

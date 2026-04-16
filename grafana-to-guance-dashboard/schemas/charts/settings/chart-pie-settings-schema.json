@@ -1,0 +1,90 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-pie-settings-schema.json",
+    "title": "ChartPieSettings",
+    "description": "饼图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "levels": {
+                    "$ref": "settings-levels-schema.json"
+                },
+                "chartType": {
+                    "$ref": "settings-chart-type-schema.json"
+                },
+                "legendPostion": {
+                    "$ref": "_common-settings-legend-position-schema.json"
+                },
+                "enableCombine": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "是否开启合并数据项配置"
+                },
+                "combine": {
+                    "type": "object",
+                    "required": [
+                        "percent",
+                        "operator"
+                    ],
+                    "description": "饼图合并数据项配置",
+                    "properties": {
+                        "percent": {
+                            "type": "string",
+                            "description": "百分比"
+                        },
+                        "operator": {
+                            "type": "string",
+                            "description": "对值的操作项",
+                            "enum": [
+                                "lt",
+                                "lte",
+                                "gt",
+                                "gte"
+                            ]
+                        }
+                    }
+                },
+                "mainMeasurementQueryCode": {
+                    "type": "string",
+                    "description": "主指标对应的code 名称，在饼图中固定为 A",
+                    "const": "A"
+                },
+                "mainMeasurementSort": {
+                    "type": "string",
+                    "enum": [
+                        "top",
+                        "bottom"
+                    ],
+                    "description": "主指标的排序方式"
+                },
+                "mainMeasurementLimit": {
+                    "type": "integer",
+                    "description": "主指标排序返回数据线的限制条数"
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": false
+                },
+                "otherColor": {
+                    "type": "string",
+                    "description": "饼图没有匹配数据指标，显示的颜色块色值"
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        }
+    ]
+}

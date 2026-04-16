@@ -1,0 +1,47 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-histogram-settings-schema.json",
+    "title": "ChartHistogramSettings",
+    "description": "直方图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "levels": {
+                    "$ref": "settings-levels-schema.json"
+                },
+                "legendPostion": {
+                    "$ref": "_common-settings-legend-position-schema.json"
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": false
+                },
+                "chartType": {
+                    "type": "string",
+                    "const": "histogram",
+                    "description": "冗余字段，固定为 histogram "
+                },
+                "direction": {
+                    "type": "string",
+                    "const": "vertical",
+                    "description": "冗余字段，固定为 vertical "
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        }
+    ]
+}

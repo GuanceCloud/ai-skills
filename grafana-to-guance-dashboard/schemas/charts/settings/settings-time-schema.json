@@ -1,0 +1,43 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/settings-time-schema.json",
+    "title": "ChartTimeSettings",
+    "description": "图表时间相关配置完整结构。",
+    "type": "object",
+    "properties": {
+        "timeInterval": {
+            "type": "string",
+            "default": "auto",
+            "enum": [
+                "auto",
+                "1ms",
+                "10ms",
+                "50ms",
+                "100ms",
+                "500ms",
+                "1s",
+                "10s",
+                "20s",
+                "30s",
+                "1m",
+                "5m",
+                "10m",
+                "30m",
+                "1h",
+                "6h",
+                "12h",
+                "1d",
+                "7d",
+                "30d"
+            ]
+        },
+        "maxPointCount": {
+            "type": "integer",
+            "description": "返回最大数据电枢",
+            "default": 720
+        },
+        "fixedTime": {
+            "$ref": "settings-fixed-time-schema.json"
+        }
+    }
+}

@@ -1,0 +1,65 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-gauge-settings-schema.json",
+    "title": "ChartGaugeSettings",
+    "description": "仪表盘图表配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "min": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "仪表盘分段阈值最小值"
+                },
+                "max": {
+                    "type": "integer",
+                    "default": 100,
+                    "description": "仪表盘分段阈值最大值"
+                },
+                "levels": {
+                    "type": "array",
+                    "description": "仪表盘分段阈值设置",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "value": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            },
+                            "lineColor": {
+                                "type": "string",
+                                "description": "颜色色值"
+                            },
+                            "operation": {
+                                "type": "string",
+                                "description": "表达式操作符,仪表盘固定值 <=",
+                                "const": "<="
+                            }
+                        }
+                    }
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": false
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        }
+    ]
+}

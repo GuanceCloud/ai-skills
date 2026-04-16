@@ -1,0 +1,102 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-worldmap-settings-schema.json",
+    "title": "ChartWorldMapSettings",
+    "description": "中国地图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "levels": {
+                    "$ref": "settings-levels-schema.json"
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": false
+                },
+                "rangeColorKey": {
+                    "type": "string",
+                    "description": "区间颜色选择色系的唯一对应健",
+                    "enum": [
+                        "light-blue",
+                        "light-red",
+                        "dark-red",
+                        "dark-yellow",
+                        "dark-green",
+                        "dark-blue",
+                        "dark-purple",
+                        "light-yellow",
+                        "light-purple",
+                        "light-green"
+                    ]
+                },
+                "levelArr": {
+                    "type": "array",
+                    "description": "区间颜色配置",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "min",
+                            "max",
+                            "color"
+                        ],
+                        "properties": {
+                            "min": {
+                                "type": "integer",
+                                "description": "区间左范围值"
+                            },
+                            "max": {
+                                "type": "integer",
+                                "description": "区间右范围值"
+                            },
+                            "color": {
+                                "type": "string",
+                                "description": "区间范围内显示色值"
+                            },
+                            "isAuto": {
+                                "type": "boolean",
+                                "description": "是否是自动生成的区间范围"
+                            }
+                        }
+                    }
+                },
+                "showLegend": {
+                    "type": "string",
+                    "description": "显示图例的位置信息，可以选择隐藏，以及在底部区域",
+                    "enum": [
+                        "none",
+                        "bottom"
+                    ]
+                },
+                "showTopList": {
+                    "type": "boolean",
+                    "description": "是否显示地区排名列表",
+                    "default": false
+                },
+                "mainMeasurementQueryCode": {
+                    "type": "string",
+                    "description": "选择指标匹配色块大小，值为对应查询语句 code 名称,根据查询语句顺序以大些字母命名",
+                    "default": "A"
+                },
+                "provinceKey": {
+                    "type": "string",
+                    "description": "选择对应国家的指标名称"
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        }
+    ]
+}

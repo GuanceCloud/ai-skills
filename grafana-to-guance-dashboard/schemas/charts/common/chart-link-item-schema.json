@@ -1,0 +1,48 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/common/chart-link-item-schema.json",
+    "type": "object",
+    "description": "图表联动跳转项",
+    "required": [
+        "url",
+        "open",
+        "show",
+        "type",
+        "showChanged"
+    ],
+    "properties": {
+        "url": {
+            "type": "string",
+            "description": "跳转地址"
+        },
+        "open": {
+            "type": "string",
+            "description": "打开方式",
+            "enum": [
+                "newWin",
+                "curWin",
+                "drawerWin"
+            ]
+        },
+        "show": {
+            "type": "boolean",
+            "description": "是否展示"
+        },
+        "type": {
+            "type": "string",
+            "description": "跳转类型",
+            "enum": [
+                "logging",
+                "container",
+                "processes",
+                "tracing",
+                "host",
+                "custom"
+            ]
+        },
+        "showChanged": {
+            "type": "boolean",
+            "description": "是否修改过显示状态"
+        }
+    }
+}

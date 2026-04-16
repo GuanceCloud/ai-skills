@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/_common-settings-legend-position-schema.json",
+    "title": "CommonChartLegendPositionSettings",
+    "type": "string",
+    "description": "图表图列位置显示配置信息",
+    "enum": [
+        "none",
+        "bottom",
+        "right",
+        "circle"
+    ],
+    "default": "none"
+}

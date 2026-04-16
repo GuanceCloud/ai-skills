@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-iframe-settings-schema.json",
+    "title": "ChartIframeSettings",
+    "description": "Iframe 图表配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "properties": {
+        "showTitle": {
+            "type": "boolean",
+            "description": "是否显示图表标题",
+            "default": true
+        },
+        "titleDesc": {
+            "type": "string",
+            "description": "图表的描述信息",
+            "default": ""
+        },
+        "url": {
+            "type": "string",
+            "description": "iframe 需要填充的访问 URL"
+        }
+    }
+}

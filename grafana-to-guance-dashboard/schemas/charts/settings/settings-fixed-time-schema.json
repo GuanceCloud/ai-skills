@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/settings-fixed-time-schema.json",
+    "description": "固定图表查询的时间范围，无视仪表板和其他页面上的时间选择器",
+    "default": "",
+    "anyOf": [
+        {
+            "type": "string",
+            "examples": [
+                "15m"
+            ]
+        },
+        {
+            "type": "object",
+            "required": [
+                "key",
+                "originKey",
+                "startTime",
+                "endTime",
+                "text"
+            ],
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "const": "range"
+                },
+                "originKey": {
+                    "type": "string",
+                    "const": "range"
+                },
+                "startTime": {
+                    "type": "integer",
+                    "description": "开始时间时间戳，单位毫秒"
+                },
+                "endTime": {
+                    "type": "integer",
+                    "description": "结束时间时间戳，单位毫秒"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "开始时间与结束时间的显示格式",
+                    "examples": [
+                        "2024/09/09 00:00:00 ~ 2024/09/09 16:25:33"
+                    ]
+                }
+            }
+        }
+    ]
+}

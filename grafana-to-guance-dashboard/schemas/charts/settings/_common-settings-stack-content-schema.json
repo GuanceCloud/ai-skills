@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/_common-settings-stack-content-schema.json",
+    "title": "CommonChartStackContentSettings",
+    "type": "string",
+    "description": "柱状图堆叠模式下，横坐标显示类型",
+    "enum": [
+        "group",
+        "index"
+    ],
+    "default": "group"
+}

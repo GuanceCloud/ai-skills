@@ -1,0 +1,50 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-heatmap-settings-schema.json",
+    "title": "ChartHeatmapSettings",
+    "description": "热力图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "levels": {
+                    "$ref": "settings-levels-schema.json"
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": true
+                },
+                "showLegend": {
+                    "type": "string",
+                    "description": "显示图例的位置信息，可以选择隐藏，以及在底部区域",
+                    "enum": [
+                        "none",
+                        "bottom"
+                    ]
+                },
+                "mainMeasurementQueryCode": {
+                    "type": "string",
+                    "description": "选择指标匹配色块大小，值为对应查询语句 code 名称,根据查询语句顺序以大些字母命名",
+                    "default": "A"
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        },
+        {
+            "$ref": "_common-settings-gradual-color-schema.json"
+        }
+    ]
+}

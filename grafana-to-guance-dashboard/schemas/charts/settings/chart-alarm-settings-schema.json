@@ -1,0 +1,48 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-alarm-settings-schema.json",
+    "title": "ChartAlarmSettings",
+    "description": "告警统计图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": false
+                },
+                "currentChartType": {
+                    "type": "string",
+                    "const": "alarm",
+                    "readOnly": true,
+                    "description": "冗余字段，在对象列表图中，固定为 alarm"
+                },
+                "showPart": {
+                    "type": "string",
+                    "description": "告警统计图显示模式，可选配置分别为全部、仅统计图、仅告警列表",
+                    "enum": [
+                        "all",
+                        "statistic",
+                        "list"
+                    ]
+                },
+                "pageSize": {
+                    "description": "列表每页显示的最大日志数量",
+                    "type": "integer",
+                    "default": 50,
+                    "enum": [
+                        10,
+                        20,
+                        50,
+                        100
+                    ]
+                }
+            }
+        }
+    ]
+}

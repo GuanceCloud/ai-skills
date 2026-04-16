@@ -1,0 +1,71 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-topology-settings-schema.json",
+    "title": "ChartTopologySettings",
+    "description": "拓扑图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "properties": {
+        "showTitle": {
+            "type": "boolean",
+            "description": "是否显示图表标题",
+            "default": true
+        },
+        "titleDesc": {
+            "type": "string",
+            "description": "图表的描述信息",
+            "default": ""
+        },
+        "showLegend": {
+            "type": "string",
+            "description": "显示图例的位置信息，可以选择隐藏，以及在底部区域",
+            "enum": [
+                "none",
+                "bottom"
+            ]
+        },
+        "fixedTime": {
+            "$ref": "settings-fixed-time-schema.json"
+        },
+        "color": {
+            "type": "object",
+            "description": "颜色配置",
+            "required": [
+                "key",
+                "min",
+                "max"
+            ],
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "description": "颜色色系",
+                    "enum": [
+                        "color-first",
+                        "color-second",
+                        "color-third"
+                    ]
+                },
+                "min": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "max": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

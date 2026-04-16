@@ -1,0 +1,117 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-toplist-settings-schema.json",
+    "title": "ChartToplistSettings",
+    "description": "排行榜图表配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "levels": {
+                    "$ref": "settings-levels-schema.json"
+                },
+                "chartType": {
+                    "type": "string",
+                    "const": "bar",
+                    "description": "冗余字段图表类型，排行榜固定为 bar"
+                },
+                "colorMappings": {
+                    "type": "array",
+                    "description": "排行榜规则映射对应颜色配置数据",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "value",
+                            "bgColor",
+                            "operation"
+                        ],
+                        "properties": {
+                            "value": {
+                                "type": "array",
+                                "description": "",
+                                "items": {
+                                    "anyOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "integer"
+                                        }
+                                    ]
+                                }
+                            },
+                            "bgColor": {
+                                "type": "string",
+                                "description": "映射对应的背景颜色"
+                            },
+                            "operation": {
+                                "description": "映射指标数据值的计算规则",
+                                "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "=",
+                                    "!=",
+                                    "between",
+                                    "=~",
+                                    "!=~",
+                                    "nodata"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片",
+                    "default": false
+                },
+                "mainMeasurementQueryCode": {
+                    "type": "string",
+                    "description": "主指标对应的code 名称，在饼图中固定为 A",
+                    "const": "A"
+                },
+                "mainMeasurementSort": {
+                    "type": "string",
+                    "enum": [
+                        "top",
+                        "bottom"
+                    ],
+                    "description": "主指标的排序方式"
+                },
+                "mainMeasurementLimit": {
+                    "type": "integer",
+                    "description": "主指标排序返回数据线的限制条数"
+                },
+                "bar": {
+                    "description": "冗余字段，固定值",
+                    "type": "object",
+                    "properties": {
+                        "direction": {
+                            "type": "string",
+                            "const": "horizontal"
+                        },
+                        "xAxisShowType": {
+                            "type": "string",
+                            "const": "groupBy"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        }
+    ]
+}

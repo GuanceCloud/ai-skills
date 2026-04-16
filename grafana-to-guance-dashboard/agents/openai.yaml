@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grafana to Guance"
+  short_description: "Analyze, convert, audit, infer units, and repair Grafana-to-Guance dashboard mappings"
+  default_prompt: "Use $grafana-to-guance-dashboard to analyze a Grafana dashboard, choose conversion flags, run conversion, audit the Guance output, infer likely units when Grafana leaves them implicit, inspect PromQL compatibility differences between Grafana and Guance, explain missing mappings with confidence, and repair the standalone converter when needed."

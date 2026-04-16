@@ -1,0 +1,47 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/settings-alias-schema.json",
+    "title": "ChartAliasSettings",
+    "description": "图表别名配置完整结构。",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "alias",
+            "key",
+            "name"
+        ],
+        "properties": {
+            "alias": {
+                "type": "string",
+                "description": "别名，可以是固定字符串，也可以是特殊变量，{{tags}} 表示替换为所有“标签名”和“标签值”，{{host}} 表示替换为 host 的“标签值”",
+                "examples": [
+                    "{{tags}}",
+                    "{{host}}",
+                    "test"
+                ]
+            },
+            "name": {
+                "type": "string",
+                "description": "需要替换为别名对应的指标名称",
+                "examples": [
+                    "avg(load5s)"
+                ]
+            },
+            "key": {
+                "type": "string",
+                "description": "需要替换为别名对应的指标名称,冗余字段",
+                "examples": [
+                    "avg(load5s)"
+                ]
+            }
+        },
+        "examples": [
+            {
+                "alias": "{{tags}}",
+                "key": "avg(load5s)",
+                "name": "avg(load5s)"
+            }
+        ]
+    }
+}

@@ -1,0 +1,82 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/common-settings-schema.json",
+    "title": "CommonChartSettings",
+    "type": "object",
+    "description": "所有图表通用的图表配置结构",
+    "allOf": [
+        {
+            "properties": {
+                "showTitle": {
+                    "type": "boolean",
+                    "description": "是否显示图表标题",
+                    "default": true
+                },
+                "titleDesc": {
+                    "type": "string",
+                    "description": "图表的描述信息",
+                    "default": ""
+                },
+                "isSampling": {
+                    "type": "boolean",
+                    "description": "启用后，当数据量过大时，会对除“指标”外的其他类型数据自动执行采样查询，采样率不固定，会根据数据量大小动态调整",
+                    "default": true
+                },
+                "changeWorkspace": {
+                    "type": "boolean",
+                    "description": "在图表中查询外部工作空间的数据，可选择“跨空间授权”中已添加的工作空间",
+                    "default": false
+                },
+                "workspaceUUID": {
+                    "type": "string",
+                    "examples": [
+                        "wksp_xxxx1,wksp_xxxx2"
+                    ],
+                    "description": "开启跨空间后，选择授权空间的空间 id 列表,用 “,” 号分割"
+                },
+                "workspaceName": {
+                    "type": "array",
+                    "description": "开启跨空间后，选择授权空间的空间名称",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "showFieldMapping": {
+                    "type": "boolean",
+                    "description": "应用于实际查询字段与前端显示字段不一致时，a→b，即实际查询字段 a，图表中映射显示为字段 b",
+                    "default": false
+                },
+                "openThousandsSeparator": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "是否开启千分位分割符显示"
+                },
+                "precision": {
+                    "type": "string",
+                    "default": "2",
+                    "description": "图表值精确的小数点位数"
+                },
+                "openTimeOffset": {
+                    "type": "boolean",
+                    "description": "启用时间偏移后，当查询相对时间区间时，实际查询时间范围向前偏移 1 分钟，以防止入库延迟导致数据获取为空。如：当前为12:30，查询最近15分钟的数据，开启时间偏移后，实际查询的时间是：12:14-12:29。",
+                    "default": false
+                },
+                "aliasVersion": {
+                    "type": "integer",
+                    "description": "区分别名版本，固定为 2",
+                    "const": 2
+                }
+            }
+        },
+        {
+            "$ref": "settings-time-schema.json"
+        }
+    ]
+}

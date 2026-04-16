@@ -1,0 +1,16 @@
+{
+  "name": "grafana-to-guance-dashboard-skill",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "convert": "node scripts/convert-grafana-dashboard.mjs",
+    "validate:file": "node scripts/validate-file.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "ajv": "8.11.0"
+  }
+}

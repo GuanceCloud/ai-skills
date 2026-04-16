@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/_common-settings-show-label-schema.json",
+    "title": "CommonChartShowLabelSettings",
+    "type": "boolean",
+    "description": "柱状图是否显示，每个柱对应的 value 值",
+    "default": false
+}

@@ -1,0 +1,46 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-picture-settings-schema.json",
+    "title": "ChartPictureSettings",
+    "description": "图片图表配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "properties": {
+        "showTitle": {
+            "type": "boolean",
+            "description": "是否显示图表标题",
+            "default": true
+        },
+        "titleDesc": {
+            "type": "string",
+            "description": "图表的描述信息",
+            "default": ""
+        },
+        "url": {
+            "type": "string",
+            "description": "图片访问 URL"
+        },
+        "backgroundStyle": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "backgroundSize": {
+                    "description": "图片的平铺模式",
+                    "type": "string",
+                    "enum": [
+                        "fill",
+                        "contain",
+                        "cover"
+                    ]
+                },
+                "backgroundPosition": {
+                    "description": "图片是否居中显示",
+                    "type": "string",
+                    "enum": [
+                        "center"
+                    ]
+                }
+            }
+        }
+    }
+}

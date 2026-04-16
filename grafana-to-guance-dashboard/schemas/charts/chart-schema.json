@@ -1,0 +1,84 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/chart-schema.json",
+    "type": "object",
+    "description": "图表完整结构",
+    "title": "ChartData",
+    "required": [
+        "extend",
+        "name",
+        "pos",
+        "type",
+        "queries"
+    ],
+    "properties": {
+        "extend": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "links": {
+                    "$ref": "common/chart-links-schema.json"
+                },
+                "settings": {
+                    "$ref": "settings/settings-schema.json"
+                }
+            }
+        },
+        "group": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "oneOf": [
+                        {
+                            "type": "string",
+                            "description": "分组名称"
+                        },
+                        {
+                            "type": "null",
+                            "description": "分组名称"
+                        }
+                    ]
+                }
+            }
+        },
+        "name": {
+            "type": "string",
+            "description": "图表名称"
+        },
+        "pos": {
+            "description": "图表位置信息",
+            "type": "object",
+            "required": [
+                "h",
+                "w",
+                "x",
+                "y"
+            ],
+            "properties": {
+                "h": {
+                    "description": "图表高度,每行的高度默认为10像素,比如 h 为12, 则实际高度为 12 * 10",
+                    "type": "number"
+                },
+                "w": {
+                    "type": "number",
+                    "description": "图表宽度,栅格系统的最大列数为 24, 比如 w为12，则显示宽度则为容器宽度的 1/2 倍 "
+                },
+                "x": {
+                    "type": "number",
+                    "description": "图表距离容器的水平距离,栅格系统的最大列数为 24, 比如 x为12，则图表距离容器左边的水平距离为容器宽度 1/2 倍 "
+                },
+                "y": {
+                    "type": "number",
+                    "description": "图表距离容器垂直距离,每行的高度默认为10像素,比如 y为12, 则实际高度为 12 * 10"
+                }
+            }
+        },
+        "type": {
+            "description": "图表类型",
+            "$ref": "common/common-chart-types-schema.json"
+        },
+        "queries": {
+            "$ref": "query/queries-schema.json"
+        }
+    }
+}

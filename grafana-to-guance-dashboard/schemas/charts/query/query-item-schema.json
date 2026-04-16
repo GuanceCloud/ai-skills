@@ -1,0 +1,60 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/query/query-item-schema.json",
+    "type": "object",
+    "description": "图表查询语句结构",
+    "title": "ChartQueryItem",
+    "properties": {
+        "type": {
+            "description": "冗余字段，图表类型",
+            "$ref": "../common/common-chart-types-schema.json"
+        },
+        "datasource": {
+            "type": "string",
+            "description": "冗余字段,固定值",
+            "const": "dataflux"
+        },
+        "qtype": {
+            "type": "string",
+            "description": "查询语句类型，目前支持 dql 以及promql",
+            "enum": [
+                "dql",
+                "promql"
+            ]
+        },
+        "query": {
+            "type": "object",
+            "description": "查询语句的额外信息",
+            "additionalProperties": true,
+            "properties": {
+                "q": {
+                    "type": "string",
+                    "description": "图表查询语句，可以是 dql语句，也可以是 promql 语句"
+                },
+                "content": {
+                    "type": "string",
+                    "description": "文本图内容，支持 HTML 或 Markdown 文本"
+                },
+                "code": {
+                    "type": "string",
+                    "description": "查询语句的唯一标识，由单个大写英文字母构成"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "查询语句类型冗余字段，实际数据中可能是 promql/dql，也可能是 default/simple 这类查询模式",
+                    "enum": [
+                        "default",
+                        "simple",
+                        "dql",
+                        "promql"
+                    ]
+                },
+                "promqlCode": {
+                    "type": "integer",
+                    "description": "PromQL 查询顺序编号"
+                }
+            }
+        }
+    },
+    "additionalProperties": true
+}

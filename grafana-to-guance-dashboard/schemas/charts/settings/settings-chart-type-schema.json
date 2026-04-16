@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/settings-chart-type-schema.json",
+    "title": "ChartChartType",
+    "description": "图表对应显示类型。",
+    "type": "string",
+    "anyOf": [
+        {
+            "enum": [
+                "line",
+                "areaLine",
+                "bar"
+            ],
+            "default": "line",
+            "description": "时序图不同图表类型"
+        },
+        {
+            "enum": [
+                "pie",
+                "doughnut",
+                "customized"
+            ],
+            "default": "pie",
+            "description": "饼图不同图表类型"
+        }
+    ]
+}

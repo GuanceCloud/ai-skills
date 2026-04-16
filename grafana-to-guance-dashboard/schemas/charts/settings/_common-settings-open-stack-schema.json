@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/_common-settings-open-stack-schema.json",
+    "title": "CommonChartOpenStackSettings",
+    "type": "boolean",
+    "description": "柱状图是否开启堆叠模式",
+    "default": false
+}

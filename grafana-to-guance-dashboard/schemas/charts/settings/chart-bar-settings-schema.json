@@ -1,0 +1,69 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/chart-bar-settings-schema.json",
+    "title": "ChartBarSettings",
+    "description": "柱状图配置信息",
+    "type": "object",
+    "additionalProperties": true,
+    "allOf": [
+        {
+            "$ref": "common-settings-schema.json"
+        },
+        {
+            "properties": {
+                "direction": {
+                    "type": "string",
+                    "default": "vertical",
+                    "description": "柱状图显示类型，横向显示还是纵向显示",
+                    "enum": [
+                        "vertical",
+                        "horizontal"
+                    ]
+                },
+                "alias": {
+                    "$ref": "settings-alias-schema.json"
+                },
+                "colors": {
+                    "$ref": "settings-colors-schema.json"
+                },
+                "levels": {
+                    "$ref": "settings-levels-schema.json"
+                },
+                "stackType": {
+                    "$ref": "_common-settings-stack-type-schema.json"
+                },
+                "stackContent": {
+                    "$ref": "_common-settings-stack-content-schema.json"
+                },
+                "openStack": {
+                    "type": "boolean",
+                    "description": "是否开启堆叠模式",
+                    "default": false
+                },
+                "showTopSize": {
+                    "type": "boolean",
+                    "const": false,
+                    "description": "是否是排行榜类型图表，柱状图固定为 false"
+                },
+                "aliasVersion": {
+                    "type": "integer",
+                    "description": "区分别名版本，固定为 2",
+                    "const": 2
+                },
+                "isTimeInterval": {
+                    "type": "boolean",
+                    "description": "是否开启时间分片，时序图固定开启",
+                    "default": false
+                },
+                "xAxisShowType": {
+                    "type": "string",
+                    "description": " 横坐标显示类型，柱状图固定显示分组",
+                    "const": "groupBy"
+                }
+            }
+        },
+        {
+            "$ref": "settings-units-schema.json"
+        }
+    ]
+}

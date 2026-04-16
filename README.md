@@ -1,6 +1,6 @@
 # AI Skills 使用说明
 
-本仓库提供面向观测云场景的技能（Skills），用于标准化生成 Dashboard、Monitor 以及 DQL 相关交付内容。
+本仓库提供面向观测云场景的技能（Skills），用于标准化生成 Dashboard、Monitor、DQL 以及 Grafana Dashboard 转观测云 Dashboard 等交付内容。
 
 ## 目录结构
 
@@ -15,6 +15,15 @@ ai-skills/
 │   ├── bin/
 │   │   ├── dqlcheck
 │   │   └── dqldocs
+├── grafana-to-guance-dashboard/
+│   ├── SKILL.md
+│   ├── agents/
+│   ├── fixtures/
+│   ├── references/
+│   ├── schemas/
+│   ├── scripts/
+│   ├── test/
+│   └── package.json
 └── monitor/
     └── SKILL.md
 ```
@@ -27,6 +36,7 @@ ai-skills/
 | `dashboard` | 根据 CSV 指标生成观测云 Dashboard JSON | `csv/{{type}}*.csv` | `output/dashboard/{{type}}/{{type}}.json` |
 | `monitor` | 根据 CSV 指标生成观测云监控器 JSON | `csv/{{component}}*.csv` | `output/monitor/{{component}}/{{component}}.json` |
 | `dql` | 解释、评审、生成、修复 DQL | 用户查询需求 / DQL 语句 | 通过校验的最终 DQL |
+| `grafana-to-guance-dashboard` | 分析、转换、审计、修复 Grafana Dashboard 到观测云 Dashboard 的映射 | Grafana dashboard JSON | 观测云 dashboard JSON、转换审计报告 |
 
 ## 快速开始
 
@@ -72,6 +82,11 @@ memory_util,float,%,host
 ```text
 /skill dql
 修复这条 DQL 并返回可执行版本
+```
+
+```text
+/skill grafana-to-guance-dashboard
+分析并转换这个 Grafana dashboard JSON，输出观测云 dashboard，并说明缺失映射
 ```
 
 ## 强制规则（务必遵守）
@@ -137,6 +152,27 @@ memory_util,float,%,host
   - 生成/修复模式：仅输出逐条校验通过的最终 DQL。
 - 最终交付前必须逐条通过 `dqlcheck`，不要用批量校验替代单条校验。
 
+### `grafana-to-guance-dashboard`
+
+- 用于 Grafana dashboard JSON 到观测云 dashboard JSON 的分析、转换、审计和修复。
+- Skill 自带独立脚本、Schema、测试、fixtures 和 `package.json`，可在目录内独立运行。
+- 默认流程应覆盖：
+  - 转换前预检：面板类型、变量、数据源、PromQL 风险、隐式单位
+  - 转换执行：按需选择 `--guance-promql-compatible`、`--keep-grafana-meta`
+  - 转换后校验：输出 JSON 必须通过 skill 内置 schema 校验
+  - 审计报告：说明成功转换、丢失面板、部分映射、单位推断置信度、兼容性风险
+- 常用命令：
+
+```bash
+cd grafana-to-guance-dashboard
+npm install
+npm run convert -- --input ./fixtures/grafana-dashboard.json --output ./output/guance-dashboard.json --validate
+npm run validate:file -- ./output/guance-dashboard.json
+npm test
+```
+
+- 环境要求：`Node.js >= 18`
+
 ## 团队协作建议
 
 - 新增或调整 Skill 时，先更新对应 `SKILL.md`，再更新本 README。
@@ -163,3 +199,4 @@ memory_util,float,%,host
 - [dashboard/SKILL.md](dashboard/SKILL.md)
 - [monitor/SKILL.md](monitor/SKILL.md)
 - [dql/SKILL.md](dql/SKILL.md)
+- [grafana-to-guance-dashboard/SKILL.md](grafana-to-guance-dashboard/SKILL.md)

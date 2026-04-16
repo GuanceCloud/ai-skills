@@ -1,0 +1,46 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "charts/settings/settings-colors-schema.json",
+    "title": "ChartColorsSettings",
+    "description": "图表颜色配置完整结构。",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "color",
+            "key",
+            "name"
+        ],
+        "properties": {
+            "color": {
+                "type": "string",
+                "description": "颜色色值",
+                "examples": [
+                    "#dddddd",
+                    "rgba(10,10,10,30)"
+                ]
+            },
+            "name": {
+                "type": "string",
+                "description": "需要设置颜色对应的指标名称",
+                "examples": [
+                    "avg(load5s)"
+                ]
+            },
+            "key": {
+                "type": "string",
+                "description": "需要设置颜色的指标名称,冗余字段",
+                "examples": [
+                    "avg(load5s)"
+                ]
+            }
+        },
+        "examples": [
+            {
+                "color": "#dddddd",
+                "key": "avg(load5s)",
+                "name": "avg(load5s)"
+            }
+        ]
+    }
+}
