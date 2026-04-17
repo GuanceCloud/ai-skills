@@ -24,6 +24,10 @@ ai-skills/
 │   ├── scripts/
 │   ├── test/
 │   └── package.json
+├── owl-observability/
+│   ├── SKILL.md
+│   ├── references/
+│   └── scripts/
 └── monitor/
     └── SKILL.md
 ```
@@ -37,6 +41,7 @@ ai-skills/
 | `monitor` | 根据 CSV 指标生成观测云监控器 JSON | `csv/{{component}}*.csv` | `output/monitor/{{component}}/{{component}}.json` |
 | `dql` | 解释、评审、生成、修复 DQL | 用户查询需求 / DQL 语句 | 通过校验的最终 DQL |
 | `grafana-to-guance-dashboard` | 分析、转换、审计、修复 Grafana Dashboard 到观测云 Dashboard 的映射 | Grafana dashboard JSON | 观测云 dashboard JSON、转换审计报告 |
+| `owl-observability` | 用 `owl` CLI 查询观测云数据并输出简洁报告 | 时间范围 + 查询目标（错误、APM、事件、指标、网络） | 落盘的 Markdown 报告 + 摘要结论 |
 
 ## 快速开始
 
@@ -87,6 +92,11 @@ memory_util,float,%,host
 ```text
 /skill grafana-to-guance-dashboard
 分析并转换这个 Grafana dashboard JSON，输出观测云 dashboard，并说明缺失映射
+```
+
+```text
+/skill owl-observability
+查询最近 1 小时错误并分类，输出报告
 ```
 
 ## 强制规则（务必遵守）
@@ -175,6 +185,27 @@ npm test
 
 - 环境要求：`Node.js >= 18`
 
+### `owl-observability`
+
+- 用于通过 `owl` CLI 查询观测云中的错误、APM、事件、指标和网络数据。
+- 开始前必须先执行 `owl -h`，具体查询工具必须先执行 `owl show <tool>`，不能猜参数。
+- 优先使用最贴近问题的数据域工具，例如：
+  - 错误分类：`owl.errors.list`
+  - APM 上下文：`owl.apm.list`
+  - 事件：`owl.event.list`
+  - 指标：`owl.metric.list`
+  - 网络：`owl.network.list`
+- 只要涉及查询结果交付，最终必须生成报告并落盘，不能只在对话里给零散结论。
+- 默认报告目录为 `./owl-reports/`，可结合 skill 内脚本生成：
+
+```bash
+owl -h
+owl show owl.errors.list
+owl exec owl.errors.list --start_time <START_MS> --end_time <END_MS> --page_size 100 \
+  | python3 scripts/classify_owl_errors.py
+cat /tmp/owl-report.md | python3 scripts/save_report.py --output-dir ./owl-reports
+```
+
 ## 团队协作建议
 
 - 新增或调整 Skill 时，先更新对应 `SKILL.md`，再更新本 README。
@@ -183,6 +214,35 @@ npm test
   - 校验命令与结果（尤其是 `dqlcheck`）
   - 产出文件路径
 - 评审重点放在“可执行性”和“规则一致性”，不是文字描述完整度。
+
+## 提交流程
+
+如果你是在 Codex 对话里协作，直接说“提交代码”即可。仓库级 `AGENTS.md` 已约定固定流程：
+
+- 先检查当前变更范围
+- 按变更内容同步 `README.md`
+- 生成 commit message
+- commit 时自动附带 `Generated-by: OpenAI Codex`
+- push 到当前分支
+
+如果你想在终端里走同一套机械流程，可以使用脚本：
+
+```bash
+./scripts/commit_with_codex.sh "feat: 更新 owl-observability skill"
+```
+
+仅提交、不 push：
+
+```bash
+./scripts/commit_with_codex.sh "chore: 整理仓库说明" --no-push
+```
+
+说明：
+
+- 该脚本会执行 `git add -A`
+- commit 会自动写入 `Generated-by: OpenAI Codex`
+- 若当前分支尚未绑定 upstream，会自动使用 `origin/<当前分支>` 建立跟踪并 push
+- `README.md` 是否需要改动，仍应先根据本次文件变更判断，避免为了提交而做无意义更新
 
 ## 常见问题
 
@@ -202,3 +262,4 @@ npm test
 - [monitor/SKILL.md](monitor/SKILL.md)
 - [dql/SKILL.md](dql/SKILL.md)
 - [grafana-to-guance-dashboard/SKILL.md](grafana-to-guance-dashboard/SKILL.md)
+- [owl-observability/SKILL.md](owl-observability/SKILL.md)

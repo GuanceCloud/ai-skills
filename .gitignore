@@ -3,3 +3,4 @@
 
 # local binary cache
 dql/bin/.cache/
+.idea/
