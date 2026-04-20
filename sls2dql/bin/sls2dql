@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OS="$(uname -s)"
+ARCH="$(uname -m)"
+
+case "${OS}:${ARCH}" in
+  Linux:x86_64)
+    TARGET="${ROOT_DIR}/sls2dql-linux-amd64"
+    ;;
+  Linux:aarch64|Linux:arm64)
+    TARGET="${ROOT_DIR}/sls2dql-linux-arm64"
+    ;;
+  Darwin:x86_64)
+    TARGET="${ROOT_DIR}/sls2dql-darwin-amd64"
+    ;;
+  Darwin:arm64)
+    TARGET="${ROOT_DIR}/sls2dql-darwin-arm64"
+    ;;
+  *)
+    echo "Unsupported platform: ${OS}/${ARCH}" >&2
+    exit 1
+    ;;
+esac
+
+exec "${TARGET}" "$@"

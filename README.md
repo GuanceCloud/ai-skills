@@ -28,6 +28,11 @@ ai-skills/
 │   ├── SKILL.md
 │   ├── references/
 │   └── scripts/
+├── sls2dql/
+│   ├── SKILL.md
+│   ├── bin/
+│   ├── references/
+│   └── scripts/
 └── monitor/
     └── SKILL.md
 ```
@@ -42,6 +47,7 @@ ai-skills/
 | `dql` | 解释、评审、生成、修复 DQL | 用户查询需求 / DQL 语句 | 通过校验的最终 DQL |
 | `grafana-to-guance-dashboard` | 分析、转换、审计、修复 Grafana Dashboard 到观测云 Dashboard 的映射 | Grafana dashboard JSON | 观测云 dashboard JSON、转换审计报告 |
 | `owl-observability` | 用 `owl` CLI 查询观测云数据并输出简洁报告 | 时间范围 + 查询目标（错误、APM、事件、指标、网络） | 落盘的 Markdown 报告 + 摘要结论 |
+| `sls2dql` | 将阿里云 SLS 查询转换、验证、解释为 GuanceDB DQL | 单条 SLS 查询 / 批量查询文件 / namespace/source/index 参数 | 转换结果、诊断信息、Markdown 报告 |
 
 ## 快速开始
 
@@ -97,6 +103,11 @@ memory_util,float,%,host
 ```text
 /skill owl-observability
 查询最近 1 小时错误并分类，输出报告
+```
+
+```text
+/skill sls2dql
+把这条 SLS 查询转换成 DQL
 ```
 
 ## 强制规则（务必遵守）
@@ -206,6 +217,29 @@ owl exec owl.errors.list --start_time <START_MS> --end_time <END_MS> --page_size
 cat /tmp/owl-report.md | python3 scripts/save_report.py --output-dir ./owl-reports
 ```
 
+### `sls2dql`
+
+- 用于把阿里云 SLS 查询转换、验证、解释为 GuanceDB DQL。
+- Skill 自带 `./sls2dql/bin/sls2dql` 统一入口脚本，会按当前平台自动选择对应二进制。
+- 强制规则：
+  - 每次调用都必须显式传 `--namespace`
+  - search-only 查询必须补 `--source`
+  - 默认使用 `strict`，只有用户接受近似语义时才改用 `allow-approximate`
+  - 若结果为 `approximate` 或 `unsupported`，必须同时说明诊断，不能只贴 DQL
+- 常用命令：
+
+```bash
+./sls2dql/bin/sls2dql version
+./sls2dql/bin/sls2dql convert --namespace L --query "SELECT count(*) AS pv FROM access_log"
+./sls2dql/bin/sls2dql convert --namespace L --source access_log --query "status:500 AND service:api"
+./sls2dql/bin/sls2dql explain --namespace L --query "* | SELECT count(*) AS pv FROM access_log GROUP BY host"
+./sls2dql/bin/sls2dql report --namespace L --file queries.json
+```
+
+- 参考资料：
+  - `./sls2dql/references/USER_QUICKSTART_zh.md`
+  - `./sls2dql/references/USER_GUIDE_zh.md`
+
 ## 团队协作建议
 
 - 新增或调整 Skill 时，先更新对应 `SKILL.md`，再更新本 README。
@@ -263,3 +297,4 @@ cat /tmp/owl-report.md | python3 scripts/save_report.py --output-dir ./owl-repor
 - [dql/SKILL.md](dql/SKILL.md)
 - [grafana-to-guance-dashboard/SKILL.md](grafana-to-guance-dashboard/SKILL.md)
 - [owl-observability/SKILL.md](owl-observability/SKILL.md)
+- [sls2dql/SKILL.md](sls2dql/SKILL.md)
