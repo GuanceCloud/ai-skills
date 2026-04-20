@@ -1,4 +1,4 @@
-# Owl Observability Report Format
+# Owl Diagnostics Report Format
 
 默认报告尽量短，按下面结构输出。
 

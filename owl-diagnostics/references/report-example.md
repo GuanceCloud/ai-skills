@@ -1,4 +1,4 @@
-# Owl Observability Report Example
+# Owl Diagnostics Report Example
 
 下面是一份可直接参考的标准报告示例。
 

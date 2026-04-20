@@ -24,7 +24,7 @@ ai-skills/
 │   ├── scripts/
 │   ├── test/
 │   └── package.json
-├── owl-observability/
+├── owl-diagnostics/
 │   ├── SKILL.md
 │   ├── references/
 │   └── scripts/
@@ -46,7 +46,7 @@ ai-skills/
 | `monitor` | 根据 CSV 指标生成观测云监控器 JSON | `csv/{{component}}*.csv` | `output/monitor/{{component}}/{{component}}.json` |
 | `dql` | 解释、评审、生成、修复 DQL | 用户查询需求 / DQL 语句 | 通过校验的最终 DQL |
 | `grafana-to-guance-dashboard` | 分析、转换、审计、修复 Grafana Dashboard 到观测云 Dashboard 的映射 | Grafana dashboard JSON | 观测云 dashboard JSON、转换审计报告 |
-| `owl-observability` | 用 `owl` CLI 查询观测云数据并输出简洁报告 | 时间范围 + 查询目标（错误、APM、事件、指标、网络） | 落盘的 Markdown 报告 + 摘要结论 |
+| `owl-diagnostics` | 用 `owl` CLI 做观测云查询、诊断、根因分析与报告落盘 | 时间范围 + 查询目标（错误、日志、APM、事件、指标、网络等） | 结构化诊断结论、证据摘要、落盘的 Markdown 报告 |
 | `sls2dql` | 将阿里云 SLS 查询转换、验证、解释为 GuanceDB DQL | 单条 SLS 查询 / 批量查询文件 / namespace/source/index 参数 | 转换结果、诊断信息、Markdown 报告 |
 
 ## 快速开始
@@ -101,8 +101,8 @@ memory_util,float,%,host
 ```
 
 ```text
-/skill owl-observability
-查询最近 1 小时错误并分类，输出报告
+/skill owl-diagnostics
+查询最近 1 小时 errors 并分类，输出报告
 ```
 
 ```text
@@ -196,17 +196,19 @@ npm test
 
 - 环境要求：`Node.js >= 18`
 
-### `owl-observability`
+### `owl-diagnostics`
 
-- 用于通过 `owl` CLI 查询观测云中的错误、APM、事件、指标和网络数据。
+- 用于通过 `owl` CLI 统一处理观测云查询、诊断、排障、根因分析、影响评估与报告落盘。
 - 开始前必须先执行 `owl -h`，具体查询工具必须先执行 `owl show <tool>`，不能猜参数。
 - 优先使用最贴近问题的数据域工具，例如：
   - 错误分类：`owl.errors.list`
   - APM 上下文：`owl.apm.list`
   - 事件：`owl.event.list`
   - 指标：`owl.metric.list`
+  - 日志与复杂查询：`owl.data.query`
   - 网络：`owl.network.list`
-- 只要涉及查询结果交付，最终必须生成报告并落盘，不能只在对话里给零散结论。
+- 如需 DQL，必须先 `check_dql` 再 `query`；复杂问题需要跨域补证据，先写事实，再写推断。
+- 只要涉及查询结果交付，最终必须生成结构化报告并落盘，不能只在对话里给零散结论。
 - 默认报告目录为 `./owl-reports/`，可结合 skill 内脚本生成：
 
 ```bash
@@ -262,7 +264,7 @@ cat /tmp/owl-report.md | python3 scripts/save_report.py --output-dir ./owl-repor
 如果你想在终端里走同一套机械流程，可以使用脚本：
 
 ```bash
-./scripts/commit_with_codex.sh "feat: 更新 owl-observability skill"
+./scripts/commit_with_codex.sh "feat: 更新 owl-diagnostics skill"
 ```
 
 仅提交、不 push：
@@ -296,5 +298,5 @@ cat /tmp/owl-report.md | python3 scripts/save_report.py --output-dir ./owl-repor
 - [monitor/SKILL.md](monitor/SKILL.md)
 - [dql/SKILL.md](dql/SKILL.md)
 - [grafana-to-guance-dashboard/SKILL.md](grafana-to-guance-dashboard/SKILL.md)
-- [owl-observability/SKILL.md](owl-observability/SKILL.md)
+- [owl-diagnostics/SKILL.md](owl-diagnostics/SKILL.md)
 - [sls2dql/SKILL.md](sls2dql/SKILL.md)

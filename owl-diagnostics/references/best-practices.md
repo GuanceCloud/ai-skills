@@ -1,6 +1,6 @@
-# Owl Observability Best Practices
+# Owl Diagnostics Best Practices
 
-本文档给出使用 `owl-observability` 进行观测查询、生成报告、保存报告的最佳实践。
+本文档给出使用 `owl-diagnostics` 进行观测查询、生成报告、保存报告的最佳实践。
 
 ## 目标
 
@@ -280,7 +280,7 @@ python3 scripts/save_report.py --output-dir ./owl-reports < /tmp/owl-report.md
 
 ## 推荐短提示词
 
-- `用 owl-observability 查最近1小时错误并分类`
-- `用 owl-observability 看最近15分钟平台链路异常`
-- `用 owl-observability 出一份最近1小时错误报告`
-- `用 owl-observability 查最近24小时 event 并输出报告`
+- `用 owl-diagnostics 查最近1小时错误并分类`
+- `用 owl-diagnostics 看最近15分钟平台链路异常`
+- `用 owl-diagnostics 出一份最近1小时错误报告`
+- `用 owl-diagnostics 查最近24小时 event 并输出报告`

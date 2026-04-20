@@ -10,7 +10,7 @@ from datetime import datetime
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Save final owl observability report to disk."
+        description="Save final owl diagnostics report to disk."
     )
     parser.add_argument(
         "--output-dir",
