@@ -179,11 +179,14 @@ memory_util,float,%,host
 - Skill 自带独立脚本、Schema、测试、fixtures 和 `package.json`，可在目录内独立运行。
 - 默认流程应覆盖：
   - 转换前预检：面板类型、变量、数据源、PromQL 风险、隐式单位
-  - 转换执行：按需选择 `--guance-promql-compatible`、`--keep-grafana-meta`、`--keep-job-variable`
+  - 转换执行：按需选择 `--guance-promql-compatible`、`--keep-grafana-meta`、`--keep-job-variable`、`--sls-namespace`、`--mysql-external-datasource`、`--sql-datasource-map`
   - 转换后校验：输出 JSON 必须通过 skill 内置 schema 校验
   - 审计报告：说明成功转换、丢失面板、部分映射、单位推断置信度、兼容性风险
 - 默认应跳过 Grafana datasource 变量，例如 `ds_prometheus`
 - 默认应删除 `job` 变量及其查询条件；只有目标观测云 Dashboard 明确仍依赖 `job` 时才保留
+- 当前已处理四类数据源：`prometheus` 按默认流程，`cloudwatch` 直接按 `promql` 输出，`aliyun-log-service-datasource` 通过仓库内 `sls2dql` 转成 DQL，`mysql` 查询变量映射为观测云 `OUTER_DATASOURCE`
+- `mysql` 默认映射到 `DFF672F02CAD7D94CA1ABA9B6213537875C.syn_huoshan_mysql`，也支持通过 `--mysql-external-datasource` 或 `--sql-datasource-map` 覆盖；变量输出按观测云 `OUTER_DATASOURCE` 最小结构生成，`extend` 仅保留 `starMeaning`，并按 Grafana 当前值决定是否保留 `defaultVal`
+- `mysql` 的 `table` 面板查询会直接生成观测云原生 `outer_datasource` query：`qtype` 为 `outer_datasource`，`query.type` 为 `func`，`funcName` 指向映射后的外部数据源；已知的大表 SQL 样式会按观测云样例改写，其余 SQL 默认保留原语句并补齐结尾分号
 - 常用命令：
 
 ```bash
@@ -202,10 +205,10 @@ npm test
 - 开始前必须先执行 `owl -h`，具体查询工具必须先执行 `owl show <tool>`，不能猜参数。
 - 优先使用最贴近问题的数据域工具，例如：
   - 错误分类：`owl.errors.list`
+  - 日志与复杂查询：`owl.data.query`
   - APM 上下文：`owl.apm.list`
   - 事件：`owl.event.list`
   - 指标：`owl.metric.list`
-  - 日志与复杂查询：`owl.data.query`
   - 网络：`owl.network.list`
 - 如需 DQL，必须先 `check_dql` 再 `query`；复杂问题需要跨域补证据，先写事实，再写推断。
 - 只要涉及查询结果交付，最终必须生成结构化报告并落盘，不能只在对话里给零散结论。
