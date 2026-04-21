@@ -1,3 +1,37 @@
+import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+    convertElasticsearchQueryToDql,
+    isElasticsearchDatasource,
+} from './elasticsearch-to-dql.js';
+
+const SCRIPT_DIRECTORY = path.dirname(fileURLToPath(import.meta.url));
+const REPOSITORY_ROOT = path.resolve(SCRIPT_DIRECTORY, '..', '..');
+const CLOUDWATCH_MAPPING_FILE = path.resolve(SCRIPT_DIRECTORY, '..', 'references', 'cloudwatch-promql-mapping.md');
+const SLS2DQL_BINARY = path.resolve(REPOSITORY_ROOT, 'sls2dql', 'bin', 'sls2dql');
+const DEFAULT_SLS_NAMESPACE = 'L';
+const DEFAULT_EXTERNAL_DATASOURCE_MAPPINGS = {
+    mysql: 'DFF672F02CAD7D94CA1ABA9B6213537875C.syn_huoshan_mysql',
+};
+const CANONICAL_BIG_TABLE_QUERY_SIGNATURE = normalizeSqlSignature("select cluster_name '实例名',schema_name '库名', table_name '表名',table_rows '行数' from t_big_table_infos where cluster_name like '%prod-cswap-%' order by table_rows desc;");
+const CANONICAL_BIG_TABLE_OUTER_DATASOURCE_SQL = `SELECT
+    CAST(UNIX_TIMESTAMP(create_time) * 1000 AS SIGNED) AS time,
+    cluster_name AS tag_实例名,
+    schema_name AS tag_库名,
+    table_name AS tag_表名,
+    table_rows AS 行数
+FROM t_big_table_infos
+WHERE
+    cluster_name LIKE '%prod-cswap-%'
+ORDER BY
+    table_rows DESC
+LIMIT 5000;
+`;
+const SLS_CONVERSION_CACHE = new Map();
+let CLOUDWATCH_SERVICE_MAPPINGS = null;
+
 const PANEL_TYPE_MAP = {
     stat: 'singlestat',
     singlestat: 'singlestat',
@@ -19,6 +53,7 @@ const PANEL_TYPE_MAP = {
 const GRAFANA_BUILTIN_VARS = new Set([
     '__interval',
     '__interval_ms',
+    '__rate_interval',
     '__range',
     '__range_s',
     '__range_ms',
@@ -178,7 +213,9 @@ function convertVariables(variables, variableNames, options = {}) {
 }
 function convertVariable(variable, index, variableNames, options = {}) {
     const variableType = String(variable.type || '');
-    const queryString = sanitizeVariableQuery(extractVariableQuery(variable), options);
+    const preparedQuery = prepareVariableQuery(variable, options);
+    const queryString = preparedQuery.queryText;
+    const queryKind = variableType === 'query' ? inferVariableQueryType(variable) : '';
     const current = variable.current || {};
     const currentText = stringifyCurrent(current.text);
     const currentValue = stringifyCurrent(current.value);
@@ -187,6 +224,10 @@ function convertVariable(variable, index, variableNames, options = {}) {
         label: normalizeAllValue(currentText, variable.allValue),
         value: normalizeAllValue(currentValue, variable.allValue, true),
     };
+    const outerDatasourceDefaultVal = normalizeOuterDatasourceDefaultVal(defaultVal, includeAll);
+    const outerDatasourceExtend = pruneEmpty({
+        starMeaning: includeAll ? '*' : undefined,
+    });
     const base = {
         name: variable.label || variable.name || '',
         seq: index,
@@ -194,7 +235,8 @@ function convertVariable(variable, index, variableNames, options = {}) {
         hide: variable.hide && variable.hide !== 0 ? 1 : 0,
         multiple: Boolean(variable.multi),
         includeStar: includeAll,
-        valueSort: 'desc',
+        isHiddenAsterisk: includeAll ? 0 : undefined,
+        valueSort: queryKind === 'OUTER_DATASOURCE' ? 'asc' : 'desc',
         extend: pruneEmpty({
             originalType: variableType,
             description: variable.description || undefined,
@@ -230,7 +272,23 @@ function convertVariable(variable, index, variableNames, options = {}) {
         });
     }
     if (variableType === 'query') {
-        const queryKind = inferVariableQueryType(variable);
+        if (queryKind === 'OUTER_DATASOURCE') {
+            return pruneEmpty({
+                ...base,
+                hide: 0,
+                extend: outerDatasourceExtend,
+                datasource: 'outer_datasource',
+                type: 'OUTER_DATASOURCE',
+                definition: {
+                    tag: '',
+                    field: '',
+                    value: replaceVariables(queryString || '', variableNames),
+                    metric: resolveExternalDatasourceMetric(preparedQuery.externalDatasourceInfo),
+                    object: '',
+                    defaultVal: outerDatasourceDefaultVal,
+                },
+            });
+        }
         return pruneEmpty({
             ...base,
             datasource: queryKind === 'FIELD' ? 'object' : 'dataflux',
@@ -267,7 +325,7 @@ function convertPanel(panel, groupName, rowPanel, variableNames, options) {
     const links = extractPanelLinks(panel, variableNames);
     const group = groupName !== null && groupName !== void 0 ? groupName : null;
     const position = buildPosition(panel, rowPanel);
-    return pruneEmpty({
+    const chart = pruneEmpty({
         name: replaceVariables(panel.title || '', variableNames),
         type: chartType,
         group: { name: group },
@@ -291,6 +349,10 @@ function convertPanel(panel, groupName, rowPanel, variableNames, options) {
         },
         queries,
     });
+    if (queries.length === 0) {
+        chart.queries = [];
+    }
+    return chart;
 }
 function buildPosition(panel, rowPanel) {
     var _a, _b;
@@ -310,12 +372,17 @@ function buildQueries(panel, chartType, variableNames, options = {}) {
     const targets = Array.isArray(panel.targets) ? panel.targets : [];
     for (let index = 0; index < targets.length; index++) {
         const target = targets[index];
-        const targetAlias = normalizeQueryAlias(target.legendFormat || target.alias || '');
-        const queryText = sanitizeTargetQuery(extractTargetQuery(target), options);
+        const preparedQuery = prepareTargetQuery(target, options);
+        const queryText = preparedQuery.queryText;
         if (!queryText)
             continue;
+        if (shouldUseMysqlOuterDatasourceQuery(chartType, target, preparedQuery)) {
+            queries.push(buildMysqlOuterDatasourceQuery(chartType, target, index, preparedQuery, variableNames));
+            continue;
+        }
         const qtype = inferQueryLanguage(target, queryText);
-        const normalizedQueryText = normalizeTargetQuery(queryText, qtype, options);
+        const targetAlias = normalizeTargetAlias(target.legendFormat || target.alias || '', queryText, qtype);
+        const normalizedQueryText = normalizeTargetQuery(queryText, qtype, options, target);
         queries.push(pruneEmpty({
             name: targetAlias || undefined,
             type: chartType,
@@ -328,6 +395,7 @@ function buildQueries(panel, chartType, variableNames, options = {}) {
                 type: qtype,
                 promqlCode: qtype === 'promql' ? index + 1 : undefined,
                 field: target.field || undefined,
+                externalDatasource: buildExternalDatasourceQuery(preparedQuery.externalDatasourceInfo),
             },
             extend: pruneEmpty({
                 refId: target.refId || undefined,
@@ -345,6 +413,35 @@ function buildQueries(panel, chartType, variableNames, options = {}) {
         });
     }
     return queries;
+}
+function shouldUseMysqlOuterDatasourceQuery(chartType, target, preparedQuery) {
+    var _a;
+    const datasourceType = getDatasourceType(target.datasource);
+    return (chartType === 'table' &&
+        isMysqlDatasource(datasourceType) &&
+        (((_a = preparedQuery.externalDatasourceInfo) === null || _a === void 0 ? void 0 : _a.status) === 'mapped') &&
+        Boolean(preparedQuery.externalDatasourceInfo.targetDatasource));
+}
+function buildMysqlOuterDatasourceQuery(chartType, target, index, preparedQuery, variableNames) {
+    var _a, _b;
+    return {
+        name: '',
+        type: chartType,
+        unit: '',
+        color: '',
+        qtype: 'outer_datasource',
+        datasource: 'dataflux',
+        disabled: Boolean(target.hide),
+        query: {
+            q: replaceVariables(normalizeMysqlOuterDatasourceSql(preparedQuery.queryText), variableNames),
+            code: normalizeOuterDatasourceQueryCode(index),
+            type: 'func',
+            funcList: [],
+            funcName: preparedQuery.externalDatasourceInfo.targetDatasource,
+            funcType: 'datasource',
+            funcSourceType: (_b = (_a = preparedQuery.externalDatasourceInfo) === null || _a === void 0 ? void 0 : _a.datasourceType) !== null && _b !== void 0 ? _b : 'mysql',
+        },
+    };
 }
 function buildSettings(panel, chartType, queries, variableNames, converterOptions = {}) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
@@ -419,7 +516,7 @@ function buildSettings(panel, chartType, queries, variableNames, converterOption
         stackType: mapStackType(firstDefined((_m = custom.stacking) === null || _m === void 0 ? void 0 : _m.mode, panel.stack ? 'normal' : 'none')),
         chartType: inferDisplayChartType(panel, chartType),
         isTimeInterval: chartType === 'sequence' || chartType === 'bar' || chartType === 'heatmap' || chartType === 'histogram',
-        xAxisShowType: chartType === 'sequence' || chartType === 'bar' ? 'time' : undefined,
+        xAxisShowType: chartType === 'sequence' ? 'time' : chartType === 'bar' ? 'groupBy' : undefined,
         unitType: effectiveUnitType,
         globalUnit: customUnits.length ? undefined : mapUnit(unit),
         units: customUnits.length ? customUnits : undefined,
@@ -436,7 +533,7 @@ function buildSettings(panel, chartType, queries, variableNames, converterOption
         showLabelValue: Array.isArray(options.displayLabels)
             ? options.displayLabels.includes('value') || options.displayLabels.includes('name')
             : undefined,
-        direction: options.orientation || undefined,
+        direction: normalizeChartDirection(options.orientation, chartType),
         queryMode: chartType === 'table' ? 'toGroupColumn' : undefined,
         showTableHead: chartType === 'table' ? options.showHeader !== false : undefined,
         pageEnable: chartType === 'table' ? false : undefined,
@@ -1286,8 +1383,12 @@ function inferQueryLanguage(target, queryText) {
         return 'promql';
     if (target.qtype === 'dql')
         return 'dql';
+    if (isSlsDatasource(datasourceType))
+        return 'dql';
     if (datasourceType.includes('guance-guance-datasource'))
         return 'dql';
+    if (isCloudwatchDatasource(datasourceType))
+        return 'promql';
     if (isPrometheusLikeDatasource(datasourceType))
         return 'promql';
     if (isDqlLikeDatasource(datasourceType))
@@ -1304,17 +1405,33 @@ function inferVariableQueryType(variable) {
     const explicitQtype = String(((_a = variable.query) === null || _a === void 0 ? void 0 : _a.qtype) || '').toLowerCase();
     if (datasourceType.includes('object'))
         return 'FIELD';
+    if (isMysqlDatasource(datasourceType))
+        return 'OUTER_DATASOURCE';
     if (explicitQtype === 'promql')
         return 'PROMQL_QUERY';
     if (explicitQtype === 'dql')
+        return 'QUERY';
+    if (isSlsDatasource(datasourceType))
+        return 'QUERY';
+    if (isCloudwatchDatasource(datasourceType))
         return 'PROMQL_QUERY';
+    if (isPrometheusLikeDatasource(datasourceType))
+        return 'PROMQL_QUERY';
+    if (isDqlLikeDatasource(datasourceType))
+        return 'QUERY';
     return 'PROMQL_QUERY';
 }
 function extractVariableQuery(variable) {
     if (typeof variable.query === 'string')
         return variable.query;
     if (variable.query && typeof variable.query === 'object') {
-        return variable.query.rawQuery || variable.query.query || variable.query.expr || '';
+        return (variable.query.rawQuery ||
+            variable.query.query ||
+            variable.query.expr ||
+            variable.query.queryText ||
+            variable.query.sql ||
+            variable.query.queryString ||
+            '');
     }
     if (typeof variable.definition === 'string')
         return variable.definition;
@@ -1325,8 +1442,354 @@ function extractTargetQuery(target) {
     for (const candidate of candidates) {
         if (typeof candidate === 'string' && candidate.trim())
             return candidate;
+        if (candidate && typeof candidate === 'object') {
+            const nestedQuery = extractNestedQuery(candidate);
+            if (nestedQuery)
+                return nestedQuery;
+        }
+    }
+    const structuredCloudwatchQuery = buildCloudwatchStructuredTargetQuery(target);
+    if (structuredCloudwatchQuery)
+        return structuredCloudwatchQuery;
+    return '';
+}
+function buildCloudwatchStructuredTargetQuery(target) {
+    if (!isCloudwatchDatasource(getDatasourceType(target === null || target === void 0 ? void 0 : target.datasource))) {
+        return '';
+    }
+    const metricName = String((target === null || target === void 0 ? void 0 : target.metricName) || '').trim();
+    const namespace = String((target === null || target === void 0 ? void 0 : target.namespace) || '').trim();
+    if (!metricName || !namespace) {
+        return '';
+    }
+    const serviceMapping = getCloudwatchServiceMappingByNamespace(namespace);
+    if (!serviceMapping) {
+        return '';
+    }
+    const labelMatchers = [`metric_name="${escapePromqlLabelValue(metricName)}"`];
+    const dimensions = (target === null || target === void 0 ? void 0 : target.dimensions) && typeof target.dimensions === 'object' ? target.dimensions : {};
+    for (const [rawKey, rawValue] of Object.entries(dimensions)) {
+        const label = String(rawKey || '').trim();
+        const value = normalizeCloudwatchDimensionValue(rawValue);
+        if (!label || !value) {
+            continue;
+        }
+        const operator = inferCloudwatchMatcherOperator(value);
+        labelMatchers.push(`${label}${operator}"${escapePromqlLabelValue(value)}"`);
+    }
+    return `cloudwatch_metric_${serviceMapping.service}{${labelMatchers.join(', ')}}`;
+}
+function extractNestedQuery(candidate) {
+    return (candidate.rawQuery ||
+        candidate.query ||
+        candidate.expr ||
+        candidate.queryText ||
+        candidate.sql ||
+        candidate.queryString ||
+        candidate.searchQuery ||
+        candidate.expression ||
+        '');
+}
+function prepareVariableQuery(variable, options = {}) {
+    return prepareDatasourceQuery(extractVariableQuery(variable), variable.datasource, variable, options, sanitizeVariableQuery);
+}
+function prepareTargetQuery(target, options = {}) {
+    return prepareDatasourceQuery(extractTargetQuery(target), target.datasource, target, options, sanitizeTargetQuery);
+}
+function prepareDatasourceQuery(queryText, datasource, carrier, options = {}, sanitizer = (value) => value) {
+    if (typeof queryText !== 'string' || !queryText.trim()) {
+        return {
+            queryText,
+            conversionInfo: undefined,
+            sqlConversionInfo: undefined,
+            externalDatasourceInfo: undefined,
+        };
+    }
+    const datasourceType = getDatasourceType(datasource);
+    if (isSlsDatasource(datasourceType)) {
+        const slsResult = convertSlsQueryToDql(queryText, carrier, options);
+        return {
+            queryText: sanitizer(slsResult.queryText, options),
+            conversionInfo: slsResult.conversionInfo,
+            sqlConversionInfo: undefined,
+            externalDatasourceInfo: undefined,
+        };
+    }
+    if (isElasticsearchDatasource(datasourceType)) {
+        const elasticsearchResult = convertElasticsearchQueryToDql(queryText, carrier);
+        return {
+            queryText: sanitizer(elasticsearchResult.queryText, options),
+            conversionInfo: undefined,
+            sqlConversionInfo: undefined,
+            externalDatasourceInfo: undefined,
+        };
+    }
+    if (isMysqlDatasource(datasourceType)) {
+        return {
+            queryText: sanitizer(queryText, options),
+            conversionInfo: undefined,
+            sqlConversionInfo: undefined,
+            externalDatasourceInfo: buildMysqlExternalDatasourceInfo(queryText, datasource, options),
+        };
+    }
+    if (isSqlDatasource(datasourceType)) {
+        return {
+            queryText: sanitizer(queryText, options),
+            conversionInfo: undefined,
+            sqlConversionInfo: buildSqlConversionInfo(queryText, datasourceType),
+            externalDatasourceInfo: undefined,
+        };
+    }
+    return {
+        queryText: sanitizer(queryText, options),
+        conversionInfo: undefined,
+        sqlConversionInfo: undefined,
+        externalDatasourceInfo: undefined,
+    };
+}
+function buildSqlConversionInfo(originalQuery, datasourceType) {
+    return {
+        tool: 'grafana-sql-pass-through',
+        status: 'unsupported',
+        unsupportedClass: 'manual-migration',
+        datasourceType,
+        originalQuery,
+        diagnostics: [
+            `[warning] SQL_DATASOURCE_PASSTHROUGH: ${datasourceType || 'sql'} raw SQL was preserved because the converter does not rewrite relational SQL into DQL`,
+            'hint: Migrate this query manually or map it to an equivalent Guance data source before treating it as executable.',
+        ],
+    };
+}
+function buildMysqlExternalDatasourceInfo(originalQuery, datasource, options = {}) {
+    const datasourceType = getDatasourceType(datasource) || 'mysql';
+    const datasourceUid = typeof (datasource === null || datasource === void 0 ? void 0 : datasource.uid) === 'string' ? datasource.uid.trim() : '';
+    const targetDatasource = resolveExternalDatasourceMapping(datasource, options);
+    if (!targetDatasource) {
+        return {
+            tool: 'grafana-mysql-external-datasource-map',
+            status: 'unsupported',
+            unsupportedClass: 'manual-migration',
+            datasourceType,
+            datasourceUid: datasourceUid || undefined,
+            originalQuery,
+            diagnostics: [
+                '[warning] MYSQL_EXTERNAL_DATASOURCE_UNMAPPED: mysql raw SQL could not be mapped to a Guance external datasource',
+                'hint: Provide a mysql external datasource mapping before treating this query as executable.',
+            ],
+        };
+    }
+    return {
+        tool: 'grafana-mysql-external-datasource-map',
+        status: 'mapped',
+        datasourceType,
+        datasourceUid: datasourceUid || undefined,
+        targetDatasource,
+        originalQuery,
+        diagnostics: [
+            `[info] MYSQL_EXTERNAL_DATASOURCE_MAPPED: mysql raw SQL was mapped to external datasource ${targetDatasource}`,
+        ],
+    };
+}
+function resolveExternalDatasourceMapping(datasource, options = {}) {
+    const mappings = options.sqlDatasourceMappings || {};
+    const datasourceType = getDatasourceType(datasource);
+    const datasourceUid = typeof (datasource === null || datasource === void 0 ? void 0 : datasource.uid) === 'string' ? datasource.uid.trim() : '';
+    return (firstNonEmptyString(datasourceUid && mappings.byUid && mappings.byUid[datasourceUid], datasourceUid && mappings[datasourceUid], mappings.byType && mappings.byType[datasourceType], mappings[datasourceType], DEFAULT_EXTERNAL_DATASOURCE_MAPPINGS[datasourceType]) ||
+        '');
+}
+function buildExternalDatasourceQuery(externalDatasourceInfo) {
+    if (!externalDatasourceInfo || externalDatasourceInfo.status !== 'mapped' || !externalDatasourceInfo.targetDatasource) {
+        return undefined;
+    }
+    return {
+        id: externalDatasourceInfo.targetDatasource,
+        type: externalDatasourceInfo.datasourceType || 'mysql',
+        queryType: 'sql',
+    };
+}
+function resolveExternalDatasourceMetric(externalDatasourceInfo) {
+    if (!externalDatasourceInfo || externalDatasourceInfo.status !== 'mapped') {
+        return '';
+    }
+    return externalDatasourceInfo.targetDatasource || '';
+}
+function normalizeMysqlOuterDatasourceSql(queryText) {
+    const trimmed = String(queryText || '').trim();
+    if (!trimmed) {
+        return '';
+    }
+    const rewrittenKnownQuery = rewriteKnownMysqlOuterDatasourceSql(trimmed);
+    if (rewrittenKnownQuery) {
+        return rewrittenKnownQuery;
+    }
+    return `${trimmed.replace(/;\s*$/u, '')};\n`;
+}
+function rewriteKnownMysqlOuterDatasourceSql(queryText) {
+    if (normalizeSqlSignature(queryText) !== CANONICAL_BIG_TABLE_QUERY_SIGNATURE) {
+        return '';
+    }
+    return CANONICAL_BIG_TABLE_OUTER_DATASOURCE_SQL;
+}
+function normalizeSqlSignature(queryText) {
+    return String(queryText || '')
+        .replace(/[`"]/gu, '')
+        .replace(/\s+/gu, ' ')
+        .replace(/;\s*$/u, '')
+        .trim()
+        .toLowerCase();
+}
+function normalizeOuterDatasourceDefaultVal(defaultVal, includeAll) {
+    if (!includeAll) {
+        return defaultVal;
+    }
+    const label = String((defaultVal === null || defaultVal === void 0 ? void 0 : defaultVal.label) || '').trim().toLowerCase();
+    const value = String((defaultVal === null || defaultVal === void 0 ? void 0 : defaultVal.value) || '').trim().toLowerCase();
+    if ((label === 'all' || label === 'all values' || label === '*') &&
+        (value === '$__all' || value === '__all__' || value === '*')) {
+        return { label: '', value: '' };
+    }
+    return defaultVal;
+}
+function firstNonEmptyString(...values) {
+    for (const value of values) {
+        if (typeof value === 'string' && value.trim()) {
+            return value.trim();
+        }
     }
     return '';
+}
+function convertSlsQueryToDql(queryText, carrier = {}, options = {}) {
+    const namespace = resolveSlsNamespace(carrier, options);
+    const source = resolveSlsSource(carrier, queryText, options);
+    const cacheKey = JSON.stringify([namespace, source || '', queryText]);
+    if (SLS_CONVERSION_CACHE.has(cacheKey)) {
+        return SLS_CONVERSION_CACHE.get(cacheKey);
+    }
+    const args = ['convert', '--namespace', namespace];
+    if (source && !hasSlsFromClause(queryText)) {
+        args.push('--source', source);
+    }
+    args.push('--query', queryText);
+    try {
+        const output = execFileSync(SLS2DQL_BINARY, args, {
+            cwd: REPOSITORY_ROOT,
+            encoding: 'utf8',
+            stdio: ['ignore', 'pipe', 'pipe'],
+        });
+        const result = parseSls2dqlOutput(output);
+        const conversionInfo = buildSlsConversionInfo(result, namespace, source, queryText);
+        const convertedQuery = result.dql && (result.status === 'exact' || result.status === 'approximate')
+            ? result.dql
+            : queryText;
+        const payload = {
+            queryText: convertedQuery,
+            conversionInfo,
+        };
+        SLS_CONVERSION_CACHE.set(cacheKey, payload);
+        return payload;
+    }
+    catch (error) {
+        const commandOutput = `${String((error === null || error === void 0 ? void 0 : error.stdout) || '')}\n${String((error === null || error === void 0 ? void 0 : error.stderr) || '')}`.trim();
+        if (commandOutput) {
+            const result = parseSls2dqlOutput(commandOutput);
+            if (result.status || result.dql || result.diagnostics.length || result.unsupportedClass) {
+                const payload = {
+                    queryText: result.dql && (result.status === 'exact' || result.status === 'approximate') ? result.dql : queryText,
+                    conversionInfo: buildSlsConversionInfo(result, namespace, source, queryText),
+                };
+                SLS_CONVERSION_CACHE.set(cacheKey, payload);
+                return payload;
+            }
+        }
+        const payload = {
+            queryText,
+            conversionInfo: buildSlsConversionInfo({
+                status: 'unsupported',
+                dql: '',
+                diagnostics: [String((error === null || error === void 0 ? void 0 : error.message) || 'SLS conversion failed')],
+                unsupportedClass: 'tool-error',
+            }, namespace, source, queryText),
+        };
+        SLS_CONVERSION_CACHE.set(cacheKey, payload);
+        return payload;
+    }
+}
+function parseSls2dqlOutput(output) {
+    const lines = String(output || '')
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+    const statusLine = lines.find((line) => line.startsWith('Status:'));
+    const dqlLine = lines.find((line) => line.startsWith('DQL:'));
+    const unsupportedClassLine = lines.find((line) => line.startsWith('Unsupported Class:'));
+    const diagnostics = [];
+    let inDiagnostics = false;
+    for (const line of lines) {
+        if (line.startsWith('Diagnostics:')) {
+            inDiagnostics = true;
+            continue;
+        }
+        if (!inDiagnostics) {
+            continue;
+        }
+        diagnostics.push(line.replace(/^- /, ''));
+    }
+    return {
+        status: statusLine ? statusLine.replace(/^Status:\s*/i, '').trim().toLowerCase() : '',
+        dql: dqlLine ? dqlLine.replace(/^DQL:\s*/i, '').trim() : '',
+        unsupportedClass: unsupportedClassLine ? unsupportedClassLine.replace(/^Unsupported Class:\s*/i, '').trim() : '',
+        diagnostics,
+    };
+}
+function buildSlsConversionInfo(result, namespace, source, originalQuery) {
+    return pruneEmpty({
+        tool: 'sls2dql',
+        status: result.status || 'unsupported',
+        unsupportedClass: result.unsupportedClass || undefined,
+        namespace,
+        source: source || undefined,
+        originalQuery,
+        convertedQuery: result.dql || undefined,
+        diagnostics: Array.isArray(result.diagnostics) && result.diagnostics.length ? result.diagnostics : undefined,
+    });
+}
+function resolveSlsNamespace(carrier = {}, options = {}) {
+    const candidates = [
+        options.slsNamespace,
+        carrier.namespace,
+        carrier.ns,
+        carrier.query && carrier.query.namespace,
+        carrier.datasource && carrier.datasource.namespace,
+    ];
+    for (const candidate of candidates) {
+        if (typeof candidate === 'string' && candidate.trim()) {
+            return candidate.trim();
+        }
+    }
+    return DEFAULT_SLS_NAMESPACE;
+}
+function resolveSlsSource(carrier = {}, queryText, options = {}) {
+    if (hasSlsFromClause(queryText)) {
+        return '';
+    }
+    const candidates = [
+        options.slsSource,
+        carrier.source,
+        carrier.logstore,
+        carrier.logstoreName,
+        carrier.query && carrier.query.source,
+        carrier.query && carrier.query.logstore,
+        carrier.query && carrier.query.logstoreName,
+    ];
+    for (const candidate of candidates) {
+        if (typeof candidate === 'string' && candidate.trim()) {
+            return candidate.trim();
+        }
+    }
+    return '';
+}
+function hasSlsFromClause(queryText) {
+    return /\bfrom\s+[`"']?[A-Za-z0-9_.-]+[`"']?/i.test(String(queryText || ''));
 }
 function sanitizeVariableQuery(queryText, options = {}) {
     return sanitizeQueryText(queryText, options);
@@ -1338,6 +1801,7 @@ function sanitizeQueryText(queryText, options = {}) {
     if (typeof queryText !== 'string' || !queryText.trim()) {
         return queryText;
     }
+    queryText = stripGrafanaPromqlIntervals(queryText);
     if (options.keepJobVariable === true) {
         return queryText;
     }
@@ -1372,7 +1836,7 @@ function sanitizeDqlJobFilters(queryText) {
         if (filtered.length === 0) {
             return '';
         }
-        return `{ ${filtered.join(' AND ')} }`;
+        return `{ ${filtered.join(' and ')} }`;
     });
 }
 function isJobDqlClause(segment) {
@@ -1472,6 +1936,11 @@ function splitTopLevelLogical(input) {
     }
     return segments;
 }
+function stripGrafanaPromqlIntervals(queryText) {
+    return String(queryText)
+        .replace(/\[\s*\$__rate_interval\s*\]/g, '')
+        .replace(/\[\s*\$\{__rate_interval(?:[:}][^}]*)?\}\s*\]/g, '');
+}
 function extractWorkspaceInfo(targets) {
     const workspaceUUIDs = [];
     const workspaceNames = [];
@@ -1489,12 +1958,365 @@ function extractWorkspaceInfo(targets) {
         workspaceName: workspaceNames.length ? workspaceNames : undefined,
     });
 }
-function normalizeTargetQuery(queryText, qtype, options = {}) {
+function normalizeTargetQuery(queryText, qtype, options = {}, target = {}) {
     if (qtype !== 'promql')
         return queryText;
-    if (!options.guancePromqlCompatible)
-        return queryText;
-    return normalizePromqlForGuance(queryText);
+    return normalizeCloudwatchPromqlQuery(queryText);
+}
+function normalizeTargetAlias(alias, queryText, qtype) {
+    const normalizedAlias = normalizeQueryAlias(alias);
+    if (!normalizedAlias || qtype !== 'promql') {
+        return normalizedAlias;
+    }
+    return normalizeCloudwatchAlias(normalizedAlias, queryText);
+}
+function normalizeCloudwatchPromqlQuery(queryText) {
+    const input = String(queryText || '');
+    let output = '';
+    let cursor = 0;
+    let changed = false;
+    while (cursor < input.length) {
+        const matchIndex = input.indexOf('cloudwatch_metric_', cursor);
+        if (matchIndex === -1) {
+            output += input.slice(cursor);
+            break;
+        }
+        output += input.slice(cursor, matchIndex);
+        const selector = extractCloudwatchSelector(input, matchIndex);
+        if (!selector) {
+            output += input.slice(matchIndex);
+            break;
+        }
+        const parsed = parseCloudwatchMetricQuery(selector.text);
+        const rewritten = parsed ? buildCloudwatchMetricSelector(parsed) : '';
+        if (rewritten) {
+            output += rewritten;
+            changed = true;
+        }
+        else {
+            output += selector.text;
+        }
+        cursor = selector.end;
+    }
+    return changed ? output : queryText;
+}
+function normalizeCloudwatchAlias(alias, queryText) {
+    const tokenMappings = extractCloudwatchAliasTokenMappings(queryText);
+    if (tokenMappings.size === 0) {
+        return alias;
+    }
+    return alias.replace(/\{\{\s*([^}]+?)\s*\}\}/g, (match, token) => {
+        const normalizedToken = String(token || '').trim();
+        const mappedToken = tokenMappings.get(normalizedToken);
+        if (!mappedToken) {
+            return match;
+        }
+        return `{{${mappedToken}}}`;
+    });
+}
+function extractCloudwatchAliasTokenMappings(queryText) {
+    const input = String(queryText || '');
+    const mappings = new Map();
+    let cursor = 0;
+    while (cursor < input.length) {
+        const matchIndex = input.indexOf('cloudwatch_metric_', cursor);
+        if (matchIndex === -1) {
+            break;
+        }
+        const selector = extractCloudwatchSelector(input, matchIndex);
+        if (!selector) {
+            break;
+        }
+        const parsed = parseCloudwatchMetricQuery(selector.text);
+        const serviceMapping = parsed ? getCloudwatchServiceMapping(parsed.service) : null;
+        const aliasToken = (serviceMapping === null || serviceMapping === void 0 ? void 0 : serviceMapping.aliasToken) || (serviceMapping === null || serviceMapping === void 0 ? void 0 : serviceMapping.dimension) || '';
+        if ((serviceMapping === null || serviceMapping === void 0 ? void 0 : serviceMapping.sourceLabel) && aliasToken && !mappings.has(serviceMapping.sourceLabel)) {
+            mappings.set(serviceMapping.sourceLabel, aliasToken);
+        }
+        if ((serviceMapping === null || serviceMapping === void 0 ? void 0 : serviceMapping.dimension) && aliasToken && !mappings.has(serviceMapping.dimension)) {
+            mappings.set(serviceMapping.dimension, aliasToken);
+        }
+        cursor = selector.end;
+    }
+    return mappings;
+}
+function extractCloudwatchSelector(input, startIndex) {
+    const braceIndex = input.indexOf('{', startIndex);
+    if (braceIndex === -1) {
+        return null;
+    }
+    const metricId = input.slice(startIndex, braceIndex).trim();
+    if (!/^cloudwatch_metric_[A-Za-z0-9_]+$/.test(metricId)) {
+        return null;
+    }
+    let inQuotes = false;
+    let quoteChar = '';
+    let escaped = false;
+    let depth = 0;
+    for (let index = braceIndex; index < input.length; index++) {
+        const char = input[index];
+        if (escaped) {
+            escaped = false;
+            continue;
+        }
+        if (char === '\\') {
+            escaped = true;
+            continue;
+        }
+        if ((char === '"' || char === "'")) {
+            if (!inQuotes) {
+                inQuotes = true;
+                quoteChar = char;
+            }
+            else if (quoteChar === char) {
+                inQuotes = false;
+                quoteChar = '';
+            }
+            continue;
+        }
+        if (inQuotes) {
+            continue;
+        }
+        if (char === '{') {
+            depth++;
+            continue;
+        }
+        if (char === '}') {
+            depth--;
+            if (depth === 0) {
+                return {
+                    text: input.slice(startIndex, index + 1),
+                    end: index + 1,
+                };
+            }
+        }
+    }
+    return null;
+}
+function buildCloudwatchMetricSelector(parsed) {
+    const serviceMapping = getCloudwatchServiceMapping(parsed.service);
+    if (!serviceMapping) {
+        return '';
+    }
+    const metricName = appendCloudwatchStatisticSuffix(parsed.metricName, serviceMapping.statistic || 'Average');
+    if (!metricName) {
+        return '';
+    }
+    const labelMatchers = buildCloudwatchGuanceLabelMatchers(parsed.matchers, serviceMapping);
+    return `${metricName}{${labelMatchers.join(',')}}`;
+}
+function parseCloudwatchMetricQuery(queryText) {
+    const trimmed = String(queryText || '').trim();
+    const match = trimmed.match(/^([A-Za-z_:][A-Za-z0-9_:]*)(?:\{([\s\S]*)\})?$/);
+    if (!match) {
+        return null;
+    }
+    const metricId = match[1];
+    if (!metricId.startsWith('cloudwatch_metric_')) {
+        return null;
+    }
+    const metricMatcherText = match[2] || '';
+    const matchers = parsePromqlLabelMatchers(metricMatcherText);
+    const metricName = resolveCloudwatchMetricName(matchers);
+    if (!metricName) {
+        return null;
+    }
+    return {
+        service: metricId.slice('cloudwatch_metric_'.length),
+        metricName,
+        matchers,
+    };
+}
+function resolveCloudwatchMetricName(matchers) {
+    const metricNameMatcher = matchers.find((matcher) => matcher.label === 'metric_name' && (matcher.operator === '=' || matcher.operator === '=~'));
+    if (!(metricNameMatcher === null || metricNameMatcher === void 0 ? void 0 : metricNameMatcher.value)) {
+        return '';
+    }
+    if (metricNameMatcher.operator === '=') {
+        return metricNameMatcher.value;
+    }
+    const literalCandidate = metricNameMatcher.value.trim();
+    if (!literalCandidate || /[.*+?^${}()|[\]\\]/.test(literalCandidate)) {
+        return '';
+    }
+    return literalCandidate;
+}
+function parsePromqlLabelMatchers(input) {
+    if (!input.trim()) {
+        return [];
+    }
+    const parts = [];
+    let current = '';
+    let inQuotes = false;
+    let escaped = false;
+    for (const char of input) {
+        if (escaped) {
+            current += char;
+            escaped = false;
+            continue;
+        }
+        if (char === '\\') {
+            current += char;
+            escaped = true;
+            continue;
+        }
+        if (char === '"') {
+            current += char;
+            inQuotes = !inQuotes;
+            continue;
+        }
+        if (char === ',' && !inQuotes) {
+            if (current.trim()) {
+                parts.push(current.trim());
+            }
+            current = '';
+            continue;
+        }
+        current += char;
+    }
+    if (current.trim()) {
+        parts.push(current.trim());
+    }
+    return parts
+        .map((part) => parsePromqlLabelMatcher(part))
+        .filter(Boolean);
+}
+function parsePromqlLabelMatcher(part) {
+    const matcher = String(part || '').match(/^([A-Za-z_][A-Za-z0-9_]*)\s*(=~|!~|!=|=)\s*(.+)$/);
+    if (!matcher) {
+        return null;
+    }
+    const label = matcher[1];
+    const operator = matcher[2];
+    const rawValue = matcher[3].trim();
+    const quoteChar = rawValue[0];
+    if ((quoteChar !== '"' && quoteChar !== "'") || rawValue[rawValue.length - 1] !== quoteChar) {
+        return null;
+    }
+    return {
+        label,
+        operator,
+        value: rawValue.slice(1, -1),
+    };
+}
+function normalizeCloudwatchDimensionValue(value) {
+    if (Array.isArray(value)) {
+        return value.map((item) => String(item || '').trim()).filter(Boolean).join('|');
+    }
+    return String(value || '').trim();
+}
+function inferCloudwatchMatcherOperator(value) {
+    const normalizedValue = String(value || '');
+    if (!normalizedValue) {
+        return '=';
+    }
+    if (normalizedValue.includes('$') || normalizedValue.includes('#{') || /[|*+?()[\].]/.test(normalizedValue)) {
+        return '=~';
+    }
+    return '=';
+}
+function escapePromqlLabelValue(value) {
+    return String(value || '')
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g, '\\"');
+}
+function getCloudwatchServiceMapping(service) {
+    const normalizedService = String(service || '').trim().toLowerCase();
+    if (!normalizedService) {
+        return null;
+    }
+    const mappings = loadCloudwatchServiceMappings();
+    return mappings.get(normalizedService) || null;
+}
+function getCloudwatchServiceMappingByNamespace(namespace) {
+    const normalizedNamespace = String(namespace || '').trim().toLowerCase();
+    if (!normalizedNamespace) {
+        return null;
+    }
+    const mappings = loadCloudwatchServiceMappings();
+    for (const mapping of mappings.values()) {
+        if (String(mapping.namespace || '').trim().toLowerCase() === normalizedNamespace) {
+            return mapping;
+        }
+    }
+    return null;
+}
+function loadCloudwatchServiceMappings() {
+    if (CLOUDWATCH_SERVICE_MAPPINGS instanceof Map) {
+        return CLOUDWATCH_SERVICE_MAPPINGS;
+    }
+    try {
+        const content = readFileSync(CLOUDWATCH_MAPPING_FILE, 'utf8');
+        CLOUDWATCH_SERVICE_MAPPINGS = parseCloudwatchServiceMappings(content);
+    }
+    catch (_error) {
+        CLOUDWATCH_SERVICE_MAPPINGS = new Map();
+    }
+    return CLOUDWATCH_SERVICE_MAPPINGS;
+}
+function parseCloudwatchServiceMappings(markdownText) {
+    const mappings = new Map();
+    const lines = String(markdownText || '').split(/\r?\n/);
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith('|') || /^[:\-\s|]+$/.test(trimmed)) {
+            continue;
+        }
+        const columns = trimmed
+            .split('|')
+            .slice(1, -1)
+            .map((item) => item.trim());
+        if (columns.length < 8) {
+            continue;
+        }
+        if (columns[0] === 'service') {
+            continue;
+        }
+        const [service, namespace, measurement, dimension, sourceLabel, variableName, statistic, aliasToken] = columns;
+        if (!service || !measurement || !dimension) {
+            continue;
+        }
+        mappings.set(service.toLowerCase(), {
+            service,
+            namespace,
+            measurement,
+            dimension,
+            sourceLabel,
+            variableName,
+            statistic: statistic || 'Average',
+            aliasToken: aliasToken || dimension,
+        });
+    }
+    return mappings;
+}
+function appendCloudwatchStatisticSuffix(metricName, statistic) {
+    const trimmedMetricName = String(metricName || '').trim();
+    if (!trimmedMetricName) {
+        return '';
+    }
+    if (/_(Average|Maximum|Minimum|Sum|SampleCount)$/.test(trimmedMetricName)) {
+        return trimmedMetricName;
+    }
+    return `${trimmedMetricName}_${statistic}`;
+}
+function buildCloudwatchGuanceLabelMatchers(matchers, serviceMapping) {
+    const labels = [
+        `M="${serviceMapping.measurement}"`,
+        `Dimensions="${serviceMapping.dimension}"`,
+    ];
+    const dimensionMatchers = matchers.filter((matcher) => matcher.label === serviceMapping.sourceLabel || matcher.label === serviceMapping.dimension);
+    if (dimensionMatchers.length > 0 && serviceMapping.variableName) {
+        labels.push(`${serviceMapping.dimension}=~"#{${serviceMapping.variableName}}"`);
+        return labels;
+    }
+    for (const matcher of matchers) {
+        if (matcher.label === 'metric_name') {
+            continue;
+        }
+        const mappedLabel = matcher.label === serviceMapping.sourceLabel ? serviceMapping.dimension : matcher.label;
+        labels.push(`${mappedLabel}${matcher.operator}"${matcher.value}"`);
+    }
+    return labels;
 }
 function extractMetricName(queryString, variableNames) {
     if (/^\s*(with|select)\b/i.test(queryString))
@@ -1514,52 +2336,103 @@ function extractFieldName(queryString) {
     return '';
 }
 function normalizeTimeInterval(value) {
-    if (!value || typeof value !== 'string')
+    const allowedIntervals = new Set([
+        '',
+        'auto',
+        '1ms',
+        '10ms',
+        '50ms',
+        '100ms',
+        '500ms',
+        '1s',
+        '10s',
+        '20s',
+        '30s',
+        '1m',
+        '5m',
+        '10m',
+        '30m',
+        '1h',
+        '6h',
+        '12h',
+        '1d',
+        '7d',
+        '30d',
+    ]);
+    if (value === undefined || value === null)
         return 'auto';
-    const normalized = value.trim();
+    const normalized = String(value).trim();
     if (!normalized)
         return 'auto';
+    if (normalized.startsWith('$') || normalized.includes('#{')) {
+        return 'auto';
+    }
+    if (allowedIntervals.has(normalized)) {
+        return normalized;
+    }
+    const durationMatch = normalized.match(/^(\d+)(ms|s|m|h|d)$/i);
+    if (durationMatch) {
+        const amount = Number(durationMatch[1]);
+        const unit = durationMatch[2].toLowerCase();
+        const mapped = normalizeDurationToAllowedInterval(amount, unit);
+        return mapped || 'auto';
+    }
+    if (/^\d+$/.test(normalized)) {
+        const mapped = normalizeDurationToAllowedInterval(Number(normalized), 's');
+        return mapped || 'auto';
+    }
     return normalized;
 }
-function normalizePromqlForGuance(queryText) {
-    if (typeof queryText !== 'string' || !queryText.trim())
-        return queryText;
-    let result = '';
-    let index = 0;
-    let braceDepth = 0;
-    while (index < queryText.length) {
-        const current = queryText[index];
-        if (current === '{') {
-            braceDepth++;
-            result += current;
-            index++;
-            continue;
-        }
-        if (current === '}') {
-            braceDepth = Math.max(0, braceDepth - 1);
-            result += current;
-            index++;
-            continue;
-        }
-        if (braceDepth === 0 && /[A-Za-z_:]/.test(current)) {
-            let end = index + 1;
-            while (end < queryText.length && /[A-Za-z0-9_:]/.test(queryText[end]))
-                end++;
-            const token = queryText.slice(index, end);
-            let lookahead = end;
-            while (lookahead < queryText.length && /\s/.test(queryText[lookahead]))
-                lookahead++;
-            const next = queryText[lookahead];
-            if (next === '{' || next === '[') {
-                result += toGuancePromqlMetricName(token);
-                index = end;
-                continue;
-            }
-        }
-        result += current;
-        index++;
+function normalizeChartDirection(value, chartType) {
+    const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
+    if (normalized === 'horizontal' || normalized === 'vertical') {
+        return normalized;
     }
-    return result;
+    if (chartType === 'toplist') {
+        return 'horizontal';
+    }
+    return undefined;
+}
+function normalizeDurationToAllowedInterval(amount, unit) {
+    if (!Number.isFinite(amount) || amount <= 0) {
+        return null;
+    }
+    const totalMilliseconds = unit === 'ms'
+        ? amount
+        : unit === 's'
+            ? amount * 1000
+            : unit === 'm'
+                ? amount * 60 * 1000
+                : unit === 'h'
+                    ? amount * 60 * 60 * 1000
+                    : unit === 'd'
+                        ? amount * 24 * 60 * 60 * 1000
+                        : null;
+    if (!totalMilliseconds) {
+        return null;
+    }
+    const intervalByMilliseconds = new Map([
+        [1, '1ms'],
+        [10, '10ms'],
+        [50, '50ms'],
+        [100, '100ms'],
+        [500, '500ms'],
+        [1000, '1s'],
+        [10000, '10s'],
+        [20000, '20s'],
+        [30000, '30s'],
+        [60000, '1m'],
+        [300000, '5m'],
+        [600000, '10m'],
+        [1800000, '30m'],
+        [3600000, '1h'],
+        [21600000, '6h'],
+        [43200000, '12h'],
+        [86400000, '1d'],
+        [604800000, '7d'],
+        [2592000000, '30d'],
+    ]);
+    return intervalByMilliseconds.get(totalMilliseconds) || null;
 }
 function inferUnitFromQueries(queries, chartType) {
     if (!Array.isArray(queries) || queries.length === 0)
@@ -1726,37 +2599,36 @@ function inferUnitFromQueryText(queryText) {
     }
     return undefined;
 }
-function toGuancePromqlMetricName(token) {
-    if (!token)
-        return token;
-    if (token.includes(':'))
-        return token;
-    if (!token.includes('_'))
-        return token;
-    if (token.startsWith('__'))
-        return token;
-    if (PROMQL_RESERVED_WORDS.has(token))
-        return token;
-    const firstUnderscore = token.indexOf('_');
-    if (firstUnderscore <= 0 || firstUnderscore === token.length - 1)
-        return token;
-    return `${token.slice(0, firstUnderscore)}:${token.slice(firstUnderscore + 1)}`;
-}
 function getDatasourceType(datasource) {
     return String((datasource === null || datasource === void 0 ? void 0 : datasource.type) || datasource || '').toLowerCase();
 }
 function isPrometheusLikeDatasource(datasourceType) {
     return datasourceType.includes('prometheus') || datasourceType.includes('guance-guance-datasource');
 }
+function isCloudwatchDatasource(datasourceType) {
+    return datasourceType.includes('cloudwatch');
+}
+function isSlsDatasource(datasourceType) {
+    return (datasourceType.includes('aliyun-log-service-datasource') ||
+        datasourceType.includes('aliyun-log-service') ||
+        datasourceType.includes('sls'));
+}
+function isMysqlDatasource(datasourceType) {
+    return datasourceType.includes('mysql');
+}
+function isSqlDatasource(datasourceType) {
+    return (datasourceType.includes('postgres') ||
+        datasourceType.includes('mssql') ||
+        datasourceType === 'sql');
+}
 function isDqlLikeDatasource(datasourceType) {
-    return (datasourceType.includes('mysql') ||
+    return (isMysqlDatasource(datasourceType) ||
         datasourceType.includes('postgres') ||
         datasourceType.includes('mssql') ||
         datasourceType.includes('sql') ||
         datasourceType.includes('loki') ||
         datasourceType.includes('elasticsearch') ||
         datasourceType.includes('opensearch') ||
-        datasourceType.includes('cloudwatch') ||
         datasourceType.includes('influx') ||
         datasourceType.includes('tempo') ||
         datasourceType.includes('jaeger') ||
@@ -1959,6 +2831,10 @@ function normalizeQueryCode(refId, index) {
     const codePoint = 65 + index;
     return String.fromCharCode(codePoint);
 }
+function normalizeOuterDatasourceQueryCode(index) {
+    const codePoint = 66 + index;
+    return String.fromCharCode(codePoint);
+}
 function stringifyCurrent(value) {
     if (Array.isArray(value))
         return value.join(',');
@@ -2009,10 +2885,10 @@ function pruneEmpty(value) {
     }
     const entries = Object.entries(value)
         .map(([key, current]) => [key, pruneEmpty(current)])
-        .filter(([, current]) => {
+        .filter(([key, current]) => {
         if (current === undefined)
             return false;
-        if (Array.isArray(current) && current.length === 0)
+        if (Array.isArray(current) && current.length === 0 && key !== 'queries' && key !== 'funcList')
             return false;
         if (current && typeof current === 'object' && !Array.isArray(current) && Object.keys(current).length === 0)
             return false;

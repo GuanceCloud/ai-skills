@@ -15,9 +15,9 @@ function isDirectExecution() {
     return import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
 }
 export function main() {
-    const { inputPath, outputPath, validateOutput, schemaId, guancePromqlCompatible, keepGrafanaMeta, keepJobVariable } = parseArgs(process.argv.slice(2));
+    const { inputPath, outputPath, validateOutput, schemaId, guancePromqlCompatible, keepGrafanaMeta, keepJobVariable, slsNamespace, sqlDatasourceMappings } = parseArgs(process.argv.slice(2));
     const grafanaDashboard = readJson(inputPath);
-    const guanceDashboard = convertDashboard(grafanaDashboard, { guancePromqlCompatible, keepGrafanaMeta, keepJobVariable });
+    const guanceDashboard = convertDashboard(grafanaDashboard, { guancePromqlCompatible, keepGrafanaMeta, keepJobVariable, slsNamespace, sqlDatasourceMappings });
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, `${JSON.stringify(guanceDashboard, null, 2)}\n`, 'utf8');
     console.log(`Converted ${inputPath} -> ${outputPath}`);
@@ -33,6 +33,8 @@ function parseArgs(args) {
     let guancePromqlCompatible = false;
     let keepGrafanaMeta = false;
     let keepJobVariable = false;
+    let slsNamespace = '';
+    const sqlDatasourceMappings = {};
     for (let index = 0; index < args.length; index++) {
         const value = args[index];
         if ((value === '-i' || value === '--input') && args[index + 1]) {
@@ -63,6 +65,21 @@ function parseArgs(args) {
             keepJobVariable = true;
             continue;
         }
+        if (value === '--sls-namespace' && args[index + 1]) {
+            slsNamespace = args[++index];
+            continue;
+        }
+        if (value === '--mysql-external-datasource' && args[index + 1]) {
+            sqlDatasourceMappings.byType = {
+                ...(sqlDatasourceMappings.byType || {}),
+                mysql: args[++index],
+            };
+            continue;
+        }
+        if (value === '--sql-datasource-map' && args[index + 1]) {
+            mergeSqlDatasourceMappings(sqlDatasourceMappings, parseJsonOption(args[++index], '--sql-datasource-map'));
+            continue;
+        }
         if (value === '-h' || value === '--help') {
             printHelp();
             process.exit(0);
@@ -76,10 +93,47 @@ function parseArgs(args) {
         const parsed = path.parse(inputPath);
         outputPath = path.join(parsed.dir, `${parsed.name}.guance.json`);
     }
-    return { inputPath, outputPath, validateOutput, schemaId, guancePromqlCompatible, keepGrafanaMeta, keepJobVariable };
+    return {
+        inputPath,
+        outputPath,
+        validateOutput,
+        schemaId,
+        guancePromqlCompatible,
+        keepGrafanaMeta,
+        keepJobVariable,
+        slsNamespace,
+        sqlDatasourceMappings,
+    };
 }
 function printHelp() {
-    console.error('Usage: node convert-grafana-dashboard.mjs --input <grafana.json> [--output <guance.json>] [--validate] [--schema <schema-id>] [--guance-promql-compatible] [--keep-grafana-meta] [--keep-job-variable]');
+    console.error('Usage: node convert-grafana-dashboard.mjs --input <grafana.json> [--output <guance.json>] [--validate] [--schema <schema-id>] [--guance-promql-compatible] [--keep-grafana-meta] [--keep-job-variable] [--sls-namespace <namespace>] [--mysql-external-datasource <id>] [--sql-datasource-map <json|@file>]');
+}
+function parseJsonOption(rawValue, flagName) {
+    const value = String(rawValue || '').trim();
+    const jsonText = value.startsWith('@')
+        ? fs.readFileSync(path.resolve(value.slice(1)), 'utf8')
+        : value;
+    try {
+        return JSON.parse(jsonText);
+    }
+    catch (error) {
+        throw new Error(`${flagName} expects valid JSON or @<file>: ${error.message}`);
+    }
+}
+function mergeSqlDatasourceMappings(target, incoming) {
+    if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) {
+        return;
+    }
+    for (const [key, value] of Object.entries(incoming)) {
+        if ((key === 'byType' || key === 'byUid') && value && typeof value === 'object' && !Array.isArray(value)) {
+            target[key] = {
+                ...(target[key] || {}),
+                ...value,
+            };
+            continue;
+        }
+        target[key] = value;
+    }
 }
 export function validateDashboardFile(filePath, schemaId) {
     const schemasDirectory = resolveSchemasDirectory();

@@ -24,6 +24,8 @@ Two especially useful LLM-only review areas are:
 
 For unit inference heuristics and confidence patterns, also read [unit-inference-cheatsheet.md](unit-inference-cheatsheet.md).
 For PromQL review heuristics and rewrite-risk patterns, also read [promql-compatibility-cheatsheet.md](promql-compatibility-cheatsheet.md).
+For maintained Elasticsearch-to-DQL lowering rules derived from a real trace dashboard, also read [elasticsearch-to-dql-mapping.md](elasticsearch-to-dql-mapping.md).
+For maintained CloudWatch-to-Guance PromQL rules, also read [cloudwatch-promql-mapping.md](cloudwatch-promql-mapping.md).
 
 ## Schema Contract Notes
 
@@ -102,6 +104,8 @@ Variable replacement is intentionally conservative:
 Query classification is datasource-aware:
 
 - Prometheus-like datasources stay `promql`
+- CloudWatch datasources stay `promql`
+- Aliyun SLS datasources are converted through `./sls2dql/bin/sls2dql` and emitted as `dql`
 - SQL-like datasources such as MySQL/Postgres/MSSQL are emitted as `dql`
 - `guance-guance-datasource` defaults to `dql`
 - if a `guance-guance-datasource` target explicitly sets `qtype: "promql"`, that explicit PromQL mode wins
@@ -109,10 +113,39 @@ Query classification is datasource-aware:
 
 Guance PromQL compatibility mode:
 
-- pass `--guance-promql-compatible` to rewrite PromQL metric selectors from `metric_name` to `measurement:field`
-- the rewrite is conservative and only applies to metric selector tokens outside label braces
-- label keys such as `app_name` and grouping keys such as `by (app_name)` are preserved
-- keep this mode opt-in, because some dashboards may already target Guance-native metric names
+- `[$__rate_interval]` is removed from PromQL queries during conversion
+- PromQL metric names are preserved exactly as they appear in Grafana
+- passing `--guance-promql-compatible` no longer rewrites metric names
+
+CloudWatch conversion notes:
+
+- PromQL queries containing `cloudwatch_metric_<service>{...}` are rewritten using the skill-local mapping file
+- the rewrite no longer depends on `datasource.type`; Prometheus-backed dashboards that still use `cloudwatch_metric_*` also convert
+- structured Grafana CloudWatch targets with `namespace`, `metricName`, and `dimensions` are lowered into the same rewrite path
+- alias templates such as `{{instance_name}}` are rewritten to the mapped Guance dimension token such as `{{CacheClusterId}}`
+- service, namespace, dimension, variable, statistic, and alias-token rules should be maintained in `references/cloudwatch-promql-mapping.md`
+
+SLS conversion notes:
+
+- the standalone converter defaults SLS namespace to `L`
+- pass `--sls-namespace <namespace>` when the target log namespace differs
+- for search-only SLS queries without `FROM <logstore>`, the converter tries target fields such as `source`, `logstore`, and `logstoreName`
+- SLS conversion metadata is used internally during conversion and is not emitted into the final Guance dashboard JSON
+
+MySQL conversion notes:
+
+- MySQL query variables are emitted as `datasource: "outer_datasource"` and `type: "OUTER_DATASOURCE"`
+- the mapped external datasource id is written to `definition.metric`
+- MySQL query variable `extend` only keeps `starMeaning`
+- when the Grafana variable is currently `All / $__all`, `definition.defaultVal` is normalized to empty strings
+- when the Grafana variable already has a concrete current value, `definition.defaultVal` keeps that value
+- MySQL `table` panel targets are emitted as native Guance `outer_datasource` queries
+- mapped table queries use `qtype: "outer_datasource"` plus `query.type: "func"`
+- the mapped external datasource id is written to `query.funcName`
+- known big-table SQL is canonicalized to the Guance sample shape; other SQL is preserved and normalized with a trailing semicolon
+- the default MySQL external datasource id is `DFF672F02CAD7D94CA1ABA9B6213537875C.syn_huoshan_mysql`
+- pass `--mysql-external-datasource <id>` for a global override
+- pass `--sql-datasource-map <json|@file>` for per-type or per-uid overrides
 
 PromQL compatibility review should also inspect:
 

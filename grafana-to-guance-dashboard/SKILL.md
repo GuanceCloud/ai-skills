@@ -121,7 +121,7 @@ npm run convert -- \
   --output ./output/guance-dashboard.json \
   --validate
 
-# Convert and normalize PromQL metric names toward Guance measurement:field style
+# Convert while keeping PromQL metric names unchanged
 npm run convert -- \
   --input ./fixtures/grafana-dashboard.json \
   --output ./output/guance-dashboard.guance-promql.json \
@@ -141,6 +141,20 @@ npm run convert -- \
   --output ./output/guance-dashboard.keep-job.json \
   --validate \
   --keep-job-variable
+
+# Convert dashboards that contain Aliyun SLS panels and force the log namespace when needed
+npm run convert -- \
+  --input ./fixtures/grafana-dashboard.json \
+  --output ./output/guance-dashboard.sls.json \
+  --validate \
+  --sls-namespace L
+
+# Override the default MySQL external datasource mapping when the target workspace uses a different datasource id
+npm run convert -- \
+  --input ./fixtures/grafana-dashboard.json \
+  --output ./output/guance-dashboard.mysql.json \
+  --validate \
+  --mysql-external-datasource custom.mysql.datasource
 
 # Validate an already-generated output file against the skill-local schemas
 npm run validate:file -- ./output/guance-dashboard.json
@@ -171,6 +185,8 @@ Call out:
 - dashboards likely to need manual cleanup after conversion
 - whether Grafana datasource variables such as `ds_prometheus` can be dropped outright
 - whether the target Guance dashboard still needs a `job` variable; if not, drop the variable and its query filters
+- whether the dashboard mixes `prometheus`, `cloudwatch`, or `aliyun-log-service-datasource`
+- whether SLS panels already contain `FROM <logstore>` or still need a source such as `logstore` / `logstoreName`
 
 ## Post-Conversion Audit
 
@@ -240,6 +256,16 @@ Use these defaults unless the user asks otherwise.
 - Drop Grafana datasource selector variables such as `ds_prometheus` by default because Guance does not need datasource parameters.
 - Drop the Grafana `job` variable and related query filters by default.
 - Use `--keep-job-variable` only when the user confirms the target Guance dashboard still depends on `job`.
+- Keep Prometheus datasource targets on the existing default conversion path.
+- Force CloudWatch targets to use `promql` query type.
+- Route `aliyun-log-service-datasource` targets through the local `sls2dql` converter first, and use `--sls-namespace` when the default log namespace is not correct.
+- Map MySQL query variables to the Guance external datasource `DFF672F02CAD7D94CA1ABA9B6213537875C.syn_huoshan_mysql` by default.
+- Override MySQL mappings with `--mysql-external-datasource <id>` for a simple replacement or `--sql-datasource-map <json|@file>` for per-type or per-uid mappings.
+- Emit MySQL query variables using the minimal Guance `OUTER_DATASOURCE` shape; keep `extend` limited to `starMeaning`.
+- Emit MySQL `table` panel targets as native Guance `outer_datasource` queries instead of the older compatibility wrapper.
+- For mapped MySQL `table` queries, write the datasource id to `query.funcName` and emit `query.type: "func"`.
+- Canonicalize the known big-table SQL pattern to the Guance sample shape; otherwise preserve the SQL text and only normalize the trailing semicolon.
+- Keep SLS conversion metadata internal to the converter; do not emit `slsConversion`-style debug payloads into final dashboard JSON.
 
 ## Confidence Rules
 
@@ -448,9 +474,25 @@ Only touch repository-level converters or build scripts when the user explicitly
   - `heatmap` -> `heatmap`
   - `treemap` -> `treemap`
 - Query extraction from Grafana `targets[]` using `expr`, `query`, or `queryText`
-- Datasource-aware query classification for Prometheus-like and SQL-like targets
+- Datasource-aware query classification for Prometheus-like, CloudWatch, SLS, and SQL-like targets
 - `guance-guance-datasource` targets default to `dql`, but explicit `qtype: "promql"` is preserved as `promql`
-- Optional `--guance-promql-compatible` mode to rewrite PromQL metric selectors from `metric_name` toward Guance `measurement:field` style
+- `cloudwatch` targets are emitted as `promql`
+- `aliyun-log-service-datasource` targets are converted via the repository-local `./sls2dql/bin/sls2dql` tool and emitted as `dql`
+- `--sls-namespace` can override the default SLS log namespace `L`
+- SLS conversion status is used only during conversion and is not emitted as dashboard metadata
+- MySQL query variables are emitted as `datasource: "outer_datasource"` and `type: "OUTER_DATASOURCE"`
+- MySQL query variable datasource ids are written to `definition.metric`
+- MySQL query variable `extend` only keeps `starMeaning`, matching the real Guance export shape
+- when a MySQL variable is currently `All / $__all`, the emitted `definition.defaultVal` is normalized to empty strings
+- when a MySQL variable already has a concrete selected value, the emitted `definition.defaultVal` keeps that value
+- MySQL `table` panel targets are emitted as native Guance `outer_datasource` queries
+- mapped MySQL `table` queries use `qtype: "outer_datasource"` plus `query.type: "func"`
+- the mapped external datasource id is written to `query.funcName`
+- known big-table SQL is canonicalized to the Guance sample shape; other SQL is preserved and normalized with a trailing semicolon
+- the default MySQL external datasource id is `DFF672F02CAD7D94CA1ABA9B6213537875C.syn_huoshan_mysql`
+- `--sql-datasource-map <json|@file>` supports customer mappings such as `{"byUid":{"mysql-1":"custom.mysql.datasource"},"byType":{"mysql":"fallback.mysql.datasource"}}`
+- `[$__rate_interval]` is removed from PromQL queries during conversion
+- PromQL metric names are preserved exactly as they appear in Grafana, even if `--guance-promql-compatible` is passed
 - Default output omits raw `extend.grafana` metadata; pass `--keep-grafana-meta` only when debugging conversion fidelity
 - Variable replacement from Grafana `$var` / `${var}` to Guance `#{var}`
 - Settings extraction from both newer `fieldConfig` / `options` panels and older Grafana `graph` / `singlestat` fields

@@ -57,7 +57,8 @@
                 "TRACING",
                 "RUM",
                 "SECURITY",
-                "CUSTOM_LIST"
+                "CUSTOM_LIST",
+                "OUTER_DATASOURCE"
             ]
         },
         "code": {
@@ -71,7 +72,8 @@
                 "ftinfluxdb",
                 "custom",
                 "object",
-                "custom_object"
+                "custom_object",
+                "outer_datasource"
             ],
             "description": "对应关系分别为 dataflux:【DQL】,dataflux:【PROMQL】,ftinfluxdb:【指标】,object:【基础对象】,custom_object:【自定义对象】,dataflux:【日志】,dataflux:【应用性能】,dataflux:【用户访问】,dataflux:【安全巡检】,custom:【自定义】"
         },

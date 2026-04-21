@@ -16,10 +16,11 @@
         },
         "qtype": {
             "type": "string",
-            "description": "查询语句类型，目前支持 dql 以及promql",
+            "description": "查询语句类型，目前支持 dql、promql 以及 outer_datasource",
             "enum": [
                 "dql",
-                "promql"
+                "promql",
+                "outer_datasource"
             ]
         },
         "query": {
@@ -41,12 +42,13 @@
                 },
                 "type": {
                     "type": "string",
-                    "description": "查询语句类型冗余字段，实际数据中可能是 promql/dql，也可能是 default/simple 这类查询模式",
+                    "description": "查询语句类型冗余字段，实际数据中可能是 promql/dql、func，也可能是 default/simple 这类查询模式",
                     "enum": [
                         "default",
                         "simple",
                         "dql",
-                        "promql"
+                        "promql",
+                        "func"
                     ]
                 },
                 "promqlCode": {
