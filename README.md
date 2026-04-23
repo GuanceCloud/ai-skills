@@ -186,7 +186,7 @@ memory_util,float,%,host
 - 默认应删除 `job` 变量及其查询条件；只有目标观测云 Dashboard 明确仍依赖 `job` 时才保留
 - 当前已处理四类数据源：`prometheus` 按默认流程，`cloudwatch` 直接按 `promql` 输出，`aliyun-log-service-datasource` 通过仓库内 `sls2dql` 转成 DQL，`mysql` 查询变量映射为观测云 `OUTER_DATASOURCE`
 - `mysql` 默认映射到 `DFF672F02CAD7D94CA1ABA9B6213537875C.syn_huoshan_mysql`，也支持通过 `--mysql-external-datasource` 或 `--sql-datasource-map` 覆盖；变量输出按观测云 `OUTER_DATASOURCE` 最小结构生成，`extend` 仅保留 `starMeaning`，并按 Grafana 当前值决定是否保留 `defaultVal`
-- `mysql` 的 `table` 面板查询会直接生成观测云原生 `outer_datasource` query：`qtype` 为 `outer_datasource`，`query.type` 为 `func`，`funcName` 指向映射后的外部数据源；已知的大表 SQL 样式会按观测云样例改写，其余 SQL 默认保留原语句并补齐结尾分号
+- `mysql` 的 `table` 面板查询会直接生成观测云原生 `outer_datasource` query：`qtype` 为 `outer_datasource`，`query.type` 为 `func`，`funcName` 指向映射后的外部数据源；最外层 SQL 会规范化时间列、默认补 `create_time`、规范 `tag_*` 标签列，并强制追加 `LIMIT 5000`
 - 常用命令：
 
 ```bash

@@ -889,9 +889,115 @@ test('converter allows overriding mysql external datasource mapping by uid', () 
 
   assert.equal(output.main.charts[0].queries[0].qtype, 'outer_datasource');
   assert.equal(output.main.charts[0].queries[0].query.type, 'func');
-  assert.equal(output.main.charts[0].queries[0].query.q, 'select table_name, table_rows from t_big_table_infos order by table_rows desc;\n');
+  assert.equal(output.main.charts[0].queries[0].query.q, `SELECT
+    CAST(UNIX_TIMESTAMP(create_time) * 1000 AS SIGNED) AS time,
+    table_name AS tag_table_name,
+    table_rows AS table_rows
+FROM t_big_table_infos
+ORDER BY
+    table_rows DESC
+LIMIT 5000;
+`);
   assert.equal(output.main.charts[0].queries[0].query.funcName, 'custom.mysql.datasource');
   assert.equal(output.main.charts[0].queries[0].query.funcSourceType, 'mysql');
+});
+
+test('converter defaults mysql table time to create_time and removes grafana time macros', () => {
+  const output = convertDashboard({
+    title: 'MySQL No Time',
+    panels: [
+      {
+        id: 1,
+        type: 'table',
+        title: 'No Time',
+        gridPos: { h: 8, w: 12, x: 0, y: 0 },
+        targets: [
+          {
+            refId: 'A',
+            datasource: { type: 'mysql', uid: 'mysql-1' },
+            rawSql: "select host, value from metrics where $__timeFilter(create_time) and status='ok' order by value desc limit 100",
+          },
+        ],
+      },
+    ],
+  });
+
+  assert.equal(output.main.charts[0].queries[0].query.q, `SELECT
+    CAST(UNIX_TIMESTAMP(create_time) * 1000 AS SIGNED) AS time,
+    host AS tag_host,
+    value AS value
+FROM metrics
+WHERE
+    status='ok'
+ORDER BY
+    value DESC
+LIMIT 5000;
+`);
+});
+
+test('converter converts mysql datetime fields to integer millisecond time fields', () => {
+  const output = convertDashboard({
+    title: 'MySQL Time',
+    panels: [
+      {
+        id: 1,
+        type: 'table',
+        title: 'With Time',
+        gridPos: { h: 8, w: 12, x: 0, y: 0 },
+        targets: [
+          {
+            refId: 'A',
+            datasource: { type: 'mysql', uid: 'mysql-1' },
+            rawSql: 'select create_time, host, count(*) as cnt from metrics group by create_time, host order by cnt desc limit 100',
+          },
+        ],
+      },
+    ],
+  });
+
+  assert.equal(output.main.charts[0].queries[0].query.q, `SELECT
+    CAST(UNIX_TIMESTAMP(create_time) * 1000 AS SIGNED) AS time,
+    host AS tag_host,
+    count(*) AS cnt
+FROM metrics
+GROUP BY
+    create_time, host
+ORDER BY
+    cnt DESC
+LIMIT 5000;
+`);
+});
+
+test('converter keeps mysql duration-like fields as values instead of tags', () => {
+  const output = convertDashboard({
+    title: 'MySQL Duration',
+    panels: [
+      {
+        id: 1,
+        type: 'table',
+        title: 'Duration',
+        gridPos: { h: 8, w: 12, x: 0, y: 0 },
+        targets: [
+          {
+            refId: 'A',
+            datasource: { type: 'mysql', uid: 'mysql-1' },
+            rawSql: 'select trigger_time, job_desc, action_time, result from job_stats order by result desc limit 50',
+          },
+        ],
+      },
+    ],
+  });
+
+  assert.equal(output.main.charts[0].queries[0].query.q, `SELECT
+    CAST(UNIX_TIMESTAMP(trigger_time) * 1000 AS SIGNED) AS time,
+    job_desc AS tag_job_desc,
+    action_time AS action_time,
+    result AS result
+FROM job_stats
+ORDER BY
+    result DESC
+LIMIT 5000;
+`);
 });
 
 test('standalone converter accepts mysql external datasource override from cli', () => {
@@ -939,7 +1045,11 @@ test('standalone converter accepts mysql external datasource override from cli',
   const output = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
   assert.equal(output.main.charts[0].queries[0].qtype, 'outer_datasource');
   assert.equal(output.main.charts[0].queries[0].query.type, 'func');
-  assert.equal(output.main.charts[0].queries[0].query.q, 'select 1;\n');
+  assert.equal(output.main.charts[0].queries[0].query.q, `SELECT
+    NULL AS time,
+    1 AS value
+LIMIT 5000;
+`);
   assert.equal(output.main.charts[0].queries[0].query.funcName, 'cli.mysql.datasource');
 });
 

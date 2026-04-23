@@ -15,20 +15,7 @@ const DEFAULT_SLS_NAMESPACE = 'L';
 const DEFAULT_EXTERNAL_DATASOURCE_MAPPINGS = {
     mysql: 'DFF672F02CAD7D94CA1ABA9B6213537875C.syn_huoshan_mysql',
 };
-const CANONICAL_BIG_TABLE_QUERY_SIGNATURE = normalizeSqlSignature("select cluster_name '实例名',schema_name '库名', table_name '表名',table_rows '行数' from t_big_table_infos where cluster_name like '%prod-cswap-%' order by table_rows desc;");
-const CANONICAL_BIG_TABLE_OUTER_DATASOURCE_SQL = `SELECT
-    CAST(UNIX_TIMESTAMP(create_time) * 1000 AS SIGNED) AS time,
-    cluster_name AS tag_实例名,
-    schema_name AS tag_库名,
-    table_name AS tag_表名,
-    table_rows AS 行数
-FROM t_big_table_infos
-WHERE
-    cluster_name LIKE '%prod-cswap-%'
-ORDER BY
-    table_rows DESC
-LIMIT 5000;
-`;
+const DEFAULT_MYSQL_OUTER_DATASOURCE_TIME_FIELD = 'create_time';
 const SLS_CONVERSION_CACHE = new Map();
 let CLOUDWATCH_SERVICE_MAPPINGS = null;
 
@@ -1618,25 +1605,363 @@ function normalizeMysqlOuterDatasourceSql(queryText) {
     if (!trimmed) {
         return '';
     }
-    const rewrittenKnownQuery = rewriteKnownMysqlOuterDatasourceSql(trimmed);
-    if (rewrittenKnownQuery) {
-        return rewrittenKnownQuery;
+    const parsed = parseMysqlSelectStatement(trimmed);
+    if (!parsed) {
+        return buildMysqlFallbackOuterDatasourceSql(trimmed);
     }
-    return `${trimmed.replace(/;\s*$/u, '')};\n`;
+    const normalizedSelect = normalizeMysqlSelectItems(parsed.selectClause, Boolean(parsed.restClause));
+    const normalizedRest = formatMysqlOuterDatasourceRest(parsed.restClause, normalizedSelect.hasTime);
+    const selectLines = normalizedSelect.items.map((item, index) => `    ${item}${index < normalizedSelect.items.length - 1 ? ',' : ''}`);
+    return [
+        'SELECT',
+        ...selectLines,
+        normalizedRest || undefined,
+        'LIMIT 5000;',
+        '',
+    ]
+        .filter((line) => line !== undefined && line !== null)
+        .join('\n');
 }
-function rewriteKnownMysqlOuterDatasourceSql(queryText) {
-    if (normalizeSqlSignature(queryText) !== CANONICAL_BIG_TABLE_QUERY_SIGNATURE) {
-        return '';
+function parseMysqlSelectStatement(queryText) {
+    const statement = stripSqlTrailingSemicolon(queryText);
+    if (!/^\s*select\b/i.test(statement)) {
+        return null;
     }
-    return CANONICAL_BIG_TABLE_OUTER_DATASOURCE_SQL;
+    const selectKeyword = statement.match(/^\s*select\b/i);
+    const selectStart = selectKeyword ? selectKeyword[0].length : 0;
+    const fromIndex = findTopLevelSqlKeyword(statement, 'from', selectStart);
+    if (fromIndex < 0) {
+        return {
+            selectClause: statement.slice(selectStart).trim(),
+            restClause: '',
+        };
+    }
+    return {
+        selectClause: statement.slice(selectStart, fromIndex).trim(),
+        restClause: statement.slice(fromIndex).trim(),
+    };
 }
-function normalizeSqlSignature(queryText) {
-    return String(queryText || '')
-        .replace(/[`"]/gu, '')
-        .replace(/\s+/gu, ' ')
-        .replace(/;\s*$/u, '')
+function normalizeMysqlSelectItems(selectClause, hasFromClause = false) {
+    const rawItems = splitTopLevel(selectClause, ',');
+    const valueItems = [];
+    let timeItem = '';
+    for (const rawItem of rawItems) {
+        const normalized = normalizeMysqlSelectItem(rawItem);
+        if (!normalized.sql) {
+            continue;
+        }
+        if (normalized.isTime && !timeItem) {
+            timeItem = normalized.sql;
+            continue;
+        }
+        if (!normalized.isTime) {
+            valueItems.push(normalized.sql);
+        }
+    }
+    return {
+        hasTime: Boolean(timeItem),
+        items: [timeItem || buildMysqlDefaultTimeSelectItem(hasFromClause), ...valueItems],
+    };
+}
+function buildMysqlDefaultTimeSelectItem(hasFromClause) {
+    if (!hasFromClause) {
+        return 'NULL AS time';
+    }
+    return `CAST(UNIX_TIMESTAMP(${DEFAULT_MYSQL_OUTER_DATASOURCE_TIME_FIELD}) * 1000 AS SIGNED) AS time`;
+}
+function normalizeMysqlSelectItem(rawItem) {
+    const item = String(rawItem || '').trim();
+    if (!item) {
+        return { sql: '', isTime: false };
+    }
+    if (item === '*') {
+        return { sql: '*', isTime: false };
+    }
+    const aliasInfo = extractMysqlSelectAlias(item);
+    const expression = aliasInfo.expression;
+    const alias = sanitizeMysqlAlias(aliasInfo.alias || inferMysqlAliasFromExpression(expression) || 'value');
+    if (isMysqlTimeSelectItem(expression, alias)) {
+        return {
+            sql: `${normalizeMysqlTimeExpression(expression)} AS time`,
+            isTime: true,
+        };
+    }
+    if (alias.startsWith('tag_')) {
+        return { sql: `${expression} AS ${alias}`, isTime: false };
+    }
+    if (shouldEmitMysqlFieldAsTag(expression, alias)) {
+        return { sql: `${expression} AS tag_${alias}`, isTime: false };
+    }
+    return { sql: `${expression} AS ${alias}`, isTime: false };
+}
+function extractMysqlSelectAlias(item) {
+    const asMatch = item.match(/^(.*?)(?:\s+AS\s+)(`[^`]+`|'[^']+'|"[^"]+"|[\p{L}\p{N}_\u4e00-\u9fa5]+)\s*$/iu);
+    if (asMatch) {
+        return {
+            expression: asMatch[1].trim(),
+            alias: asMatch[2],
+        };
+    }
+    const quotedAliasMatch = item.match(/^(.*?)\s+(`[^`]+`|'[^']+'|"[^"]+")\s*$/u);
+    if (quotedAliasMatch) {
+        return {
+            expression: quotedAliasMatch[1].trim(),
+            alias: quotedAliasMatch[2],
+        };
+    }
+    return {
+        expression: item,
+        alias: '',
+    };
+}
+function inferMysqlAliasFromExpression(expression) {
+    const trimmed = String(expression || '').trim();
+    if (/^\d+(?:\.\d+)?$/u.test(trimmed)) {
+        return 'value';
+    }
+    const identifierMatch = trimmed.match(/(?:^|\.)(`[^`]+`|[A-Za-z_][A-Za-z0-9_]*|[\u4e00-\u9fa5][\u4e00-\u9fa5A-Za-z0-9_]*)$/u);
+    if (identifierMatch) {
+        return identifierMatch[1];
+    }
+    return 'value';
+}
+function sanitizeMysqlAlias(alias) {
+    return String(alias || '')
+        .trim()
+        .replace(/^`|`$/gu, '')
+        .replace(/^'|'$/gu, '')
+        .replace(/^"|"$/gu, '')
+        .replace(/[^\p{L}\p{N}_\u4e00-\u9fa5]/gu, '_')
+        .replace(/^_+|_+$/gu, '') || 'value';
+}
+function isMysqlTimeSelectItem(expression, alias) {
+    const normalizedAlias = String(alias || '').toLowerCase();
+    if (normalizedAlias === 'time') {
+        return true;
+    }
+    return isMysqlDateTimeLikeExpression(expression);
+}
+function isMysqlDateTimeLikeExpression(expression) {
+    const normalized = String(expression || '')
+        .replace(/`/gu, '')
         .trim()
         .toLowerCase();
+    if (/unix_timestamp\s*\(|\*\s*1000|\bcast\s*\(/i.test(normalized)) {
+        return false;
+    }
+    const lastIdentifier = normalized.split('.').pop() || normalized;
+    return (/^(time|timestamp|date|datetime)$/u.test(lastIdentifier) ||
+        /(^|_)(create|created|update|updated|trigger|handle|start|end|event|occur|occurred|timestamp|datetime|date)_?time$/u.test(lastIdentifier));
+}
+function normalizeMysqlTimeExpression(expression) {
+    const trimmed = String(expression || '').trim();
+    if (/unix_timestamp\s*\(|\*\s*1000|\bcast\s*\(/i.test(trimmed)) {
+        return trimmed;
+    }
+    if (isMysqlDateTimeLikeExpression(trimmed) && !/^time$/iu.test(trimmed.replace(/`/gu, '').split('.').pop() || '')) {
+        return `CAST(UNIX_TIMESTAMP(${trimmed}) * 1000 AS SIGNED)`;
+    }
+    return trimmed;
+}
+function shouldEmitMysqlFieldAsTag(expression, alias) {
+    const normalizedExpression = String(expression || '').toLowerCase();
+    const normalizedAlias = String(alias || '').toLowerCase();
+    if (normalizedExpression === '*' || normalizedAlias === 'value') {
+        return false;
+    }
+    if (/^\d+(?:\.\d+)?$/u.test(normalizedExpression)) {
+        return false;
+    }
+    if (/[()+\-*/%]/u.test(normalizedExpression)) {
+        return false;
+    }
+    return !/(count|sum|avg|min|max|round|concat|timestampdiff|percent|percentage|ratio|rate|rows?|number|num|total|success|failure|false|true|result|duration|latency|cost|amount|size|bytes|action_time|elapsed|interval|period|行数|数量|次数|总数|比例|占比|耗时|时长|成功|失败)/iu.test(`${normalizedExpression} ${normalizedAlias}`);
+}
+function formatMysqlOuterDatasourceRest(restClause, hasTime) {
+    const clauses = splitMysqlRestClauses(restClause);
+    if (!hasTime && clauses.where) {
+        clauses.where = removeMysqlGrafanaTimeRangeConditions(clauses.where);
+    }
+    const lines = [];
+    if (clauses.from) {
+        lines.push(`FROM ${clauses.from}`);
+    }
+    if (clauses.where) {
+        lines.push('WHERE');
+        lines.push(`    ${normalizeMysqlClauseKeywords(clauses.where)}`);
+    }
+    if (clauses.groupBy) {
+        lines.push('GROUP BY');
+        lines.push(`    ${normalizeMysqlClauseKeywords(clauses.groupBy)}`);
+    }
+    if (clauses.having) {
+        lines.push('HAVING');
+        lines.push(`    ${normalizeMysqlClauseKeywords(clauses.having)}`);
+    }
+    if (clauses.orderBy) {
+        lines.push('ORDER BY');
+        lines.push(`    ${normalizeMysqlClauseKeywords(clauses.orderBy)}`);
+    }
+    return lines.join('\n');
+}
+function splitMysqlRestClauses(restClause) {
+    const restWithoutLimit = stripTopLevelMysqlLimit(restClause).trim();
+    if (!restWithoutLimit) {
+        return {};
+    }
+    const fromPrefix = restWithoutLimit.match(/^\s*from\b/i);
+    const bodyStart = fromPrefix ? fromPrefix[0].length : 0;
+    const clauseKeywords = [
+        ['where', 'where'],
+        ['group by', 'groupBy'],
+        ['having', 'having'],
+        ['order by', 'orderBy'],
+    ];
+    const positions = clauseKeywords
+        .map(([keyword, key]) => ({
+        keyword,
+        key,
+        index: findTopLevelSqlKeyword(restWithoutLimit, keyword, bodyStart),
+    }))
+        .filter((item) => item.index >= 0)
+        .sort((left, right) => left.index - right.index);
+    const clauses = {};
+    const firstClauseIndex = positions.length ? positions[0].index : restWithoutLimit.length;
+    clauses.from = restWithoutLimit.slice(bodyStart, firstClauseIndex).trim();
+    for (let index = 0; index < positions.length; index++) {
+        const current = positions[index];
+        const nextIndex = index + 1 < positions.length ? positions[index + 1].index : restWithoutLimit.length;
+        clauses[current.key] = restWithoutLimit.slice(current.index + getSqlKeywordLengthAt(restWithoutLimit, current.index, current.keyword), nextIndex).trim();
+    }
+    return clauses;
+}
+function stripTopLevelMysqlLimit(statement) {
+    const withoutSemicolon = stripSqlTrailingSemicolon(statement);
+    const limitIndex = findTopLevelSqlKeyword(withoutSemicolon, 'limit');
+    if (limitIndex < 0) {
+        return withoutSemicolon;
+    }
+    return withoutSemicolon.slice(0, limitIndex).trim();
+}
+function removeMysqlGrafanaTimeRangeConditions(whereClause) {
+    const keptConditions = splitTopLevelAndConditions(whereClause).filter((condition) => !isGrafanaMysqlTimeRangeCondition(condition));
+    return keptConditions.join(' AND ');
+}
+function splitTopLevelAndConditions(input) {
+    const conditions = [];
+    let current = '';
+    let quote = '';
+    let depth = 0;
+    for (let index = 0; index < input.length; index++) {
+        const char = input[index];
+        const previous = index > 0 ? input[index - 1] : '';
+        if (quote) {
+            current += char;
+            if (char === quote && previous !== '\\') {
+                quote = '';
+            }
+            continue;
+        }
+        if (char === '"' || char === '\'' || char === '`') {
+            quote = char;
+            current += char;
+            continue;
+        }
+        if (char === '(') {
+            depth++;
+            current += char;
+            continue;
+        }
+        if (char === ')' && depth > 0) {
+            depth--;
+            current += char;
+            continue;
+        }
+        if (depth === 0 && /^AND\b/i.test(input.slice(index)) && !isSqlIdentifierChar(previous)) {
+            if (current.trim()) {
+                conditions.push(current.trim());
+            }
+            current = '';
+            index += 2;
+            continue;
+        }
+        current += char;
+    }
+    if (current.trim()) {
+        conditions.push(current.trim());
+    }
+    return conditions;
+}
+function isGrafanaMysqlTimeRangeCondition(condition) {
+    return /\$__time|\$__unixEpoch|\$__from|\$__to|\$\{__from|\$\{__to|__timeFilter|__timeFrom|__timeTo/i.test(condition);
+}
+function normalizeMysqlClauseKeywords(clause) {
+    return String(clause || '')
+        .replace(/\blike\b/giu, 'LIKE')
+        .replace(/\bdesc\b/giu, 'DESC')
+        .replace(/\basc\b/giu, 'ASC')
+        .replace(/\band\b/giu, 'AND')
+        .replace(/\bor\b/giu, 'OR');
+}
+function buildMysqlFallbackOuterDatasourceSql(queryText) {
+    const statement = stripTopLevelMysqlLimit(queryText).trim();
+    return `SELECT
+    NULL AS time,
+    *
+FROM (
+    ${statement}
+) AS guance_mysql_outer_source
+LIMIT 5000;
+`;
+}
+function stripSqlTrailingSemicolon(statement) {
+    return String(statement || '').trim().replace(/;\s*$/u, '');
+}
+function findTopLevelSqlKeyword(input, keyword, startIndex = 0) {
+    let quote = '';
+    let depth = 0;
+    for (let index = startIndex; index < input.length; index++) {
+        const char = input[index];
+        const previous = index > 0 ? input[index - 1] : '';
+        if (quote) {
+            if (char === quote && previous !== '\\') {
+                quote = '';
+            }
+            continue;
+        }
+        if (char === '"' || char === '\'' || char === '`') {
+            quote = char;
+            continue;
+        }
+        if (char === '(') {
+            depth++;
+            continue;
+        }
+        if (char === ')' && depth > 0) {
+            depth--;
+            continue;
+        }
+        if (depth === 0 && matchesSqlKeywordAt(input, index, keyword)) {
+            return index;
+        }
+    }
+    return -1;
+}
+function matchesSqlKeywordAt(input, index, keyword) {
+    const previous = index > 0 ? input[index - 1] : '';
+    if (isSqlIdentifierChar(previous)) {
+        return false;
+    }
+    const pattern = new RegExp(`^${keyword.trim().split(/\s+/u).join('\\s+')}(?![A-Za-z0-9_])`, 'i');
+    return pattern.test(input.slice(index));
+}
+function getSqlKeywordLengthAt(input, index, keyword) {
+    const pattern = new RegExp(`^${keyword.trim().split(/\s+/u).join('\\s+')}`, 'i');
+    const match = input.slice(index).match(pattern);
+    return match ? match[0].length : keyword.length;
+}
+function isSqlIdentifierChar(char) {
+    return /[A-Za-z0-9_]/u.test(char || '');
 }
 function normalizeOuterDatasourceDefaultVal(defaultVal, includeAll) {
     if (!includeAll) {

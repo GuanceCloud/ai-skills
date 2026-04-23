@@ -142,7 +142,10 @@ MySQL conversion notes:
 - MySQL `table` panel targets are emitted as native Guance `outer_datasource` queries
 - mapped table queries use `qtype: "outer_datasource"` plus `query.type: "func"`
 - the mapped external datasource id is written to `query.funcName`
-- known big-table SQL is canonicalized to the Guance sample shape; other SQL is preserved and normalized with a trailing semicolon
+- the outermost MySQL `table` SQL select list is normalized for Guance external datasource typing
+- time fields are emitted as integer UNIX millisecond `time`; when no time-like field exists and the query has a `FROM` clause, emit `CAST(UNIX_TIMESTAMP(create_time) * 1000 AS SIGNED) AS time`; remove Grafana time-range macro filters from the outer `WHERE`
+- label fields are emitted with `AS tag_<name>`
+- the outer query limit is forced to `LIMIT 5000`
 - the default MySQL external datasource id is `DFF672F02CAD7D94CA1ABA9B6213537875C.syn_huoshan_mysql`
 - pass `--mysql-external-datasource <id>` for a global override
 - pass `--sql-datasource-map <json|@file>` for per-type or per-uid overrides

@@ -264,7 +264,7 @@ Use these defaults unless the user asks otherwise.
 - Emit MySQL query variables using the minimal Guance `OUTER_DATASOURCE` shape; keep `extend` limited to `starMeaning`.
 - Emit MySQL `table` panel targets as native Guance `outer_datasource` queries instead of the older compatibility wrapper.
 - For mapped MySQL `table` queries, write the datasource id to `query.funcName` and emit `query.type: "func"`.
-- Canonicalize the known big-table SQL pattern to the Guance sample shape; otherwise preserve the SQL text and only normalize the trailing semicolon.
+- Normalize the outermost MySQL `table` SQL select list: time fields must be emitted as integer UNIX millisecond `time`; when no explicit time field exists and the query has a `FROM` clause, default to `create_time`; label fields must use `AS tag_<name>`; and the final query must use `LIMIT 5000`.
 - Keep SLS conversion metadata internal to the converter; do not emit `slsConversion`-style debug payloads into final dashboard JSON.
 
 ## Confidence Rules
@@ -488,7 +488,10 @@ Only touch repository-level converters or build scripts when the user explicitly
 - MySQL `table` panel targets are emitted as native Guance `outer_datasource` queries
 - mapped MySQL `table` queries use `qtype: "outer_datasource"` plus `query.type: "func"`
 - the mapped external datasource id is written to `query.funcName`
-- known big-table SQL is canonicalized to the Guance sample shape; other SQL is preserved and normalized with a trailing semicolon
+- the outermost MySQL `table` SQL select list is normalized for Guance external datasource typing
+- time fields are emitted as integer UNIX millisecond `time`; when no time-like field exists and the query has a `FROM` clause, emit `CAST(UNIX_TIMESTAMP(create_time) * 1000 AS SIGNED) AS time`; remove Grafana time-range macro filters from the outer `WHERE`
+- label fields are emitted with `AS tag_<name>`
+- the outer query limit is forced to `LIMIT 5000`
 - the default MySQL external datasource id is `DFF672F02CAD7D94CA1ABA9B6213537875C.syn_huoshan_mysql`
 - `--sql-datasource-map <json|@file>` supports customer mappings such as `{"byUid":{"mysql-1":"custom.mysql.datasource"},"byType":{"mysql":"fallback.mysql.datasource"}}`
 - `[$__rate_interval]` is removed from PromQL queries during conversion
