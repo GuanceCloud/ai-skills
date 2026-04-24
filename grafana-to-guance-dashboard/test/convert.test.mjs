@@ -298,7 +298,7 @@ test('converter rewrites cloudwatch rds metrics to guance promql', () => {
   assert.equal(output.main.charts[0].queries[0].query.type, 'promql');
   assert.equal(
     output.main.charts[0].queries[0].query.q,
-    'CPUUtilization_Average{M="aws_AWS/RDS",Dimensions="DBInstanceIdentifier",DBInstanceIdentifier=~"#{rds_instance}"}'
+    'CPUUtilization_Average{M="aws_AWS/RDS",Dimensions="DBInstanceIdentifier",DBInstanceIdentifier=~"prod-cswap.*",DBInstanceIdentifier!~".*match.*",DBInstanceIdentifier!~".*market.*",env="$env"}'
   );
 });
 
@@ -381,6 +381,32 @@ test('converter rewrites nested cloudwatch metric selectors with single-quoted v
   assert.equal(
     output.main.charts[0].queries[0].query.q,
     '((sum(DBLoad_Average{M="aws_AWS/RDS",Dimensions="DBInstanceIdentifier",DBInstanceIdentifier=~"#{rds_instance}"}) by (instance_name))) / sum(cpu_Average{M="aws_AWS/RDS",Dimensions="DBInstanceIdentifier",DBInstanceIdentifier=~"#{rds_instance}"}) by (instance_name)*100'
+  );
+});
+
+test('converter preserves hardcoded cloudwatch dimensions instead of rewriting them to variables', () => {
+  const output = convertDashboard({
+    title: 'Static CloudWatch',
+    panels: [
+      {
+        id: 1,
+        type: 'timeseries',
+        title: 'Kafka CPU',
+        gridPos: { h: 8, w: 12, x: 0, y: 0 },
+        targets: [
+          {
+            refId: 'A',
+            datasource: { type: 'prometheus' },
+            expr: 'cloudwatch_metric_kafka{metric_name="CpuIdle", instance_name=~"contract-market"}',
+          },
+        ],
+      },
+    ],
+  });
+
+  assert.equal(
+    output.main.charts[0].queries[0].query.q,
+    'CpuIdle_Average{M="aws_AWS/Kafka",Dimensions="Cluster Name",Cluster Name=~"contract-market"}'
   );
 });
 

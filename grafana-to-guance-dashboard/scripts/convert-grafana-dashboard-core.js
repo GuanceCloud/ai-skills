@@ -2629,19 +2629,28 @@ function buildCloudwatchGuanceLabelMatchers(matchers, serviceMapping) {
         `M="${serviceMapping.measurement}"`,
         `Dimensions="${serviceMapping.dimension}"`,
     ];
-    const dimensionMatchers = matchers.filter((matcher) => matcher.label === serviceMapping.sourceLabel || matcher.label === serviceMapping.dimension);
-    if (dimensionMatchers.length > 0 && serviceMapping.variableName) {
-        labels.push(`${serviceMapping.dimension}=~"#{${serviceMapping.variableName}}"`);
-        return labels;
-    }
     for (const matcher of matchers) {
         if (matcher.label === 'metric_name') {
             continue;
         }
         const mappedLabel = matcher.label === serviceMapping.sourceLabel ? serviceMapping.dimension : matcher.label;
+        const shouldMapToVariable = serviceMapping.variableName &&
+            (matcher.label === serviceMapping.sourceLabel || matcher.label === serviceMapping.dimension) &&
+            hasGrafanaVariableReference(matcher.value);
+        if (shouldMapToVariable) {
+            labels.push(`${serviceMapping.dimension}=~"#{${serviceMapping.variableName}}"`);
+            continue;
+        }
         labels.push(`${mappedLabel}${matcher.operator}"${matcher.value}"`);
     }
     return labels;
+}
+function hasGrafanaVariableReference(value) {
+    const normalizedValue = String(value || '').trim();
+    if (!normalizedValue) {
+        return false;
+    }
+    return normalizedValue.includes('#{') || /\$[A-Za-z_][A-Za-z0-9_]*/.test(normalizedValue);
 }
 function extractMetricName(queryString, variableNames) {
     if (/^\s*(with|select)\b/i.test(queryString))

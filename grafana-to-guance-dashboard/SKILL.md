@@ -495,6 +495,7 @@ Only touch repository-level converters or build scripts when the user explicitly
 - the default MySQL external datasource id is `DFF672F02CAD7D94CA1ABA9B6213537875C.syn_huoshan_mysql`
 - `--sql-datasource-map <json|@file>` supports customer mappings such as `{"byUid":{"mysql-1":"custom.mysql.datasource"},"byType":{"mysql":"fallback.mysql.datasource"}}`
 - `[$__rate_interval]` is removed from PromQL queries during conversion
+- `[$__interval]` is removed from PromQL queries during conversion
 - PromQL metric names are preserved exactly as they appear in Grafana, even if `--guance-promql-compatible` is passed
 - Default output omits raw `extend.grafana` metadata; pass `--keep-grafana-meta` only when debugging conversion fidelity
 - Variable replacement from Grafana `$var` / `${var}` to Guance `#{var}`
