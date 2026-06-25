@@ -6,7 +6,9 @@
   "description": "Schema of a PointerInteractionData.",
   "allOf": [
     {
-      "required": ["source"],
+      "required": [
+        "source"
+      ],
       "properties": {
         "source": {
           "type": "integer",

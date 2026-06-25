@@ -9,7 +9,9 @@
       "$ref": "_slot-supported-common-record-schema.json"
     },
     {
-      "required": ["type"],
+      "required": [
+        "type"
+      ],
       "properties": {
         "type": {
           "type": "integer",

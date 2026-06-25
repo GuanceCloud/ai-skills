@@ -9,7 +9,10 @@
       "$ref": "_slot-supported-common-record-schema.json"
     },
     {
-      "required": ["type", "data"],
+      "required": [
+        "type",
+        "data"
+      ],
       "properties": {
         "type": {
           "type": "integer",
@@ -19,7 +22,9 @@
         },
         "data": {
           "type": "object",
-          "required": ["has_focus"],
+          "required": [
+            "has_focus"
+          ],
           "properties": {
             "has_focus": {
               "type": "boolean",

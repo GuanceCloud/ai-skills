@@ -6,7 +6,7 @@ This file records the maintained mapping rules for converting Grafana `datasourc
 
 The current rules are derived from the real dashboard:
 
-- `/home/liurui/Downloads/问题定位大盘-1775721080549.json`
+- `/home/liurui/Downloads/-1775721080549.json`
 
 Use this document together with:
 

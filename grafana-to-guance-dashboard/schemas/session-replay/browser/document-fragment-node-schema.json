@@ -4,7 +4,11 @@
   "title": "DocumentFragmentNode",
   "type": "object",
   "description": "Schema of a Document FragmentNode.",
-  "required": ["type", "childNodes", "isShadowRoot"],
+  "required": [
+    "type",
+    "childNodes",
+    "isShadowRoot"
+  ],
   "properties": {
     "type": {
       "type": "integer",

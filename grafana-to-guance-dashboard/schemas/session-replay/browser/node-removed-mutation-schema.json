@@ -4,7 +4,10 @@
   "title": "RemovedNodeMutation",
   "type": "object",
   "description": "Schema of a RemovedNodeMutation.",
-  "required": ["id", "parentId"],
+  "required": [
+    "id",
+    "parentId"
+  ],
   "properties": {
     "id": {
       "type": "integer",

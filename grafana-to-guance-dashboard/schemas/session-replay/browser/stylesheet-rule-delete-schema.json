@@ -4,7 +4,9 @@
   "title": "StyleSheetDeleteRule",
   "type": "object",
   "description": "Browser-specific. Schema of a StyleSheetDeleteRule.",
-  "required": ["index"],
+  "required": [
+    "index"
+  ],
   "properties": {
     "index": {
       "description": "Index of this StyleSheetDeleteRule in its StyleSheet.",

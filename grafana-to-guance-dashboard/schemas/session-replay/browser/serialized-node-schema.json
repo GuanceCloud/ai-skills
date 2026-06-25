@@ -5,11 +5,23 @@
   "type": "object",
   "description": "Serialized node contained by this Record.",
   "anyOf": [
-    { "$ref": "document-node-schema.json" },
-    { "$ref": "document-fragment-node-schema.json" },
-    { "$ref": "document-type-node-schema.json" },
-    { "$ref": "element-node-schema.json" },
-    { "$ref": "text-node-schema.json" },
-    { "$ref": "cdata-node-schema.json" }
+    {
+      "$ref": "document-node-schema.json"
+    },
+    {
+      "$ref": "document-fragment-node-schema.json"
+    },
+    {
+      "$ref": "document-type-node-schema.json"
+    },
+    {
+      "$ref": "element-node-schema.json"
+    },
+    {
+      "$ref": "text-node-schema.json"
+    },
+    {
+      "$ref": "cdata-node-schema.json"
+    }
   ]
 }

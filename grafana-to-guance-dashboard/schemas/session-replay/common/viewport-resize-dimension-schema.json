@@ -4,7 +4,10 @@
   "type": "object",
   "title": "ViewportResizeDimension",
   "description": "Schema of a ViewportResizeDimension.",
-  "required": ["width", "height"],
+  "required": [
+    "width",
+    "height"
+  ],
   "properties": {
     "width": {
       "type": "integer",

@@ -1,0 +1,17 @@
+id = 'unit'
+publisher = 'pe'
+name = 'unit'
+version = '0.1.0'
+description = 'Generate an Guance unit description file. Generate a standardized unit configuration from a CSV metric file.'
+category = 'general'
+author = 'pe'
+license = 'NOASSERTION'
+homepage = ''
+repository = ''
+tags = ['metrics', 'unit']
+icon = ''
+min_codex_version = ''
+tools_required = []
+permissions = ['filesystem-read', 'filesystem-write']
+readme_summary = 'Generate an Guance unit description file. Generate a standardized unit configuration from a CSV metric file.'
+view = 'community'

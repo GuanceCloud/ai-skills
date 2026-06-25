@@ -1,794 +1,794 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "charts/chart-schema.json",
-    "type": "object",
-    "description": "图表完整结构",
-    "title": "ChartData",
-    "required": [
-        "extend",
-        "name",
-        "pos",
-        "type",
-        "queries"
-    ],
-    "properties": {
-        "extend": {
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {
-                "links": {
-                    "$ref": "common/chart-links-schema.json"
-                },
-                "settings": {
-                    "$ref": "settings/settings-schema.json"
-                }
-            }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "charts/chart-schema.json",
+  "type": "object",
+  "description": "Schema description.",
+  "title": "ChartData",
+  "required": [
+    "extend",
+    "name",
+    "pos",
+    "type",
+    "queries"
+  ],
+  "properties": {
+    "extend": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "links": {
+          "$ref": "common/chart-links-schema.json"
         },
-        "group": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "oneOf": [
-                        {
-                            "type": "string",
-                            "description": "分组名称"
-                        },
-                        {
-                            "type": "null",
-                            "description": "分组名称"
-                        }
-                    ]
-                }
-            }
-        },
-        "name": {
-            "type": "string",
-            "description": "图表名称"
-        },
-        "pos": {
-            "description": "图表位置信息",
-            "type": "object",
-            "required": [
-                "h",
-                "w",
-                "x",
-                "y"
-            ],
-            "properties": {
-                "h": {
-                    "description": "图表高度,每行的高度默认为10像素,比如 h 为12, 则实际高度为 12 * 10",
-                    "type": "number"
-                },
-                "w": {
-                    "type": "number",
-                    "description": "图表宽度,栅格系统的最大列数为 24, 比如 w为12，则显示宽度则为容器宽度的 1/2 倍 "
-                },
-                "x": {
-                    "type": "number",
-                    "description": "图表距离容器的水平距离,栅格系统的最大列数为 24, 比如 x为12，则图表距离容器左边的水平距离为容器宽度 1/2 倍 "
-                },
-                "y": {
-                    "type": "number",
-                    "description": "图表距离容器垂直距离,每行的高度默认为10像素,比如 y为12, 则实际高度为 12 * 10"
-                }
-            }
-        },
-        "type": {
-            "description": "图表类型",
-            "$ref": "common/common-chart-types-schema.json"
-        },
-        "queries": {
-            "$ref": "query/queries-schema.json"
+        "settings": {
+          "$ref": "settings/settings-schema.json"
         }
+      }
     },
-    "allOf": [
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "alarm"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
+    "group": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "description": "Schema description."
             },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-alarm-settings-schema.json"
-                            }
-                        }
-                    }
-                }
+            {
+              "type": "null",
+              "description": "Schema description."
             }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "bar"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-bar-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "chinamap"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-chinamap-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "change"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-change-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "command"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-command-settings-schema.json"
-                            }
-                        }
-                    },
-                    "queries": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "query": {
-                                    "type": "object",
-                                    "required": [
-                                        "content"
-                                    ],
-                                    "properties": {
-                                        "content": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "funnel"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-funnel-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "gauge"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-gauge-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "hexgon"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-hexgon-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "heatmap"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-heatmap-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "histogram"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-histogram-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "iframe"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-iframe-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "log"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-log-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "monitor"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-monitor-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "object"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-object-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "picture"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-picture-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "pie"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-pie-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "sankey"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-sankey-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "enum": [
-                            "scatter",
-                            "bubble"
-                        ]
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-scatter-bubble-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "sequence"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-sequence-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "singlestat"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-singlestat-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "table"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-table-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "text"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-text-settings-schema.json"
-                            }
-                        }
-                    },
-                    "queries": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "query": {
-                                    "type": "object",
-                                    "required": [
-                                        "content"
-                                    ],
-                                    "properties": {
-                                        "content": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "topology"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-topology-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "video"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-video-settings-schema.json"
-                            }
-                        }
-                    },
-                    "queries": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "query": {
-                                    "type": "object",
-                                    "required": [
-                                        "content"
-                                    ],
-                                    "properties": {
-                                        "content": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "toplist"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-toplist-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "treemap"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-treemap-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "if": {
-                "properties": {
-                    "type": {
-                        "const": "worldmap"
-                    }
-                },
-                "required": [
-                    "type"
-                ]
-            },
-            "then": {
-                "properties": {
-                    "extend": {
-                        "type": "object",
-                        "properties": {
-                            "settings": {
-                                "$ref": "settings/chart-worldmap-settings-schema.json"
-                            }
-                        }
-                    }
-                }
-            }
+          ]
         }
-    ]
+      }
+    },
+    "name": {
+      "type": "string",
+      "description": "Schema description."
+    },
+    "pos": {
+      "description": "Schema description.",
+      "type": "object",
+      "required": [
+        "h",
+        "w",
+        "x",
+        "y"
+      ],
+      "properties": {
+        "h": {
+          "description": "Schema description.",
+          "type": "number"
+        },
+        "w": {
+          "type": "number",
+          "description": "Schema description."
+        },
+        "x": {
+          "type": "number",
+          "description": "Schema description."
+        },
+        "y": {
+          "type": "number",
+          "description": "Schema description."
+        }
+      }
+    },
+    "type": {
+      "description": "Schema description.",
+      "$ref": "common/common-chart-types-schema.json"
+    },
+    "queries": {
+      "$ref": "query/queries-schema.json"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "alarm"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-alarm-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "bar"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-bar-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "chinamap"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-chinamap-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "change"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-change-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "command"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-command-settings-schema.json"
+              }
+            }
+          },
+          "queries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object",
+                  "required": [
+                    "content"
+                  ],
+                  "properties": {
+                    "content": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "funnel"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-funnel-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "gauge"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-gauge-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "hexgon"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-hexgon-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "heatmap"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-heatmap-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "histogram"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-histogram-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "iframe"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-iframe-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "log"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-log-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "monitor"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-monitor-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "object"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-object-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "picture"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-picture-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "pie"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-pie-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "sankey"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-sankey-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "enum": [
+              "scatter",
+              "bubble"
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-scatter-bubble-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "sequence"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-sequence-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "singlestat"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-singlestat-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "table"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-table-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "text"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-text-settings-schema.json"
+              }
+            }
+          },
+          "queries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object",
+                  "required": [
+                    "content"
+                  ],
+                  "properties": {
+                    "content": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "topology"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-topology-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "video"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-video-settings-schema.json"
+              }
+            }
+          },
+          "queries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "object",
+                  "required": [
+                    "content"
+                  ],
+                  "properties": {
+                    "content": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "toplist"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-toplist-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "treemap"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-treemap-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "worldmap"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "extend": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "$ref": "settings/chart-worldmap-settings-schema.json"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

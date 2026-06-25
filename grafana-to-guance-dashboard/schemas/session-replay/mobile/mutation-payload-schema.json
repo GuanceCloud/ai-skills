@@ -4,7 +4,11 @@
   "title": "MobileMutationPayload",
   "type": "object",
   "description": "Mobile-specific. Schema of a MutationPayload.",
-  "required": ["adds", "removes", "updates"],
+  "required": [
+    "adds",
+    "removes",
+    "updates"
+  ],
   "allOf": [
     {
       "properties": {
@@ -13,7 +17,9 @@
           "readOnly": true,
           "items": {
             "type": "object",
-            "required": ["wireframe"],
+            "required": [
+              "wireframe"
+            ],
             "properties": {
               "previousId": {
                 "type": "integer",
@@ -31,7 +37,9 @@
           "readOnly": true,
           "items": {
             "type": "object",
-            "required": ["id"],
+            "required": [
+              "id"
+            ],
             "properties": {
               "id": {
                 "type": "integer",

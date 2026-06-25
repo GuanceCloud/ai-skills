@@ -4,7 +4,9 @@
   "title": "CommonRecordSchema",
   "type": "object",
   "description": "Schema of common properties for a Record event type.",
-  "required": ["timestamp"],
+  "required": [
+    "timestamp"
+  ],
   "properties": {
     "timestamp": {
       "type": "integer",

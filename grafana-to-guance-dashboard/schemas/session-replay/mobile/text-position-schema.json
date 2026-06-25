@@ -39,13 +39,21 @@
             "horizontal": {
               "type": "string",
               "description": "The horizontal text alignment. The default value is `left`.",
-              "enum": ["left", "right", "center"],
+              "enum": [
+                "left",
+                "right",
+                "center"
+              ],
               "readOnly": true
             },
             "vertical": {
               "type": "string",
               "description": "The vertical text alignment. The default value is `top`.",
-              "enum": ["top", "bottom", "center"],
+              "enum": [
+                "top",
+                "bottom",
+                "center"
+              ],
               "readOnly": true
             }
           },

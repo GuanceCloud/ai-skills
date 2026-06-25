@@ -9,7 +9,10 @@
       "$ref": "../common/_common-record-schema.json"
     },
     {
-      "required": ["type", "data"],
+      "required": [
+        "type",
+        "data"
+      ],
       "properties": {
         "type": {
           "type": "integer",
@@ -20,7 +23,9 @@
         "data": {
           "type": "object",
           "readOnly": true,
-          "required": ["wireframes"],
+          "required": [
+            "wireframes"
+          ],
           "properties": {
             "wireframes": {
               "type": "array",

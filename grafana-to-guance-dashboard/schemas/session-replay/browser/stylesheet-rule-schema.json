@@ -4,7 +4,9 @@
   "title": "StyleSheetRule",
   "type": "object",
   "description": "Browser-specific. Schema of a StyleSheetRule.",
-  "required": ["id"],
+  "required": [
+    "id"
+  ],
   "properties": {
     "id": {
       "type": "integer",

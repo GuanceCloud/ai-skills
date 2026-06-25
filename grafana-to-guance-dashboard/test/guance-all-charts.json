@@ -1,5 +1,5 @@
 {
-  "title": "全图表",
+  "title": "All Charts",
   "dashboardType": "CUSTOM",
   "dashboardExtend": {},
   "dashboardMapping": [],
@@ -145,7 +145,7 @@
           "name": null
         },
         "chartGroupUUID": "default",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -287,7 +287,7 @@
           "name": null
         },
         "chartGroupUUID": "default",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -384,7 +384,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -510,7 +510,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -638,7 +638,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -768,7 +768,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -892,7 +892,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -1016,7 +1016,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 10,
@@ -1140,7 +1140,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -1224,7 +1224,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 10,
@@ -1346,7 +1346,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 18,
           "w": 12,
@@ -1468,7 +1468,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 18,
           "w": 12,
@@ -1620,7 +1620,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 18,
           "w": 12,
@@ -1770,7 +1770,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 18,
           "w": 12,
@@ -1858,7 +1858,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -1973,7 +1973,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -2107,7 +2107,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -2226,7 +2226,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 15.5,
           "w": 8,
@@ -2373,7 +2373,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 15.5,
           "w": 8,
@@ -2498,7 +2498,7 @@
           "name": "test2"
         },
         "chartGroupUUID": "chtg_b1128d0b37e14967b2c466a312e37416",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 15.5,
           "w": 8,
@@ -2568,7 +2568,7 @@
           "name": "test1"
         },
         "chartGroupUUID": "chtg_defb199a8e03421a9c48dd1a84aa1929",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 18,
           "w": 12,
@@ -2633,7 +2633,7 @@
           "name": "test"
         },
         "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -2723,7 +2723,7 @@
           "name": "test"
         },
         "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 13,
           "w": 8,
@@ -2796,7 +2796,7 @@
           "name": "test"
         },
         "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -2893,7 +2893,7 @@
           "name": "test"
         },
         "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -2940,7 +2940,7 @@
               {
                 "key": "message",
                 "name": "message",
-                "alias": "内容"
+                "alias": "Content"
               },
               {
                 "key": "status",
@@ -2960,7 +2960,7 @@
             "inColumns": [
               {
                 "field": "time",
-                "headerName": "时间"
+                "headerName": "Time"
               }
             ],
             "multiRows": 0,
@@ -2977,7 +2977,7 @@
               },
               {
                 "field": "message",
-                "headerName": "内容"
+                "headerName": "Content"
               }
             ],
             "globalUnit": [],
@@ -2997,7 +2997,7 @@
           "name": "test"
         },
         "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 18,
           "w": 12,
@@ -3065,7 +3065,7 @@
             "inColumns": [
               {
                 "field": "time",
-                "headerName": "时间"
+                "headerName": "Time"
               }
             ],
             "showTitle": true,
@@ -3073,11 +3073,11 @@
             "addColumns": [
               {
                 "field": "df_status",
-                "headerName": "状态"
+                "headerName": "Status"
               },
               {
                 "field": "df_title",
-                "headerName": "事件"
+                "headerName": "Event"
               }
             ],
             "globalUnit": [],
@@ -3095,7 +3095,7 @@
           "name": "test"
         },
         "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 18,
           "w": 12,
@@ -3111,19 +3111,19 @@
             "color": "",
             "qtype": "dql",
             "query": {
-              "q": "E::monitor:(`df_status` AS `状态`, `df_title` AS `事件`)",
+              "q": "E::monitor:(`df_status` AS `Status`, `df_title` AS `Event`)",
               "code": "A",
               "fill": null,
               "type": "simple",
-              "alias": "事件",
+              "alias": "Event",
               "field": null,
               "fields": [
                 {
-                  "alias": "状态",
+                  "alias": "Status",
                   "field": "df_status"
                 },
                 {
-                  "alias": "事件",
+                  "alias": "Event",
                   "field": "df_title"
                 }
               ],
@@ -3175,7 +3175,7 @@
           "name": "test"
         },
         "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 18,
           "w": 12,
@@ -3234,7 +3234,7 @@
           "name": "test"
         },
         "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -3282,7 +3282,7 @@
           "name": "test"
         },
         "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,
@@ -3294,7 +3294,7 @@
           {
             "name": "",
             "query": {
-              "content": "得到的"
+              "content": "Result"
             }
           }
         ],
@@ -3332,7 +3332,7 @@
           "name": "test"
         },
         "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 8,
           "w": 6,
@@ -3370,7 +3370,7 @@
           "name": "test"
         },
         "chartGroupUUID": "chtg_fa9073f2b42a4443b081621bce807686",
-        "name": "新建图表",
+        "name": "New Chart",
         "pos": {
           "h": 10,
           "w": 8,

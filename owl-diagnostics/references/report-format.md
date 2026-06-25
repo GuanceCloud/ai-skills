@@ -1,91 +1,44 @@
-# Owl Diagnostics Report Format
+# Report Format
 
-默认报告尽量短，按下面结构输出。
+Keep reports concise and evidence-based. Always write the final Markdown report to disk when the task requests a report.
 
-最终报告必须输出，并且必须保存为落盘文件。
+## Template
 
-## 模板
+**Generation Info**
+- Generated at: `<generated_at>`
+- Hostname: `<hostname>`
+- User: `<user>`
+- Analysis started at: `<started_at>`
+- Report completed at: `<completed_at>`
+- Total duration: `<duration>`
 
-```md
-**生成信息**
-- 生成时间：`<生成时间>`
-- 主机名：`<hostname>`
-- 用户：`<user>`
-- 问题分析开始时间：`<问题分析开始时间>`
-- 报告生成完成时间：`<报告生成完成时间>`
-- 总耗时：`<总耗时>`
+**Time Range**
+`<start_time>` to `<end_time>`
 
-**时间范围**
-`<开始时间>` 到 `<结束时间>`
+**Query Method**
+- Primary tools: `<tool1>`, `<tool2>`
+- Notes: `<pagination / DQL / extra discovery / empty result>`
 
-**查询方式**
-- CLI：`owl`
-- 主要 tool：`<tool1>`、`<tool2>`
-- 说明：`<是否分页 / 是否使用 DQL / 是否补充字段发现>`
+**Overall Conclusion**
+- `<most important finding>`
 
-**总体结论**
-- `<一句话总结最重要发现>`
-- `<第二条总结，可选>`
+**Classification Results**
+- `<category>`: `<count>`, mainly in `<service/resource>`
 
-**分类结果**
-- `<类别1>`：`<数量>`，主要在 `<service/resource>`
-- `<类别2>`：`<数量>`，主要在 `<service/resource>`
-- `<类别3>`：`<数量>`，主要在 `<service/resource>`
+**Representative Evidence**
+- `service=<service>` `resource=<resource>` `trace_id=<trace_id>`: `<short error message>`
 
-**代表性证据**
-- `service=<service>` `resource=<resource>` `trace_id=<trace_id>`：`<简短错误信息>`
-- `service=<service>` `resource=<resource>` `trace_id=<trace_id>`：`<简短错误信息>`
+**Judgment / Inference**
+- `<fact-based inference>`
 
-**判断 / 推断**
-- `<基于错误信息或 trace_id 的合理推断>`
-- `<如无推断可省略>`
+**Next Steps**
+1. `<next step>`
+2. `<next step>`
 
-**后续建议**
-1. `<建议1>`
-2. `<建议2>`
-3. `<建议3，可选>`
-```
+## Writing Rules
 
-## 简版规则
-
-- 如果用户只要“分类结果”，保留：
-  - `生成信息`
-  - `时间范围`
-  - `总体结论`
-  - `分类结果`
-
-- 如果用户要“报告”，使用完整模板。
-
-- 如果结果为空，改成：
-
-```md
-**生成信息**
-- 生成时间：`<生成时间>`
-- 主机名：`<hostname>`
-- 用户：`<user>`
-- 问题分析开始时间：`<问题分析开始时间>`
-- 报告生成完成时间：`<报告生成完成时间>`
-- 总耗时：`<总耗时>`
-
-**时间范围**
-`<开始时间>` 到 `<结束时间>`
-
-**总体结论**
-- 该时间范围内未查询到符合条件的数据。
-
-**查询方式**
-- CLI：`owl`
-- 主要 tool：`<tool>`
-```
-
-## 书写约束
-
-- 报告默认带上生成时间、主机名、当前用户、问题分析开始时间、报告生成完成时间、总耗时。
-- 总耗时指从开始分析问题到报告生成完成的整个耗时，不是单独的数据分析耗时。
-- 总耗时默认用秒，必要时可写成 `Xm Ys`。
-- 时间写绝对时间，不只写“最近 1 小时”。
-- 先结论，后证据。
-- 推断要明确标成“推断”，不要写成已证实事实。
-- 不要把命令输出原样大段贴出来，只摘关键字段。
-- 完整报告形成后，必须落盘为 `.md` 文件。
-- 回复用户时必须附上最终落盘路径。
+- Use absolute times, not only relative phrases.
+- Put conclusions before evidence.
+- Mark inferences explicitly.
+- Do not paste large raw command output.
+- Save the completed report as a `.md` file.

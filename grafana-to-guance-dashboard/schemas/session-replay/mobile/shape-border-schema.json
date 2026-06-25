@@ -6,7 +6,10 @@
   "description": "The border properties of this wireframe. The default value is null (no-border).",
   "allOf": [
     {
-      "required": ["color", "width"],
+      "required": [
+        "color",
+        "width"
+      ],
       "properties": {
         "color": {
           "type": "string",

@@ -9,7 +9,10 @@
       "$ref": "../common/_slot-supported-common-record-schema.json"
     },
     {
-      "required": ["type", "data"],
+      "required": [
+        "type",
+        "data"
+      ],
       "properties": {
         "type": {
           "type": "integer",
@@ -20,14 +23,21 @@
         "data": {
           "type": "object",
           "description": "Schema of a Session Replay FrustrationRecord data structure type.",
-          "required": ["frustrationTypes", "recordIds"],
+          "required": [
+            "frustrationTypes",
+            "recordIds"
+          ],
           "properties": {
             "frustrationTypes": {
               "type": "array",
               "description": "Collection of frustration signal types.",
               "items": {
                 "type": "string",
-                "enum": ["rage_click", "error_click", "dead_click"],
+                "enum": [
+                  "rage_click",
+                  "error_click",
+                  "dead_click"
+                ],
                 "description": "The type of frustration signal.",
                 "readOnly": true
               }

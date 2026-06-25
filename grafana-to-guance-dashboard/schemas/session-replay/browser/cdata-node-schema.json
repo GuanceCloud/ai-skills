@@ -4,7 +4,10 @@
   "title": "CDataNode",
   "type": "object",
   "description": "Schema of a CData Node.",
-  "required": ["type", "textContent"],
+  "required": [
+    "type",
+    "textContent"
+  ],
   "properties": {
     "type": {
       "type": "integer",

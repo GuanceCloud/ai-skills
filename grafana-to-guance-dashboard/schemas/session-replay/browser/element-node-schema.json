@@ -4,7 +4,12 @@
   "title": "ElementNode",
   "type": "object",
   "description": "Schema of an Element Node.",
-  "required": ["type", "tagName", "attributes", "childNodes"],
+  "required": [
+    "type",
+    "tagName",
+    "attributes",
+    "childNodes"
+  ],
   "properties": {
     "type": {
       "type": "integer",

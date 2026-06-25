@@ -12,7 +12,10 @@
       "$ref": "../common/_common-segment-metadata-schema.json"
     },
     {
-      "required": ["source", "creation_reason"],
+      "required": [
+        "source",
+        "creation_reason"
+      ],
       "properties": {
         "source": {
           "type": "string",

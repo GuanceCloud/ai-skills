@@ -6,7 +6,9 @@
   "description": "Browser-specific. Schema of a StyleSheetRuleData.",
   "allOf": [
     {
-      "required": ["source"],
+      "required": [
+        "source"
+      ],
       "properties": {
         "source": {
           "type": "integer",

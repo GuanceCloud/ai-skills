@@ -1,0 +1,17 @@
+id = 'alert-manager'
+publisher = 'pe'
+name = 'alert_manager'
+version = '0.1.0'
+description = 'Convert user-provided alertmanager rule statements or rule files into Guance monitor configurations. The input is an alert rule definition, not Alertmanager routing configuration; reuse the monitor skill structure and validate all DQL before output.'
+category = 'general'
+author = 'pe'
+license = 'NOASSERTION'
+homepage = ''
+repository = ''
+tags = ['alertmanager', 'dql', 'monitor']
+icon = ''
+min_codex_version = ''
+tools_required = []
+permissions = ['filesystem-read', 'filesystem-write', 'shell']
+readme_summary = 'Convert user-provided alertmanager rule statements or rule files into Guance monitor configurations. The input is an alert rule definition, not Alertmanager routing configuration; reuse the monitor skill structure and validate all DQL before output.'
+view = 'community'

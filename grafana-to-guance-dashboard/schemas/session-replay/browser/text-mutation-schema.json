@@ -4,7 +4,10 @@
   "title": "TextMutation",
   "type": "object",
   "description": "Schema of a TextMutation.",
-  "required": ["id", "value"],
+  "required": [
+    "id",
+    "value"
+  ],
   "properties": {
     "id": {
       "type": "integer",
