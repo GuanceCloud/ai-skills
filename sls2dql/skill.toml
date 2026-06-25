@@ -1,8 +1,8 @@
 id = 'sls2dql'
 publisher = 'pe'
 name = 'sls2dql'
-version = '0.1.0'
-description = 'Convert, validate, and explain Alibaba Cloud SLS queries as GuanceDB DQL. Supports single-query conversion, source fallback for search-only queries, batch evaluation, approximate-conversion risk notes, and Markdown report generation.'
+version = '0.2.0'
+description = 'Convert, validate, and explain Alibaba Cloud SLS queries as GuanceDB DQL.'
 category = 'general'
 author = 'pe'
 license = 'NOASSERTION'
@@ -13,5 +13,5 @@ icon = ''
 min_codex_version = ''
 tools_required = []
 permissions = ['filesystem-read', 'filesystem-write', 'shell']
-readme_summary = 'Convert, validate, and explain Alibaba Cloud SLS queries as GuanceDB DQL. Supports single-query conversion, source fallback for search-only queries, batch evaluation, approximate-conversion risk notes, and Markdown report generation.'
+readme_summary = 'Convert, validate, and explain Alibaba Cloud SLS queries as GuanceDB DQL.'
 view = 'community'

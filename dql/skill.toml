@@ -1,8 +1,8 @@
 id = 'dql'
 publisher = 'pe'
 name = 'dql'
-version = '0.1.0'
-description = 'Generate, fix, explain, and review DQL. Any final executable DQL must pass dqlcheck item by item before delivery.'
+version = '0.2.0'
+description = 'Generate, fix, explain, and review DQL; final executable DQL must pass dqlcheck item by item.'
 category = 'general'
 author = 'pe'
 license = 'NOASSERTION'
@@ -13,5 +13,5 @@ icon = ''
 min_codex_version = ''
 tools_required = []
 permissions = ['filesystem-read', 'filesystem-write', 'network', 'shell']
-readme_summary = 'Generate, fix, explain, and review DQL. Any final executable DQL must pass dqlcheck item by item before delivery.'
+readme_summary = 'Generate, fix, explain, and review DQL; final executable DQL must pass dqlcheck item by item.'
 view = 'community'
