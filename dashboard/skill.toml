@@ -1,7 +1,7 @@
 id = 'dashboard'
 publisher = 'pe'
 name = 'dashboard'
-version = '0.2.0'
+version = '0.2.1'
 description = 'Generate Guance Dashboard JSON from CSV metric files.'
 category = 'general'
 author = 'pe'
@@ -12,6 +12,6 @@ tags = ['dashboard', 'dql', 'guance']
 icon = ''
 min_codex_version = ''
 tools_required = []
-permissions = ['filesystem-read', 'filesystem-write', 'shell']
+permissions = ['filesystem-read', 'filesystem-write', 'secrets', 'shell']
 readme_summary = 'Generate Guance Dashboard JSON from CSV metric files.'
 view = 'community'
