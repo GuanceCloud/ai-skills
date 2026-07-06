@@ -267,8 +267,8 @@ Use `singlestat` for overview KPIs.
 
 Required behavior:
 
-- wrap the final DQL with `series_sum(...)`
-- keep the inner DQL grouped by the variable code
+- use the final DQL directly, without wrapping it in `series_sum(...)`
+- keep the final DQL grouped by the variable code when the chart needs grouped source data
 - use `fill = null`
 - use `funcList = []`
 - use `fieldFunc = "last"`
@@ -280,8 +280,7 @@ Required behavior:
 Example validation commands:
 
 ```bash
-./dql/bin/dqlcheck -q 'M::`mysql`:(AVG(`Threads_connected`) AS `Connections`) { `host` = "#{host}" } BY `host`'
-./dql/bin/dqlcheck -q 'series_sum("M::`mysql`:(`Threads_connected` AS `Connections`) { `host` = \"#{host}\" } BY `host`")'
+./dql/bin/dqlcheck -q 'M::`mysql`:(`Threads_connected` AS `Connections`) { `host` = "#{host}" } BY `host`'
 ```
 
 ### Sequence Rules
@@ -396,7 +395,7 @@ If a query still fails after repair attempts, say so explicitly and do not prese
 - variable code comes from the CSV tag field.
 - every `BY`, `filters.name`, `filters.value`, and `groupBy` entry matches the variable code.
 - every chart has units configured.
-- every `singlestat` uses `series_sum(...)`.
+- no `singlestat` uses `series_sum(...)`.
 - every `singlestat` uses `fill = null`.
 - every `sequence` uses valid fill and chart-type settings.
 - at least 1 instance table exists.
