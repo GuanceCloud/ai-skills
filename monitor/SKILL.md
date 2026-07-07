@@ -49,7 +49,10 @@ Do not deliver monitor JSON with unvalidated final DQL.
 - Guance alert statuses from highest to lower severity are `fatal`, `critical`, `error`, and `warning`.
 - A single metric does not need all statuses; normally choose 1 or 2 levels that match the risk.
 - When two or more levels are configured, they must be adjacent. Use `warning` + `error` or `error` + `critical`; do not jump directly from `warning` to `critical`.
-- Multi-level thresholds must not overlap and should have continuous boundaries. Lower levels should use closed-open ranges, such as `>= 75` and `< 85`; the highest level can use `>= 85`.
+- Multi-level thresholds must not overlap and should have continuous boundaries in intent, but each generated alert level must still be expressed with a single-sided trigger only.
+- Do not generate compound UI conditions such as `and Result连续 N 次 < X`, dual-sided range clauses, or any extra right-hand-side narrowing condition in the trigger area.
+- For adjacent levels, rely on severity ordering and threshold selection, not on an additional `and` clause to exclude higher ranges.
+- Prefer single-sided trigger expressions such as `>= 85`, `>= 75`, `< 20`, or `<= 5`. The monitor must be understandable from one primary comparator per level.
 - The threshold table is guidance, not a requirement to configure every listed level.
 
 ## Query Configuration Rules
@@ -58,9 +61,11 @@ Do not deliver monitor JSON with unvalidated final DQL.
 - `extend.querylist[].query.fieldFunc` must match the function used in DQL.
 - Fixed label or dimension filters must be written to both the DQL filter clause and `extend.querylist[].query.filters`.
 - `extend.querylist[].query.groupBy` must match the DQL `BY` fields so the UI and alert semantics agree.
+- `checkerOpt.rules` and any mirrored rule structures must use one primary threshold operator per severity level; do not emit extra `and`-style range guards for the same level.
 
 ## Output Requirements
 
 - Use clear monitor titles, grouping tags, thresholds, and message templates.
 - Include component category and component name tags when available.
 - Confirm every generated query has passed validation before final delivery.
+- The generated trigger UI should not contain the extra right-hand `and` condition block shown in Guance continuous-trigger configuration.
