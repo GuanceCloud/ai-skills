@@ -1,5 +1,6 @@
 ---
 name: owl-diagnostics
+author: liurui
 description: Use the owl CLI for Guance queries, diagnostics, root-cause analysis, and structured Markdown reports.
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: alert_manager
+author: liurui
 description: Convert Prometheus alerting rules into Guance monitor JSON and validate all generated DQL.
 ---
 

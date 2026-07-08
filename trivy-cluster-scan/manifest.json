@@ -2,6 +2,7 @@
   "schema_version": "agent-skill-v1",
   "package_type": "ai_agent_skill",
   "name": "trivy-cluster-scan",
+  "author": "liushenkai",
   "display_name": "Trivy Cluster Scan",
   "version": "2026.07.02",
   "entrypoint": "SKILL.md",

@@ -1,5 +1,6 @@
 ---
 name: trivy-cluster-scan
+author: liushenkai
 description: Use Trivy to perform authorized, scan-only security assessment of Kubernetes or service clusters, including all namespaces/workloads, all language application dependencies discoverable in images or source paths, container images, image configuration, Kubernetes resource configuration, secrets, misconfigurations, vulnerabilities, compliance posture, runtime/node collector findings, automatic ephemeral portable Trivy download with checksum verification and post-scan cleanup, and latest official vendor remediation guidance with citations. Trigger on Trivy, vulnerability scan, cluster scan, Kubernetes scan, image scan, container config scan, runtime scan, official vulnerability remediation, Chinese requests for vulnerability scanning, cluster scanning, image scanning, container configuration scanning, runtime scanning, and official remediation guidance. Forbid remediation, patching, apply/delete/upgrade actions, exploit testing, or configuration changes unless the user explicitly confirms a separate fix request.
 ---
 

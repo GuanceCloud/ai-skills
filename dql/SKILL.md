@@ -1,5 +1,6 @@
 ---
 name: dql
+author: tanbiao
 description: Generate, fix, explain, and review DQL; final executable DQL must pass dqlcheck item by item.
 ---
 

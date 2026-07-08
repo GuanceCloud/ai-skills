@@ -1,5 +1,6 @@
 ---
 name: dashboard
+author: liurui
 description: Generate Guance Dashboard JSON from CSV metric files.
 ---
 

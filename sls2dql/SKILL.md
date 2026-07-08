@@ -1,5 +1,6 @@
 ---
 name: sls2dql
+author: samuel
 description: Convert, validate, and explain Alibaba Cloud SLS queries as GuanceDB DQL.
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: monitor
+author: liurui
 description: Generate Guance monitor JSON from CSV metric files for any component.
 ---
 
