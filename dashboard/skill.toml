@@ -1,7 +1,7 @@
 id = 'dashboard'
 publisher = 'pe'
 name = 'dashboard'
-version = '0.2.2'
+version = '0.2.3'
 description = 'Generate Guance Dashboard JSON from CSV metric files.'
 category = 'general'
 author = 'liurui'

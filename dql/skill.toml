@@ -1,7 +1,7 @@
 id = 'dql'
 publisher = 'pe'
 name = 'dql'
-version = '0.2.0'
+version = '0.2.1'
 description = 'Generate, fix, explain, and review DQL; final executable DQL must pass dqlcheck item by item.'
 category = 'general'
 author = 'tanbiao'

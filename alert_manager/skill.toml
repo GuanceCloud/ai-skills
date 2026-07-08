@@ -1,7 +1,7 @@
 id = 'alert-manager'
 publisher = 'pe'
 name = 'alert_manager'
-version = '0.2.0'
+version = '0.2.1'
 description = 'Convert Prometheus alerting rules into Guance monitor JSON and validate all generated DQL.'
 category = 'general'
 author = 'liurui'

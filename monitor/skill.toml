@@ -1,7 +1,7 @@
 id = 'monitor'
 publisher = 'pe'
 name = 'monitor'
-version = '0.2.1'
+version = '0.2.2'
 description = 'Generate Guance monitor JSON from CSV metric files for any component.'
 category = 'general'
 author = 'liurui'

@@ -1,7 +1,7 @@
 id = 'sls2dql'
 publisher = 'pe'
 name = 'sls2dql'
-version = '0.2.0'
+version = '0.2.1'
 description = 'Convert, validate, and explain Alibaba Cloud SLS queries as GuanceDB DQL.'
 category = 'general'
 author = 'samuel'

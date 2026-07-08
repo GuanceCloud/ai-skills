@@ -1,7 +1,7 @@
 id = 'owl-diagnostics'
 publisher = 'pe'
 name = 'owl-diagnostics'
-version = '0.2.0'
+version = '0.2.1'
 description = 'Use the owl CLI for Guance queries, diagnostics, root-cause analysis, and structured Markdown reports.'
 category = 'general'
 author = 'liurui'
