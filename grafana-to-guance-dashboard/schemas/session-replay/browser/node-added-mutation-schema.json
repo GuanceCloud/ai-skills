@@ -4,7 +4,11 @@
   "title": "AddedNodeMutation",
   "type": "object",
   "description": "Schema of an AddedNodeMutation.",
-  "required": ["node", "nextId", "parentId"],
+  "required": [
+    "node",
+    "nextId",
+    "parentId"
+  ],
   "properties": {
     "node": {
       "$ref": "serialized-node-with-id-schema.json"

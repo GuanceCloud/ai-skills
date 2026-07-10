@@ -1,65 +1,46 @@
-# SLSConvert 快速开始
+# SLSConvert Quick Start
 
-## 1. 先检查二进制版本
-
-```bash
-./sls2dql version
-```
-
-## 2. 转换一条普通 SQL 查询
+## 1. Check the Binary Version
 
 ```bash
-./sls2dql convert \
-  --namespace L \
-  --index production \
-  --query "SELECT count(*) AS pv FROM access_log GROUP BY host ORDER BY pv DESC LIMIT 10"
+./sls2dql/bin/sls2dql version
 ```
 
-如果你不希望输出里带 DQL index，只要不传 `--index` 即可。
-
-## 3. 转换 search-only 查询
-
-这类查询还需要补一个 fallback source：
+## 2. Convert a SQL Query
 
 ```bash
-./sls2dql convert \
-  --namespace L \
-  --source access_log \
-  --query "status:500 AND service:api"
+./sls2dql/bin/sls2dql convert --namespace L --query "SELECT count(*) AS pv FROM access_log"
 ```
 
-## 4. 需要时允许近似转换
+Omit `--index` if the output DQL should not include an index.
+
+## 3. Convert a Search-only Query
+
+Search-only queries need a fallback source:
 
 ```bash
-./sls2dql convert \
-  --namespace L \
-  --mode allow-approximate \
-  --query "SELECT * FROM access_log WHERE message LIKE 'error%'"
+./sls2dql/bin/sls2dql convert --namespace L --source access_log --query "status:500 AND service:api"
 ```
 
-## 5. 查看转换解释
+## 4. Allow Approximate Conversion When Needed
 
 ```bash
-./sls2dql explain \
-  --namespace L \
-  --query "* | SELECT count(*) AS pv, date_trunc('minute', __time__) AS time FROM access_log GROUP BY time ORDER BY time"
+./sls2dql/bin/sls2dql convert --namespace L --mode allow-approximate --query "message LIKE '%error%'"
 ```
 
-## 6. 批量评估真实查询
+## 5. Explain a Conversion
 
 ```bash
-./sls2dql report \
-  --namespace L \
-  --file testdata/real_sample_template.json
+./sls2dql/bin/sls2dql explain --namespace L --query "* | SELECT count(*) AS pv FROM access_log GROUP BY host"
 ```
 
-## 7. 记住两个最常见错误
+## 6. Batch Evaluation
 
-- `NAMESPACE_REQUIRED`：补 `--namespace`
-- `SOURCE_REQUIRED`：search-only 查询补 `--source`
+```bash
+./sls2dql/bin/sls2dql report --namespace L --file queries.json
+```
 
-## 更多说明
+## 7. Common Errors
 
-- 完整英文手册：[USER_GUIDE.md](USER_GUIDE.md)
-- 完整中文手册：[USER_GUIDE_zh.md](USER_GUIDE_zh.md)
-- 发布说明：[RELEASE.md](RELEASE.md)
+- `NAMESPACE_REQUIRED`: add `--namespace`.
+- `SOURCE_REQUIRED`: add `--source` for search-only queries.

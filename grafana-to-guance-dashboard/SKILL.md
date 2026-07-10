@@ -1,5 +1,6 @@
 ---
 name: grafana-to-guance-dashboard
+author: liurui
 description: Convert Grafana dashboard JSON into Guance dashboard JSON with a fully self-contained skill package. Use when the user wants to analyze Grafana dashboards before conversion, run conversion, audit conversion gaps, improve units or PromQL compatibility with LLM-assisted review, repair panel or variable mappings, preserve settings, groups, and vars as much as possible, validate generated Guance dashboard JSON against the bundled schemas, or debug why a Grafana dashboard does not convert cleanly.
 ---
 

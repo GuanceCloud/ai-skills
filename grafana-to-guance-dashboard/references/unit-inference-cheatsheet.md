@@ -52,7 +52,7 @@ Typical confidence:
 Strong hints:
 
 - metric names ending with `_ms`
-- titles containing `latency`, `duration`, `response time`, `RT`, `耗时`
+- titles containing `latency`, `duration`, `response time`, `RT`, ``
 - queries using `histogram_quantile` on latency-style histograms
 
 Recommended unit:
@@ -70,7 +70,7 @@ Strong hints:
 
 - metric names ending with `_percent` or containing `_ratio`
 - queries multiplying by `100`
-- titles containing `error rate`, `success rate`, `utilization`, `usage ratio`, `占用率`
+- titles containing `error rate`, `success rate`, `utilization`, `usage ratio`, ``
 
 Recommended unit:
 
@@ -85,7 +85,7 @@ Typical confidence:
 
 Strong hints:
 
-- titles containing `QPS`, `RPS`, `request rate`, `吞吐`
+- titles containing `QPS`, `RPS`, `request rate`, `Throughput`
 - metrics containing `requests_total` together with `rate(...)` or `irate(...)`
 - legends or titles describing traffic volume over time
 
@@ -135,13 +135,13 @@ Typical confidence:
 
 Titles can raise confidence when query naming is weak.
 
-- `latency`, `duration`, `响应时间`, `耗时`
+- `latency`, `duration`, ``, ``
   - usually `ms` or `s`
 - `memory`, `heap`, `disk`, `storage`
   - usually `bytes`
-- `qps`, `rps`, `throughput`, `吞吐`
+- `qps`, `rps`, `throughput`, `Throughput`
   - usually `reqps`
-- `error rate`, `success rate`, `utilization`, `占比`
+- `error rate`, `success rate`, `utilization`, ``
   - usually `percent`
 - `connections`, `goroutines`, `threads`, `count`
   - usually `none`

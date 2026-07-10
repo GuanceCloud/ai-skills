@@ -1,0 +1,17 @@
+id = 'owl-diagnostics'
+publisher = 'pe'
+name = 'owl-diagnostics'
+version = '0.2.1'
+description = 'Use the owl CLI for Guance queries, diagnostics, root-cause analysis, and structured Markdown reports.'
+category = 'general'
+author = 'liurui'
+license = 'NOASSERTION'
+homepage = ''
+repository = ''
+tags = ['diagnostics', 'owl']
+icon = ''
+min_codex_version = ''
+tools_required = []
+permissions = ['filesystem-read', 'filesystem-write', 'network', 'secrets', 'shell']
+readme_summary = 'Use the owl CLI for Guance queries, diagnostics, root-cause analysis, and structured Markdown reports.'
+view = 'community'

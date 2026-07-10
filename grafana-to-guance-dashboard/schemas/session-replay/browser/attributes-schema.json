@@ -5,6 +5,10 @@
   "type": "object",
   "description": "Schema of an Attributes type.",
   "additionalProperties": {
-    "type": ["string", "number", "boolean"]
+    "type": [
+      "string",
+      "number",
+      "boolean"
+    ]
   }
 }

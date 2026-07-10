@@ -1,64 +1,39 @@
-# AI Skills 使用说明
+# AI Skills Usage Guide
 
-本仓库提供面向观测云场景的技能（Skills），用于标准化生成 Dashboard、Monitor、DQL 以及 Grafana Dashboard 转观测云 Dashboard 等交付内容。
+This repository contains reusable skills for Guance delivery work, including Dashboard generation, Monitor generation, DQL generation and review, Grafana Dashboard conversion, SLS-to-DQL conversion, and owl-based diagnostics.
 
-## 目录结构
+## Directory Structure
 
 ```text
 ai-skills/
 ├── alert_manager/
-│   └── SKILL.md
 ├── dashboard/
-│   ├── SKILL.md
-│   └── references/
-│       ├── dashboard-json-contract.md
-│       ├── official-field-research.md
-│       ├── query-semantics.md
-│       └── resource-object-tables.md
 ├── dql/
-│   ├── SKILL.md
-│   ├── bin/
-│   │   ├── dqlcheck
-│   │   └── dqldocs
 ├── grafana-to-guance-dashboard/
-│   ├── SKILL.md
-│   ├── agents/
-│   ├── fixtures/
-│   ├── references/
-│   ├── schemas/
-│   ├── scripts/
-│   ├── test/
-│   └── package.json
+├── monitor/
 ├── owl-diagnostics/
-│   ├── SKILL.md
-│   ├── references/
-│   └── scripts/
 ├── sls2dql/
-│   ├── SKILL.md
-│   ├── bin/
-│   ├── references/
-│   └── scripts/
-└── monitor/
-    └── SKILL.md
+├── trivy-cluster-scan/
+└── unit/
 ```
 
-## 已提供 Skills
+## Provided Skills
 
-| Skill | 作用 | 关键输入 | 关键输出 |
+| Skill | Purpose | Key input | Key output |
 |---|---|---|---|
-| `alert_manager` | 将 alertmanager rule 转换为观测云监控器 JSON | alertmanager rule 语句或 rule 文件 + 指标映射 | `output/monitor/{{component}}/{{component}}.json` |
-| `dashboard` | 根据指标 CSV 和资源对象数据生成、修复或评审观测云 Dashboard JSON | 指标 CSV；标准资源型 Dashboard 还必须提供对象 CSV/JSON；可选人工 Dashboard JSON | `output/dashboard/{{type}}/{{type}}.json` |
-| `monitor` | 根据 CSV 指标生成观测云监控器 JSON | `csv/{{component}}*.csv` | `output/monitor/{{component}}/{{component}}.json` |
-| `dql` | 解释、评审、生成、修复 DQL | 用户查询需求 / DQL 语句 | 通过校验的最终 DQL |
-| `grafana-to-guance-dashboard` | 分析、转换、审计、修复 Grafana Dashboard 到观测云 Dashboard 的映射 | Grafana dashboard JSON | 观测云 dashboard JSON、转换审计报告 |
-| `owl-diagnostics` | 用 `owl` CLI 做观测云查询、诊断、根因分析与报告落盘 | 时间范围 + 查询目标（错误、日志、APM、事件、指标、网络等） | 结构化诊断结论、证据摘要、落盘的 Markdown 报告 |
-| `sls2dql` | 将阿里云 SLS 查询转换、验证、解释为 GuanceDB DQL | 单条 SLS 查询 / 批量查询文件 / namespace/source/index 参数 | 转换结果、诊断信息、Markdown 报告 |
+| `alert_manager` | Convert Prometheus alerting rules into Guance monitor JSON | Alerting rule plus metric mapping | `output/monitor/{{component}}/{{component}}.json` |
+| `dashboard` | Generate, repair, or review Guance Dashboard JSON from real metrics and resource-object data | Metrics CSV; resource-object CSV/JSON for standard resource dashboards; optional existing Dashboard JSON | `output/dashboard/{{type}}/{{type}}.json` |
+| `monitor` | Generate Guance monitor JSON from a metrics CSV | `csv/{{component}}*.csv` | `output/monitor/{{component}}/{{component}}.json` |
+| `dql` | Generate, fix, explain, and review DQL | User requirements or DQL queries | Validated final DQL |
+| `grafana-to-guance-dashboard` | Convert and audit Grafana dashboards for Guance | Grafana dashboard JSON | Guance dashboard JSON and audit notes |
+| `owl-diagnostics` | Query Guance data with `owl` and write diagnostic reports | Time range and diagnostic target | Evidence-backed Markdown report |
+| `sls2dql` | Convert Alibaba Cloud SLS queries to GuanceDB DQL | SLS query plus namespace/source/index options | Conversion result and diagnostics |
+| `trivy-cluster-scan` | Run authorized, scan-only Trivy cluster and image security assessment with official remediation reporting | Authorized cluster scope, optional app paths, optional runtime confirmation | JSON scan artifacts and evidence-backed remediation report |
+| `unit` | Generate Guance unit metadata from a metrics CSV | `csv/{{name}}*.csv` | `output/unit/{{name}}.json` |
 
-## 快速开始
+## Quick Start
 
-### 1. 准备指标 CSV
-
-请先在项目中准备指标文件（示例）：
+Prepare metrics CSV files such as:
 
 ```text
 csv/mysql.csv
@@ -66,147 +41,54 @@ csv/redis.csv
 csv/volcengine_kafka.csv
 ```
 
-CSV 建议包含以下列（中英文均可）：
+Recommended CSV columns include:
 
-- `指标名` / `metric_name`
-- `字段类型` / `data_type`
-- `单位` / `unit`
-- `操作` / `tag_key` / `Tag`
+- `metric_name`
+- `data_type`
+- `unit`
+- `tag_key` or `Tag`
 
-示例：
+Example:
 
 ```csv
-指标名,字段类型,单位,操作
-cpu_util,float,%,host
-memory_util,float,%,host
+metric_name,data_type,unit,tag_key
+cpu_util,float,percent,host
+memory_util,float,percent,host
 ```
 
-标准资源型 Dashboard 还必须准备资源目录/自定义对象导出 CSV 或 JSON。对象输入至少需要包含 measurement/class、一条真实对象记录、可查询顶层字段及其真实类型和值。Dashboard 会用对象数据生成实例属性表，并根据官方资料把状态、模式、计费类型和功能开关等枚举转换为可读文本。
+Standard resource dashboards also require a resource-catalog or custom-object CSV/JSON export. The object input must identify the measurement/class and contain at least one real object record with queryable top-level fields, types, and values. Without that input, the skill must request an object export instead of fabricating an instance-property table from metric tags. It may continue with a telemetry-only dashboard only when the user explicitly accepts the missing resource table.
 
-缺少对象数据时，不得用指标 tag 生成伪实例属性表。默认停止标准 Dashboard 生成并请求对象导出；只有用户明确接受不含资源实例表的遥测版时才能继续。
-
-### 2. 调用 Skill（示意）
-
-在支持 Skills 的对话环境中：
+Use the skills in a skill-aware chat environment, for example:
 
 ```text
 /skill dashboard
-生成 mysql 的 dashboard
-```
+Generate a MySQL dashboard.
 
-```text
 /skill monitor
-生成 redis 的监控器
-```
+Generate Redis monitors.
 
-```text
 /skill dql
-修复这条 DQL 并返回可执行版本
+Fix this DQL and return an executable version.
 ```
 
-```text
-/skill grafana-to-guance-dashboard
-分析并转换这个 Grafana dashboard JSON，输出观测云 dashboard，并说明缺失映射
-```
+## Mandatory Rules
 
-```text
-/skill owl-diagnostics
-查询最近 1 小时 errors 并分类，输出报告
-```
+- `dashboard` and `monitor` must refuse generation when the required CSV file is missing.
+- Do not invent metrics and do not replace user CSV content with online examples.
+- A standard resource dashboard must build its instance-property table from real resource-object data; metric tags are not a substitute.
+- Any final executable DQL must pass `dqlcheck` item by item before delivery.
+- Failed DQL should be minimally repaired and rechecked; an item that still fails after repeated attempts must not be delivered as final.
 
-```text
-/skill sls2dql
-把这条 SLS 查询转换成 DQL
-```
-
-## 强制规则（务必遵守）
-
-### 通用规则
-
-- 无 CSV 文件时，`dashboard` 和 `monitor` 必须拒绝生成。
-- 不能凭空假设指标，也不能用网上示例代替用户 CSV。
-- 交付内容必须可执行、可落地，不输出“看起来正确但未验证”的结果。
-
-### DQL 校验规则（核心）
-
-- 凡是要交付“最终可执行 DQL”，必须先逐条通过 `dqlcheck`。
-- 每条 DQL 单独校验，不用“批量整体通过”替代。
-- 校验失败时按报错位置做最小修复并重试。
-- 连续 3 次失败的条目不得作为最终交付。
-
-常用命令：
+Common validation commands:
 
 ```bash
 ./dql/bin/dqlcheck -q '<DQL>'
 ./dql/bin/dqlcheck --file /tmp/query.dql
 ```
 
-## 各 Skill 重点说明
+## Grafana Converter
 
-### `dashboard`
-
-- 从真实 CSV 自动解析全部变量维度，不假设只有一个变量。
-- 可见变量优先使用账号名称、实例名称等可读字段；稳定实例 ID 可作为隐藏过滤变量或对象分组键。
-- DQL 中引用的变量、`filters` 与 `groupBy` 必须一致，但过滤变量不要求全部进入 `BY`。
-- 必须覆盖基础运维面板能力：
-  - 至少 1 个实例级 `table`
-  - 至少 1 行 `singlestat` 概览（4~8 KPI）
-  - 至少 6 个 `sequence` 趋势图
-- 标准资源型 Dashboard 必须提供资源目录/自定义对象 JSON 或 CSV，实例列表使用 `CO::` 对象查询并展示静态属性；遥测指标保留在概览和趋势图。
-- 对象中的状态、模式、计费类型、布尔开关和不明确单位必须由 AI 在当前任务中查询对应服务的官方 API、产品文档或 SDK；已确认值配置 `valMappings`，未知值不得凭样本臆造。
-- Dashboard skill 不内置任何云厂商或具体产品的数据字典，只沉淀官方资料查询、证据分级和配置生成方法。
-- 概览聚合按指标语义选择：可加总值使用 `series_sum`，百分比、负载、命中率和延迟使用 `avg`。
-- 云监控 `_average` 等预聚合字段使用 `fill(last(...), linear)`，不再二次 `AVG()`。
-- 同源 `_average/_max/_min` 普通趋势默认只保留 `_average`；一个 `queries[]` 项只查询一个指标字段。
-- 多实例普通趋势优先使用可读实例名称，不默认继续按节点/分片拆分；节点排障另建明细图。
-- 一条分组 query 返回多个实例系列时，不固定 query/alias 颜色，让 UI 在图表内部按系列分配不同颜色。
-- 生成后必须先执行样式自动修正：
-  - `groupUnfoldStatus` 中所有分组强制为 `true`
-  - `概览` 固定第一，列表类分组紧随其后
-  - 移除 `dashboardExtend.groupColor` 和 `main.groups[].extend.colorKey`
-  - 分组使用克制且有区分度的背景色，概览 `singlestat` 使用多彩数据色盘
-  - grouped query 的固定颜色保持为空，让同一图表内不同实例系列由 UI 调色盘区分
-- 生成后必须对图表 DQL 逐条执行校验。
-
-### `monitor`
-
-- 从 CSV 中选择 5~10 个关键指标设置告警。
-- 告警应覆盖可用性、资源、性能、异常等核心维度。
-- 监控器 JSON 必须包含清晰 `groupBy`、规则阈值和告警消息模板。
-- 生成后必须同时校验 `checkers[].jsonScript.targets[].dql` 和 `checkers[].extend.querylist[].query.q`。
-- 若 DQL 修复过，必须同步回两个位置，不能出现结构内语句不一致。
-
-### `alert_manager`
-
-- 输入必须是告警规则定义（`alert / expr / for / labels / annotations`），不能是 `alertmanager.yml` 的路由配置。
-- 没有指标映射时，必须先补映射（`dataSource / field / groupBy / fieldType / fieldFunc`），不能硬写 DQL。
-- 每条规则都要同时生成 `targets[].dql` 和 `extend.querylist[].query.q`，两处查询语义必须一致。
-- `checkerOpt.rules` 与 `extend.rules` 必须同步。
-- 最终 JSON 中不能残留 PromQL。
-- 所有 DQL 必须通过 `dqlcheck`。
-
-### `dql`
-
-- 分两种模式：
-  - 解释/评审模式：只给语义、风险、建议，不输出新最终 DQL。
-  - 生成/修复模式：仅输出逐条校验通过的最终 DQL。
-- 最终交付前必须逐条通过 `dqlcheck`，不要用批量校验替代单条校验。
-
-### `grafana-to-guance-dashboard`
-
-- 用于 Grafana dashboard JSON 到观测云 dashboard JSON 的分析、转换、审计和修复。
-- Skill 自带独立脚本、Schema、测试、fixtures 和 `package.json`，可在目录内独立运行。
-- 默认流程应覆盖：
-  - 转换前预检：面板类型、变量、数据源、PromQL 风险、隐式单位
-  - 转换执行：按需选择 `--guance-promql-compatible`、`--keep-grafana-meta`、`--keep-job-variable`、`--sls-namespace`、`--mysql-external-datasource`、`--sql-datasource-map`
-  - 转换后校验：输出 JSON 必须通过 skill 内置 schema 校验
-  - 审计报告：说明成功转换、丢失面板、部分映射、单位推断置信度、兼容性风险
-- 默认应跳过 Grafana datasource 变量，例如 `ds_prometheus`
-- 默认应删除 `job` 变量及其查询条件；只有目标观测云 Dashboard 明确仍依赖 `job` 时才保留
-- 当前已处理四类数据源：`prometheus` 按默认流程，`cloudwatch` 直接按 `promql` 输出，`aliyun-log-service-datasource` 通过仓库内 `sls2dql` 转成 DQL，`mysql` 查询变量映射为观测云 `OUTER_DATASOURCE`
-- `mysql` 默认映射到 `DFF672F02CAD7D94CA1ABA9B6213537875C.syn_huoshan_mysql`，也支持通过 `--mysql-external-datasource` 或 `--sql-datasource-map` 覆盖；变量输出按观测云 `OUTER_DATASOURCE` 最小结构生成，`extend` 仅保留 `starMeaning`，并按 Grafana 当前值决定是否保留 `defaultVal`
-- `mysql` 的 `table` 面板查询会直接生成观测云原生 `outer_datasource` query：`qtype` 为 `outer_datasource`，`query.type` 为 `func`，`funcName` 指向映射后的外部数据源；最外层 SQL 会规范化时间列、默认补 `create_time`、规范 `tag_*` 标签列，并强制追加 `LIMIT 5000`
-- 常用命令：
+The Grafana converter is self-contained under `grafana-to-guance-dashboard/` and includes scripts, schemas, fixtures, tests, and `package.json`.
 
 ```bash
 cd grafana-to-guance-dashboard
@@ -216,109 +98,4 @@ npm run validate:file -- ./output/guance-dashboard.json
 npm test
 ```
 
-- 环境要求：`Node.js >= 18`
-
-### `owl-diagnostics`
-
-- 用于通过 `owl` CLI 统一处理观测云查询、诊断、排障、根因分析、影响评估与报告落盘。
-- 开始前必须先执行 `owl -h`，具体查询工具必须先执行 `owl show <tool>`，不能猜参数。
-- 优先使用最贴近问题的数据域工具，例如：
-  - 错误分类：`owl.errors.list`
-  - 日志与复杂查询：`owl.data.query`
-  - APM 上下文：`owl.apm.list`
-  - 事件：`owl.event.list`
-  - 指标：`owl.metric.list`
-  - 网络：`owl.network.list`
-- 如需 DQL，必须先 `check_dql` 再 `query`；复杂问题需要跨域补证据，先写事实，再写推断。
-- 只要涉及查询结果交付，最终必须生成结构化报告并落盘，不能只在对话里给零散结论。
-- 默认报告目录为 `./owl-reports/`，可结合 skill 内脚本生成：
-
-```bash
-owl -h
-owl show owl.errors.list
-owl exec owl.errors.list --start_time <START_MS> --end_time <END_MS> --page_size 100 \
-  | python3 scripts/classify_owl_errors.py
-cat /tmp/owl-report.md | python3 scripts/save_report.py --output-dir ./owl-reports
-```
-
-### `sls2dql`
-
-- 用于把阿里云 SLS 查询转换、验证、解释为 GuanceDB DQL。
-- Skill 自带 `./sls2dql/bin/sls2dql` 统一入口脚本，会按当前平台自动选择对应二进制。
-- 强制规则：
-  - 每次调用都必须显式传 `--namespace`
-  - search-only 查询必须补 `--source`
-  - 默认使用 `strict`，只有用户接受近似语义时才改用 `allow-approximate`
-  - 若结果为 `approximate` 或 `unsupported`，必须同时说明诊断，不能只贴 DQL
-- 常用命令：
-
-```bash
-./sls2dql/bin/sls2dql version
-./sls2dql/bin/sls2dql convert --namespace L --query "SELECT count(*) AS pv FROM access_log"
-./sls2dql/bin/sls2dql convert --namespace L --source access_log --query "status:500 AND service:api"
-./sls2dql/bin/sls2dql explain --namespace L --query "* | SELECT count(*) AS pv FROM access_log GROUP BY host"
-./sls2dql/bin/sls2dql report --namespace L --file queries.json
-```
-
-- 参考资料：
-  - `./sls2dql/references/USER_QUICKSTART_zh.md`
-  - `./sls2dql/references/USER_GUIDE_zh.md`
-
-## 团队协作建议
-
-- 新增或调整 Skill 时，先更新对应 `SKILL.md`，再更新本 README。
-- 在 PR 描述中附上：
-  - 输入样例（CSV 或 DQL）
-  - 校验命令与结果（尤其是 `dqlcheck`）
-  - 产出文件路径
-- 评审重点放在“可执行性”和“规则一致性”，不是文字描述完整度。
-
-## 提交流程
-
-如果你是在 Codex 对话里协作，直接说“提交代码”即可。仓库级 `AGENTS.md` 已约定固定流程：
-
-- 先检查当前变更范围
-- 按变更内容同步 `README.md`
-- 生成 commit message
-- commit 时自动附带 `Generated-by: OpenAI Codex`
-- push 到当前分支
-
-如果你想在终端里走同一套机械流程，可以使用脚本：
-
-```bash
-./scripts/commit_with_codex.sh "feat: 更新 owl-diagnostics skill"
-```
-
-仅提交、不 push：
-
-```bash
-./scripts/commit_with_codex.sh "chore: 整理仓库说明" --no-push
-```
-
-说明：
-
-- 该脚本会执行 `git add -A`
-- commit 会自动写入 `Generated-by: OpenAI Codex`
-- 若当前分支尚未绑定 upstream，会自动使用 `origin/<当前分支>` 建立跟踪并 push
-- `README.md` 是否需要改动，仍应先根据本次文件变更判断，避免为了提交而做无意义更新
-
-## 常见问题
-
-### 1) 没有 CSV 能否先生成模板？
-不能。`dashboard` 和 `monitor` 都要求先存在 CSV，再继续生成。
-
-### 2) DQL 语法看起来对，但没跑校验可以交付吗？
-不能。必须以 `dqlcheck` 通过为准。
-
-### 3) 校验器不可用怎么办？
-需明确标注 `UNVERIFIED`、说明阻断原因，并给出修复所需动作。
-
-## 参考
-
-- [alert_manager/SKILL.md](alert_manager/SKILL.md)
-- [dashboard/SKILL.md](dashboard/SKILL.md)
-- [monitor/SKILL.md](monitor/SKILL.md)
-- [dql/SKILL.md](dql/SKILL.md)
-- [grafana-to-guance-dashboard/SKILL.md](grafana-to-guance-dashboard/SKILL.md)
-- [owl-diagnostics/SKILL.md](owl-diagnostics/SKILL.md)
-- [sls2dql/SKILL.md](sls2dql/SKILL.md)
+Runtime requirement: Node.js 18 or newer.

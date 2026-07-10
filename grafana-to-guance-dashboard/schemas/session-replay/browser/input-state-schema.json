@@ -6,7 +6,9 @@
   "description": "Browser-specific. Schema of an InputState.",
   "oneOf": [
     {
-      "required": ["text"],
+      "required": [
+        "text"
+      ],
       "properties": {
         "text": {
           "type": "string",
@@ -15,7 +17,9 @@
       }
     },
     {
-      "required": ["isChecked"],
+      "required": [
+        "isChecked"
+      ],
       "properties": {
         "isChecked": {
           "type": "boolean",

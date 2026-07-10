@@ -3,4 +3,5 @@
 
 # local binary cache
 dql/bin/.cache/
+grafana-to-guance-dashboard/node_modules/
 .idea/

@@ -1,76 +1,68 @@
-# 查询语义与可读性
+# Query Semantics and Readability
 
-## 1. 指标类型决策
+## 1. Choose by Metric Type
 
-先判断字段由谁聚合，再选择 DQL：
+First determine where aggregation already occurs, then select DQL:
 
-| 类型 | 典型字段 | 趋势查询 | `fieldFunc` |
-| --- | --- | --- | --- |
-| 原始计数器 | 请求累计数、错误累计数、字节累计数 | `rate(field)` 或兼容 rollup | `last` |
-| 原始仪表值 | 当前连接、队列深度、使用率 | `AVG(field)` | `avg` |
-| 云端预聚合平均值 | `*_average` | `fill(last(field), linear)` | `last` |
-| 云端预聚合最大/最小值 | `*_max` / `*_min` | 仅在明确需要峰谷时使用 `fill(last(...), linear)` | `last` |
+| Type | Typical field | Trend query | `fieldFunc` |
+|---|---|---|---|
+| Raw counter | cumulative requests, errors, or bytes | `rate(field)` or compatible rollup logic | `last` |
+| Raw gauge | current connections, queue depth, utilization | `AVG(field)` | `avg` |
+| Cloud-side pre-aggregated average | `*_average` | `fill(last(field), linear)` | `last` |
+| Cloud-side pre-aggregated maximum/minimum | `*_max` / `*_min` | Use `fill(last(...), linear)` only when peak or floor analysis is required | `last` |
 
-不要对云监控已聚合字段再次 `AVG()`，否则得到的是采样窗口和查询窗口叠加后的二次平均。
+Do not apply another `AVG()` to a cloud-monitoring field that is already aggregated. That would average across both the collection window and the query window.
 
-## 2. 概览跨系列聚合
+## 2. Overview Queries
 
-概览卡片通常先按实例取最新值，再在实例之间聚合。
+Use the final DQL directly for a `singlestat`. Do not wrap it in `series_sum(...)`.
 
-使用 `series_sum`：
+- Keep the final DQL grouped by a real variable only when the card needs grouped source data.
+- Use `fill: null`, `funcList: []`, and `fieldFunc: "last"`.
+- Do not apply `AVG()` or `SUM()` mechanically when a direct field expression is sufficient.
+- If a true cross-instance aggregate is explicitly required, express and validate it with supported native query semantics; do not reintroduce `series_sum(...)`.
+- Use a separate "worst instance" card only when that meaning is explicit.
 
-- 当前连接数或连接总量。
-- QPS/TPS 等需要展示整体吞吐的值。
-- 队列长度、慢日志长度、阻塞客户端等可加总数量。
+Capacity specifications, creation time, architecture, and status are resource properties rather than telemetry totals. Put them in the resource-object instance table.
 
-使用 `avg`：
+## 3. Reduce Average/Maximum/Minimum Noise
 
-- CPU、内存负载和使用率。
-- 命中率、连接使用率、流量占比。
-- 平均延迟、平均响应时间。
+When one metric family provides `_average`, `_max`, and `_min`:
 
-使用 `series_max` 仅用于明确的“最差实例”概览。不要把它伪装成整体平均。
+1. Show only `_average` in ordinary trend charts by default.
+2. Do not generate three sibling charts for the same metric family.
+3. Add `_max` only when capacity planning, SLA peaks, or anomaly spikes require it.
+4. Add `_min` only when the lower bound is operationally relevant.
 
-容量规格、创建时间、架构和状态不是遥测总量，放在资源对象实例表。
+With 32 instances, three statistic variants can expand 32 curves into nearly one hundred, which is not readable by default.
 
-## 3. 平均/最大/最小降噪
+## 4. One Metric per Query
 
-当同一指标存在 `_average/_max/_min`：
-
-1. 普通趋势默认只展示 `_average`。
-2. 不再为同一指标族生成“平均值图、最大值图、最小值图”三张兄弟图。
-3. 只有容量规划、SLA 峰值或异常尖峰场景明确需要时，才增加 `_max`。
-4. 只有明确观察下界时才增加 `_min`。
-
-在 32 个实例场景中，三种统计值会把 32 条曲线扩成近百条，默认不可接受。
-
-## 4. 一指标一查询
-
-每个 `queries[]` 项只查询一个指标字段：
+Each `queries[]` item should query one metric field:
 
 ```dql
-M::`service`:(fill(last(`read_qps_average`), linear) AS `读 QPS`) { `instance_name` = '#{instance_name}' } BY `instance_name`
+M::`service`:(fill(last(`read_qps_average`), linear) AS `Read QPS`) { `instance_name` = '#{instance_name}' } BY `instance_name`
 ```
 
 ```dql
-M::`service`:(fill(last(`write_qps_average`), linear) AS `写 QPS`) { `instance_name` = '#{instance_name}' } BY `instance_name`
+M::`service`:(fill(last(`write_qps_average`), linear) AS `Write QPS`) { `instance_name` = '#{instance_name}' } BY `instance_name`
 ```
 
-不要把多个字段塞进同一条 DQL。观测云编辑器按 query 展示配置；一条 DQL 含多个字段会让外层看见多系列、编辑器内却只看见一行查询，后续难以维护。
+Do not place several fields in one DQL item. The Guance editor presents one configuration row per query; a multi-field DQL creates several output series behind one editor row and is difficult to maintain.
 
-## 5. 分组与图例
+## 5. Grouping and Legends
 
-- 过滤维度不等于展示维度。账号、实例名称和实例 ID 可以都用于过滤，但 `BY` 只放图例真正需要的维度。
-- 普通多实例趋势优先使用可读 `instance_name`。
-- 需要稳定 ID 时，把 `instance_id` 保留在过滤器或对象分组中。
-- 不默认拼接 `node_id/node_name/shard_id`。节点级需求另建明细图或下钻。
-- 若名称可能重名且会造成错误聚合，使用同时包含名称与 ID 的可读展示方案，或按产品能力提供单实例筛选后再展示节点。
+- Filter dimensions are not the same as display dimensions. Account, instance name, and instance ID may all filter a query, while `BY` should contain only what belongs in the legend.
+- Prefer readable `instance_name` values for normal multi-instance trends.
+- Keep `instance_id` as a filter or object grouping key when stable identity is required.
+- Do not add `node_id`, `node_name`, or `shard_id` by default. Build a separate detail chart or drill-down for node-level analysis.
+- If names are not unique and would merge unrelated series, use a readable name-plus-ID strategy or require a single-instance filter before showing node detail.
 
-## 6. 图表内颜色
+## 6. Colors Within a Chart
 
-当一条 query 通过 `BY instance_name` 返回多条系列时，固定 query 颜色会把所有实例锁成同色。
+When one query returns multiple series through `BY instance_name`, a fixed query color can force every instance to use the same color.
 
-使用：
+Use:
 
 ```json
 {
@@ -79,16 +71,16 @@ M::`service`:(fill(last(`write_qps_average`), linear) AS `写 QPS`) { `instance_
 }
 ```
 
-多 query 图如果每条 query 表示不同指标，可以按指标配置颜色；同一 query 内的分组系列仍应由 UI 调色盘区分。
+When different query items represent different metrics, each query may use its own color. Grouped series returned by one query should still use the UI palette.
 
-## 7. 查询结构一致性
+## 7. Query-Structure Consistency
 
-每条 query 保持：
+Every query must keep:
 
-- 外层 `name/type/unit/color/qtype` 完整。
-- `query.filters` 使用实际变量 code 和 `#{code}`。
-- `query.groupBy` 与 DQL `BY` 一致。
-- `funcList`、`queryFuncs`、`groupByTime` 与查询类型匹配。
-- `fill` 与 DQL 实际填充策略一致。
+- complete outer `name`, `type`, `unit`, `color`, and `qtype` fields
+- `query.filters` that use real variable codes and `#{code}` references
+- `query.groupBy` that matches the DQL `BY` fields
+- `funcList`, `queryFuncs`, and `groupByTime` aligned with query type
+- `fill` aligned with the actual DQL fill strategy
 
-不要用“所有查询必须包含第一个变量”这类单变量校验器。解析 DQL 中实际引用的变量，再与 `main.vars` 全量比对。
+Do not use a single-variable validator that assumes every query references the first variable. Parse the variable references used by each DQL and validate them against all of `main.vars`.

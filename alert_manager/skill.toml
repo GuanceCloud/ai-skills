@@ -1,0 +1,17 @@
+id = 'alert-manager'
+publisher = 'pe'
+name = 'alert_manager'
+version = '0.2.1'
+description = 'Convert Prometheus alerting rules into Guance monitor JSON and validate all generated DQL.'
+category = 'general'
+author = 'liurui'
+license = 'NOASSERTION'
+homepage = ''
+repository = ''
+tags = ['alertmanager', 'dql', 'monitor']
+icon = ''
+min_codex_version = ''
+tools_required = []
+permissions = ['filesystem-read', 'filesystem-write', 'shell']
+readme_summary = 'Convert Prometheus alerting rules into Guance monitor JSON and validate all generated DQL.'
+view = 'community'

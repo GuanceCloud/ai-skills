@@ -1,27 +1,27 @@
-# 资源对象实例表
+# Resource Object Tables
 
-## 目录
+## Contents
 
-- [数据职责](#1-数据职责)
-- [输入验收](#2-输入验收)
-- [字段选择](#3-字段选择)
-- [枚举候选识别](#4-枚举候选识别)
-- [生成值映射](#5-生成值映射)
-- [布尔字段](#6-布尔字段)
-- [单位与特殊值](#7-单位与特殊值)
-- [校验](#8-校验)
+- [Data Responsibilities](#1-data-responsibilities)
+- [Input Acceptance](#2-input-acceptance)
+- [Field Selection](#3-field-selection)
+- [Enum Candidate Detection](#4-enum-candidate-detection)
+- [Value Mappings](#5-value-mappings)
+- [Boolean Fields](#6-boolean-fields)
+- [Units and Special Values](#7-units-and-special-values)
+- [Validation](#8-validation)
 
-## 1. 数据职责
+## 1. Data Responsibilities
 
-实例列表回答“这是什么资源”，遥测图回答“这个资源运行得怎么样”。
+An instance list answers "what is this resource?" while telemetry charts answer "how is this resource operating?"
 
-存在资源目录或自定义对象时，实例列表必须优先查询对象数据：
+When resource-catalog or custom-object data exists, the instance list must prefer an object query:
 
 ```dql
 CO::service_object:(last(`instance_name`), last(`region_id`), last(`status`), last(`size`)) { `account_name` = '#{account_name}' and `instance_id` = '#{instance_id}' } BY `instance_id`
 ```
 
-对应查询元数据：
+Corresponding query metadata:
 
 ```json
 {
@@ -31,97 +31,97 @@ CO::service_object:(last(`instance_name`), last(`region_id`), last(`status`), la
 }
 ```
 
-不要使用 `M::... BY node_id, shard_id` 拼实例表。不同指标粒度拥有不同 tag，实例级序列缺少节点或分片 tag 时会出现 `<nil>`。
+Do not construct an instance table with `M::... BY node_id, shard_id`. Metric families can use different tag granularities, and instance-level series may produce `<nil>` for node or shard tags.
 
-## 2. 输入验收
+## 2. Input Acceptance
 
-生成实例属性表前必须拿到对象 JSON 或对象 CSV，并确认：
+Before generating an instance-property table, obtain object JSON or CSV and verify:
 
-- 对象 measurement/class 明确。
-- 至少包含一条真实资源记录，不是只有字段模板。
-- 能区分平台元数据、对象顶层字段和嵌套 `message`。
-- 对象顶层字段包含真实值与类型。
-- 需要展示的账号、实例名称和稳定实例 ID 字段存在。
-- 单位元数据、API 版本、更新时间等信息可用时一并保留。
+- the object measurement or class is explicit
+- at least one real resource record exists rather than only a field template
+- platform metadata, object top-level fields, and a nested `message` payload can be distinguished
+- top-level fields include real values and types
+- required account, readable instance name, and stable instance ID fields exist
+- unit metadata, API version, and update time are retained when available
 
-缺少上述输入时停止生成实例属性表并请求补充对象导出。不要用指标 tag、示例字段或官方文档返回示例代替用户环境中的对象样本。
+If this input is missing, stop instance-table generation and request an object export. Do not substitute metric tags, invented sample fields, or an official documentation example for an object sample from the user's environment.
 
-## 3. 字段选择
+## 3. Field Selection
 
-按以下顺序组织列：
+Order columns as follows:
 
-1. 账号、云厂商、区域、项目。
-2. 实例名称、实例 ID。
-3. 架构、版本、协议、规格。
-4. 状态、服务状态、计费类型。
-5. 内网地址、端口、VPC/子网。
-6. 容量、分片数量、单分片容量。
-7. 功能开关、创建时间、更新时间。
+1. account, cloud vendor, region, and project
+2. instance name and instance ID
+3. architecture, version, protocol, and specification
+4. resource status, service status, and billing type
+5. private address, port, VPC, and subnet
+6. capacity, shard count, and per-shard capacity
+7. feature switches, creation time, and update time
 
-只查询对象样本真实存在的顶层字段。嵌套 JSON 字符串中的节点数组不要直接当成顶层字段；确有需要时另做节点/分片明细表。
+Query only top-level fields that exist in the real object sample. Do not treat node arrays inside a nested JSON string as top-level fields; create a separate node or shard detail table when that level is required.
 
-## 4. 枚举候选识别
+## 4. Detect Enum Candidates
 
-重点检查：
+Pay particular attention when:
 
-- 字段名包含 `status`、`state`、`mode`、`type`、`arch`、`edition`、`bill`。
-- 字段名包含 `enabled`、`supported`、`protection`。
-- 数值或布尔字段在样本中只有少量离散值。
-- 数值本身对用户不可读，但控制台会显示业务名称。
+- a field name contains `status`, `state`, `mode`, `type`, `arch`, `edition`, or `bill`
+- a field name contains `enabled`, `supported`, or `protection`
+- numeric or boolean samples contain only a few discrete values
+- a raw number is unreadable while the product console displays a business label
 
-低基数只是“需要查询资料”的信号，不是自动推断枚举含义的证据。
+Low cardinality is a reason to research an enum, not evidence from which to infer its meaning automatically.
 
-## 5. 生成值映射
+## 5. Generate Value Mappings
 
-先按 SKILL 路由的“官方字段研究流程”确认取值含义，不在本 reference 内维护任何厂商数据字典。
+Confirm value semantics with the SKILL's Official Field Research route. Do not maintain vendor-specific data dictionaries in this generic reference.
 
-表格字段使用查询结果字段名，例如 `last(status)`：
+Use the exact query result field, such as `last(status)`:
 
 ```json
 {
   "field": "last(status)",
   "operation": "=",
   "queryCode": "A",
-  "mappingVal": "运行中",
+  "mappingVal": "Running",
   "originalVal": ["2"]
 }
 ```
 
-要求：
+Requirements:
 
-- `field` 与 DQL 返回字段完全一致。
-- `queryCode` 与查询一致。
-- `originalVal` 使用实际返回类型在 UI 中的字符串表现。
-- 同字段同原值只能有一个 `mappingVal`。
-- 优先覆盖官方完整数据字典，不只覆盖当前样本出现的值。
-- 未确认值不混进已确认映射。
-- 只有需要状态着色时才生成 `valColorMappings`；不要生成全部颜色为空的冗余项。
+- `field` must exactly match the DQL return field.
+- `queryCode` must match the query.
+- `originalVal` must use the UI string representation of the real return type.
+- One field and original value may have only one `mappingVal`.
+- Prefer the complete official data dictionary rather than mapping only values observed in the sample.
+- Do not mix unconfirmed values into confirmed mappings.
+- Generate `valColorMappings` only when status coloring is useful; do not create redundant entries whose colors are all empty.
 
-## 6. 布尔字段
+## 6. Boolean Fields
 
-区分动作状态与能力状态：
+Distinguish current state from capability:
 
-- `*_enabled`：`已开启/未开启`。
-- `*_supported`：`支持/不支持`。
+- `*_enabled`: `Enabled` / `Disabled`
+- `*_supported`: `Supported` / `Unsupported`
 
-检查真实类型，必要时覆盖 `0/1`、`true/false` 和字符串形式。不要把“支持”误写成“已开启”。
+Check the real type and cover `0/1`, `true/false`, or string representations when appropriate. Do not label "supported" as though a feature were currently enabled.
 
-## 7. 单位与特殊值
+## 7. Units and Special Values
 
-- 单位来自对象 schema 或当前服务的官方 API/规格文档，不从字段名猜。
-- 区分 `GB` 与 `Gb`、`MB` 与 `Mb`。
-- `0` 可能是合法容量，也可能代表不适用；只有官方文档或架构条件能决定。
-- 条件含义无法在静态 `valMappings` 中准确表达时，使用“未分片/不适用”等不越界文案，或保留原值并在说明中记录限制。
+- Obtain units from the object schema or current first-party API and specification documentation; do not guess from field names.
+- Distinguish `GB` from `Gb` and `MB` from `Mb`.
+- `0` may be a valid capacity or may mean not applicable; only official documentation and architecture context can decide.
+- When a condition cannot be represented accurately by static `valMappings`, use a conservative label such as `Not Sharded` or `Not Applicable`, or preserve the original value and document the limitation.
 
-## 8. 校验
+## 8. Validation
 
-- 实例表 DQL 以 `CO::` 开头。
-- 已保存对象输入来源，且至少有一条真实对象记录。
-- `namespace` 为 `custom_object`。
-- `dataSource` 为真实对象 measurement/class。
-- `BY` 使用稳定资源 ID，不混入指标粒度 tag。
-- 查询字段都存在于对象样本。
-- 表头通过 `alias`/`fieldMapping` 可读。
-- 单位配置与对象语义一致。
-- 每个展示的枚举候选字段已映射，或记录保留原值的理由。
-- `valMappings` 无重复冲突且覆盖已观察值。
+- The instance-table DQL begins with `CO::`.
+- The object input source is recorded and contains at least one real object record.
+- `namespace` is `custom_object`.
+- `dataSource` is the real object measurement or class.
+- `BY` uses a stable resource ID and does not mix in metric-granularity tags.
+- Every queried field exists in the object sample.
+- Headers are readable through `alias` or `fieldMapping`.
+- Unit settings match object semantics.
+- Every displayed enum candidate is mapped or has a documented reason for preserving the original value.
+- `valMappings` contains no duplicate conflicts and covers observed values where evidence is sufficient.

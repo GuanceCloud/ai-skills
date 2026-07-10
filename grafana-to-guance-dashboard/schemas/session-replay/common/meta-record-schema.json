@@ -9,7 +9,10 @@
       "$ref": "_slot-supported-common-record-schema.json"
     },
     {
-      "required": ["type", "data"],
+      "required": [
+        "type",
+        "data"
+      ],
       "properties": {
         "type": {
           "type": "integer",
@@ -20,7 +23,10 @@
         "data": {
           "type": "object",
           "description": "The data contained by this record.",
-          "required": ["width", "height"],
+          "required": [
+            "width",
+            "height"
+          ],
           "properties": {
             "width": {
               "type": "integer",

@@ -1,0 +1,17 @@
+id = 'monitor'
+publisher = 'pe'
+name = 'monitor'
+version = '0.2.2'
+description = 'Generate Guance monitor JSON from CSV metric files for any component.'
+category = 'general'
+author = 'liurui'
+license = 'NOASSERTION'
+homepage = ''
+repository = ''
+tags = ['dql', 'monitor']
+icon = ''
+min_codex_version = ''
+tools_required = []
+permissions = ['filesystem-read', 'filesystem-write', 'shell']
+readme_summary = 'Generate Guance monitor JSON from CSV metric files for any component.'
+view = 'community'

@@ -4,7 +4,12 @@
   "title": "MousePosition",
   "type": "object",
   "description": "Browser-specific. Schema of a MousePosition.",
-  "required": ["x", "y", "id", "timeOffset"],
+  "required": [
+    "x",
+    "y",
+    "id",
+    "timeOffset"
+  ],
   "properties": {
     "x": {
       "type": "number",

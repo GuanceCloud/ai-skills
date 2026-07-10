@@ -1,0 +1,4 @@
+interface:
+  display_name: "Trivy Cluster Scan"
+  short_description: "Trivy cluster scans with no automatic remediation."
+  default_prompt: "Use $trivy-cluster-scan to scan an authorized Kubernetes cluster with Trivy and summarize findings without making fixes."

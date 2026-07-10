@@ -9,7 +9,9 @@
       "$ref": "segment-metadata-schema.json"
     },
     {
-      "required": ["records"],
+      "required": [
+        "records"
+      ],
       "properties": {
         "records": {
           "type": "array",

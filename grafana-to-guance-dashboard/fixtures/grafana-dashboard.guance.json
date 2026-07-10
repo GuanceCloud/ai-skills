@@ -37,7 +37,7 @@
         }
       },
       {
-        "name": "主机",
+        "name": "Host",
         "seq": 1,
         "code": "var_host",
         "hide": 0,
@@ -458,7 +458,7 @@
             ],
             "alias": [
               {
-                "alias": "test别别别别别别别别别名别别别别名别别别别别别别别别名 {{host}}---------{{region}} ",
+                "alias": "English sample text",
                 "key": "A",
                 "name": "A"
               }
@@ -503,7 +503,7 @@
         },
         "queries": [
           {
-            "name": "test别别别别别别别别别名别别别别名别别别别别别别别别名 {{host}}---------{{region}} ",
+            "name": "English sample text",
             "type": "sequence",
             "qtype": "promql",
             "datasource": "dataflux",
@@ -513,7 +513,7 @@
               "code": "A",
               "type": "promql",
               "promqlCode": 1,
-              "alias": "test别别别别别别别别别名别别别别名别别别别别别别别别名 {{host}}---------{{region}} "
+              "alias": "English sample text"
             },
             "extend": {
               "refId": "A",
@@ -573,7 +573,7 @@
             ],
             "alias": [
               {
-                "alias": "别名123+test {{host}}",
+                "alias": "alias123+test {{host}}",
                 "key": "A",
                 "name": "A"
               }
@@ -617,7 +617,7 @@
         },
         "queries": [
           {
-            "name": "别名123+test {{host}}",
+            "name": "alias123+test {{host}}",
             "type": "sequence",
             "qtype": "dql",
             "datasource": "dataflux",
@@ -626,7 +626,7 @@
               "q": "M::disk:(avg(`free`))  BY `host`",
               "code": "A",
               "type": "dql",
-              "alias": "别名123+test {{host}}"
+              "alias": "alias123+test {{host}}"
             },
             "extend": {
               "refId": "A",
@@ -881,8 +881,8 @@
             "changeWorkspace": true,
             "workspaceUUID": "wksp_aef7103dc5a44397a9f4d0442517a15e,wksp_3e4be8bfca7f4149889b83805caf16c3",
             "workspaceName": [
-              "huangdong的测试空间",
-              "测试另一个【ScopeDB】开发测试一起用"
+              "huangdongtest",
+              "test【ScopeDB】test"
             ],
             "showFieldMapping": false,
             "openThousandsSeparator": true,

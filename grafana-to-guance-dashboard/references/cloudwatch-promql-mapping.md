@@ -1,17 +1,17 @@
 # CloudWatch PromQL Mapping
 
-编辑下面这张表就能新增或修改 `cloudwatch_metric_<service>{...}` 到观测云 PromQL 的转换规则。
+`cloudwatch_metric_<service>{...}`  PromQL convert。
 
-字段说明：
+Notes：
 
-- `service`: `cloudwatch_metric_` 后面的服务名
-- `namespace`: Grafana CloudWatch 插件里的 AWS namespace
-- `measurement`: 观测云 `M` 标签值
-- `dimension`: 观测云 `Dimensions` 标签值
-- `source_label`: Grafana CloudWatch 查询里代表实例维度的标签名
-- `variable_name`: 如果命中了 `source_label`，输出时改写成的观测云变量名
-- `statistic`: 指标后缀，默认可填 `Average`
-- `alias_token`: CloudWatch 转换后建议使用的别名 token，默认可填目标维度名
+- `service`: `cloudwatch_metric_`
+- `namespace`: Grafana CloudWatch  AWS namespace
+- `measurement`:  `M`
+- `dimension`:  `Dimensions`
+- `source_label`: Grafana CloudWatch query
+- `variable_name`:  `source_label`，Output
+- `statistic`: metrics， `Average`
+- `alias_token`: CloudWatch convertUse token，
 
 | service | namespace | measurement | dimension | source_label | variable_name | statistic | alias_token |
 | --- | --- | --- | --- | --- | --- | --- | --- |

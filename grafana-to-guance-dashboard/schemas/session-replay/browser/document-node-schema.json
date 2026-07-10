@@ -4,7 +4,10 @@
   "title": "DocumentNode",
   "type": "object",
   "description": "Schema of a Document Node.",
-  "required": ["type", "childNodes"],
+  "required": [
+    "type",
+    "childNodes"
+  ],
   "properties": {
     "type": {
       "type": "integer",

@@ -4,7 +4,10 @@
   "title": "MediaInteraction",
   "type": "object",
   "description": "Browser-specific. Schema of a MediaInteraction.",
-  "required": ["id", "type"],
+  "required": [
+    "id",
+    "type"
+  ],
   "properties": {
     "id": {
       "type": "integer",
@@ -12,7 +15,10 @@
     },
     "type": {
       "type": "integer",
-      "enum": [0, 1],
+      "enum": [
+        0,
+        1
+      ],
       "description": "The type of MediaInteraction.",
       "readOnly": true
     }

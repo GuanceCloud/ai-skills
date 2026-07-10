@@ -1,0 +1,22 @@
+{
+  "schema_version": "agent-skill-v1",
+  "package_type": "ai_agent_skill",
+  "name": "trivy-cluster-scan",
+  "author": "liushenkai",
+  "display_name": "Trivy Cluster Scan",
+  "version": "2026.07.02",
+  "entrypoint": "SKILL.md",
+  "manifest": "skill.json",
+  "description": "Authorized scan-only Trivy cluster, image, configuration, runtime, and official remediation reporting skill.",
+  "install": {
+    "directory_name": "trivy-cluster-scan",
+    "copy_strategy": "copy package root contents into a skill directory while preserving relative paths",
+    "post_install": "none"
+  },
+  "security": {
+    "scan_only": true,
+    "mutating_actions_allowed": false,
+    "requires_user_authorization_for_targets": true,
+    "requires_explicit_confirmation_for_runtime_node_collector": true
+  }
+}

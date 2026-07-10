@@ -1,70 +1,36 @@
 ---
 name: dql
-description: 生成、修复、解释、评审 DQL。凡是要交付“最终可执行 DQL”，都必须先逐条通过 dqlcheck 校验，再输出最终结果。
+author: tanbiao
+description: Generate, fix, explain, and review DQL; final executable DQL must pass dqlcheck item by item.
 ---
 
 # DQL Skill
 
-用于解释、评审、生成、修复 DQL。
+Use this skill to generate, repair, explain, or review Guance DQL.
 
-## 触发规则
+## Modes
 
-- 若任务只要求解释语义、指出风险、做评审，而不要求产出新的最终 DQL，进入 **解释/评审模式**。
-- 若任务要求生成、修复、返回、交付可执行 DQL，进入 **生成/修复模式**。
-- 只有 **生成/修复模式** 才允许输出最终 DQL。
+- Explanation or review mode: explain semantics, risks, and suggestions without inventing a new final DQL.
+- Generation or repair mode: return only DQL that has passed validation.
 
-## 权威依据
+## Mandatory Validation
 
-- `dqlcheck` 是“实现是否接受这条 DQL”的最终判定器。
-- `references/DQL.md` 和 `references/DQL Functions.md` 是起草和修复时的参考资料，不是最终裁决者。
-- 用户需求决定“该查什么”；`dqlcheck` 只决定“这样写能不能执行”。
-
-## 工具规则
-
-- 默认使用 skill 内置启动器：`./bin/dqlcheck`。
-- 交付最终可执行 DQL 前，必须对每条 DQL 单独运行 `dqlcheck`。
-- 首次在本次任务中使用参考文档前，先执行 `./bin/dqldocs` 更新 `./references/`。
-- 对包含复杂引号、转义或多行内容的 DQL，优先使用 `--file` 或 `--stdin`，不要依赖脆弱的 shell quoting。
-
-## 生成 / 修复工作流
-
-1. 明确查询目标：场景、指标口径、时间范围、步长、维度（BY）和过滤条件。
-2. 基于 `./references/` 起草 DQL。
-3. 对每条 DQL 单独执行 `dqlcheck`。
-4. 若失败，只按报错位置做最小修复后重试。
-5. 单条 DQL 连续 3 次仍未通过时，停止该条，输出最后一次报错和最小复现，不把它作为最终交付。
-6. 只有逐条 PASS 的 DQL 才能进入最终结果。
-
-## 完整性要求
-
-- 不把“批量整体通过”当作“逐条通过”的替代。
-- 不把诊断信息、解释文字、失败条目混入最终 DQL。
-- 多条任务的最终交付中，只保留 PASS 条目。
-- 若任务要求交付可执行 DQL，而校验未完成，则任务不算完成。
-
-## 输出规则
-
-### 解释 / 评审模式
-
-- 输出语义、风险、问题和建议。
-- 不输出新的最终 DQL。
-
-### 生成 / 修复模式
-
-- 单条任务校验通过后：只输出最终 DQL。
-- 多条任务校验通过后：最终只输出通过校验的条目。
-- 诊断阶段可标注 `PASS / FAIL`，但最终交付不得包含 `FAIL` 条目。
-
-### 校验器不可用
-
-- 明确标注 `UNVERIFIED`。
-- 说明阻断原因。
-- 说明所需安装或修复动作。
-
-## 常用命令
+Any final executable DQL must pass `dqlcheck` before delivery. Validate each query separately.
 
 ```bash
 ./bin/dqlcheck -q '<DQL>'
-./bin/dqlcheck -q '<DQL>' --out=build
 ./bin/dqlcheck --file /tmp/query.dql
+./bin/dqlcheck -q '<DQL>' --out=build
 ```
+
+For complex quoting, prefer writing the query to a temporary `.dql` file and validating with `--file`.
+
+## Batch Validation Practice
+
+When extracting DQL from Dashboard JSON, validate each extracted query independently. If a query is wrapped by a chart helper such as `series_sum("M::...")`, extract the inner DQL before validation.
+
+## Failure Handling
+
+- Apply the smallest repair that addresses the parser error.
+- Retry validation after each repair.
+- Do not deliver entries that still fail after repeated repair attempts.

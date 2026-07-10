@@ -6,7 +6,10 @@
   "description": "Browser-specific. Schema of an InputData.",
   "allOf": [
     {
-      "required": ["source", "id"],
+      "required": [
+        "source",
+        "id"
+      ],
       "properties": {
         "source": {
           "type": "integer",

@@ -4,7 +4,12 @@
   "title": "DocumentTypeNode",
   "type": "object",
   "description": "Schema of a Document Type Node.",
-  "required": ["type", "name", "publicId", "systemId"],
+  "required": [
+    "type",
+    "name",
+    "publicId",
+    "systemId"
+  ],
   "properties": {
     "type": {
       "type": "integer",

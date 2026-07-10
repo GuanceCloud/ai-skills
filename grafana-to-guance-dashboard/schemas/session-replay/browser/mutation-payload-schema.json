@@ -6,7 +6,12 @@
   "description": "Browser-specific. Schema of a MutationPayload.",
   "allOf": [
     {
-      "required": ["adds", "removes", "texts", "attributes"],
+      "required": [
+        "adds",
+        "removes",
+        "texts",
+        "attributes"
+      ],
       "properties": {
         "adds": {
           "type": "array",

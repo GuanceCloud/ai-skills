@@ -1,7 +1,7 @@
 const ELASTICSEARCH_TRACE_SOURCE = 'T::RE(`.*`)';
 
 // These rules are derived from the real Grafana dashboard
-// `/home/liurui/Downloads/问题定位大盘-1775721080549.json`.
+// `/home/liurui/Downloads/-1775721080549.json`.
 // Keep this file as the single maintenance point for Elasticsearch -> DQL mapping.
 export const ELASTICSEARCH_DQL_RULES = {
   source: ELASTICSEARCH_TRACE_SOURCE,

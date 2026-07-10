@@ -1,0 +1,74 @@
+{
+  "schema_version": "agent-skill-v1",
+  "type": "skill",
+  "name": "trivy-cluster-scan",
+  "author": "liushenkai",
+  "display_name": "Trivy Cluster Scan",
+  "version": "2026.07.02",
+  "language": "en",
+  "entrypoint": "SKILL.md",
+  "description": "Authorized, scan-only Trivy security assessment for Kubernetes or service clusters, container images, image configuration, Kubernetes resource configuration, secrets, misconfigurations, vulnerabilities, optional runtime/node findings, and official remediation guidance.",
+  "triggers": [
+    "trivy",
+    "vulnerability scan",
+    "cluster scan",
+    "kubernetes scan",
+    "image scan",
+    "container configuration scan",
+    "runtime scan",
+    "official remediation guidance",
+    "Chinese vulnerability scanning requests",
+    "Chinese cluster scanning requests",
+    "Chinese image scanning requests",
+    "Chinese runtime scanning requests",
+    "Chinese official remediation guidance requests"
+  ],
+  "capabilities": [
+    "download portable Trivy from official Aqua Security GitHub releases",
+    "verify Trivy archive SHA256 against release checksums",
+    "scan Kubernetes clusters with trivy k8s",
+    "scan container images with trivy image",
+    "scan application source paths with trivy fs",
+    "deduplicate vulnerability findings for remediation research",
+    "produce scan-only reports with official remediation citations"
+  ],
+  "required_files": [
+    "SKILL.md",
+    "scripts/run_trivy_cluster_scan.py",
+    "scripts/extract_remediation_queue.py",
+    "references/trivy-scope.md",
+    "references/remediation-sources.md",
+    "references/reporting.md"
+  ],
+  "optional_files": [
+    "agents/openai.yaml"
+  ],
+  "runtime_requirements": {
+    "python": "3.9+",
+    "network": "Required by default to download portable Trivy and verify latest official remediation guidance. Use --trivy-path for offline Trivy.",
+    "cluster_access": "Requires an authorized kubeconfig, context, kubectl access, or authorized remote execution path supplied by the user.",
+    "trivy": "Downloaded ephemerally by the bundled script unless --trivy-path is supplied."
+  },
+  "permissions": {
+    "shell": true,
+    "network": true,
+    "filesystem_write": "scan output directory only",
+    "cluster_read": true,
+    "cluster_mutation": false,
+    "remediation": false,
+    "exploit_testing": false
+  },
+  "safety_boundaries": [
+    "Use Trivy as the only vulnerability scanning engine.",
+    "Run only against user-owned or explicitly authorized targets.",
+    "Do not fix, patch, apply, delete, upgrade, restart, scale, mutate manifests, open remediation PRs, or run exploit payloads.",
+    "Provide remediation recommendations as text only unless a separate human-confirmed remediation task is requested.",
+    "Runtime/node collector may create and delete temporary Kubernetes scan jobs and requires explicit user confirmation.",
+    "Redact secrets and do not print full secret values."
+  ],
+  "install_hint": {
+    "generic_agent": "Read skill.json, then load SKILL.md as the primary instruction file. Keep scripts/ and references/ at the same relative paths.",
+    "codex_like": "Create a skill directory named trivy-cluster-scan under the agent skills directory and copy all files from this package into it.",
+    "root_zip": "This archive is intentionally flat: SKILL.md is at the ZIP root for agents that only inspect top-level files."
+  }
+}

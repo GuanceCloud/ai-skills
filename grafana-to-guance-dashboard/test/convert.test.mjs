@@ -843,7 +843,7 @@ test('converter maps mysql table panels to native outer datasource queries', () 
           {
             refId: 'A',
             datasource: { type: 'mysql', uid: 'mysql-1' },
-            rawSql: "select cluster_name '实例名',schema_name '库名', table_name '表名',table_rows '行数' from t_big_table_infos where cluster_name like '%prod-cswap-%' order by table_rows desc;",
+            rawSql: "select cluster_name 'instance_name',schema_name 'database_name', table_name 'table_name',table_rows 'row_count' from t_big_table_infos where cluster_name like '%prod-cswap-%' order by table_rows desc;",
             format: 'table',
             editorMode: 'code',
           },
@@ -863,10 +863,10 @@ test('converter maps mysql table panels to native outer datasource queries', () 
     query: {
       q: `SELECT
     CAST(UNIX_TIMESTAMP(create_time) * 1000 AS SIGNED) AS time,
-    cluster_name AS tag_实例名,
-    schema_name AS tag_库名,
-    table_name AS tag_表名,
-    table_rows AS 行数
+    cluster_name AS tag_instance_name,
+    schema_name AS tag_database_name,
+    table_name AS tag_table_name,
+    table_rows AS row_count
 FROM t_big_table_infos
 WHERE
     cluster_name LIKE '%prod-cswap-%'

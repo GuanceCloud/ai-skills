@@ -4,7 +4,11 @@
   "title": "ScrollPosition",
   "type": "object",
   "description": "Browser-specific. Schema of a ScrollPosition.",
-  "required": ["id", "x", "y"],
+  "required": [
+    "id",
+    "x",
+    "y"
+  ],
   "properties": {
     "id": {
       "type": "integer",

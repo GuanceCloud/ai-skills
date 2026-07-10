@@ -1,94 +1,94 @@
-# 官方字段研究流程
+# Official Field Research
 
-本 reference 只规定研究方法，不保存任何云厂商或具体产品的数据字典。每次 Dashboard 任务都基于当前服务、当前接口版本和当前官方资料重新确认。
+This reference defines a research method only. It must not become a built-in data dictionary for any cloud vendor or product. Reconfirm semantics for the current service, interface version, and first-party documentation during every Dashboard task.
 
-## 1. 触发条件
+## 1. When Research Is Required
 
-遇到以下任一情况时执行研究：
+Research is mandatory when any of the following applies:
 
-- 对象字段是低基数数值或布尔值，用户无法直接理解。
-- 字段名包含 `status/state/mode/type/arch/edition/bill/enabled/supported`。
-- CSV 或对象 schema 没有单位，或单位可能存在位/字节、比例/百分比、实例/分片歧义。
-- 人工 Dashboard 已添加映射，但来源和适用版本不明确。
-- 同名字段在不同云厂商、服务或 API 版本中可能含义不同。
+- An object field is a low-cardinality number or boolean that users cannot interpret directly.
+- A field name contains `status`, `state`, `mode`, `type`, `arch`, `edition`, `bill`, `enabled`, or `supported`.
+- A metrics CSV or object schema has no unit, or bits versus bytes, ratio versus percentage, or instance versus shard scope is ambiguous.
+- A manually edited Dashboard contains mappings whose source or applicable version is unclear.
+- The same field name can have different meanings across vendors, services, or API versions.
 
-## 2. 建立研究上下文
+## 2. Establish the Research Context
 
-先记录：
+Record:
 
-- 云厂商或组件名称。
-- 产品/服务名称和版本。
-- API action、namespace、measurement 或对象 class。
-- API 版本、采集器版本或文档更新时间。
-- 原始字段名，包括 snake_case 和 API 返回中的 camelCase/PascalCase。
-- 真实样本值和字段类型。
-- Dashboard 中计划显示的列或指标。
+- cloud vendor or component
+- product or service name and version
+- API action, namespace, measurement, or object class
+- API version, collector version, or documentation update date
+- original field name in snake_case and its camelCase or PascalCase API form
+- real sample values and field types
+- the planned Dashboard column or metric
 
-没有这些上下文时，不开始猜映射。
+Do not guess mappings when this context is missing.
 
-## 3. 查询官方资料
+## 3. Consult First-Party Sources
 
-只使用第一方资料确认技术字段：
+Use only first-party sources to confirm technical fields:
 
-1. 当前官方 API 文档、数据字典或 API Explorer。
-2. 当前官方指标说明、产品规格、计费和状态文档。
-3. 官方 SDK 的模型、枚举常量或生成代码。
-4. 官方发布说明和 API 变更历史。
+1. current official API documentation, data dictionaries, or API Explorer
+2. current official metric, product specification, billing, and status documentation
+3. official SDK models, enum constants, or generated code
+4. official release notes and API change history
 
-搜索时组合使用：
+Useful searches combine:
 
-- 产品名 + API action + 原始字段名。
-- 产品名 + 枚举候选值。
-- 产品名 + 字段中文含义 + “数据字典/单位/计费/状态”。
-- snake_case、camelCase 和 PascalCase 三种字段写法。
+- product name, API action, and original field name
+- product name and candidate enum values
+- product name, field meaning, and terms such as data dictionary, unit, billing, or status
+- snake_case, camelCase, and PascalCase variants
 
-用户提供了具体文档站点时，优先在该官方站点内搜索。技术查询不要用论坛、转载文章或其他云厂商的同名字段替代。
+When the user supplies a documentation site, search that official site first. Do not substitute forums, reposted articles, or another vendor's similarly named field for technical evidence.
 
-允许上网查询字段语义和单位，但不能用搜索结果补造用户 CSV 中不存在的监控指标。
+Internet research may confirm the semantics and unit of a field that exists in the user's input. It must never add metrics that are absent from the user's CSV.
 
-## 4. 建立证据表
+## 4. Build an Evidence Table
 
-在任务研究记录或交付说明中维护：
+Maintain a research record or delivery note:
 
-| 字段 | 原始值 | 显示值/单位 | 来源 URL | API/文档版本 | 证据等级 |
-| --- | --- | --- | --- | --- | --- |
-| `status` | `2` | `运行中` | 官方链接 | `YYYY-MM-DD` | 已确认 |
+| Field | Original value | Display value/unit | Source URL | API/doc version | Evidence level |
+|---|---|---|---|---|---|
+| `status` | `2` | `Running` | official link | `YYYY-MM-DD` | Confirmed |
 
-证据等级：
+Evidence levels:
 
-- `已确认`：官方 API 字典、API Explorer 或官方 SDK 明确给出字段与取值。
-- `交叉确认`：官方产品文档给出业务名称，真实对象样本/控制台确认数值对应关系。
-- `仅观察`：只在样本或人工 JSON 中出现，官方资料未确认。
-- `未知`：无法建立可靠对应关系。
+- **Confirmed**: an official API dictionary, API Explorer, or official SDK explicitly defines the field and value.
+- **Cross-confirmed**: official product documentation supplies the business label and a real object sample or console view confirms the numeric relationship.
+- **Observed only**: the value appears only in a sample or manually edited JSON and has no first-party confirmation.
+- **Unknown**: no reliable mapping can be established.
 
-只有“已确认”和证据链完整的“交叉确认”可以默认写入 `valMappings`。其余值保留原始展示并在交付说明中列出。
+Only Confirmed values and Cross-confirmed values with a complete evidence chain may be written to `valMappings` by default. Preserve all other original values and list them in the delivery notes.
 
-## 5. 确认单位
+## 5. Confirm Units
 
-单位研究至少回答：
+Unit research must answer:
 
-- 数值是字节还是比特，例如 `GB` 与 `Gb`。
-- 是十进制还是二进制容量；官方只写 `G` 时记录其原文并选择平台最接近单位。
-- 是比例 `0~1` 还是百分数 `0~100`。
-- 是累计值、每秒速率还是某个采样窗口的平均值。
-- 是实例总量、节点值、单分片值还是副本值。
-- 时间是秒、毫秒、微秒还是时间戳。
+- whether the value is bytes or bits, such as `GB` versus `Gb`
+- whether capacity is decimal or binary; if the source only says `G`, record that wording and choose the closest platform unit
+- whether a ratio is `0..1` or a percentage is `0..100`
+- whether a value is cumulative, per-second, or averaged over a sampling window
+- whether it represents an instance total, node value, shard value, or replica value
+- whether time is seconds, milliseconds, microseconds, or a timestamp
 
-单位无法确认时使用 custom 原始显示，并明确标记 `UNVERIFIED`；不要为了界面美观填写可能错误的标准单位。
+If the unit cannot be confirmed, use a custom raw display and mark it `UNVERIFIED`. Do not fill in a plausible standard unit merely for visual polish.
 
-## 6. 生成配置
+## 6. Generate Configuration
 
-- 字段名称使用 `fieldMapping` 或 `alias` 转为可读文本。
-- 已确认枚举使用 `valMappings`。
-- `*_enabled` 与 `*_supported` 分开解释，前者通常表示状态，后者通常表示能力；最终仍以官方字段定义为准。
-- 单位配置与官方语义一致，字段别名可补充作用域，例如“容量 (GB)”或“单分片容量 (GB)”。
-- 只有确实需要状态着色时才配置 `valColorMappings`，不生成颜色全部为空的占位项。
+- Convert field names into readable labels with `fieldMapping` or `alias`.
+- Use `valMappings` only for confirmed enums.
+- Treat `*_enabled` and `*_supported` separately: the first usually describes current state and the second capability, but the official field definition remains authoritative.
+- Keep unit configuration aligned with official scope. A field alias may clarify scope, such as `Capacity (GB)` or `Capacity per Shard (GB)`.
+- Create `valColorMappings` only when status coloring is useful; do not create placeholder entries whose colors are all empty.
 
-## 7. 验证与交付
+## 7. Validate and Deliver
 
-- 检查所有样本枚举值是否已确认或被列为未知。
-- 检查同字段同原值不存在冲突映射。
-- 检查单位、别名和 DQL 返回字段使用同一作用域。
-- 检查资料对应当前产品和 API 版本，不引用已废弃版本覆盖新接口。
-- 在最终交付中列出官方资料链接、确认日期以及仍未确认的值。
-- 不把本次查询到的厂商枚举硬编码回通用 skill；只有研究方法和跨产品通用规则可以沉淀。
+- Verify that every sampled enum value is either confirmed or explicitly listed as unknown.
+- Verify that the same field and original value do not have conflicting mappings.
+- Verify that units, aliases, and DQL return fields use the same scope.
+- Verify that the sources apply to the current product and API version rather than a deprecated interface.
+- Include first-party links, confirmation date, and unresolved values in the final delivery.
+- Do not hard-code task-specific vendor enums back into the generic skill. Only reusable research methods and cross-product rules belong here.

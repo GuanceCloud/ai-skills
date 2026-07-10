@@ -90,11 +90,11 @@ const UNIT_MAP = {
     celsius: ['temperature', 'C'],
 };
 const COMPARE_OPTIONS = {
-    hourCompare: { label: '小时同比', value: 'hourCompare' },
-    dayCompare: { label: '日同比', value: 'dayCompare' },
-    weekCompare: { label: '周同比', value: 'weekCompare' },
-    monthCompare: { label: '月同比', value: 'monthCompare' },
-    circleCompare: { label: '环比', value: 'circleCompare' },
+    hourCompare: { label: 'Hour-over-hour', value: 'hourCompare' },
+    dayCompare: { label: 'Day-over-day', value: 'dayCompare' },
+    weekCompare: { label: 'Week-over-week', value: 'weekCompare' },
+    monthCompare: { label: 'Month-over-month', value: 'monthCompare' },
+    circleCompare: { label: 'Period-over-period', value: 'circleCompare' },
 };
 export function convertDashboard(grafanaDashboard, options = {}) {
     var _a, _b;
@@ -1162,10 +1162,10 @@ function inferActionTitle(content, url) {
         return undefined;
     if (content.includes('HotCall') || url.includes('hotcall'))
         return 'HotCall';
-    if (content.includes('业务大盘'))
-        return '业务大盘';
-    if (content.includes('拓扑图') || content.includes('traceLink'))
-        return '跳转观测云';
+    if (content.toLowerCase().includes('business dashboard'))
+        return 'Business Dashboard';
+    if (content.toLowerCase().includes('topology') || content.includes('traceLink'))
+        return 'Open Guance';
     return undefined;
 }
 function unwrapQuoted(value) {
@@ -1339,7 +1339,7 @@ function inferGuanceLinkType(link) {
         return 'host';
     if (title.includes('trace') || title.includes('tracing'))
         return 'tracing';
-    if (title.includes('日志'))
+    if (title.includes('log') || title.includes('logging'))
         return 'logging';
     return 'custom';
 }
@@ -1775,7 +1775,7 @@ function shouldEmitMysqlFieldAsTag(expression, alias) {
     if (/[()+\-*/%]/u.test(normalizedExpression)) {
         return false;
     }
-    return !/(count|sum|avg|min|max|round|concat|timestampdiff|percent|percentage|ratio|rate|rows?|number|num|total|success|failure|false|true|result|duration|latency|cost|amount|size|bytes|action_time|elapsed|interval|period|行数|数量|次数|总数|比例|占比|耗时|时长|成功|失败)/iu.test(`${normalizedExpression} ${normalizedAlias}`);
+    return !/(count|sum|avg|min|max|round|concat|timestampdiff|percent|percentage|ratio|rate|rows?|number|num|total|success|failure|false|true|result|duration|latency|cost|amount|size|bytes|action_time|elapsed|interval|period|row_count|quantity|times|proportion|share|elapsed_time|successful|failed)/iu.test(`${normalizedExpression} ${normalizedAlias}`);
 }
 function formatMysqlOuterDatasourceRest(restClause, hasTime) {
     const clauses = splitMysqlRestClauses(restClause);

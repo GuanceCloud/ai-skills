@@ -380,7 +380,7 @@
             "type": "guance-guance-datasource",
             "uid": "o9PpQVUHz"
           },
-          "legendFormat": "test别别别别别别别别别名别别别别名别别别别别别别别别名 {{host}}---------{{region}} ",
+          "legendFormat": "testaliasaliasalias {{host}}---------{{region}} ",
           "qtype": "promql",
           "queryText": "avg(cpu:load5s)  by (host,region)",
           "refId": "A"
@@ -472,7 +472,7 @@
             "uid": "-HcExU8Hk"
           },
           "hide": false,
-          "legendFormat": "别名123+test {{host}}",
+          "legendFormat": "alias123+test {{host}}",
           "qtype": "dql",
           "queryText": "M::disk:(avg(`free`))  BY `host`",
           "refId": "A"
@@ -757,7 +757,7 @@
           "refId": "B",
           "workspaceUUIDs": [
             {
-              "label": "huangdong的测试空间",
+              "label": "English sample text",
               "value": "wksp_aef7103dc5a44397a9f4d0442517a15e"
             }
           ]
@@ -772,7 +772,7 @@
           "refId": "A",
           "workspaceUUIDs": [
             {
-              "label": "测试另一个【ScopeDB】开发测试一起用",
+              "label": "English sample text",
               "value": "wksp_3e4be8bfca7f4149889b83805caf16c3"
             }
           ]
@@ -787,11 +787,11 @@
           "refId": "C",
           "workspaceUUIDs": [
             {
-              "label": "huangdong的测试空间",
+              "label": "English sample text",
               "value": "wksp_aef7103dc5a44397a9f4d0442517a15e"
             },
             {
-              "label": "测试另一个【ScopeDB】开发测试一起用",
+              "label": "English sample text",
               "value": "wksp_3e4be8bfca7f4149889b83805caf16c3"
             }
           ]
@@ -848,7 +848,7 @@
         "definition": "label_values(cpu:load5s,host)",
         "hide": 0,
         "includeAll": true,
-        "label": "主机",
+        "label": "Host",
         "multi": false,
         "name": "var_host",
         "options": [],

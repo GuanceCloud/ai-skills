@@ -4,7 +4,9 @@
   "title": "StyleSheetAddRule",
   "type": "object",
   "description": "Browser-specific. Schema of a StyleSheetAddRule.",
-  "required": ["rule"],
+  "required": [
+    "rule"
+  ],
   "properties": {
     "rule": {
       "type": "string",

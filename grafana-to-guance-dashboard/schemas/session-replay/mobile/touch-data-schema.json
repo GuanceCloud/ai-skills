@@ -6,7 +6,9 @@
   "description": "Schema of a TouchData.",
   "allOf": [
     {
-      "required": ["source"],
+      "required": [
+        "source"
+      ],
       "properties": {
         "source": {
           "type": "integer",
@@ -19,7 +21,12 @@
           "readOnly": true,
           "items": {
             "type": "object",
-            "required": ["id", "x", "y", "timestamp"],
+            "required": [
+              "id",
+              "x",
+              "y",
+              "timestamp"
+            ],
             "properties": {
               "id": {
                 "type": "integer",

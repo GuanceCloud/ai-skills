@@ -6,11 +6,24 @@
   "description": "Browser-specific. Schema of a MouseInteraction.",
   "oneOf": [
     {
-      "required": ["type", "id", "x", "y"],
+      "required": [
+        "type",
+        "id",
+        "x",
+        "y"
+      ],
       "properties": {
         "type": {
           "type": "integer",
-          "enum": [0, 1, 2, 3, 4, 7, 9],
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            7,
+            9
+          ],
           "description": "The type of MouseInteraction: 0=mouseup, 1=mousedown, 2=click, 3=contextmenu, 4=dblclick, 7=touchstart, 9=touchend",
           "readOnly": true
         },
@@ -29,11 +42,17 @@
       }
     },
     {
-      "required": ["type", "id"],
+      "required": [
+        "type",
+        "id"
+      ],
       "properties": {
         "type": {
           "type": "integer",
-          "enum": [5, 6],
+          "enum": [
+            5,
+            6
+          ],
           "description": "The type of MouseInteraction: 5=focus, 6=blur",
           "readOnly": true
         },
