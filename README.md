@@ -9,7 +9,12 @@ ai-skills/
 ├── alert_manager/
 │   └── SKILL.md
 ├── dashboard/
-│   └── SKILL.md
+│   ├── SKILL.md
+│   └── references/
+│       ├── dashboard-json-contract.md
+│       ├── official-field-research.md
+│       ├── query-semantics.md
+│       └── resource-object-tables.md
 ├── dql/
 │   ├── SKILL.md
 │   ├── bin/
@@ -42,7 +47,7 @@ ai-skills/
 | Skill | 作用 | 关键输入 | 关键输出 |
 |---|---|---|---|
 | `alert_manager` | 将 alertmanager rule 转换为观测云监控器 JSON | alertmanager rule 语句或 rule 文件 + 指标映射 | `output/monitor/{{component}}/{{component}}.json` |
-| `dashboard` | 根据 CSV 指标生成观测云 Dashboard JSON | `csv/{{type}}*.csv` | `output/dashboard/{{type}}/{{type}}.json` |
+| `dashboard` | 根据指标 CSV 和资源对象数据生成、修复或评审观测云 Dashboard JSON | 指标 CSV；标准资源型 Dashboard 还必须提供对象 CSV/JSON；可选人工 Dashboard JSON | `output/dashboard/{{type}}/{{type}}.json` |
 | `monitor` | 根据 CSV 指标生成观测云监控器 JSON | `csv/{{component}}*.csv` | `output/monitor/{{component}}/{{component}}.json` |
 | `dql` | 解释、评审、生成、修复 DQL | 用户查询需求 / DQL 语句 | 通过校验的最终 DQL |
 | `grafana-to-guance-dashboard` | 分析、转换、审计、修复 Grafana Dashboard 到观测云 Dashboard 的映射 | Grafana dashboard JSON | 观测云 dashboard JSON、转换审计报告 |
@@ -75,6 +80,10 @@ CSV 建议包含以下列（中英文均可）：
 cpu_util,float,%,host
 memory_util,float,%,host
 ```
+
+标准资源型 Dashboard 还必须准备资源目录/自定义对象导出 CSV 或 JSON。对象输入至少需要包含 measurement/class、一条真实对象记录、可查询顶层字段及其真实类型和值。Dashboard 会用对象数据生成实例属性表，并根据官方资料把状态、模式、计费类型和功能开关等枚举转换为可读文本。
+
+缺少对象数据时，不得用指标 tag 生成伪实例属性表。默认停止标准 Dashboard 生成并请求对象导出；只有用户明确接受不含资源实例表的遥测版时才能继续。
 
 ### 2. 调用 Skill（示意）
 
@@ -136,17 +145,27 @@ memory_util,float,%,host
 
 ### `dashboard`
 
-- 从 CSV 自动解析变量维度（如 `instanceId` / `instance_id` / `host`）。
-- 所有图表查询中的 `BY`、`filters`、`groupBy` 必须与变量 `code` 一致。
+- 从真实 CSV 自动解析全部变量维度，不假设只有一个变量。
+- 可见变量优先使用账号名称、实例名称等可读字段；稳定实例 ID 可作为隐藏过滤变量或对象分组键。
+- DQL 中引用的变量、`filters` 与 `groupBy` 必须一致，但过滤变量不要求全部进入 `BY`。
 - 必须覆盖基础运维面板能力：
   - 至少 1 个实例级 `table`
   - 至少 1 行 `singlestat` 概览（4~8 KPI）
   - 至少 6 个 `sequence` 趋势图
+- 标准资源型 Dashboard 必须提供资源目录/自定义对象 JSON 或 CSV，实例列表使用 `CO::` 对象查询并展示静态属性；遥测指标保留在概览和趋势图。
+- 对象中的状态、模式、计费类型、布尔开关和不明确单位必须由 AI 在当前任务中查询对应服务的官方 API、产品文档或 SDK；已确认值配置 `valMappings`，未知值不得凭样本臆造。
+- Dashboard skill 不内置任何云厂商或具体产品的数据字典，只沉淀官方资料查询、证据分级和配置生成方法。
+- 概览聚合按指标语义选择：可加总值使用 `series_sum`，百分比、负载、命中率和延迟使用 `avg`。
+- 云监控 `_average` 等预聚合字段使用 `fill(last(...), linear)`，不再二次 `AVG()`。
+- 同源 `_average/_max/_min` 普通趋势默认只保留 `_average`；一个 `queries[]` 项只查询一个指标字段。
+- 多实例普通趋势优先使用可读实例名称，不默认继续按节点/分片拆分；节点排障另建明细图。
+- 一条分组 query 返回多个实例系列时，不固定 query/alias 颜色，让 UI 在图表内部按系列分配不同颜色。
 - 生成后必须先执行样式自动修正：
   - `groupUnfoldStatus` 中所有分组强制为 `true`
   - `概览` 固定第一，列表类分组紧随其后
   - 移除 `dashboardExtend.groupColor` 和 `main.groups[].extend.colorKey`
-  - 分组使用科技蓝色盘，概览 `singlestat` 使用多彩数据色盘
+  - 分组使用克制且有区分度的背景色，概览 `singlestat` 使用多彩数据色盘
+  - grouped query 的固定颜色保持为空，让同一图表内不同实例系列由 UI 调色盘区分
 - 生成后必须对图表 DQL 逐条执行校验。
 
 ### `monitor`
