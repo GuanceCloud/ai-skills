@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenTelemetry Instrumentation"
+  short_description: "Instrument repositories with OpenTelemetry safely"
+  default_prompt: "Use $otel-instrument to analyze and instrument this repository with OpenTelemetry, validate it locally, then provide the exact OTLP/HTTP environment settings or launch command."
