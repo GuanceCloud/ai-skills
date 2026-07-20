@@ -44,7 +44,7 @@ OTEL_EXPORTER_OTLP_HEADERS='Authorization=Bearer%20<tenant-token>' \
 <project-start-command>
 ```
 
-Do not emit variables for unselected signals. For Java or zero-code Python/Node.js instrumentation, include the verified agent/preload launcher flags required by the chosen official integration. For source-instrumented Go or SDK-based applications, use the repository's normal start command.
+Do not emit variables for unselected signals. For agent-, preload-, extension-, or automatic-instrumentation modes, include the verified launcher flags and runtime settings required by the chosen official integration. For SDK-based applications, use the repository's normal start command.
 
 ## Collector pattern
 
@@ -94,6 +94,14 @@ Do not assume authority to deploy or create secrets. Produce commands/config fra
 - **CI/CD:** source the tenant token from the CI secret store, mask outputs, inject it only into the runtime environment, and do not retain it in repository variables or artifacts.
 
 For direct export, set `OTEL_EXPORTER_OTLP_HEADERS` at runtime from a protected secret source. Never place the literal value in tracked config. Do not claim that process environment variables are inaccessible to same-user diagnostics.
+
+## Untrusted client applications
+
+Never embed the tenant token or authenticated `Authorization` header in browser JavaScript, Android/Kotlin applications, or distributed Apple/Swift applications. Environment variables, bundles, mobile resources, and compiled client binaries do not make a tenant credential secret.
+
+Route client telemetry to a trusted same-origin backend, gateway, or locally managed Collector. Inject the tenant header only at that trusted boundary, then export upstream over OTLP/HTTP. Apply origin controls, request limits, payload limits, and abuse protection appropriate to the public receiver.
+
+If no trusted receiver exists, mark authenticated remote export from the client as blocked. Local capture can still prove instrumentation, but do not generate a client launch command containing the tenant header and do not claim production upload is ready.
 
 ## Verification boundary
 

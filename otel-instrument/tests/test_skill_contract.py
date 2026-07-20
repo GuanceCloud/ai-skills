@@ -42,6 +42,10 @@ class SkillContractTests(unittest.TestCase):
         for setting in required_settings:
             self.assertIn(setting, deployment)
 
+        self.assertIn("Never embed the tenant token", deployment)
+        self.assertIn("trusted same-origin backend", deployment)
+        self.assertIn("mark authenticated remote export from the client as blocked", deployment)
+
     def test_inventory_contract_records_signal_endpoints_without_secrets(self):
         contracts = self.read("references/contracts.md")
 
@@ -55,6 +59,42 @@ class SkillContractTests(unittest.TestCase):
         skill = self.read("SKILL.md")
         self.assertIn("Reuse a host already supplied in the request", skill)
         self.assertIn('"otlp_host": "<approved HTTPS host>"', contracts)
+
+    def test_skill_supports_every_official_opentelemetry_language(self):
+        skill = self.read("SKILL.md")
+
+        language_references = {
+            "C++": "cpp.md",
+            "C#/.NET": "dotnet.md",
+            "Erlang/Elixir": "erlang-elixir.md",
+            "Go": "go.md",
+            "Java": "java.md",
+            "JavaScript/TypeScript": "javascript.md",
+            "Kotlin": "kotlin.md",
+            "PHP": "php.md",
+            "Python": "python.md",
+            "Ruby": "ruby.md",
+            "Rust": "rust.md",
+            "Swift": "swift.md",
+        }
+
+        for language, reference in language_references.items():
+            with self.subTest(language=language):
+                self.assertIn(language, skill)
+                self.assertIn(f"references/{reference}", skill)
+                self.assertTrue((SKILL_DIR / "references" / reference).is_file())
+
+        rust_reference = self.read("references/rust.md")
+        for required_term in (
+            "Cargo.toml",
+            "Cargo.lock",
+            "rust-toolchain",
+            "cargo fmt --check",
+            "cargo clippy",
+            "cargo test",
+            "tracing-opentelemetry",
+        ):
+            self.assertIn(required_term, rust_reference)
 
 
 if __name__ == "__main__":

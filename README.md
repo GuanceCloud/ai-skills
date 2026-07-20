@@ -27,7 +27,7 @@ ai-skills/
 | `monitor` | Generate Guance monitor JSON from a metrics CSV | `csv/{{component}}*.csv` | `output/monitor/{{component}}/{{component}}.json` |
 | `dql` | Generate, fix, explain, and review DQL | User requirements or DQL queries | Validated final DQL |
 | `grafana-to-guance-dashboard` | Convert and audit Grafana dashboards for Guance | Grafana dashboard JSON | Guance dashboard JSON and audit notes |
-| `otel-instrument` | Instrument Go, Java, Python, and Node.js repositories with OpenTelemetry | Git repository plus selected signals and trace depth | Instrumented source, local validation evidence, module inventory, and runtime OTLP/HTTP guidance |
+| `otel-instrument` | Instrument C++, C#/.NET, Erlang/Elixir, Go, Java, JavaScript/TypeScript, Kotlin, PHP, Python, Ruby, Rust, and Swift repositories with OpenTelemetry | Git repository plus selected signals and trace depth | Instrumented source, local validation evidence, module inventory, and runtime OTLP/HTTP guidance |
 | `owl-diagnostics` | Query Guance data with `owl` and write diagnostic reports | Time range and diagnostic target | Evidence-backed Markdown report |
 | `sls2dql` | Convert Alibaba Cloud SLS queries to GuanceDB DQL | SLS query plus namespace/source/index options | Conversion result and diagnostics |
 | `trivy-cluster-scan` | Run authorized, scan-only Trivy cluster and image security assessment with official remediation reporting | Authorized cluster scope, optional app paths, optional runtime confirmation | JSON scan artifacts and evidence-backed remediation report |

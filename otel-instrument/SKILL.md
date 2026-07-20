@@ -1,6 +1,6 @@
 ---
 name: otel-instrument
-description: Instrument an existing Go, Java, Python, or Node.js repository with OpenTelemetry. Use when a user asks to add or deepen traces, correlated logs, metrics, context propagation, OTLP/HTTP export, or an auditable observability-instrumentation inventory across a repository or monorepo.
+description: "Instrument repositories in every language with an official OpenTelemetry implementation: C++, C#/.NET, Erlang/Elixir, Go, Java, JavaScript/TypeScript, Kotlin, PHP, Python, Ruby, Rust, and Swift. Use when a user asks to add or deepen traces, correlated logs, metrics, context propagation, OTLP/HTTP export, or an auditable observability-instrumentation inventory across a repository or monorepo."
 ---
 
 # OpenTelemetry Instrumentation
@@ -9,7 +9,7 @@ Instrument supported repositories through a gated, convergent process. Prefer of
 
 ## Non-negotiable boundaries
 
-- Support Go, Java, Python, and Node.js. Detect other stacks, report them as unsupported, and do not improvise edits.
+- Support C++, C#/.NET, Erlang/Elixir, Go, Java, JavaScript/TypeScript, Kotlin, PHP, Python, Ruby, Rust, and Swift. Detect other stacks, report them as unsupported, and do not improvise edits.
 - Use OTLP over HTTP only. Remote endpoints require HTTPS; HTTP is allowed only for loopback/local Collectors.
 - Never disable TLS verification, capture credentials or payload bodies, or place business identifiers in metric labels.
 - Never use a package or fork based on model memory alone. Verify current official ownership, compatibility, and versions from primary sources. If internet access is unavailable, make no new dependency selection that cannot be verified locally.
@@ -22,7 +22,7 @@ Instrument supported repositories through a gated, convergent process. Prefer of
 Read only the references whose condition applies:
 
 - Before any analysis or modification, read [references/execution.md](references/execution.md), [references/instrumentation.md](references/instrumentation.md), and [references/contracts.md](references/contracts.md).
-- After detecting supported stacks, read every matching language file: [references/go.md](references/go.md), [references/java.md](references/java.md), [references/python.md](references/python.md), and/or [references/nodejs.md](references/nodejs.md).
+- After detecting supported stacks, read every matching language file: [references/cpp.md](references/cpp.md), [references/dotnet.md](references/dotnet.md), [references/erlang-elixir.md](references/erlang-elixir.md), [references/go.md](references/go.md), [references/java.md](references/java.md), [references/javascript.md](references/javascript.md), [references/kotlin.md](references/kotlin.md), [references/php.md](references/php.md), [references/python.md](references/python.md), [references/ruby.md](references/ruby.md), [references/rust.md](references/rust.md), and/or [references/swift.md](references/swift.md).
 - Before generating runtime or deployment configuration, read [references/backend.md](references/backend.md) and [references/deployment.md](references/deployment.md).
 
 ## Workflow
