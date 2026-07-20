@@ -115,3 +115,5 @@ The OTLP/HTTP host is https://<otel-host>.
 ```
 
 After instrumentation and local validation, the skill provides environment settings or a launch command adapted to the project. It uses `http/protobuf`, the signal-specific paths `/v1/traces`, `/v1/metrics`, and `/v1/logs`, and an `Authorization: Bearer <tenant-token>` header supplied at runtime. It does not exchange, generate, read, or persist tenant tokens.
+
+The skill treats attributes emitted by automatic HTTP instrumentation as untrusted. It requires URL sanitization plus exported-attribute negative tests for query credentials, dynamic paths, object keys, and unknown routes while separately proving that the real network request and context propagation remain unchanged.

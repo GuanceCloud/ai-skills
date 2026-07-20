@@ -58,6 +58,20 @@ At every level, prohibit:
 
 Do not place business identifiers in baggage automatically. If approved, record whether each identifier is raw, transformed, or excluded, along with its trace/log cardinality and retention implications.
 
+## HTTP URL safety
+
+Assume HTTP client and server integrations may emit `url.full`, `url.path`, `url.query`, span names, routes, and metric attributes from the request they observe. Official ownership, default redaction, or a safe span name does not prove the remaining attributes are safe.
+
+Before enabling an HTTP integration:
+
+1. Inspect the actual exported attributes emitted by the exact selected version for both successful and failed requests.
+2. Inventory dynamic path values, unknown routes, query-based authentication, arbitrary query parameters, object keys, presigned URLs, embedded user info, fragments, and redirects.
+3. Define stable route templates and allowlisted URL components. Remove query values and fragments; exclude credentials, business identifiers, local paths, object keys, and unbounded path segments unless an individually approved trace/log representation exists. Never put them in metric attributes.
+4. Preserve wire behavior. Use an integration-supported sanitizer, or present a sanitized request clone to instrumentation while sending the real outbound request unchanged. Ensure propagation headers, cancellation, deadlines, redirects, signing, and retries still work. If this cannot be proven, skip automatic HTTP instrumentation for that boundary and create a safe manual span around the original client.
+5. Normalize unmatched inbound routes to one bounded value such as `/:unknown`; never fall back to the raw request path.
+
+Add negative tests with distinctive synthetic canaries in a query token, ordinary query value, dynamic path/business ID, object key, and unknown inbound route. Decode the actual exported spans, logs, and metrics and assert no canary appears in any attribute, name, event, or payload. Separately assert the test server received the original path/query and required authentication, and assert context propagation still succeeds. Do not claim URL privacy from a test that exercises only inbound normalization or checks only selected attributes.
+
 ## Resource and propagation
 
 Derive stable `service.name` from a deployable module and confirm it in the plan. Derive `service.namespace` only from stable repository/organization evidence. Supply `service.version` from build/release metadata and `deployment.environment.name` from deployment configuration; never freeze a local commit or guessed environment in source.
@@ -72,4 +86,4 @@ Use batch processors/exporters and bounded queues offered by the official SDK. D
 
 ## Local proof
 
-Use a local OTLP/HTTP capture endpoint without credentials. Exercise representative inbound, outbound, async, error, and business paths required by the selected level. Assert signal presence, service/module identity, parent-child relationships, propagation, approved attributes, absence of prohibited data, and flush on shutdown. Do not claim success from initialization logs alone.
+Use a local OTLP/HTTP capture endpoint without credentials. Exercise representative inbound, outbound, async, error, and business paths required by the selected level. Assert signal presence, service/module identity, parent-child relationships, propagation, approved attributes, absence of prohibited data, URL negative tests, preservation of the real request, and flush on shutdown. Do not claim success from initialization logs alone.

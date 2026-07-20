@@ -60,6 +60,39 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("Reuse a host already supplied in the request", skill)
         self.assertIn('"otlp_host": "<approved HTTPS host>"', contracts)
 
+    def test_instrumentation_requires_outbound_url_privacy_proof(self):
+        policy = self.read("references/instrumentation.md")
+        go = self.read("references/go.md")
+        skill = self.read("SKILL.md")
+
+        for required_term in (
+            "url.full",
+            "query-based authentication",
+            "dynamic path",
+            "object key",
+            "actual exported attributes",
+            "negative tests",
+        ):
+            with self.subTest(required_term=required_term):
+                self.assertIn(required_term, policy)
+
+        for required_term in (
+            "otelhttp",
+            "url.full",
+            "sanitized request clone",
+            "real outbound request",
+            "query token",
+        ):
+            with self.subTest(go_term=required_term):
+                self.assertIn(required_term, go)
+
+        self.assertIn("official instrumentation is not evidence of data safety", skill)
+
+        contracts = self.read("references/contracts.md")
+        self.assertIn("version-specific emitted URL attributes", contracts)
+        self.assertIn("negative-test canaries", contracts)
+        self.assertIn("Never generalize an inbound-only test", contracts)
+
     def test_skill_supports_every_official_opentelemetry_language(self):
         skill = self.read("SKILL.md")
 

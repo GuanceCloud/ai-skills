@@ -12,6 +12,7 @@ Instrument supported repositories through a gated, convergent process. Prefer of
 - Support C++, C#/.NET, Erlang/Elixir, Go, Java, JavaScript/TypeScript, Kotlin, PHP, Python, Ruby, Rust, and Swift. Detect other stacks, report them as unsupported, and do not improvise edits.
 - Use OTLP over HTTP only. Remote endpoints require HTTPS; HTTP is allowed only for loopback/local Collectors.
 - Never disable TLS verification, capture credentials or payload bodies, or place business identifiers in metric labels.
+- Treat every automatic integration's emitted attributes as untrusted until inspected; official instrumentation is not evidence of data safety. Block any boundary that can export secrets, raw dynamic paths, or unsanitized URL queries.
 - Never use a package or fork based on model memory alone. Verify current official ownership, compatibility, and versions from primary sources. If internet access is unavailable, make no new dependency selection that cannot be verified locally.
 - Accept only instrumentation maintained by OpenTelemetry or by the dependency's upstream project. If neither provides an integration or fork, skip it and explain the resulting coverage gap.
 - Keep tenant tokens out of source, tracked configuration, plans, inventories, commands captured in files, and agent output. Use a placeholder in generated guidance and direct the user to inject the real value through their environment or secret manager.
@@ -65,6 +66,8 @@ Select the newest version compatible with the repository's existing runtime and 
 
 Design hybrid coverage: use official library/framework instrumentation first, then add manual spans only at meaningful boundaries automatic instrumentation cannot see. Apply the chosen level and signal rules from `references/instrumentation.md`. List every proposed business identifier and whether it will be raw, transformed, or excluded; choosing Medium/High does not authorize identifiers silently.
 
+For every HTTP client/server integration, inspect the exact attributes emitted by the selected version and map all dynamic path segments, query parameters, URL-carried credentials, object keys, and presigned URLs. Plan the sanitization mechanism and negative tests before approving that integration. If safe attributes cannot be guaranteed without changing the real request, skip the automatic integration for that boundary and use a safe manual span plus propagation.
+
 Write `.otel/plan.json`. For each batch and module, include exact source/dependency/config edits, proposed official dependencies or forks with evidence URLs and versions, identifier decisions, tests, risks, and rollback. In a large monorepo, plan the whole repository but execute in reviewable deployable-module batches.
 
 Completion criterion: every discovered module and dependency opportunity is planned, skipped, excluded, or blocked with evidence and a validation path.
@@ -85,7 +88,7 @@ Completion criterion: every edit in the approved batch is applied exactly once a
 
 ### 7. Prove the batch locally
 
-Run the same baseline commands plus targeted tests. Existing failures may remain; no new failure is acceptable. Verify initialization, context propagation, error/status recording, shutdown/flush, and the chosen signal/depth semantics. Run an OTLP/HTTP smoke test against a temporary local capture endpoint and assert the expected signal/module evidence without using a tenant credential.
+Run the same baseline commands plus targeted tests. Existing failures may remain; no new failure is acceptable. Verify initialization, context propagation, error/status recording, shutdown/flush, and the chosen signal/depth semantics. Run an OTLP/HTTP smoke test against a temporary local capture endpoint and assert the expected signal/module evidence without using a tenant credential. Inspect decoded exported attributes rather than only request paths or initialization logs. Exercise sensitive outbound and unknown inbound URLs with synthetic canaries, prove the canaries are absent from every exported signal, and separately prove the real destination received the unchanged request.
 
 Attempt bounded repairs for instrumentation-caused failures. If still failing, preserve the reviewable changes, mark the batch failed, provide evidence and safe rollback instructions, and do not mark it complete.
 

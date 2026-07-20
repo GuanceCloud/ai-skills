@@ -36,6 +36,8 @@ Each module records id, path, stack/runtime, manifests, entry points, dependenci
 
 Each dependency proposal records original coordinate/version, integration kind, proposed coordinate/version, official owner, primary-source URLs, compatibility evidence, planned edits, risks, fallback, and validation. A skipped dependency records the sources checked, reason, affected boundaries, and manual compensation opportunity.
 
+For every HTTP integration, the plan also records the version-specific emitted URL attributes, dynamic and secret-bearing URL sources, sanitization strategy, unknown-route fallback, proof that the wire request remains unchanged, and negative-test canaries. Official ownership alone is not compatibility or privacy evidence.
+
 Each business identifier records module, field, source location, purpose, representation (`raw`, `transformed`, or `excluded`), allowed signals, cardinality/retention concern, and approval disposition.
 
 Each batch records modules, ordered edits, validation commands, expected local OTLP evidence, rollback guidance, status, and failure evidence. Record approval time/actor only when known; never invent them.
@@ -65,6 +67,8 @@ Required top-level fields:
 ```
 
 Every discovered module appears exactly once with one disposition: `instrumented`, `existing`, `skipped`, `excluded`, `blocked`, or `failed`. For instrumented/existing modules record signals, trace level, source files, boundaries, official integrations, manual spans, log bridges, metrics, resource configuration, propagation, validation evidence, and residual gaps.
+
+For modules with HTTP boundaries, record URL-safety coverage and evidence separately for inbound and outbound traffic. State exactly which attributes and auth/path/query cases were tested. Never generalize an inbound-only test into a claim that all dynamic paths or queries are absent.
 
 Remote verification defaults to false and changes only from human-provided external evidence. Never infer remote success from local emission.
 
