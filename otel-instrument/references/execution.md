@@ -27,9 +27,19 @@ For every deployable/build unit, discover:
 - current metrics API/export paths and risk of duplicate export;
 - existing OpenTelemetry providers, agents, middleware, exporters, propagators, and shutdown hooks;
 - deployment/runtime configuration and observable service identity;
+- existing Kubernetes manifests, Helm charts and values, Kustomize bases/overlays, Dockerfiles, Docker Compose files, systemd units/environment files, Procfiles, and application configuration consumed during startup;
+- the image, executable, startup command, environment precedence, and deployment path associated with each configuration surface;
 - baseline format, build/type-check, test, and runnable smoke commands.
 
 Treat a monorepo as one repository-wide graph. A shared library belongs beneath consuming deployable modules unless it is independently built and released. Analyze cross-module propagation before batching edits.
+
+## Runtime configuration surfaces
+
+For each deployable module, trace every production-like startup path from its entry configuration to the actual image, executable, or command. Select one canonical configuration surface for each path and record other surfaces as overlays, generated outputs, examples, or unrelated deployments. Prefer the repository's existing source-of-truth conventions; never edit rendered manifests, generated files, vendored charts, or example-only configuration when a maintained source exists.
+
+Treat these as first-class instrumentation targets when tracked and active: raw Kubernetes manifests, Helm templates and values, Kustomize bases and overlays, Docker Compose services, Dockerfiles or entrypoint scripts, systemd units and environment files, Procfiles, CI runtime definitions, and application configuration loaded at startup. A source-code change is incomplete when an in-scope deployment path still starts the application without the required OTel setup.
+
+Detect precedence and ownership before planning edits. Avoid setting the same variable in multiple layers unless an overlay intentionally overrides a base. Do not introduce a new deployment framework only for telemetry. Every planned edit must be idempotent and converge on rerun without duplicate environment entries, launcher flags, volumes, agents, or sidecars.
 
 ## Baseline and dirty files
 
@@ -58,6 +68,7 @@ The plan must account for the whole repository before the first edit. Batch larg
 - dependency adds/replacements/removals;
 - automatic and manual instrumentation boundaries;
 - signals, trace level, resource identity, and sampling configuration;
+- canonical configuration surfaces, exact non-secret settings, existing secret references, and unresolved credential wiring;
 - approved business identifiers;
 - validation commands and expected telemetry evidence;
 - risks, skipped coverage, and rollback instructions.

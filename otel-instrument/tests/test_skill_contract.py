@@ -46,6 +46,32 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("trusted same-origin backend", deployment)
         self.assertIn("mark authenticated remote export from the client as blocked", deployment)
 
+    def test_human_prompt_keeps_tenant_credential_out_of_agent_context(self):
+        readme = (SKILL_DIR.parent / "README.md").read_text(encoding="utf-8")
+        skill = self.read("SKILL.md")
+        deployment = self.read("references/deployment.md")
+
+        for prompt_term in (
+            "<otel-instrument-skill-url>",
+            "<otel-upload-url>",
+            "Credential environment variable format:",
+            'OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer <tenant-token>"',
+        ):
+            with self.subTest(prompt_term=prompt_term):
+                self.assertIn(prompt_term, readme)
+
+        for omitted_prompt_text in (
+            "I have the tenant credential",
+            "Do not ask me to paste or upload it",
+            "Use placeholders only",
+            "If the repository has an existing runtime or deployment configuration entry",
+        ):
+            self.assertNotIn(omitted_prompt_text, readme)
+
+        self.assertIn("Never ask the user to paste, upload, reveal, or validate a tenant token", skill)
+        self.assertIn("human-only credential handoff", deployment)
+        self.assertIn("never read it back", deployment)
+
     def test_inventory_contract_records_signal_endpoints_without_secrets(self):
         contracts = self.read("references/contracts.md")
 
@@ -59,6 +85,46 @@ class SkillContractTests(unittest.TestCase):
         skill = self.read("SKILL.md")
         self.assertIn("Reuse a host already supplied in the request", skill)
         self.assertIn('"otlp_host": "<approved HTTPS host>"', contracts)
+
+    def test_skill_updates_existing_runtime_configuration(self):
+        skill = self.read("SKILL.md")
+        execution = self.read("references/execution.md")
+        deployment = self.read("references/deployment.md")
+        contracts = self.read("references/contracts.md")
+        agent = self.read("agents/openai.yaml")
+        readme = (SKILL_DIR.parent / "README.md").read_text(encoding="utf-8")
+
+        self.assertIn("existing tracked runtime/deployment configuration", skill)
+        self.assertIn("automatically edit", skill)
+        self.assertIn("approved plan", skill)
+
+        for surface in (
+            "Kubernetes manifests",
+            "Helm",
+            "Kustomize",
+            "Docker Compose",
+            "systemd",
+            "canonical configuration surface",
+        ):
+            with self.subTest(surface=surface):
+                self.assertIn(surface, execution)
+
+        for rule in (
+            "existing secret reference",
+            "Do not invent a Secret name",
+            "docker compose config",
+            "helm template",
+            "kubectl kustomize",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, deployment)
+
+        self.assertIn('"configuration_surfaces"', contracts)
+        self.assertIn('"secret_wiring"', contracts)
+        self.assertEqual(2, contracts.count('"schema_version": 2'))
+        self.assertIn("schema version 1", contracts)
+        self.assertIn("update existing runtime/deployment configuration", agent)
+        self.assertIn("existing deployment configuration", readme)
 
     def test_instrumentation_requires_outbound_url_privacy_proof(self):
         policy = self.read("references/instrumentation.md")

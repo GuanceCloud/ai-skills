@@ -15,8 +15,8 @@ Instrument supported repositories through a gated, convergent process. Prefer of
 - Treat every automatic integration's emitted attributes as untrusted until inspected; official instrumentation is not evidence of data safety. Block any boundary that can export secrets, raw dynamic paths, or unsanitized URL queries.
 - Never use a package or fork based on model memory alone. Verify current official ownership, compatibility, and versions from primary sources. If internet access is unavailable, make no new dependency selection that cannot be verified locally.
 - Accept only instrumentation maintained by OpenTelemetry or by the dependency's upstream project. If neither provides an integration or fork, skip it and explain the resulting coverage gap.
-- Keep tenant tokens out of source, tracked configuration, plans, inventories, commands captured in files, and agent output. Use a placeholder in generated guidance and direct the user to inject the real value through their environment or secret manager.
-- Never perform deployment secret changes. Generate human-run environment settings or launch commands only after local validation.
+- Keep tenant tokens out of source, tracked configuration, plans, inventories, commands captured in files, and agent output. Never ask the user to paste, upload, reveal, or validate a tenant token in the agent conversation. Use a placeholder in generated guidance and direct the user to inject the real value through their local environment or secret manager without exposing it to the agent.
+- Automatically edit existing tracked runtime/deployment configuration when the approved plan identifies it as the canonical startup surface. Never deploy, edit live resources, create secrets, invent secret references, or write credential values.
 
 ## Required references
 
@@ -52,7 +52,7 @@ Completion criterion: every applicable input is explicit and serializable into t
 
 ### 3. Build an exhaustive repository model
 
-Read manifests, lockfiles, entry points, dependency wiring, deployment files, existing telemetry, request paths, jobs, consumers, external clients, and logging/metrics setup. Define modules as independently built or deployable units; keep internal packages beneath their owning module. Exclude generated/vendor code, copied third-party code, build output, fixtures, examples, benchmarks, migrations, and archived code unless the plan explicitly includes them.
+Read manifests, lockfiles, entry points, dependency wiring, deployment files, existing telemetry, request paths, jobs, consumers, external clients, and logging/metrics setup. Bind each deployable module to every tracked startup path and its canonical runtime configuration surface. Define modules as independently built or deployable units; keep internal packages beneath their owning module. Exclude generated/vendor code, copied third-party code, build output, fixtures, examples, benchmarks, migrations, and archived code unless the plan explicitly includes them.
 
 Run discoverable formatting, build/type-check, and test commands before modification. Record existing failures. Do not modify a critical module that cannot build at baseline; it may remain in the plan as blocked.
 
@@ -68,7 +68,7 @@ Design hybrid coverage: use official library/framework instrumentation first, th
 
 For every HTTP client/server integration, inspect the exact attributes emitted by the selected version and map all dynamic path segments, query parameters, URL-carried credentials, object keys, and presigned URLs. Plan the sanitization mechanism and negative tests before approving that integration. If safe attributes cannot be guaranteed without changing the real request, skip the automatic integration for that boundary and use a safe manual span plus propagation.
 
-Write `.otel/plan.json`. For each batch and module, include exact source/dependency/config edits, proposed official dependencies or forks with evidence URLs and versions, identifier decisions, tests, risks, and rollback. In a large monorepo, plan the whole repository but execute in reviewable deployable-module batches.
+Write `.otel/plan.json`. For each batch and module, include exact source/dependency/config edits, proposed official dependencies or forks with evidence URLs and versions, identifier decisions, tests, risks, and rollback. List every discovered runtime/deployment configuration surface, select the canonical surface for each startup path, and record whether tenant-header wiring can reuse an existing secret reference or remains blocked for human setup. In a large monorepo, plan the whole repository but execute in reviewable deployable-module batches.
 
 Completion criterion: every discovered module and dependency opportunity is planned, skipped, excluded, or blocked with evidence and a validation path.
 
@@ -80,7 +80,7 @@ Completion criterion: the exact plan revision to execute has recorded human appr
 
 ### 6. Instrument convergently in batches
 
-Preserve valid existing telemetry. Add only missing initialization, propagation, official integrations, selective business spans, log correlation, low-cardinality metrics, flush/shutdown handling, and environment-driven export configuration. Do not duplicate providers, exporters, middleware, spans, or metrics on reruns.
+Preserve valid existing telemetry. Add only missing initialization, propagation, official integrations, selective business spans, log correlation, low-cardinality metrics, flush/shutdown handling, and environment-driven export configuration. When an approved canonical configuration surface exists, automatically edit it with the selected non-secret OTel protocol, signal endpoints, resource, sampling, and startup settings instead of only printing a handoff snippet. Reuse an exact existing secret reference when proven; otherwise leave credential wiring explicitly blocked and never guess one. Do not create a deployment system solely for telemetry, edit generated render output, or duplicate providers, exporters, middleware, spans, metrics, or configuration on reruns.
 
 Complete one batch before starting another. Format source and update lockfiles with the repository's own tools. Never touch excluded areas merely to increase coverage.
 
@@ -88,7 +88,7 @@ Completion criterion: every edit in the approved batch is applied exactly once a
 
 ### 7. Prove the batch locally
 
-Run the same baseline commands plus targeted tests. Existing failures may remain; no new failure is acceptable. Verify initialization, context propagation, error/status recording, shutdown/flush, and the chosen signal/depth semantics. Run an OTLP/HTTP smoke test against a temporary local capture endpoint and assert the expected signal/module evidence without using a tenant credential. Inspect decoded exported attributes rather than only request paths or initialization logs. Exercise sensitive outbound and unknown inbound URLs with synthetic canaries, prove the canaries are absent from every exported signal, and separately prove the real destination received the unchanged request.
+Run the same baseline commands plus targeted tests. Existing failures may remain; no new failure is acceptable. Verify initialization, context propagation, error/status recording, shutdown/flush, and the chosen signal/depth semantics. Render or parse every changed runtime/deployment configuration and verify that its effective startup command receives the intended settings. Run an OTLP/HTTP smoke test against a temporary local capture endpoint and assert the expected signal/module evidence without using a tenant credential. Inspect decoded exported attributes rather than only request paths or initialization logs. Exercise sensitive outbound and unknown inbound URLs with synthetic canaries, prove the canaries are absent from every exported signal, and separately prove the real destination received the unchanged request.
 
 Attempt bounded repairs for instrumentation-caused failures. If still failing, preserve the reviewable changes, mark the batch failed, provide evidence and safe rollback instructions, and do not mark it complete.
 
@@ -98,7 +98,7 @@ Completion criterion: the batch has either passed all local gates or is explicit
 
 Update `.otel/instrumentation.json` and `docs/observability-instrumentation.md` using `references/contracts.md`. Account for every discovered module and every approved plan item. Include injected signals, depth, files, boundaries, dependencies, configuration, validation evidence, omissions, and coverage impact.
 
-After all successful local batches, generate environment-specific runtime guidance from `references/backend.md` and `references/deployment.md`. Show the exact environment variables or OpenTelemetry launch command for the discovered runtime, including `http/protobuf`, signal-specific `/v1/traces`, `/v1/metrics`, and `/v1/logs` endpoints for selected signals, and the tenant `Authorization` header with a non-secret placeholder. Remote upload verification remains an optional human-run check.
+After all successful local batches, summarize the applied configuration from `references/backend.md` and `references/deployment.md`. Generate environment settings or an OpenTelemetry launch command only for startup paths without a tracked configuration surface or for unresolved secret wiring. Include `http/protobuf`, signal-specific `/v1/traces`, `/v1/metrics`, and `/v1/logs` endpoints for selected signals, and use only a non-secret placeholder when explaining the tenant `Authorization` header. Give exact human-only steps for placing the credential in the discovered local environment or secret facility, but never request it, read it back, print it, or run authenticated verification. Remote upload verification remains an optional human-run check based only on evidence the human chooses to summarize.
 
 Completion criterion: the machine and human inventories agree, every module is accounted for, no secret value appears in tracked files or output, and the user has actionable deployment guidance.
 

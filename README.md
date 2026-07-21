@@ -27,7 +27,7 @@ ai-skills/
 | `monitor` | Generate Guance monitor JSON from a metrics CSV | `csv/{{component}}*.csv` | `output/monitor/{{component}}/{{component}}.json` |
 | `dql` | Generate, fix, explain, and review DQL | User requirements or DQL queries | Validated final DQL |
 | `grafana-to-guance-dashboard` | Convert and audit Grafana dashboards for Guance | Grafana dashboard JSON | Guance dashboard JSON and audit notes |
-| `otel-instrument` | Instrument C++, C#/.NET, Erlang/Elixir, Go, Java, JavaScript/TypeScript, Kotlin, PHP, Python, Ruby, Rust, and Swift repositories with OpenTelemetry | Git repository plus selected signals and trace depth | Instrumented source, local validation evidence, module inventory, and runtime OTLP/HTTP guidance |
+| `otel-instrument` | Instrument C++, C#/.NET, Erlang/Elixir, Go, Java, JavaScript/TypeScript, Kotlin, PHP, Python, Ruby, Rust, and Swift repositories with OpenTelemetry | Git repository plus selected signals and trace depth | Instrumented source and existing deployment config, local validation evidence, module inventory, and unresolved runtime handoff |
 | `owl-diagnostics` | Query Guance data with `owl` and write diagnostic reports | Time range and diagnostic target | Evidence-backed Markdown report |
 | `sls2dql` | Convert Alibaba Cloud SLS queries to GuanceDB DQL | SLS query plus namespace/source/index options | Conversion result and diagnostics |
 | `trivy-cluster-scan` | Run authorized, scan-only Trivy cluster and image security assessment with official remediation reporting | Authorized cluster scope, optional app paths, optional runtime confirmation | JSON scan artifacts and evidence-backed remediation report |
@@ -104,16 +104,23 @@ Runtime requirement: Node.js 18 or newer.
 
 ## OpenTelemetry Instrumentation
 
-Install and invoke `otel-instrument` from a skill-aware coding agent, then complete its interactive signal, trace-depth, sampling, worktree, and plan-approval prompts. For example:
+Give a skill-aware coding agent this basic prompt, replacing only the skill URL and upload URL. Do not include the credential:
 
 ```text
-Please install this skill:
-https://github.com/<owner>/otel-instrument
+Please install this skill and use it to instrument the current project with OpenTelemetry:
+<otel-instrument-skill-url>
 
-Then use it to instrument the current project with OpenTelemetry.
-The OTLP/HTTP host is https://<otel-host>.
+Upload the selected telemetry signals over OTLP HTTP/protobuf to:
+<otel-upload-url>
+
+Credential environment variable format:
+OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer <tenant-token>"
 ```
 
-After instrumentation and local validation, the skill provides environment settings or a launch command adapted to the project. It uses `http/protobuf`, the signal-specific paths `/v1/traces`, `/v1/metrics`, and `/v1/logs`, and an `Authorization: Bearer <tenant-token>` header supplied at runtime. It does not exchange, generate, read, or persist tenant tokens.
+The human should replace `<tenant-token>` only in their own shell, service manager, container/Kubernetes secret, or CI secret UI. The agent must not receive the completed value. Because OTLP exporter header parsing can require W3C Baggage encoding, the skill adapts the final placeholder command to the selected SDK; for example, it may render the header value as `Authorization=Bearer%20<tenant-token>` while the resulting HTTP header remains `Authorization: Bearer <tenant-token>`.
+
+When the repository has existing deployment configuration—such as Kubernetes/Helm/Kustomize, Docker Compose, Dockerfile, systemd, or application startup config—the skill treats it as part of instrumentation and automatically adds the approved non-secret OTel setup there. It validates the rendered/effective configuration and falls back to environment settings or a launch command only when no tracked configuration entry exists.
+
+The setup uses `http/protobuf`, the signal-specific paths `/v1/traces`, `/v1/metrics`, and `/v1/logs`, and an `Authorization: Bearer <tenant-token>` header supplied at runtime. The skill may wire an already-existing secret reference, but it never invents a secret, writes a token into tracked files, or exchanges, generates, reads, or persists tenant tokens.
 
 The skill treats attributes emitted by automatic HTTP instrumentation as untrusted. It requires URL sanitization plus exported-attribute negative tests for query credentials, dynamic paths, object keys, and unknown routes while separately proving that the real network request and context propagation remain unchanged.
