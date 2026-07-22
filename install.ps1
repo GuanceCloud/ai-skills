@@ -117,7 +117,7 @@ try {
             if ($excluded -notcontains $relative) { $relative }
         } | Sort-Object)
         $expected = @([IO.File]::ReadAllLines($listFile) | Sort-Object)
-        return (Compare-Object $expected $current).Count -ne 0
+        return @(Compare-Object $expected $current).Count -ne 0
     }
 
     Add-Type -AssemblyName System.IO.Compression.FileSystem
