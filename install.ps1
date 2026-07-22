@@ -94,9 +94,33 @@ try {
     [IO.Directory]::CreateDirectory($destRoot) | Out-Null
     $destRoot = [IO.Path]::GetFullPath($destRoot)
 
+    $pendingSkills = New-Object System.Collections.Generic.List[string]
+    foreach ($name in $Skill) {
+        if (-not $entries.ContainsKey($name)) { Fail "skill is not published: $name" }
+        $entry = $entries[$name]
+        if ($Version -ne 'latest' -and $entry.Version -ne $Version) { Fail 'release index version does not match -Version' }
+        $installed = Join-Path $destRoot $name
+        if (Test-Path $installed -PathType Container) {
+            $installedVersion = $null
+            try { $installedVersion = (Get-Content (Join-Path $installed '.skill-install.json') -Raw | ConvertFrom-Json).version } catch {}
+            if (-not $Force -and $installedVersion -eq $entry.Version) {
+                Write-Host "Already up to date: $name@$($entry.Version)"
+                continue
+            }
+        } elseif ($Upgrade) {
+            Fail "$name is not installed; omit -Upgrade for the initial installation"
+        }
+        $pendingSkills.Add($name)
+    }
+    if ($pendingSkills.Count -eq 0) {
+        Write-Host 'All selected skills are already up to date.'
+        return
+    }
+
     Write-Host "Install destination: $destRoot"
-    Write-Host "Skills: $($Skill -join ', ')"
-    if (-not $Yes) {
+    Write-Host "Skills: $($pendingSkills -join ', ')"
+    $autoApproved = (-not $All) -and ($Upgrade -or $Force)
+    if (-not $Yes -and -not $autoApproved) {
         if (-not [Environment]::UserInteractive) { Fail 'confirmation requires an interactive terminal; pass -Yes' }
         if ((Read-Host 'Continue? [y/N]') -notmatch '^(y|yes)$') { Fail 'cancelled' }
     }
@@ -123,12 +147,9 @@ try {
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $prepared = Join-Path $TempRoot 'prepared'
     [IO.Directory]::CreateDirectory($prepared) | Out-Null
-    $forceBackups = New-Object System.Collections.Generic.List[string]
     $installNames = New-Object System.Collections.Generic.List[string]
-    foreach ($name in $Skill) {
-        if (-not $entries.ContainsKey($name)) { Fail "skill is not published: $name" }
+    foreach ($name in $pendingSkills) {
         $entry = $entries[$name]
-        if ($Version -ne 'latest' -and $entry.Version -ne $Version) { Fail 'release index version does not match -Version' }
         if ($entry.ZipPath.StartsWith('/') -or $entry.ZipPath -match '(^|/)\.\.($|/)' -or $entry.ZipHash -notmatch '^[0-9a-f]{64}$') { Fail "invalid archive metadata for $name" }
         $archive = Join-Path $TempRoot "$name.zip"
         Invoke-WebRequest -UseBasicParsing -Uri "$BaseUrl/$($entry.ZipPath)" -OutFile $archive
@@ -148,15 +169,9 @@ try {
             $installedVersion = $null
             try { $installedVersion = (Get-Content (Join-Path $installed '.skill-install.json') -Raw | ConvertFrom-Json).version } catch {}
             $modified = Test-LocalModification $installed
-            if ($installedVersion -eq $entry.Version -and -not $modified) {
-                Remove-Item -LiteralPath $newPath -Recurse -Force
-                Write-Host "Already installed: $name@$($entry.Version)"
-                continue
-            }
-            if (-not $Upgrade) { Fail "$name is already installed; pass -Upgrade" }
+            if (-not $Upgrade -and -not $Force) { Fail "$name is already installed; pass -Upgrade or -Force" }
             if ($modified) {
-                if (-not $Force) { Fail "$name has local modifications; pass -Force to back it up and replace it" }
-                $forceBackups.Add($name)
+                if (-not $Force) { Fail "$name has local modifications; pass -Force to replace it" }
             }
         }
         $metadata = [ordered]@{ schema_version=1; name=$name; version=$entry.Version; archive_sha256=$entry.ZipHash; source="$BaseUrl/$($entry.ZipPath)"; installed_at=[DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ') }
@@ -174,18 +189,6 @@ try {
             $applied.Add($name)
             Move-Item -LiteralPath (Join-Path $prepared $name) -Destination $installed
         }
-        if ($forceBackups.Count -gt 0) {
-            $stamp = [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssZ')
-            if ($Scope -eq 'project') { $backupRoot = Join-Path $ProjectDir ".ai-skills/backups/$stamp" }
-            else {
-                $dataRoot = $env:XDG_DATA_HOME
-                if (-not $dataRoot) { $dataRoot = Join-Path $HOME '.local/share' }
-                $backupRoot = Join-Path $dataRoot "ai-skills/backups/$stamp"
-            }
-            [IO.Directory]::CreateDirectory($backupRoot) | Out-Null
-            foreach ($name in $forceBackups) { Copy-Item -LiteralPath (Join-Path $txn "old-$name") -Destination (Join-Path $backupRoot $name) -Recurse }
-            Write-Host "Local modifications backed up to: $backupRoot"
-        }
     } catch {
         foreach ($name in $applied) {
             $installed = Join-Path $destRoot $name
@@ -199,7 +202,7 @@ try {
     }
 
     if ($RunSetup) {
-        foreach ($name in $Skill) {
+        foreach ($name in $installNames) {
             $setupFile = Join-Path (Join-Path $destRoot $name) '.skill-setup.tsv'
             if (-not (Test-Path $setupFile) -or (Get-Item $setupFile).Length -eq 0) { Write-Host "No setup declared for $name"; continue }
             $executable = $null

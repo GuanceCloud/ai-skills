@@ -117,7 +117,7 @@ if [ "$version_exists" -eq 0 ]; then
 fi
 
 # Mutable entrypoints are published last. The two indexes are the latest pointer.
-for relative in install.sh install.ps1 SHA256SUMS skills-index.json skills-index.tsv; do
+for relative in install.sh install.ps1 uninstall.sh uninstall.ps1 SHA256SUMS skills-index.json skills-index.tsv; do
   upload_file "$OUTPUT/$relative" "$relative" 'no-cache'
 done
 

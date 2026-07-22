@@ -18,6 +18,7 @@ import zipfile
 REPO = Path(__file__).resolve().parents[1]
 VERSION_ONE = "1" * 40
 VERSION_TWO = "2" * 40
+VERSION_THREE = "3" * 40
 
 
 def digest(path: Path) -> str:
@@ -25,8 +26,14 @@ def digest(path: Path) -> str:
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
+    requests: list[str] = []
+
     def log_message(self, *_args):
         pass
+
+    def do_GET(self):
+        type(self).requests.append(self.path)
+        super().do_GET()
 
 
 class InstallerTests(unittest.TestCase):
@@ -37,6 +44,8 @@ class InstallerTests(unittest.TestCase):
         self.repo.mkdir()
         shutil.copy2(REPO / "install.sh", self.repo / "install.sh")
         shutil.copy2(REPO / "install.ps1", self.repo / "install.ps1")
+        shutil.copy2(REPO / "uninstall.sh", self.repo / "uninstall.sh")
+        shutil.copy2(REPO / "uninstall.ps1", self.repo / "uninstall.ps1")
         skill = self.repo / "demo-skill"
         skill.mkdir()
         (skill / "SKILL.md").write_text("---\nname: demo-skill\n---\n", encoding="utf-8")
@@ -67,6 +76,20 @@ class InstallerTests(unittest.TestCase):
         return ["sh", str(REPO / "install.sh"), "--base-url", base_url, "--skill", "demo-skill", "--dest", str(dest),
                 "--scope", "project", "--project-dir", str(self.root), "--yes", *extra]
 
+    def uninstall_command(self, dest: Path, *extra: str) -> list[str]:
+        if os.name == "nt":
+            shell = shutil.which("powershell") or shutil.which("pwsh")
+            assert shell
+            return [shell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(REPO / "uninstall.ps1"),
+                    "-Skill", "demo-skill", "-Dest", str(dest), "-Scope", "project", "-ProjectDir", str(self.root), "-Yes", *extra]
+        return ["sh", str(REPO / "uninstall.sh"), "--skill", "demo-skill", "--dest", str(dest),
+                "--scope", "project", "--project-dir", str(self.root), "--yes", *extra]
+
+    @staticmethod
+    def without_yes(command: list[str]) -> list[str]:
+        yes = "-Yes" if os.name == "nt" else "--yes"
+        return [argument for argument in command if argument != yes]
+
     def test_reproducible_archives_and_safe_upgrade(self):
         release_one = self.root / "release-one"
         release_repeat = self.root / "release-repeat"
@@ -80,6 +103,7 @@ class InstallerTests(unittest.TestCase):
             self.assertNotIn("demo-skill/secret.env", archive.namelist())
 
         handler = functools.partial(QuietHandler, directory=str(release_one))
+        QuietHandler.requests = []
         server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
@@ -90,20 +114,67 @@ class InstallerTests(unittest.TestCase):
             installed = dest / "demo-skill"
             metadata = json.loads((installed / ".skill-install.json").read_text(encoding="utf-8"))
             self.assertEqual(metadata["version"], VERSION_ONE)
-            subprocess.run(self.command(base, dest), check=True)
+            upgrade_args = ('-Upgrade',) if os.name == 'nt' else ('--upgrade',)
+            QuietHandler.requests = []
+            subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), check=True)
+            self.assertFalse(any(path.endswith(('.tar.gz', '.zip')) for path in QuietHandler.requests))
 
-            (installed / "payload.txt").write_text("locally changed\n", encoding="utf-8")
+            (installed / "payload.txt").write_text("local change at latest version\n", encoding="utf-8")
+            QuietHandler.requests = []
+            subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), check=True)
+            self.assertEqual((installed / "payload.txt").read_text(encoding="utf-8"), "local change at latest version\n")
+            self.assertFalse(any(path.endswith(('.tar.gz', '.zip')) for path in QuietHandler.requests))
+            (installed / "payload.txt").write_text("one\n", encoding="utf-8")
+
             (self.repo / "demo-skill" / "payload.txt").write_text("two\n", encoding="utf-8")
             self.build(release_one, VERSION_TWO)
-            failed = subprocess.run(self.command(base, dest, *(('-Upgrade',) if os.name == 'nt' else ('--upgrade',))), capture_output=True)
-            self.assertNotEqual(failed.returncode, 0)
-            force_args = ('-Upgrade','-Force') if os.name == 'nt' else ('--upgrade','--force')
-            subprocess.run(self.command(base, dest, *force_args), check=True)
+            subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), check=True)
             self.assertEqual((installed / "payload.txt").read_text(encoding="utf-8"), "two\n")
+
+            (installed / "payload.txt").write_text("locally changed\n", encoding="utf-8")
+            (self.repo / "demo-skill" / "payload.txt").write_text("three\n", encoding="utf-8")
+            self.build(release_one, VERSION_THREE)
+            failed = subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), capture_output=True)
+            self.assertNotEqual(failed.returncode, 0)
+            force_args = ('-Force',) if os.name == 'nt' else ('--force',)
+            subprocess.run(self.without_yes(self.command(base, dest, *force_args)), check=True)
+            self.assertEqual((installed / "payload.txt").read_text(encoding="utf-8"), "three\n")
+
+            (installed / "payload.txt").write_text("modified before uninstall\n", encoding="utf-8")
+            failed = subprocess.run(self.uninstall_command(dest), capture_output=True)
+            self.assertNotEqual(failed.returncode, 0)
+            uninstall_force = ('-Force',) if os.name == 'nt' else ('--force',)
+            subprocess.run(self.uninstall_command(dest, *uninstall_force), check=True)
+            self.assertFalse(installed.exists())
+            self.assertFalse((self.root / '.ai-skills' / 'backups').exists())
         finally:
             server.shutdown()
             thread.join()
             server.server_close()
+
+    def test_refuses_to_remove_unmanaged_directory(self):
+        dest = self.root / 'unmanaged-destination'
+        unmanaged = dest / 'demo-skill'
+        unmanaged.mkdir(parents=True)
+        marker = unmanaged / 'user-file.txt'
+        marker.write_text('keep me\n', encoding='utf-8')
+        failed = subprocess.run(self.uninstall_command(dest), capture_output=True)
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertEqual(marker.read_text(encoding='utf-8'), 'keep me\n')
+
+    @unittest.skipIf(os.name == 'nt', 'Windows hosted runners do not grant symlink creation by default')
+    def test_refuses_symbolic_link_skill_directory(self):
+        dest = self.root / 'symlink-destination'
+        external = self.root / 'external-skill'
+        external.mkdir(parents=True)
+        (external / '.skill-install.json').write_text('{}\n', encoding='utf-8')
+        marker = external / 'keep.txt'
+        marker.write_text('keep me\n', encoding='utf-8')
+        dest.mkdir()
+        (dest / 'demo-skill').symlink_to(external, target_is_directory=True)
+        failed = subprocess.run(self.uninstall_command(dest, '--force'), capture_output=True)
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertEqual(marker.read_text(encoding='utf-8'), 'keep me\n')
 
 
 if __name__ == "__main__":

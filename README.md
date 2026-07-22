@@ -19,6 +19,8 @@ ai-skills/
 ├── unit/
 ├── install.sh
 ├── install.ps1
+├── uninstall.sh
+├── uninstall.ps1
 ├── release.sh
 └── skills-manifest.json
 ```
@@ -82,7 +84,88 @@ Supported adapters:
 | Amp | `~/.config/agents/skills` | `.agents/skills` |
 | Shared `agents` adapter | `~/.agents/skills` | `.agents/skills` |
 
-The Shell installer supports `curl` or `wget` and does not require Python or `jq`. It uses `.tar.gz`; PowerShell 5.1+ uses `.zip`. Both verify SHA-256 before extraction. A clean same-version install is a no-op. A different version requires the upgrade flag, and locally modified files require the force flag; forced replacement first copies the old skill into a separate `ai-skills/backups` directory.
+The Shell installer supports `curl` or `wget` and does not require Python or `jq`. It uses `.tar.gz`; PowerShell 5.1+ uses `.zip`. Both verify SHA-256 before extraction.
+
+To check and upgrade one installed skill, rerun its installer with `--upgrade`/`-Upgrade`:
+
+```bash
+curl -fsSL https://skills.example.com/ai-skills/install.sh | sh -s -- \
+  --base-url https://skills.example.com/ai-skills \
+  --skill otel-instrument \
+  --agent codex \
+  --upgrade
+```
+
+```powershell
+& ([scriptblock]::Create((Invoke-RestMethod 'https://skills.example.com/ai-skills/install.ps1'))) `
+  -BaseUrl 'https://skills.example.com/ai-skills' `
+  -Skill 'otel-instrument' `
+  -Agent 'codex' `
+  -Upgrade
+```
+
+The installer reads the release index first. If the installed version is current, it exits successfully without downloading an archive or prompting. If a newer version exists, a single explicitly selected skill upgrades without requiring `--yes`/`-Yes`; locally modified content is still refused unless `--force`/`-Force` is supplied. Upgrade mode requires an existing installation. The force flag directly replaces an existing installation, including locally modified or same-version content, and does not require the upgrade flag. `--yes`/`-Yes` remains useful for approving an initial non-interactive install, an `--all` operation, or a separately requested setup command.
+
+### Uninstall
+
+Download the uninstaller from the same distribution root used for installation. Unlike the installer, the uninstaller does not need `--base-url`/`-BaseUrl` because it operates only on local installation metadata.
+
+Remove one user-scoped skill on macOS or Linux:
+
+```bash
+curl -fsSL https://skills.example.com/ai-skills/uninstall.sh | sh -s -- \
+  --skill otel-instrument \
+  --agent codex \
+  --scope user \
+  --yes
+```
+
+Remove the same skill on Windows:
+
+```powershell
+& ([scriptblock]::Create((Invoke-RestMethod 'https://skills.example.com/ai-skills/uninstall.ps1'))) `
+  -Skill 'otel-instrument' `
+  -Agent 'codex' `
+  -Scope user `
+  -Yes
+```
+
+For a project-scoped installation, run the command from the project or provide its path explicitly:
+
+```bash
+curl -fsSL https://skills.example.com/ai-skills/uninstall.sh | sh -s -- \
+  --skill otel-instrument \
+  --agent codex \
+  --scope project \
+  --project-dir /path/to/project \
+  --yes
+```
+
+Use `--dest <skills-directory>`/`-Dest <skills-directory>` instead of `--agent`/`-Agent` to remove a skill from a custom installation root. Omit the skill or agent in an interactive terminal to select it from a menu. Non-interactive use must specify a skill (or `--all`/`-All`) and a destination adapter, and normally uses `--yes`/`-Yes` to skip the removal confirmation.
+
+To remove every installer-managed skill from the selected destination, replace `--skill otel-instrument` with `--all` or use `-All` in PowerShell. `--all` never includes unmanaged directories.
+
+#### Uninstall safety
+
+The uninstallers validate every selected skill before removing anything:
+
+- The skill directory must contain installer-generated `.skill-install.json` metadata. Unmanaged directories are refused even with `--force`/`-Force`.
+- Symbolic-link and Windows reparse-point skill directories are refused so the uninstaller cannot follow them outside the selected destination.
+- Missing, added, or changed installed files count as local modifications. The default action is to stop without deleting the skill.
+- `--force`/`-Force` permits removal of a locally modified managed skill. It does not bypass the unmanaged-directory or link checks.
+- All selected directories are moved transactionally before deletion. A move failure restores already moved directories, but a successful uninstall creates no backup and cannot be undone by the script.
+
+Review local modifications before using force:
+
+```bash
+curl -fsSL https://skills.example.com/ai-skills/uninstall.sh | sh -s -- \
+  --skill otel-instrument \
+  --agent codex \
+  --force \
+  --yes
+```
+
+After uninstalling, start a new coding-agent session if the current session has already loaded the removed skill into memory.
 
 Prepare metrics CSV files such as:
 
@@ -200,7 +283,7 @@ Build and validate deterministic artifacts locally:
 ./release.sh --dry-run --output ./dist/skills-release
 ```
 
-Publishing is performed on every push to `main`, with `workflow_dispatch` available for an idempotent recovery run. The workflow publishes immutable `versions/<commit-sha>/...` objects first and updates `install.sh`, `install.ps1`, `skills-index.json`, and `skills-index.tsv` last. Versioned objects use a one-year immutable cache policy; stable entrypoints use `no-cache`. CI then downloads every public file and verifies its SHA-256.
+Publishing is performed on every push to `main`, with `workflow_dispatch` available for an idempotent recovery run. The workflow publishes immutable `versions/<commit-sha>/...` objects first and updates `install.sh`, `install.ps1`, `uninstall.sh`, `uninstall.ps1`, `skills-index.json`, and `skills-index.tsv` last. Versioned objects use a one-year immutable cache policy; stable entrypoints use `no-cache`. CI then downloads every public file and verifies its SHA-256.
 
 Configure these GitHub repository settings:
 

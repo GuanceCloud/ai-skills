@@ -184,7 +184,7 @@ def build(repo: Path, output: Path, version: str) -> None:
     for base in (output, version_root):
         (base / "skills-index.json").write_text(json_text, encoding="utf-8", newline="\n")
         (base / "skills-index.tsv").write_text(tsv_text, encoding="utf-8", newline="\n")
-    for name in ("install.sh", "install.ps1"):
+    for name in ("install.sh", "install.ps1", "uninstall.sh", "uninstall.ps1"):
         shutil.copyfile(repo / name, output / name)
         shutil.copyfile(repo / name, version_root / name)
     shutil.rmtree(stage_root)

@@ -32,8 +32,8 @@ Selection:
   --version SHA        Install an immutable commit version (default: latest).
 
 Safety:
-  --upgrade            Permit replacing a different installed version.
-  --force              Back up and replace locally modified files.
+  --upgrade            Update an installed skill when a newer version exists.
+  --force              Replace an existing managed skill, even at the same version.
   --run-setup          Run setup declared by the release manifest.
   --yes                Skip write/setup confirmation prompts.
   --help               Show this help.
@@ -184,9 +184,33 @@ for skill in $SKILLS; do
   printf '%s\n' "$line" >> "$SELECTED"
 done
 
+PENDING=$TMP_ROOT/pending
+: > "$PENDING"
+PENDING_SKILLS=
+tab=$(printf '\t')
+while IFS="$tab" read -r skill version tar_path tar_hash zip_path zip_hash; do
+  [ "$VERSION" = latest ] || [ "$version" = "$VERSION" ] || die "release index version does not match --version"
+  installed=$DEST_ROOT/$skill
+  if [ -d "$installed" ]; then
+    installed_version=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$installed/.skill-install.json" 2>/dev/null | head -n 1 || true)
+    if [ "$FORCE" -ne 1 ] && [ "$installed_version" = "$version" ]; then
+      printf 'Already up to date: %s@%s\n' "$skill" "$version"
+      continue
+    fi
+  elif [ "$UPGRADE" -eq 1 ]; then
+    die "$skill is not installed; omit --upgrade for the initial installation"
+  fi
+  printf '%s\n' "$skill${tab}$version${tab}$tar_path${tab}$tar_hash${tab}$zip_path${tab}$zip_hash" >> "$PENDING"
+  PENDING_SKILLS="${PENDING_SKILLS}${PENDING_SKILLS:+ }$skill"
+done < "$SELECTED"
+
+[ -s "$PENDING" ] || { printf 'All selected skills are already up to date.\n'; exit 0; }
+
 printf 'Install destination: %s\n' "$DEST_ROOT"
-printf 'Skills: %s\n' "$SKILLS"
-if [ "$ASSUME_YES" -ne 1 ]; then
+printf 'Skills: %s\n' "$PENDING_SKILLS"
+AUTO_APPROVED=0
+if [ "$INSTALL_ALL" -eq 0 ] && { [ "$UPGRADE" -eq 1 ] || [ "$FORCE" -eq 1 ]; }; then AUTO_APPROVED=1; fi
+if [ "$ASSUME_YES" -ne 1 ] && [ "$AUTO_APPROVED" -ne 1 ]; then
   [ -r /dev/tty ] || die "confirmation requires a terminal; pass --yes for non-interactive use"
   printf 'Continue? [y/N] ' >/dev/tty; read -r answer </dev/tty
   case "$answer" in y|Y|yes|YES) ;; *) die "cancelled" ;; esac
@@ -196,12 +220,7 @@ TXN=$DEST_ROOT/.ai-skills-txn.$$
 mkdir "$TXN"
 PREPARED=$TMP_ROOT/prepared
 mkdir "$PREPARED"
-FORCE_BACKUPS=$TMP_ROOT/force-backups
-: > "$FORCE_BACKUPS"
-
-tab=$(printf '\t')
 while IFS="$tab" read -r skill version tar_path tar_hash zip_path zip_hash; do
-  [ "$VERSION" = latest ] || [ "$version" = "$VERSION" ] || die "release index version does not match --version"
   case "$tar_path" in /*|*../*|../*|*'/..') die "unsafe archive path in release index: $tar_path" ;; esac
   case "$tar_hash" in *[!0-9a-f]*|'') die "invalid archive hash for $skill" ;; esac
   [ "${#tar_hash}" -eq 64 ] || die "invalid archive hash for $skill"
@@ -216,21 +235,15 @@ while IFS="$tab" read -r skill version tar_path tar_hash zip_path zip_hash; do
   installed=$DEST_ROOT/$skill
   if [ -d "$installed" ]; then
     installed_version=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$installed/.skill-install.json" 2>/dev/null | head -n 1 || true)
-    if [ "$installed_version" = "$version" ] && ! is_modified "$installed"; then
-      rm -rf "$PREPARED/$skill"
-      printf 'Already installed: %s@%s\n' "$skill" "$version"
-      continue
-    fi
-    [ "$UPGRADE" -eq 1 ] || die "$skill is already installed; pass --upgrade"
+    [ "$UPGRADE" -eq 1 ] || [ "$FORCE" -eq 1 ] || die "$skill is already installed; pass --upgrade or --force"
     if is_modified "$installed"; then
-      [ "$FORCE" -eq 1 ] || die "$skill has local modifications; pass --force to back it up and replace it"
-      printf '%s\n' "$skill" >> "$FORCE_BACKUPS"
+      [ "$FORCE" -eq 1 ] || die "$skill has local modifications; pass --force to replace it"
     fi
   fi
   cat > "$PREPARED/$skill/.skill-install.json" <<EOF
 {"schema_version":1,"name":"$skill","version":"$version","archive_sha256":"$tar_hash","source":"$BASE_URL/$tar_path","installed_at":"$(date -u '+%Y-%m-%dT%H:%M:%SZ')"}
 EOF
-done < "$SELECTED"
+done < "$PENDING"
 
 rollback() {
   [ -f "$TMP_ROOT/applied" ] || return
@@ -242,27 +255,18 @@ rollback() {
 trap 'if [ "$COMMITTED" -ne 1 ]; then rollback; fi; cleanup' EXIT HUP INT TERM
 
 : > "$TMP_ROOT/applied"
-for skill in $SKILLS; do
+for skill in $PENDING_SKILLS; do
   [ -d "$PREPARED/$skill" ] || continue
   [ -d "$DEST_ROOT/$skill" ] && mv "$DEST_ROOT/$skill" "$TXN/old-$skill"
   printf '%s\n' "$skill" >> "$TMP_ROOT/applied"
   mv "$PREPARED/$skill" "$DEST_ROOT/$skill"
 done
 
-if [ -s "$FORCE_BACKUPS" ]; then
-  stamp=$(date -u '+%Y%m%dT%H%M%SZ')
-  if [ "$SCOPE" = project ]; then backup_root=$PROJECT_DIR/.ai-skills/backups/$stamp
-  else backup_root=${XDG_DATA_HOME:-$HOME/.local/share}/ai-skills/backups/$stamp; fi
-  mkdir -p "$backup_root"
-  while IFS= read -r skill; do [ -d "$TXN/old-$skill" ] && cp -R "$TXN/old-$skill" "$backup_root/$skill"; done < "$FORCE_BACKUPS"
-  printf 'Local modifications backed up to: %s\n' "$backup_root"
-fi
-
 COMMITTED=1
 rm -rf "$TXN"
 
 if [ "$RUN_SETUP" -eq 1 ]; then
-  for skill in $SKILLS; do
+  for skill in $PENDING_SKILLS; do
     setup_file=$DEST_ROOT/$skill/.skill-setup.tsv
     [ -s "$setup_file" ] || { printf 'No setup declared for %s\n' "$skill"; continue; }
     executable=$(awk -F '\t' '$1 == "unix-executable" {print $2; exit}' "$setup_file")
