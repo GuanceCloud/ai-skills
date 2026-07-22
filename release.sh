@@ -98,7 +98,7 @@ object_url() {
 
 upload_file() {
   file=$1 relative=$2 cache=$3
-  "$OSSUTIL" cp "$file" "$(object_url "$relative")" --force --meta="Cache-Control:$cache"
+  "$OSSUTIL" cp "$file" "$(object_url "$relative")" --force --cache-control "$cache"
 }
 
 remote_version_sums=$OUTPUT/remote-version-SHA256SUMS
