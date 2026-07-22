@@ -19,6 +19,8 @@ ai-skills/
 ├── unit/
 ├── install.sh
 ├── install.ps1
+├── uninstall.sh
+├── uninstall.ps1
 ├── release.sh
 └── skills-manifest.json
 ```
@@ -83,6 +85,28 @@ Supported adapters:
 | Shared `agents` adapter | `~/.agents/skills` | `.agents/skills` |
 
 The Shell installer supports `curl` or `wget` and does not require Python or `jq`. It uses `.tar.gz`; PowerShell 5.1+ uses `.zip`. Both verify SHA-256 before extraction. A clean same-version install is a no-op. A different version requires the upgrade flag, and locally modified files require the force flag; forced replacement first copies the old skill into a separate `ai-skills/backups` directory.
+
+### Uninstall
+
+The uninstallers only remove directories containing installer-generated `.skill-install.json` metadata. They refuse unmanaged directories and locally modified skills. Use `--force`/`-Force` to back up a modified skill before removing it.
+
+```bash
+curl -fsSL https://skills.example.com/ai-skills/uninstall.sh | sh -s -- \
+  --skill otel-instrument \
+  --agent codex \
+  --scope user \
+  --yes
+```
+
+```powershell
+& ([scriptblock]::Create((Invoke-RestMethod 'https://skills.example.com/ai-skills/uninstall.ps1'))) `
+  -Skill 'otel-instrument' `
+  -Agent 'codex' `
+  -Scope user `
+  -Yes
+```
+
+Use `--all`/`-All` to remove every managed skill in the selected destination. Clean managed skills are removed without a backup; force-removing modified skills writes a recoverable copy to the same separate `ai-skills/backups` location used by forced upgrades.
 
 Prepare metrics CSV files such as:
 
@@ -200,7 +224,7 @@ Build and validate deterministic artifacts locally:
 ./release.sh --dry-run --output ./dist/skills-release
 ```
 
-Publishing is performed on every push to `main`, with `workflow_dispatch` available for an idempotent recovery run. The workflow publishes immutable `versions/<commit-sha>/...` objects first and updates `install.sh`, `install.ps1`, `skills-index.json`, and `skills-index.tsv` last. Versioned objects use a one-year immutable cache policy; stable entrypoints use `no-cache`. CI then downloads every public file and verifies its SHA-256.
+Publishing is performed on every push to `main`, with `workflow_dispatch` available for an idempotent recovery run. The workflow publishes immutable `versions/<commit-sha>/...` objects first and updates `install.sh`, `install.ps1`, `uninstall.sh`, `uninstall.ps1`, `skills-index.json`, and `skills-index.tsv` last. Versioned objects use a one-year immutable cache policy; stable entrypoints use `no-cache`. CI then downloads every public file and verifies its SHA-256.
 
 Configure these GitHub repository settings:
 

@@ -37,6 +37,8 @@ class InstallerTests(unittest.TestCase):
         self.repo.mkdir()
         shutil.copy2(REPO / "install.sh", self.repo / "install.sh")
         shutil.copy2(REPO / "install.ps1", self.repo / "install.ps1")
+        shutil.copy2(REPO / "uninstall.sh", self.repo / "uninstall.sh")
+        shutil.copy2(REPO / "uninstall.ps1", self.repo / "uninstall.ps1")
         skill = self.repo / "demo-skill"
         skill.mkdir()
         (skill / "SKILL.md").write_text("---\nname: demo-skill\n---\n", encoding="utf-8")
@@ -65,6 +67,15 @@ class InstallerTests(unittest.TestCase):
                     "-BaseUrl", base_url, "-Skill", "demo-skill", "-Dest", str(dest), "-Scope", "project",
                     "-ProjectDir", str(self.root), "-Yes", *extra]
         return ["sh", str(REPO / "install.sh"), "--base-url", base_url, "--skill", "demo-skill", "--dest", str(dest),
+                "--scope", "project", "--project-dir", str(self.root), "--yes", *extra]
+
+    def uninstall_command(self, dest: Path, *extra: str) -> list[str]:
+        if os.name == "nt":
+            shell = shutil.which("powershell") or shutil.which("pwsh")
+            assert shell
+            return [shell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(REPO / "uninstall.ps1"),
+                    "-Skill", "demo-skill", "-Dest", str(dest), "-Scope", "project", "-ProjectDir", str(self.root), "-Yes", *extra]
+        return ["sh", str(REPO / "uninstall.sh"), "--skill", "demo-skill", "--dest", str(dest),
                 "--scope", "project", "--project-dir", str(self.root), "--yes", *extra]
 
     def test_reproducible_archives_and_safe_upgrade(self):
@@ -100,10 +111,44 @@ class InstallerTests(unittest.TestCase):
             force_args = ('-Upgrade','-Force') if os.name == 'nt' else ('--upgrade','--force')
             subprocess.run(self.command(base, dest, *force_args), check=True)
             self.assertEqual((installed / "payload.txt").read_text(encoding="utf-8"), "two\n")
+
+            (installed / "payload.txt").write_text("modified before uninstall\n", encoding="utf-8")
+            failed = subprocess.run(self.uninstall_command(dest), capture_output=True)
+            self.assertNotEqual(failed.returncode, 0)
+            uninstall_force = ('-Force',) if os.name == 'nt' else ('--force',)
+            subprocess.run(self.uninstall_command(dest, *uninstall_force), check=True)
+            self.assertFalse(installed.exists())
+            backups = list((self.root / '.ai-skills' / 'backups').glob('*/demo-skill/payload.txt'))
+            self.assertTrue(backups)
+            self.assertEqual(backups[-1].read_text(encoding='utf-8'), "modified before uninstall\n")
         finally:
             server.shutdown()
             thread.join()
             server.server_close()
+
+    def test_refuses_to_remove_unmanaged_directory(self):
+        dest = self.root / 'unmanaged-destination'
+        unmanaged = dest / 'demo-skill'
+        unmanaged.mkdir(parents=True)
+        marker = unmanaged / 'user-file.txt'
+        marker.write_text('keep me\n', encoding='utf-8')
+        failed = subprocess.run(self.uninstall_command(dest), capture_output=True)
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertEqual(marker.read_text(encoding='utf-8'), 'keep me\n')
+
+    @unittest.skipIf(os.name == 'nt', 'Windows hosted runners do not grant symlink creation by default')
+    def test_refuses_symbolic_link_skill_directory(self):
+        dest = self.root / 'symlink-destination'
+        external = self.root / 'external-skill'
+        external.mkdir(parents=True)
+        (external / '.skill-install.json').write_text('{}\n', encoding='utf-8')
+        marker = external / 'keep.txt'
+        marker.write_text('keep me\n', encoding='utf-8')
+        dest.mkdir()
+        (dest / 'demo-skill').symlink_to(external, target_is_directory=True)
+        failed = subprocess.run(self.uninstall_command(dest, '--force'), capture_output=True)
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertEqual(marker.read_text(encoding='utf-8'), 'keep me\n')
 
 
 if __name__ == "__main__":
