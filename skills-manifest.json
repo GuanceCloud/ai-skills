@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "skills": [
+    { "name": "alert_manager", "path": "alert_manager", "setup": {} },
+    { "name": "dashboard", "path": "dashboard", "setup": {} },
+    { "name": "dql", "path": "dql", "setup": {} },
+    { "name": "grafana-to-guance-dashboard", "path": "grafana-to-guance-dashboard", "setup": {} },
+    { "name": "monitor", "path": "monitor", "setup": {} },
+    { "name": "otel-instrument", "path": "otel-instrument", "setup": {} },
+    { "name": "owl-diagnostics", "path": "owl-diagnostics", "setup": {} },
+    { "name": "sls2dql", "path": "sls2dql", "setup": {} },
+    { "name": "trivy-cluster-scan", "path": "trivy-cluster-scan", "setup": {} },
+    { "name": "unit", "path": "unit", "setup": {} }
+  ]
+}
