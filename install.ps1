@@ -1,17 +1,17 @@
 [CmdletBinding()]
 param(
     [Alias('base-url')][string]$BaseUrl,
-    [Alias('skill')][string[]]$Skill,
-    [Alias('all')][switch]$All,
-    [Alias('agent')][ValidateSet('codex','claude','opencode','pi','gemini','copilot','cursor','amp','agents')][string]$Agent,
-    [Alias('scope')][ValidateSet('user','project')][string]$Scope = 'user',
-    [Alias('dest')][string]$Dest,
+    [string[]]$Skill,
+    [switch]$All,
+    [ValidateSet('codex','claude','opencode','pi','gemini','copilot','cursor','amp','agents')][string]$Agent,
+    [ValidateSet('user','project')][string]$Scope = 'user',
+    [string]$Dest,
     [Alias('project-dir')][string]$ProjectDir,
-    [Alias('version')][string]$Version = 'latest',
-    [Alias('upgrade')][switch]$Upgrade,
-    [Alias('force')][switch]$Force,
+    [string]$Version = 'latest',
+    [switch]$Upgrade,
+    [switch]$Force,
     [Alias('run-setup')][switch]$RunSetup,
-    [Alias('yes')][switch]$Yes
+    [switch]$Yes
 )
 
 $ErrorActionPreference = 'Stop'
