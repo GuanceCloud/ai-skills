@@ -84,7 +84,27 @@ Supported adapters:
 | Amp | `~/.config/agents/skills` | `.agents/skills` |
 | Shared `agents` adapter | `~/.agents/skills` | `.agents/skills` |
 
-The Shell installer supports `curl` or `wget` and does not require Python or `jq`. It uses `.tar.gz`; PowerShell 5.1+ uses `.zip`. Both verify SHA-256 before extraction. A clean same-version install is a no-op. A different clean version requires the upgrade flag. The force flag directly replaces any existing managed installation, including locally modified or same-version content, and does not require the upgrade flag.
+The Shell installer supports `curl` or `wget` and does not require Python or `jq`. It uses `.tar.gz`; PowerShell 5.1+ uses `.zip`. Both verify SHA-256 before extraction.
+
+To check and upgrade one installed skill, rerun its installer with `--upgrade`/`-Upgrade`:
+
+```bash
+curl -fsSL https://skills.example.com/ai-skills/install.sh | sh -s -- \
+  --base-url https://skills.example.com/ai-skills \
+  --skill otel-instrument \
+  --agent codex \
+  --upgrade
+```
+
+```powershell
+& ([scriptblock]::Create((Invoke-RestMethod 'https://skills.example.com/ai-skills/install.ps1'))) `
+  -BaseUrl 'https://skills.example.com/ai-skills' `
+  -Skill 'otel-instrument' `
+  -Agent 'codex' `
+  -Upgrade
+```
+
+The installer reads the release index first. If the installed version is current, it exits successfully without downloading an archive or prompting. If a newer version exists, a single explicitly selected skill upgrades without requiring `--yes`/`-Yes`; locally modified content is still refused unless `--force`/`-Force` is supplied. Upgrade mode requires an existing installation. The force flag directly replaces an existing installation, including locally modified or same-version content, and does not require the upgrade flag. `--yes`/`-Yes` remains useful for approving an initial non-interactive install, an `--all` operation, or a separately requested setup command.
 
 ### Uninstall
 

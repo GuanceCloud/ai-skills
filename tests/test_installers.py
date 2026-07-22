@@ -18,6 +18,7 @@ import zipfile
 REPO = Path(__file__).resolve().parents[1]
 VERSION_ONE = "1" * 40
 VERSION_TWO = "2" * 40
+VERSION_THREE = "3" * 40
 
 
 def digest(path: Path) -> str:
@@ -25,8 +26,14 @@ def digest(path: Path) -> str:
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
+    requests: list[str] = []
+
     def log_message(self, *_args):
         pass
+
+    def do_GET(self):
+        type(self).requests.append(self.path)
+        super().do_GET()
 
 
 class InstallerTests(unittest.TestCase):
@@ -78,6 +85,11 @@ class InstallerTests(unittest.TestCase):
         return ["sh", str(REPO / "uninstall.sh"), "--skill", "demo-skill", "--dest", str(dest),
                 "--scope", "project", "--project-dir", str(self.root), "--yes", *extra]
 
+    @staticmethod
+    def without_yes(command: list[str]) -> list[str]:
+        yes = "-Yes" if os.name == "nt" else "--yes"
+        return [argument for argument in command if argument != yes]
+
     def test_reproducible_archives_and_safe_upgrade(self):
         release_one = self.root / "release-one"
         release_repeat = self.root / "release-repeat"
@@ -91,6 +103,7 @@ class InstallerTests(unittest.TestCase):
             self.assertNotIn("demo-skill/secret.env", archive.namelist())
 
         handler = functools.partial(QuietHandler, directory=str(release_one))
+        QuietHandler.requests = []
         server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
@@ -101,16 +114,31 @@ class InstallerTests(unittest.TestCase):
             installed = dest / "demo-skill"
             metadata = json.loads((installed / ".skill-install.json").read_text(encoding="utf-8"))
             self.assertEqual(metadata["version"], VERSION_ONE)
-            subprocess.run(self.command(base, dest), check=True)
+            upgrade_args = ('-Upgrade',) if os.name == 'nt' else ('--upgrade',)
+            QuietHandler.requests = []
+            subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), check=True)
+            self.assertFalse(any(path.endswith(('.tar.gz', '.zip')) for path in QuietHandler.requests))
 
-            (installed / "payload.txt").write_text("locally changed\n", encoding="utf-8")
+            (installed / "payload.txt").write_text("local change at latest version\n", encoding="utf-8")
+            QuietHandler.requests = []
+            subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), check=True)
+            self.assertEqual((installed / "payload.txt").read_text(encoding="utf-8"), "local change at latest version\n")
+            self.assertFalse(any(path.endswith(('.tar.gz', '.zip')) for path in QuietHandler.requests))
+            (installed / "payload.txt").write_text("one\n", encoding="utf-8")
+
             (self.repo / "demo-skill" / "payload.txt").write_text("two\n", encoding="utf-8")
             self.build(release_one, VERSION_TWO)
-            failed = subprocess.run(self.command(base, dest, *(('-Upgrade',) if os.name == 'nt' else ('--upgrade',))), capture_output=True)
+            subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), check=True)
+            self.assertEqual((installed / "payload.txt").read_text(encoding="utf-8"), "two\n")
+
+            (installed / "payload.txt").write_text("locally changed\n", encoding="utf-8")
+            (self.repo / "demo-skill" / "payload.txt").write_text("three\n", encoding="utf-8")
+            self.build(release_one, VERSION_THREE)
+            failed = subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), capture_output=True)
             self.assertNotEqual(failed.returncode, 0)
             force_args = ('-Force',) if os.name == 'nt' else ('--force',)
-            subprocess.run(self.command(base, dest, *force_args), check=True)
-            self.assertEqual((installed / "payload.txt").read_text(encoding="utf-8"), "two\n")
+            subprocess.run(self.without_yes(self.command(base, dest, *force_args)), check=True)
+            self.assertEqual((installed / "payload.txt").read_text(encoding="utf-8"), "three\n")
 
             (installed / "payload.txt").write_text("modified before uninstall\n", encoding="utf-8")
             failed = subprocess.run(self.uninstall_command(dest), capture_output=True)

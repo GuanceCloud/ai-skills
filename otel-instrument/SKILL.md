@@ -28,6 +28,12 @@ Read only the references whose condition applies:
 
 ## Workflow
 
+### 0. Check for a skill update
+
+Before repository analysis, when the distribution base URL and current agent adapter are available from the installation request or current session, run the matching installer once with `--skill otel-instrument --agent <agent-name> --upgrade`. Do not add `--yes`: a single-skill upgrade is already explicit and non-interactive. On Windows, use the equivalent `install.ps1` command with `-Skill otel-instrument -Agent <agent-name> -Upgrade`.
+
+If the installed version matches the release index, continue without reporting an upgrade. If a newer clean version is installed, state that the skill was updated and continue using the already-loaded workflow; recommend starting a new agent session only when the host cannot reload changed skill files. If the installation has local modifications, do not force replacement: report the guard and continue with the current version. If the base URL or adapter is unavailable, do not guess or interrupt the instrumentation workflow to ask for it.
+
 ### 1. Establish repository safety
 
 Inspect Git status before writing. Explain that an isolated folder (technically a Git worktree) keeps instrumentation separate without another clone, and offer to create one as the recommended option. Show the proposed branch and sibling path before approval. If the tool can switch safely, continue there; otherwise hand off with the exact reopen command and persist the approved state.
