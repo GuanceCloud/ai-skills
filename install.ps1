@@ -18,6 +18,16 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version 2.0
 
 function Fail([string]$Message) { throw "install.ps1: $Message" }
+function Get-Sha256Hex([string]$Path) {
+    $stream = [IO.File]::OpenRead($Path)
+    $algorithm = [Security.Cryptography.SHA256]::Create()
+    try {
+        return [BitConverter]::ToString($algorithm.ComputeHash($stream)).Replace('-', '').ToLowerInvariant()
+    } finally {
+        $algorithm.Dispose()
+        $stream.Dispose()
+    }
+}
 if ([string]::IsNullOrWhiteSpace($BaseUrl)) { Fail '-BaseUrl is required' }
 $BaseUrl = $BaseUrl.TrimEnd('/')
 if ($BaseUrl -notmatch '^https?://') { Fail '-BaseUrl must start with http:// or https://' }
@@ -99,7 +109,7 @@ try {
             if ($line -notmatch '^([0-9a-f]{64})  (.+)$') { return $true }
             $path = Join-Path $Installed $Matches[2]
             if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { return $true }
-            if ((Get-FileHash -Algorithm SHA256 -LiteralPath $path).Hash.ToLowerInvariant() -ne $Matches[1]) { return $true }
+            if ((Get-Sha256Hex $path) -ne $Matches[1]) { return $true }
         }
         $excluded = @('.skill-install.json','.skill-files.sha256','.skill-files.list','.skill-setup.tsv')
         $current = @(Get-ChildItem -LiteralPath $Installed -File -Recurse | ForEach-Object {
@@ -122,7 +132,7 @@ try {
         if ($entry.ZipPath.StartsWith('/') -or $entry.ZipPath -match '(^|/)\.\.($|/)' -or $entry.ZipHash -notmatch '^[0-9a-f]{64}$') { Fail "invalid archive metadata for $name" }
         $archive = Join-Path $TempRoot "$name.zip"
         Invoke-WebRequest -UseBasicParsing -Uri "$BaseUrl/$($entry.ZipPath)" -OutFile $archive
-        if ((Get-FileHash -Algorithm SHA256 $archive).Hash.ToLowerInvariant() -ne $entry.ZipHash) { Fail "SHA-256 mismatch for $name" }
+        if ((Get-Sha256Hex $archive) -ne $entry.ZipHash) { Fail "SHA-256 mismatch for $name" }
         $zip = [IO.Compression.ZipFile]::OpenRead($archive)
         try {
             foreach ($item in $zip.Entries) {
