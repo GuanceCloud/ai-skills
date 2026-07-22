@@ -70,19 +70,19 @@ PowerShell one-line install:
 
 Omit `--skill`/`-Skill` or `--agent`/`-Agent` in an interactive terminal to select from a menu. Non-interactive use must specify a skill (or `--all`/`-All`) and an agent; `--dest`/`-Dest` can replace the built-in agent path. The installers support `--scope project`, a pinned `--version <commit-sha>`, `--upgrade`, and guarded `--force` replacement. Setup code never runs by default; `--run-setup` only executes a platform-specific command explicitly declared in `skills-manifest.json`, shows it first, and asks for confirmation unless `--yes` is also present.
 
-Supported adapters:
+Supported adapters use the same name with `--agent <name>` in Shell and `-Agent <name>` in PowerShell:
 
-| Agent | User scope | Project scope |
-|---|---|---|
-| Codex | `~/.codex/skills` | `.agents/skills` |
-| Claude Code | `~/.claude/skills` | `.claude/skills` |
-| OpenCode | `~/.config/opencode/skills` | `.opencode/skills` |
-| Pi | `~/.pi/agent/skills` | `.pi/skills` |
-| Gemini CLI | `~/.gemini/skills` | `.gemini/skills` |
-| GitHub Copilot | `~/.copilot/skills` | `.github/skills` |
-| Cursor | `~/.cursor/skills` | `.cursor/skills` |
-| Amp | `~/.config/agents/skills` | `.agents/skills` |
-| Shared `agents` adapter | `~/.agents/skills` | `.agents/skills` |
+| Coding agent | Agent name | User scope | Project scope |
+|---|---|---|---|
+| Codex | `codex` | `~/.codex/skills` | `.agents/skills` |
+| Claude Code | `claude` | `~/.claude/skills` | `.claude/skills` |
+| OpenCode | `opencode` | `~/.config/opencode/skills` | `.opencode/skills` |
+| Pi | `pi` | `~/.pi/agent/skills` | `.pi/skills` |
+| Gemini CLI | `gemini` | `~/.gemini/skills` | `.gemini/skills` |
+| GitHub Copilot | `copilot` | `~/.copilot/skills` | `.github/skills` |
+| Cursor | `cursor` | `~/.cursor/skills` | `.cursor/skills` |
+| Amp | `amp` | `~/.config/agents/skills` | `.agents/skills` |
+| Shared Agent Skills convention | `agents` | `~/.agents/skills` | `.agents/skills` |
 
 The Shell installer supports `curl` or `wget` and does not require Python or `jq`. It uses `.tar.gz`; PowerShell 5.1+ uses `.zip`. Both verify SHA-256 before extraction.
 
