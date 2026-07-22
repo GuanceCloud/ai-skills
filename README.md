@@ -108,7 +108,9 @@ The installer reads the release index first. If the installed version is current
 
 ### Uninstall
 
-The uninstallers only remove directories containing installer-generated `.skill-install.json` metadata. They refuse unmanaged directories and locally modified skills. Use `--force`/`-Force` to remove a modified managed skill without a backup.
+Download the uninstaller from the same distribution root used for installation. Unlike the installer, the uninstaller does not need `--base-url`/`-BaseUrl` because it operates only on local installation metadata.
+
+Remove one user-scoped skill on macOS or Linux:
 
 ```bash
 curl -fsSL https://skills.example.com/ai-skills/uninstall.sh | sh -s -- \
@@ -118,6 +120,8 @@ curl -fsSL https://skills.example.com/ai-skills/uninstall.sh | sh -s -- \
   --yes
 ```
 
+Remove the same skill on Windows:
+
 ```powershell
 & ([scriptblock]::Create((Invoke-RestMethod 'https://skills.example.com/ai-skills/uninstall.ps1'))) `
   -Skill 'otel-instrument' `
@@ -126,7 +130,42 @@ curl -fsSL https://skills.example.com/ai-skills/uninstall.sh | sh -s -- \
   -Yes
 ```
 
-Use `--all`/`-All` to remove every managed skill in the selected destination. Uninstall does not create backups.
+For a project-scoped installation, run the command from the project or provide its path explicitly:
+
+```bash
+curl -fsSL https://skills.example.com/ai-skills/uninstall.sh | sh -s -- \
+  --skill otel-instrument \
+  --agent codex \
+  --scope project \
+  --project-dir /path/to/project \
+  --yes
+```
+
+Use `--dest <skills-directory>`/`-Dest <skills-directory>` instead of `--agent`/`-Agent` to remove a skill from a custom installation root. Omit the skill or agent in an interactive terminal to select it from a menu. Non-interactive use must specify a skill (or `--all`/`-All`) and a destination adapter, and normally uses `--yes`/`-Yes` to skip the removal confirmation.
+
+To remove every installer-managed skill from the selected destination, replace `--skill otel-instrument` with `--all` or use `-All` in PowerShell. `--all` never includes unmanaged directories.
+
+#### Uninstall safety
+
+The uninstallers validate every selected skill before removing anything:
+
+- The skill directory must contain installer-generated `.skill-install.json` metadata. Unmanaged directories are refused even with `--force`/`-Force`.
+- Symbolic-link and Windows reparse-point skill directories are refused so the uninstaller cannot follow them outside the selected destination.
+- Missing, added, or changed installed files count as local modifications. The default action is to stop without deleting the skill.
+- `--force`/`-Force` permits removal of a locally modified managed skill. It does not bypass the unmanaged-directory or link checks.
+- All selected directories are moved transactionally before deletion. A move failure restores already moved directories, but a successful uninstall creates no backup and cannot be undone by the script.
+
+Review local modifications before using force:
+
+```bash
+curl -fsSL https://skills.example.com/ai-skills/uninstall.sh | sh -s -- \
+  --skill otel-instrument \
+  --agent codex \
+  --force \
+  --yes
+```
+
+After uninstalling, start a new coding-agent session if the current session has already loaded the removed skill into memory.
 
 Prepare metrics CSV files such as:
 
