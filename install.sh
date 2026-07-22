@@ -33,7 +33,7 @@ Selection:
 
 Safety:
   --upgrade            Permit replacing a different installed version.
-  --force              Back up and replace locally modified files.
+  --force              Replace an existing managed skill without --upgrade.
   --run-setup          Run setup declared by the release manifest.
   --yes                Skip write/setup confirmation prompts.
   --help               Show this help.
@@ -196,9 +196,6 @@ TXN=$DEST_ROOT/.ai-skills-txn.$$
 mkdir "$TXN"
 PREPARED=$TMP_ROOT/prepared
 mkdir "$PREPARED"
-FORCE_BACKUPS=$TMP_ROOT/force-backups
-: > "$FORCE_BACKUPS"
-
 tab=$(printf '\t')
 while IFS="$tab" read -r skill version tar_path tar_hash zip_path zip_hash; do
   [ "$VERSION" = latest ] || [ "$version" = "$VERSION" ] || die "release index version does not match --version"
@@ -216,15 +213,14 @@ while IFS="$tab" read -r skill version tar_path tar_hash zip_path zip_hash; do
   installed=$DEST_ROOT/$skill
   if [ -d "$installed" ]; then
     installed_version=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$installed/.skill-install.json" 2>/dev/null | head -n 1 || true)
-    if [ "$installed_version" = "$version" ] && ! is_modified "$installed"; then
+    if [ "$FORCE" -ne 1 ] && [ "$installed_version" = "$version" ] && ! is_modified "$installed"; then
       rm -rf "$PREPARED/$skill"
       printf 'Already installed: %s@%s\n' "$skill" "$version"
       continue
     fi
-    [ "$UPGRADE" -eq 1 ] || die "$skill is already installed; pass --upgrade"
+    [ "$UPGRADE" -eq 1 ] || [ "$FORCE" -eq 1 ] || die "$skill is already installed; pass --upgrade or --force"
     if is_modified "$installed"; then
-      [ "$FORCE" -eq 1 ] || die "$skill has local modifications; pass --force to back it up and replace it"
-      printf '%s\n' "$skill" >> "$FORCE_BACKUPS"
+      [ "$FORCE" -eq 1 ] || die "$skill has local modifications; pass --force to replace it"
     fi
   fi
   cat > "$PREPARED/$skill/.skill-install.json" <<EOF
@@ -248,15 +244,6 @@ for skill in $SKILLS; do
   printf '%s\n' "$skill" >> "$TMP_ROOT/applied"
   mv "$PREPARED/$skill" "$DEST_ROOT/$skill"
 done
-
-if [ -s "$FORCE_BACKUPS" ]; then
-  stamp=$(date -u '+%Y%m%dT%H%M%SZ')
-  if [ "$SCOPE" = project ]; then backup_root=$PROJECT_DIR/.ai-skills/backups/$stamp
-  else backup_root=${XDG_DATA_HOME:-$HOME/.local/share}/ai-skills/backups/$stamp; fi
-  mkdir -p "$backup_root"
-  while IFS= read -r skill; do [ -d "$TXN/old-$skill" ] && cp -R "$TXN/old-$skill" "$backup_root/$skill"; done < "$FORCE_BACKUPS"
-  printf 'Local modifications backed up to: %s\n' "$backup_root"
-fi
 
 COMMITTED=1
 rm -rf "$TXN"

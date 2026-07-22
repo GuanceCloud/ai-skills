@@ -84,11 +84,11 @@ Supported adapters:
 | Amp | `~/.config/agents/skills` | `.agents/skills` |
 | Shared `agents` adapter | `~/.agents/skills` | `.agents/skills` |
 
-The Shell installer supports `curl` or `wget` and does not require Python or `jq`. It uses `.tar.gz`; PowerShell 5.1+ uses `.zip`. Both verify SHA-256 before extraction. A clean same-version install is a no-op. A different version requires the upgrade flag, and locally modified files require the force flag; forced replacement first copies the old skill into a separate `ai-skills/backups` directory.
+The Shell installer supports `curl` or `wget` and does not require Python or `jq`. It uses `.tar.gz`; PowerShell 5.1+ uses `.zip`. Both verify SHA-256 before extraction. A clean same-version install is a no-op. A different clean version requires the upgrade flag. The force flag directly replaces any existing managed installation, including locally modified or same-version content, and does not require the upgrade flag.
 
 ### Uninstall
 
-The uninstallers only remove directories containing installer-generated `.skill-install.json` metadata. They refuse unmanaged directories and locally modified skills. Use `--force`/`-Force` to back up a modified skill before removing it.
+The uninstallers only remove directories containing installer-generated `.skill-install.json` metadata. They refuse unmanaged directories and locally modified skills. Use `--force`/`-Force` to remove a modified managed skill without a backup.
 
 ```bash
 curl -fsSL https://skills.example.com/ai-skills/uninstall.sh | sh -s -- \
@@ -106,7 +106,7 @@ curl -fsSL https://skills.example.com/ai-skills/uninstall.sh | sh -s -- \
   -Yes
 ```
 
-Use `--all`/`-All` to remove every managed skill in the selected destination. Clean managed skills are removed without a backup; force-removing modified skills writes a recoverable copy to the same separate `ai-skills/backups` location used by forced upgrades.
+Use `--all`/`-All` to remove every managed skill in the selected destination. Uninstall does not create backups.
 
 Prepare metrics CSV files such as:
 

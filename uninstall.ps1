@@ -87,7 +87,6 @@ function Test-LocalModification([string]$Installed) {
     return @(Compare-Object $expected $current).Count -ne 0
 }
 
-$modified = New-Object System.Collections.Generic.List[string]
 foreach ($name in $Skill) {
     if ($name -notmatch '^[A-Za-z0-9_-]+$') { Fail "invalid skill name: $name" }
     $installed = Join-Path $destRoot $name
@@ -95,8 +94,7 @@ foreach ($name in $Skill) {
     if (((Get-Item -LiteralPath $installed).Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { Fail "refusing to remove a reparse-point skill directory: $installed" }
     if (-not (Test-Path -LiteralPath (Join-Path $installed '.skill-install.json') -PathType Leaf)) { Fail "refusing to remove unmanaged directory: $installed" }
     if (Test-LocalModification $installed) {
-        if (-not $Force) { Fail "$name has local modifications; pass -Force to back it up and uninstall it" }
-        $modified.Add($name)
+        if (-not $Force) { Fail "$name has local modifications; pass -Force to uninstall it" }
     }
 }
 
@@ -115,18 +113,6 @@ try {
         Move-Item -LiteralPath (Join-Path $destRoot $name) -Destination (Join-Path $txn $name)
         $moved.Add($name)
     }
-    $backupRoot = $null
-    if ($modified.Count -gt 0) {
-        $stamp = [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssZ') + '-' + [Guid]::NewGuid().ToString('N')
-        if ($Scope -eq 'project') { $backupRoot = Join-Path $ProjectDir ".ai-skills/backups/$stamp" }
-        else {
-            $dataRoot = $env:XDG_DATA_HOME
-            if (-not $dataRoot) { $dataRoot = Join-Path $HOME '.local/share' }
-            $backupRoot = Join-Path $dataRoot "ai-skills/backups/$stamp"
-        }
-        [IO.Directory]::CreateDirectory($backupRoot) | Out-Null
-        foreach ($name in $modified) { Copy-Item -LiteralPath (Join-Path $txn $name) -Destination (Join-Path $backupRoot $name) -Recurse }
-    }
 } catch {
     foreach ($name in $moved) {
         $source = Join-Path $txn $name
@@ -137,5 +123,3 @@ try {
 
 Remove-Item -LiteralPath $txn -Recurse -Force
 Write-Host "Uninstalled successfully: $($Skill -join ', ')"
-if ($backupRoot) { Write-Host "Modified skills were backed up to: $backupRoot" }
-else { Write-Host 'No backup was created for unmodified skills.' }

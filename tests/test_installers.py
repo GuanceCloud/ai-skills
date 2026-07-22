@@ -108,7 +108,7 @@ class InstallerTests(unittest.TestCase):
             self.build(release_one, VERSION_TWO)
             failed = subprocess.run(self.command(base, dest, *(('-Upgrade',) if os.name == 'nt' else ('--upgrade',))), capture_output=True)
             self.assertNotEqual(failed.returncode, 0)
-            force_args = ('-Upgrade','-Force') if os.name == 'nt' else ('--upgrade','--force')
+            force_args = ('-Force',) if os.name == 'nt' else ('--force',)
             subprocess.run(self.command(base, dest, *force_args), check=True)
             self.assertEqual((installed / "payload.txt").read_text(encoding="utf-8"), "two\n")
 
@@ -118,10 +118,7 @@ class InstallerTests(unittest.TestCase):
             uninstall_force = ('-Force',) if os.name == 'nt' else ('--force',)
             subprocess.run(self.uninstall_command(dest, *uninstall_force), check=True)
             self.assertFalse(installed.exists())
-            backups = list((self.root / '.ai-skills' / 'backups').glob('*/demo-skill/payload.txt'))
-            self.assertTrue(backups)
-            backup_contents = [path.read_text(encoding='utf-8') for path in backups]
-            self.assertIn("modified before uninstall\n", backup_contents)
+            self.assertFalse((self.root / '.ai-skills' / 'backups').exists())
         finally:
             server.shutdown()
             thread.join()

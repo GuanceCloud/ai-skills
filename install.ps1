@@ -123,7 +123,6 @@ try {
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $prepared = Join-Path $TempRoot 'prepared'
     [IO.Directory]::CreateDirectory($prepared) | Out-Null
-    $forceBackups = New-Object System.Collections.Generic.List[string]
     $installNames = New-Object System.Collections.Generic.List[string]
     foreach ($name in $Skill) {
         if (-not $entries.ContainsKey($name)) { Fail "skill is not published: $name" }
@@ -148,15 +147,14 @@ try {
             $installedVersion = $null
             try { $installedVersion = (Get-Content (Join-Path $installed '.skill-install.json') -Raw | ConvertFrom-Json).version } catch {}
             $modified = Test-LocalModification $installed
-            if ($installedVersion -eq $entry.Version -and -not $modified) {
+            if (-not $Force -and $installedVersion -eq $entry.Version -and -not $modified) {
                 Remove-Item -LiteralPath $newPath -Recurse -Force
                 Write-Host "Already installed: $name@$($entry.Version)"
                 continue
             }
-            if (-not $Upgrade) { Fail "$name is already installed; pass -Upgrade" }
+            if (-not $Upgrade -and -not $Force) { Fail "$name is already installed; pass -Upgrade or -Force" }
             if ($modified) {
-                if (-not $Force) { Fail "$name has local modifications; pass -Force to back it up and replace it" }
-                $forceBackups.Add($name)
+                if (-not $Force) { Fail "$name has local modifications; pass -Force to replace it" }
             }
         }
         $metadata = [ordered]@{ schema_version=1; name=$name; version=$entry.Version; archive_sha256=$entry.ZipHash; source="$BaseUrl/$($entry.ZipPath)"; installed_at=[DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ') }
@@ -173,18 +171,6 @@ try {
             if (Test-Path $installed) { Move-Item -LiteralPath $installed -Destination (Join-Path $txn "old-$name") }
             $applied.Add($name)
             Move-Item -LiteralPath (Join-Path $prepared $name) -Destination $installed
-        }
-        if ($forceBackups.Count -gt 0) {
-            $stamp = [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssZ')
-            if ($Scope -eq 'project') { $backupRoot = Join-Path $ProjectDir ".ai-skills/backups/$stamp" }
-            else {
-                $dataRoot = $env:XDG_DATA_HOME
-                if (-not $dataRoot) { $dataRoot = Join-Path $HOME '.local/share' }
-                $backupRoot = Join-Path $dataRoot "ai-skills/backups/$stamp"
-            }
-            [IO.Directory]::CreateDirectory($backupRoot) | Out-Null
-            foreach ($name in $forceBackups) { Copy-Item -LiteralPath (Join-Path $txn "old-$name") -Destination (Join-Path $backupRoot $name) -Recurse }
-            Write-Host "Local modifications backed up to: $backupRoot"
         }
     } catch {
         foreach ($name in $applied) {

@@ -24,7 +24,7 @@ Selection:
   --project-dir DIR    Override project root for project scope.
 
 Safety:
-  --force              Back up and remove locally modified managed skills.
+  --force              Remove locally modified managed skills without backup.
   --yes                Skip the removal confirmation.
   --help               Show this help.
 EOF
@@ -146,8 +146,6 @@ is_modified() {
   return 1
 }
 
-MODIFIED=$TMP_ROOT/modified
-: > "$MODIFIED"
 for skill in $SKILLS; do
   case "$skill" in *[!A-Za-z0-9_-]*|'') die "invalid skill name: $skill" ;; esac
   installed=$DEST_ROOT/$skill
@@ -155,8 +153,7 @@ for skill in $SKILLS; do
   [ ! -L "$installed" ] || die "refusing to remove a symbolic-link skill directory: $installed"
   [ -f "$installed/.skill-install.json" ] || die "refusing to remove unmanaged directory: $installed"
   if is_modified "$installed"; then
-    [ "$FORCE" -eq 1 ] || die "$skill has local modifications; pass --force to back it up and uninstall it"
-    printf '%s\n' "$skill" >> "$MODIFIED"
+    [ "$FORCE" -eq 1 ] || die "$skill has local modifications; pass --force to uninstall it"
   fi
 done
 
@@ -183,17 +180,6 @@ for skill in $SKILLS; do
   printf '%s\n' "$skill" >> "$MOVED"
 done
 
-BACKUP_ROOT=
-if [ -s "$MODIFIED" ]; then
-  stamp=$(date -u '+%Y%m%dT%H%M%SZ')-$$
-  if [ "$SCOPE" = project ]; then BACKUP_ROOT=$PROJECT_DIR/.ai-skills/backups/$stamp
-  else BACKUP_ROOT=${XDG_DATA_HOME:-$HOME/.local/share}/ai-skills/backups/$stamp; fi
-  mkdir -p "$BACKUP_ROOT"
-  while IFS= read -r skill; do cp -R "$TXN/$skill" "$BACKUP_ROOT/$skill"; done < "$MODIFIED"
-fi
-
 COMMITTED=1
 rm -rf "$TXN"
 printf 'Uninstalled successfully: %s\n' "$SKILLS"
-if [ -n "$BACKUP_ROOT" ]; then printf 'Modified skills were backed up to: %s\n' "$BACKUP_ROOT"
-else printf 'No backup was created for unmodified skills.\n'; fi
