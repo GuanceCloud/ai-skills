@@ -120,7 +120,8 @@ class InstallerTests(unittest.TestCase):
             self.assertFalse(installed.exists())
             backups = list((self.root / '.ai-skills' / 'backups').glob('*/demo-skill/payload.txt'))
             self.assertTrue(backups)
-            self.assertEqual(backups[-1].read_text(encoding='utf-8'), "modified before uninstall\n")
+            backup_contents = [path.read_text(encoding='utf-8') for path in backups]
+            self.assertIn("modified before uninstall\n", backup_contents)
         finally:
             server.shutdown()
             thread.join()
