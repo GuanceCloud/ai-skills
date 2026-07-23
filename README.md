@@ -44,13 +44,13 @@ ai-skills/
 
 ### Install from OSS
 
-The distribution root is the public host plus its OSS prefix, without a trailing slash, for example `https://skills.example.com/ai-skills`. It is always passed explicitly so the same artifacts and indexes can be copied to another brand's OSS unchanged.
+The distribution root is the public host plus its OSS prefix, without a trailing slash, for example `https://static.guance.com/skills`. It is always passed explicitly so the same artifacts and indexes can be copied to another brand's OSS unchanged.
 
 Shell one-line install:
 
 ```bash
-curl -fsSL https://skills.example.com/ai-skills/install.sh | sh -s -- \
-  --base-url https://skills.example.com/ai-skills \
+curl -fsSL https://static.guance.com/skills/install.sh | sh -s -- \
+  --base-url https://static.guance.com/skills \
   --skill otel-instrument \
   --agent codex \
   --scope user \
@@ -60,8 +60,8 @@ curl -fsSL https://skills.example.com/ai-skills/install.sh | sh -s -- \
 PowerShell one-line install:
 
 ```powershell
-& ([scriptblock]::Create((Invoke-RestMethod 'https://skills.example.com/ai-skills/install.ps1'))) `
-  -BaseUrl 'https://skills.example.com/ai-skills' `
+& ([scriptblock]::Create((Invoke-RestMethod 'https://static.guance.com/skills/install.ps1'))) `
+  -BaseUrl 'https://static.guance.com/skills' `
   -Skill 'otel-instrument' `
   -Agent 'codex' `
   -Scope user `
