@@ -283,7 +283,9 @@ Build and validate deterministic artifacts locally:
 ./release.sh --dry-run --output ./dist/skills-release
 ```
 
-Publishing is performed on every push to `main`, with `workflow_dispatch` available for an idempotent recovery run. The workflow publishes immutable `versions/<commit-sha>/...` objects first and updates `install.sh`, `install.ps1`, `uninstall.sh`, `uninstall.ps1`, `skills-index.json`, and `skills-index.tsv` last. Versioned objects use a one-year immutable cache policy; stable entrypoints use `no-cache`. CI then downloads every public file and verifies its SHA-256.
+Every pull request builds the complete relocatable release bundle with `release.sh --dry-run`, uploads it as a seven-day `skills-release-<sha>` GitHub Actions artifact, and runs installer tests on Ubuntu, macOS, and Windows. This catches manifest, packaging, deterministic archive, checksum, and cross-platform installer failures before merge.
+
+CD runs on every push to `main`, with `workflow_dispatch` available for an idempotent recovery run. It repeats the cross-platform tests, builds the release from the merged commit, publishes immutable `versions/<commit-sha>/...` objects first, and updates `install.sh`, `install.ps1`, `uninstall.sh`, `uninstall.ps1`, `skills-index.json`, and `skills-index.tsv` last. Versioned objects use a one-year immutable cache policy; stable entrypoints use `no-cache`. CD then downloads every public file and verifies its SHA-256.
 
 Configure these GitHub repository settings:
 
