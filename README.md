@@ -82,6 +82,9 @@ Supported adapters use the same name with `--agent <name>` in Shell and `-Agent 
 | GitHub Copilot | `copilot` | `~/.copilot/skills` | `.github/skills` |
 | Cursor | `cursor` | `~/.cursor/skills` | `.cursor/skills` |
 | Amp | `amp` | `~/.config/agents/skills` | `.agents/skills` |
+| Kimi Code | `kimi` | `~/.kimi-code/skills` | `.kimi-code/skills` |
+| Qoder | `qoder` | `~/.qoder/skills` | `.qoder/skills` |
+| ZCode | `zcode` | `~/.zcode/skills` | `.zcode/skills` |
 | Shared Agent Skills convention | `agents` | `~/.agents/skills` | `.agents/skills` |
 
 The Shell installer supports `curl` or `wget` and does not require Python or `jq`. It uses `.tar.gz`; PowerShell 5.1+ uses `.zip`. Both verify SHA-256 before extraction.

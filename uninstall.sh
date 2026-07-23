@@ -18,7 +18,7 @@ Usage: uninstall.sh [--skill NAME | --all] [options]
 Selection:
   --skill NAME         Uninstall one managed skill; may be repeated.
   --all                Uninstall every managed skill in the destination.
-  --agent NAME         codex|claude|opencode|pi|gemini|copilot|cursor|amp|agents
+  --agent NAME         codex|claude|opencode|pi|gemini|copilot|cursor|amp|kimi|qoder|zcode|agents
   --scope SCOPE        user (default) or project
   --dest DIR           Override the agent destination root.
   --project-dir DIR    Override project root for project scope.
@@ -64,7 +64,7 @@ choose_from_menu() {
 }
 
 if [ -z "$CUSTOM_DEST" ] && [ -z "$AGENT" ]; then
-  AGENT=$(choose_from_menu "Select an agent" codex claude opencode pi gemini copilot cursor amp agents)
+  AGENT=$(choose_from_menu "Select an agent" codex claude opencode pi gemini copilot cursor amp kimi qoder zcode agents)
 fi
 
 if [ "$SCOPE" = project ]; then
@@ -84,6 +84,9 @@ destination_root() {
       copilot) printf '%s/.copilot/skills\n' "$HOME" ;;
       cursor) printf '%s/.cursor/skills\n' "$HOME" ;;
       amp) printf '%s/.config/agents/skills\n' "$HOME" ;;
+      kimi) printf '%s/.kimi-code/skills\n' "$HOME" ;;
+      qoder) printf '%s/.qoder/skills\n' "$HOME" ;;
+      zcode) printf '%s/.zcode/skills\n' "$HOME" ;;
       agents) printf '%s/.agents/skills\n' "$HOME" ;;
       *) die "unsupported agent: $AGENT" ;;
     esac
@@ -96,6 +99,9 @@ destination_root() {
       gemini) printf '%s/.gemini/skills\n' "$PROJECT_DIR" ;;
       copilot) printf '%s/.github/skills\n' "$PROJECT_DIR" ;;
       cursor) printf '%s/.cursor/skills\n' "$PROJECT_DIR" ;;
+      kimi) printf '%s/.kimi-code/skills\n' "$PROJECT_DIR" ;;
+      qoder) printf '%s/.qoder/skills\n' "$PROJECT_DIR" ;;
+      zcode) printf '%s/.zcode/skills\n' "$PROJECT_DIR" ;;
       *) die "unsupported agent: $AGENT" ;;
     esac
   fi

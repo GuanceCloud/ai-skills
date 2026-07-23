@@ -85,6 +85,23 @@ class InstallerTests(unittest.TestCase):
         return ["sh", str(REPO / "uninstall.sh"), "--skill", "demo-skill", "--dest", str(dest),
                 "--scope", "project", "--project-dir", str(self.root), "--yes", *extra]
 
+    def adapter_command(self, base_url: str, agent: str, scope: str, *, uninstall: bool = False) -> list[str]:
+        if os.name == "nt":
+            shell = shutil.which("powershell") or shutil.which("pwsh")
+            assert shell
+            script = REPO / ("uninstall.ps1" if uninstall else "install.ps1")
+            command = [shell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script)]
+            if not uninstall:
+                command.extend(["-BaseUrl", base_url])
+            return [*command, "-Skill", "demo-skill", "-Agent", agent, "-Scope", scope,
+                    "-ProjectDir", str(self.root), "-Yes"]
+        script = REPO / ("uninstall.sh" if uninstall else "install.sh")
+        command = ["sh", str(script)]
+        if not uninstall:
+            command.extend(["--base-url", base_url])
+        return [*command, "--skill", "demo-skill", "--agent", agent, "--scope", scope,
+                "--project-dir", str(self.root), "--yes"]
+
     @staticmethod
     def without_yes(command: list[str]) -> list[str]:
         yes = "-Yes" if os.name == "nt" else "--yes"
@@ -161,6 +178,38 @@ class InstallerTests(unittest.TestCase):
         failed = subprocess.run(self.uninstall_command(dest), capture_output=True)
         self.assertNotEqual(failed.returncode, 0)
         self.assertEqual(marker.read_text(encoding='utf-8'), 'keep me\n')
+
+    def test_kimi_qoder_and_zcode_destinations(self):
+        release = self.root / "release-adapters"
+        self.build(release, VERSION_ONE)
+        handler = functools.partial(QuietHandler, directory=str(release))
+        server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        adapters = {
+            "kimi": ".kimi-code/skills",
+            "qoder": ".qoder/skills",
+            "zcode": ".zcode/skills",
+        }
+        environment = os.environ.copy()
+        fake_home = self.root / "home"
+        fake_home.mkdir()
+        environment["HOME"] = str(fake_home)
+        environment["USERPROFILE"] = str(fake_home)
+        try:
+            base = f"http://127.0.0.1:{server.server_port}"
+            for agent, relative in adapters.items():
+                for scope, root in (("user", fake_home), ("project", self.root)):
+                    with self.subTest(agent=agent, scope=scope):
+                        installed = root / relative / "demo-skill"
+                        subprocess.run(self.adapter_command(base, agent, scope), check=True, env=environment)
+                        self.assertTrue((installed / "SKILL.md").is_file())
+                        subprocess.run(self.adapter_command(base, agent, scope, uninstall=True), check=True, env=environment)
+                        self.assertFalse(installed.exists())
+        finally:
+            server.shutdown()
+            thread.join()
+            server.server_close()
 
     @unittest.skipIf(os.name == 'nt', 'Windows hosted runners do not grant symlink creation by default')
     def test_refuses_symbolic_link_skill_directory(self):

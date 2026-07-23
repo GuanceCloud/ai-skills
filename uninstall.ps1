@@ -2,7 +2,7 @@
 param(
     [string[]]$Skill,
     [switch]$All,
-    [ValidateSet('codex','claude','opencode','pi','gemini','copilot','cursor','amp','agents')][string]$Agent,
+    [ValidateSet('codex','claude','opencode','pi','gemini','copilot','cursor','amp','kimi','qoder','zcode','agents')][string]$Agent,
     [ValidateSet('user','project')][string]$Scope = 'user',
     [string]$Dest,
     [Alias('project-dir')][string]$ProjectDir,
@@ -24,7 +24,7 @@ function Get-Sha256Hex([string]$Path) {
 if ($All -and $Skill) { Fail '-All cannot be combined with -Skill' }
 if (-not $Dest -and -not $Agent) {
     if (-not [Environment]::UserInteractive) { Fail '-Agent is required in non-interactive mode' }
-    $agents = @('codex','claude','opencode','pi','gemini','copilot','cursor','amp','agents')
+    $agents = @('codex','claude','opencode','pi','gemini','copilot','cursor','amp','kimi','qoder','zcode','agents')
     for ($i=0; $i -lt $agents.Count; $i++) { Write-Host "  $($i+1)) $($agents[$i])" }
     $choice = 0
     if (-not [int]::TryParse((Read-Host 'Select an agent'), [ref]$choice) -or $choice -lt 1 -or $choice -gt $agents.Count) { Fail 'invalid agent selection' }
@@ -43,13 +43,15 @@ if ($Dest) { $destRoot = [IO.Path]::GetFullPath($Dest) }
 elseif ($Scope -eq 'user') {
     $relative = @{
         codex='.codex/skills'; claude='.claude/skills'; opencode='.config/opencode/skills'; pi='.pi/agent/skills';
-        gemini='.gemini/skills'; copilot='.copilot/skills'; cursor='.cursor/skills'; amp='.config/agents/skills'; agents='.agents/skills'
+        gemini='.gemini/skills'; copilot='.copilot/skills'; cursor='.cursor/skills'; amp='.config/agents/skills';
+        kimi='.kimi-code/skills'; qoder='.qoder/skills'; zcode='.zcode/skills'; agents='.agents/skills'
     }[$Agent]
     $destRoot = Join-Path $HOME $relative
 } else {
     $relative = @{
         codex='.agents/skills'; agents='.agents/skills'; amp='.agents/skills'; claude='.claude/skills'; opencode='.opencode/skills';
-        pi='.pi/skills'; gemini='.gemini/skills'; copilot='.github/skills'; cursor='.cursor/skills'
+        pi='.pi/skills'; gemini='.gemini/skills'; copilot='.github/skills'; cursor='.cursor/skills';
+        kimi='.kimi-code/skills'; qoder='.qoder/skills'; zcode='.zcode/skills'
     }[$Agent]
     $destRoot = Join-Path $ProjectDir $relative
 }
