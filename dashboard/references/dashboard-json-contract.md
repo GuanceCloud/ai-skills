@@ -41,8 +41,9 @@
 - Order the remaining groups by the normal troubleshooting path.
 - Set every group to `true` in `dashboardExtend.groupUnfoldStatus`.
 - Remove `dashboardExtend.groupColor`.
-- Use `rgba(...)` for `main.groups[].extend.bgColor`.
-- Remove `main.groups[].extend.colorKey`.
+- For custom group color blocks, use solid `#RRGGBB` values for `main.groups[].extend.bgColor` and set `main.groups[].extend.isExpanded` consistently with `dashboardExtend.groupUnfoldStatus`.
+- Remove `main.groups[].extend.colorKey` when custom `bgColor` is present. Built-in `colorKey` and custom `bgColor` are separate domains and should not be mixed.
+- Use the semantic 10-color palette in [Custom Group Color Blocks](group-color-blocks.md) unless the user supplies a saved custom palette.
 
 ## 3. Variables
 

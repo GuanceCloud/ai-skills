@@ -1,6 +1,5 @@
 ---
 name: dashboard
-author: liurui
 description: Generate, repair, or review Guance Dashboard JSON from real metrics CSV files, tag metadata, and resource-catalog or custom-object CSV/JSON data.
 ---
 
@@ -13,7 +12,9 @@ This skill must produce an operations-usable dashboard, not a thin demo. The fin
 ## Reference Routing
 
 - Read [Dashboard JSON Contract](references/dashboard-json-contract.md) when generating or repairing JSON fields, units, layout, or style.
+- Read [Custom Group Color Blocks](references/group-color-blocks.md) when assigning, repairing, or reviewing Dashboard group-header colors.
 - Read [Query Semantics and Readability](references/query-semantics.md) when classifying counters, gauges, pre-aggregated fields, overview queries, or trend grouping.
+- Read [Snapshot Chart Import and Save Round Trip](references/snapshot-chart-roundtrip.md) when generating or repairing `hexgon`, `treemap`, `toplist`, scalar `singlestat`, or metric `table` charts, or when an imported chart becomes correct only after the user clicks Save.
 - Read [Resource Object Tables](references/resource-object-tables.md) when object data is present or an instance-property table and value mappings are required.
 - Read [Official Field Research](references/official-field-research.md) and consult first-party sources when units, status, mode, billing, capacity, or boolean semantics are unclear.
 
@@ -169,13 +170,14 @@ Autofix is required after JSON generation and before DQL validation.
 2. Put the overview group first.
 3. Put list-style groups immediately after overview.
 4. Remove `dashboardExtend.groupColor`.
-5. Set `main.groups[].extend.bgColor` from a restrained but distinguishable operations palette.
-6. Remove `main.groups[].extend.colorKey`.
+5. For portable custom group color blocks, set `main.groups[].extend.bgColor` to a light solid `#RRGGBB` value from the recommended 10-color operations palette and set `isExpanded` to match the intended default state. Do not use editor-normalized RGBA values in an import artifact.
+6. Remove `main.groups[].extend.colorKey` when using custom `bgColor`; do not mix built-in color keys with the custom-color domain.
 7. For overview `singlestat` charts, force `extend.settings.valueColor` from a varied palette.
 8. For overview `singlestat` charts, force `extend.settings.bgColor` to a transparent background derived from `valueColor`.
 9. For overview `singlestat` charts, force `extend.settings.borderColor = "#E5E7EB"`.
 10. For a grouped `sequence` query that returns multiple series, clear the query color and `settings.colors` so the UI palette can distinguish those series.
 11. Write back the autofixed JSON and use that result for final validation.
+12. Apply the snapshot-chart round-trip contract to `hexgon`, `treemap`, `toplist`, scalar `singlestat`, and metric `table` charts; never copy workspace-generated series colors or import metadata.
 
 Reference pseudocode:
 
@@ -193,7 +195,10 @@ def autofix_dashboard_style(dashboard):
     other_groups = [g for g in groups if g not in (["overview"] + list_groups)]
     ordered = (["overview"] if "overview" in groups else []) + list_groups + other_groups
 
-    group_palette = ["#3B82F6", "#94A3B8", "#22C55E", "#F59E0B", "#06B6D4", "#EF4444", "#8B5CF6"]
+    group_palette = [
+        "#60A5FA", "#38BDF8", "#94A3B8", "#4ADE80", "#FBBF24",
+        "#22D3EE", "#818CF8", "#F87171", "#FB923C", "#2DD4BF",
+    ]
     multi = ["#06B6D4", "#10B981", "#EAB308", "#F97316", "#EF4444", "#8B5CF6", "#EC4899"]
 
     dashboard["dashboardExtend"].pop("groupColor", None)
@@ -208,7 +213,8 @@ def autofix_dashboard_style(dashboard):
 
     for idx, group in enumerate(dashboard["main"]["groups"]):
         ext = group.setdefault("extend", {})
-        ext["bgColor"] = to_alpha_bg(group_palette[idx % len(group_palette)], 0.10)
+        ext["bgColor"] = group_palette[idx % len(group_palette)]
+        ext["isExpanded"] = dashboard["dashboardExtend"]["groupUnfoldStatus"].get(group["name"], True)
         ext.pop("colorKey", None)
 
     card_idx = 0
@@ -378,6 +384,8 @@ Use `table` charts for instance lists and high-cardinality operational views.
 
 At least one instance-level table is mandatory.
 
+For metric tables, use a scalar `last(field)` snapshot query per metric, keep `fill = null`, and serialize `query.field` as a single-element array. Apply the stable metric-table defaults from the snapshot round-trip reference so imports render one current row per resource rather than one row per timestamp.
+
 When the CSV supports richer dimensions, prefer:
 
 - user-level tables
@@ -435,12 +443,14 @@ Tables should usually be full-width:
 
 Every final chart DQL must pass `dqlcheck` one by one.
 
+The only round-trip exception is a manually saved scalar snapshot whose canonical Dashboard DQL omits the binder-only time window. For that chart, validate a temporary proof form with an explicit duration, record both final and proof forms, and keep the saved canonical form in the Dashboard. This exception never applies to semantic Rollups such as `[10m:::last]`; those must remain in the final DQL.
+
 Validation steps:
 
 1. extract every final DQL from dashboard charts
 2. validate each query individually
 3. minimally repair failed queries and retry
-4. keep only validated DQL in the final dashboard
+4. keep only validated DQL, or a saved scalar canonical form with a validated explicit-window proof, in the final dashboard
 5. report the total, passed, and failed query counts in the delivery notes
 
 Commands:
@@ -452,9 +462,7 @@ Commands:
 
 Pass criteria:
 
-- all `sequence` DQL passes
-- all `singlestat` DQL passes
-- all `table` DQL passes
+- every DQL in every chart type passes, including `sequence`, `singlestat`, `table`, `hexgon`, `treemap`, and `toplist`
 
 If a query still fails after repair attempts, say so explicitly and do not present it as a valid final result.
 
@@ -467,6 +475,7 @@ If a query still fails after repair attempts, say so explicitly and do not prese
 - `main` does not contain `chartGroupPos`.
 - style autofix has been applied before DQL validation.
 - all groups are unfolded in `dashboardExtend.groupUnfoldStatus`.
+- every custom group color uses a light solid `#RRGGBB` `bgColor`, has a matching `isExpanded` state, omits `colorKey`, and avoids pink or magenta hues; editor-normalized RGBA values are not used in portable import JSON.
 - overview is the first group.
 - list groups follow overview when present.
 - variable code comes from the CSV tag field.
@@ -476,11 +485,15 @@ If a query still fails after repair attempts, say so explicitly and do not prese
 - no `singlestat` uses `series_sum(...)`.
 - every `singlestat` uses `fill = null`.
 - every `sequence` uses valid fill and chart-type settings.
+- every snapshot query wrapper has `queryGroup == query.code`.
+- `hexgon`, `treemap`, and `toplist` snapshot DQL uses the round-trip contract and contains no `fill(`, `SORDER`, or `SLIMIT`.
+- no portable `treemap` or `toplist` persists data-dependent series identities in `settings.colors`.
+- every metric-table query uses single-element array `query.field` and stable snapshot-table settings.
 - at least 1 instance table exists.
 - a standard resource instance table uses `CO::`, `custom_object`, the real object class, and a stable resource ID.
 - at least 1 overview KPI row exists.
 - at least 6 trend charts exist.
-- all final DQL has passed `dqlcheck`.
+- all final DQL has passed `dqlcheck`, or a manually saved scalar canonical form has an individually validated explicit-window proof.
 - delivery notes report the DQL validation totals and result.
 
 ## Related Skills

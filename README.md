@@ -1,6 +1,6 @@
 # AI Skills Usage Guide
 
-This repository contains reusable delivery skills, including Dashboard generation, Monitor generation, DQL generation and review, Grafana Dashboard conversion, SLS-to-DQL conversion, OpenTelemetry instrumentation, RUM instrumentation, and owl-based diagnostics.
+This repository contains reusable delivery skills, including Dashboard generation, Monitor generation, DQL generation and review, Grafana Dashboard conversion, SLS-to-DQL conversion, OpenTelemetry instrumentation, RUM instrumentation, and owl-based diagnostics and live-data artifact generation.
 
 ## Directory Structure
 
@@ -13,7 +13,9 @@ ai-skills/
 ├── grafana-to-guance-dashboard/
 ├── monitor/
 ├── otel-instrument/
+├── owl-dashboard/
 ├── owl-diagnostics/
+├── owl-monitor/
 ├── rum-instrument/
 ├── sls2dql/
 ├── trivy-cluster-scan/
@@ -37,8 +39,10 @@ ai-skills/
 | `dql` | Generate, fix, explain, and review DQL | User requirements or DQL queries | Validated final DQL |
 | `grafana-to-guance-dashboard` | Convert and audit Grafana dashboards for Guance | Grafana dashboard JSON | Guance dashboard JSON and audit notes |
 | `otel-instrument` | Instrument C++, C#/.NET, Erlang/Elixir, Go, Java, JavaScript/TypeScript, Kotlin, PHP, Python, Ruby, Rust, and Swift repositories with OpenTelemetry | Git repository plus selected signals and trace depth | Instrumented source and existing deployment config, local validation evidence, module inventory, and unresolved runtime handoff |
+| `owl-dashboard` | Generate, repair, or verify importable Guance Dashboard JSON from live workspace data through `owl` | Workspace access plus a Dashboard target or requirements | Dashboard JSON and a separate live-data evidence JSON |
 | `owl-diagnostics` | Query Guance data with `owl` and write diagnostic reports | Time range and diagnostic target | Evidence-backed Markdown report |
 | `rum-instrument` | Plan, audit, implement, repair, and validate RUM for Web, MiniApp, Android, Apple platforms, HarmonyOS, React Native, Flutter, UniApp, C++, and Unity | RUM Application ID plus Public DataWay or DataKit receiver variables | Batch-aware `.rum/plan.json`, instrumented targets, resumable configuration and validation evidence; optional inventory |
+| `owl-monitor` | Generate, repair, or verify importable metric monitor JSON from live workspace data through `owl` | Workspace access plus a monitoring target or requirements | Disabled-by-default monitor JSON and a separate live-data evidence JSON |
 | `sls2dql` | Convert Alibaba Cloud SLS queries to GuanceDB DQL | SLS query plus namespace/source/index options | Conversion result and diagnostics |
 | `trivy-cluster-scan` | Run authorized, scan-only Trivy cluster and image security assessment with official remediation reporting | Authorized cluster scope, optional app paths, optional runtime confirmation | JSON scan artifacts and evidence-backed remediation report |
 | `unit` | Generate Guance unit metadata from a metrics CSV | `csv/{{name}}*.csv` | `output/unit/{{name}}.json` |

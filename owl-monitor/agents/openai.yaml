@@ -1,0 +1,6 @@
+interface:
+  display_name: "Owl Monitor"
+  short_description: "基于 Owl 真实指标生成并校验可导入监控器"
+  default_prompt: "使用 $owl-monitor 通过 Owl 发现当前工作空间的真实指标，并生成可导入且默认禁用的监控器。"
+policy:
+  allow_implicit_invocation: true

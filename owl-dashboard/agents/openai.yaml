@@ -1,0 +1,4 @@
+interface:
+  display_name: "Owl Real-data Dashboard"
+  short_description: "基于 Owl 真实数据生成并校验可导入 Dashboard"
+  default_prompt: "使用 $owl-dashboard 从当前工作空间的真实数据生成一个可导入的 Dashboard。"
