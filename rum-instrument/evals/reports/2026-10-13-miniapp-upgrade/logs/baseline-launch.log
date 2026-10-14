@@ -1,0 +1,9 @@
+[error] Please ensure that the IDE has been properly installed
+- initialize
+
+(node:81917) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `Electron --trace-deprecation ...` to show where the warning was created)
+✖ initialize error: Error: ENOENT: no such file or directory, open '/Users/oneandonly/Library/Application Support/微信开发者工具/d1e8765721a6c23d43b14c95b1843e6b/Default/.cli', Error: ENOENT: no such file or directory, open '/Users/oneandonly/Library/Application Support/微信开发者工具/d1e8765721a6c23d43b14c95b1843e6b/Default/.cli'
+    at Object.writeFileSync (node:fs:2426:20)
+    at /Applications/wechatwebdevtools.app/Contents/Resources/app.asar.unpacked/js/common/cli/index.js:129:43084
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)

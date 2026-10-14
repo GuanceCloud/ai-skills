@@ -1,0 +1,27 @@
+{
+  "real_browser": true,
+  "real_browser_sdk": true,
+  "flutter_engine": "stub bootstrap only; no Dart or Flutter runtime",
+  "receiver": "mocked in Playwright",
+  "initial": {
+    "calls": 1,
+    "config": {
+      "applicationId": "eval_flutter_web",
+      "datakitOrigin": "http://127.0.0.1:19529",
+      "service": "rum_eval_mobile",
+      "version": "1.0.0",
+      "trackUserInteractions": true,
+      "allowedTracingUrls": [],
+      "sessionReplaySampleRate": 0,
+      "sessionReplayOnErrorSampleRate": 0
+    },
+    "replay": false
+  },
+  "capture_count": 2,
+  "privacy": {
+    "CANARY_FLUTTER_QUERY": false,
+    "CANARY_FLUTTER_HASH": true
+  },
+  "privacy_passed": false,
+  "remote_ingestion_verified": false
+}

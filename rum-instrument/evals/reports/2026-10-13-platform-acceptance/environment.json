@@ -1,0 +1,113 @@
+{
+  "node": {
+    "path_entry": "/usr/local/bin/node"
+  },
+  "npm": {
+    "path_entry": "/usr/local/bin/npm"
+  },
+  "flutter": {
+    "path_entry": null
+  },
+  "dart": {
+    "path_entry": null
+  },
+  "gradle": {
+    "path_entry": null
+  },
+  "adb": {
+    "path_entry": null
+  },
+  "xcodebuild": {
+    "path_entry": "/usr/bin/xcodebuild"
+  },
+  "xcrun": {
+    "path_entry": "/usr/bin/xcrun"
+  },
+  "pod": {
+    "path_entry": null
+  },
+  "docker": {
+    "path_entry": null
+  },
+  "pwsh": {
+    "path_entry": null
+  },
+  "gh": {
+    "path_entry": null
+  },
+  "cmake": {
+    "path_entry": null
+  },
+  "ninja": {
+    "path_entry": null
+  },
+  "dotnet": {
+    "path_entry": null
+  },
+  "ohpm": {
+    "path_entry": null
+  },
+  "hdc": {
+    "path_entry": null
+  },
+  "android_sdk": {
+    "path": "/Users/oneandonly/Library/Android/sdk",
+    "exists": true
+  },
+  "android_adb": {
+    "path": "/Users/oneandonly/Library/Android/sdk/platform-tools/adb",
+    "exists": true
+  },
+  "android_emulator": {
+    "path": "/Users/oneandonly/Library/Android/sdk/emulator/emulator",
+    "exists": true
+  },
+  "jdk_webstorm": {
+    "path": "/Applications/WebStorm.app/Contents/jbr/Contents/Home",
+    "exists": true
+  },
+  "xcode_app": {
+    "path": "/Applications/Xcode.app",
+    "exists": false
+  },
+  "unity_app": {
+    "path": "/Applications/Unity",
+    "exists": false
+  },
+  "deveco_app": {
+    "path": "/Applications/DevEco-Studio.app",
+    "exists": false
+  },
+  "wechat_cli": {
+    "path": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+    "exists": true
+  },
+  "gradle_87": {
+    "path": "/Users/oneandonly/.gradle/wrapper/dists/gradle-8.7-bin",
+    "exists": true
+  },
+  "xcode": {
+    "command": [
+      "xcodebuild",
+      "-version"
+    ],
+    "exit_code": 1,
+    "output": "xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance\n"
+  },
+  "system_java": {
+    "command": [
+      "java",
+      "-version"
+    ],
+    "exit_code": 0,
+    "output": "java version \"1.8.0_261\"\nJava(TM) SE Runtime Environment (build 1.8.0_261-b12)\nJava HotSpot(TM) 64-Bit Server VM (build 25.261-b12, mixed mode)\n"
+  },
+  "webstorm_java": {
+    "command": [
+      "/Applications/WebStorm.app/Contents/jbr/Contents/Home/bin/java",
+      "-version"
+    ],
+    "exit_code": 0,
+    "output": "openjdk version \"11.0.4\" 2019-07-16\nOpenJDK Runtime Environment (build 11.0.4+10-b304.77)\nOpenJDK 64-Bit Server VM (build 11.0.4+10-b304.77, mixed mode)\n"
+  }
+}

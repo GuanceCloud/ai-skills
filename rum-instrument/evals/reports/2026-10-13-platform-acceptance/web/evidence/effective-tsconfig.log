@@ -1,0 +1,48 @@
+{
+    "compilerOptions": {
+        "target": "es2022",
+        "useDefineForClassFields": true,
+        "module": "esnext",
+        "lib": [
+            "es2022",
+            "dom",
+            "dom.iterable"
+        ],
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "verbatimModuleSyntax": true,
+        "noEmit": true,
+        "strict": true,
+        "skipLibCheck": false,
+        "types": [
+            "vite/client",
+            "node"
+        ],
+        "allowSyntheticDefaultImports": true,
+        "resolvePackageJsonExports": true,
+        "resolvePackageJsonImports": true,
+        "preserveConstEnums": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "strictBuiltinIteratorReturn": true,
+        "alwaysStrict": true,
+        "useUnknownInCatchVariables": true
+    },
+    "files": [
+        "./src/env.d.ts",
+        "./src/main.ts",
+        "./src/router.ts",
+        "./src/rum.ts",
+        "./vite.config.ts"
+    ],
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.vue",
+        "vite.config.ts"
+    ]
+}

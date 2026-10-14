@@ -1,0 +1,30 @@
+{
+  "repository": {
+    "dirty_paths": [],
+    "git_commit": "21bf6128a7c0afec8693c502b16587679fea658b",
+    "root": "${EVAL_ROOT}/miniapp/project",
+    "scan_scope": "."
+  },
+  "schema_version": 1,
+  "targets": [
+    {
+      "application_id_slots": [
+        "miniapp"
+      ],
+      "confidence": "high",
+      "evidence": [
+        "app.js",
+        "app.json",
+        "project.config.json"
+      ],
+      "existing_rum_markers": {},
+      "id": "miniapp:.",
+      "path": ".",
+      "platform": "miniapp",
+      "variants": [
+        "native"
+      ]
+    }
+  ],
+  "warnings": []
+}

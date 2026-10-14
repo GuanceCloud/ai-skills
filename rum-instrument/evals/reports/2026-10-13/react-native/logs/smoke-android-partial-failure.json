@@ -1,0 +1,60 @@
+{
+  "platform": "android",
+  "mode": "partial-failure",
+  "actual_sdk": "0.4.2",
+  "real_sdk_javascript": true,
+  "native_bridge_mocked": true,
+  "actual_native_platform_selection_executed": false,
+  "initial_results": [
+    false,
+    false,
+    false
+  ],
+  "calls": [
+    {
+      "method": "sdkConfig",
+      "config": {
+        "datakitUrl": "http://127.0.0.1:19529",
+        "service": "react-native-rum-app",
+        "remoteConfiguration": false
+      }
+    },
+    {
+      "method": "setConfig",
+      "config": {
+        "androidAppId": "eval_rn_android",
+        "iOSAppId": "eval_rn_ios",
+        "enableAutoTrackUserAction": true,
+        "enableAutoTrackError": true,
+        "enableNativeUserResource": true,
+        "enableNativeUserAction": false,
+        "enableNativeUserView": false,
+        "enableTraceWebView": false,
+        "enableTrackNativeCrash": false,
+        "enableTrackNativeAppANR": false,
+        "enableTrackNativeFreeze": false
+      }
+    },
+    {
+      "method": "setConfig",
+      "config": {
+        "androidAppId": "eval_rn_android",
+        "iOSAppId": "eval_rn_ios",
+        "enableAutoTrackUserAction": true,
+        "enableAutoTrackError": true,
+        "enableNativeUserResource": true,
+        "enableNativeUserAction": false,
+        "enableNativeUserView": false,
+        "enableTraceWebView": false,
+        "enableTrackNativeCrash": false,
+        "enableTrackNativeAppANR": false,
+        "enableTrackNativeFreeze": false
+      }
+    }
+  ],
+  "warnings": [
+    "RUM startup failed; application startup may continue."
+  ],
+  "original_error_handler_preserved": null,
+  "original_error_handler_calls": 0
+}

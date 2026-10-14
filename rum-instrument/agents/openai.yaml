@@ -1,4 +1,4 @@
 interface:
   display_name: "RUM Instrumentation"
-  short_description: "Plan and instrument every supported RUM app type"
-  default_prompt: "Use $rum-instrument to plan and implement RUM in this repository from an Application ID and a Public DataWay or DataKit receiver."
+  short_description: "Automatically integrate and validate core RUM"
+  default_prompt: "使用 $rum-instrument 完成当前项目的 RUM 接入和验证。"

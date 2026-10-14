@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/private/tmp/rum-web-fix-eval/browser-probe.cjs"
+  ],
+  "exit_code": 1,
+  "stdout": "{\n  \"real_sdk\": \"3.3.21\",\n  \"real_browser\": true,\n  \"receiver\": \"Playwright mocked local captures, no remote ingestion\",\n  \"application_initialization_enabled\": false,\n  \"probe_initialization_only\": true,\n  \"captured_requests\": 3,\n  \"event_types_seen\": [\n    \"view\",\n    \"long_task\",\n    \"error\",\n    \"resource\",\n    \"action\"\n  ],\n  \"serialized_event_types\": [\n    \"view\",\n    \"long_task\",\n    \"error\",\n    \"  at eval @ :370:30\\\"\",\n    \"  at d @ http://127.0.0.1:19645/sdk.js:1:3522\",\n    \"  at Object.addError @ http://127.0.0.1:19645/sdk.js:1:3470\",\n    \"  at eval @ :370:30\\\" 1791871465959\",\n    \"resource\"\n  ],\n  \"privacy\": {\n    \"CANARY_INITIAL_QUERY\": false,\n    \"CANARY_INITIAL_HASH\": false,\n    \"CANARY_RESOURCE_QUERY\": false,\n    \"CANARY_HISTORY_QUERY\": false,\n    \"CANARY_HISTORY_HASH\": true\n  },\n  \"privacy_passed\": false,\n  \"behavior_preserved\": true,\n  \"state\": {\n    \"calls\": 1,\n    \"configuration\": {\n      \"applicationId\": \"eval_web_fixes\",\n      \"datakitOrigin\": \"http://127.0.0.1:19529\",\n      \"service\": \"eval-web-fixes\",\n      \"version\": \"1.0.0\",\n      \"env\": \"isolated-eval\",\n      \"sessionReplaySampleRate\": 0,\n      \"trackUserInteractions\": true\n    },\n    \"replay\": false,\n    \"counter\": \"2\",\n    \"url\": \"http://127.0.0.1:19645/next?q=CANARY_HISTORY_QUERY#CANARY_HISTORY_HASH\"\n  }\n}\n",
+  "stderr": ""
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "check": "portability",
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_*rum*",
+      "-q"
+    ],
+    "exit_code": 0
+  },
+  {
+    "check": "registry",
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_skill_registry.py",
+      "-q"
+    ],
+    "exit_code": 0
+  }
+]

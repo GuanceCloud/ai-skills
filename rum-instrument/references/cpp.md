@@ -27,3 +27,7 @@ Plan platform-native debug symbols against the exact binary/build ID and do not 
 ## Validation
 
 Run CMake configure/build/test for the selected triplet/configuration. Verify SDK lifecycle once, `setRumAppId`/`setServerUrl` selection, meaningful manual event balance, resource timing/error behavior, trace propagation if supported, flush on shutdown, matching symbols, and privacy canaries.
+
+## Automatic configuration wiring
+
+For the supported DataKit receiver, prefer existing runtime/application configuration and add a small maintained config entry if missing. Do not add a Client Token or control-plane flow. Missing collector reachability is a handoff rather than a reason to skip local implementation.

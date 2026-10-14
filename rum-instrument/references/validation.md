@@ -10,7 +10,7 @@ python3 <skill-dir>/scripts/validate_contract.py .rum/plan.json --kind plan --ph
 
 Confirm detector candidates against real manifests and entry points. The plan must list every target, Application ID slot, exact edit, receiver mapping, privacy control, validation command, risk, and rollback.
 
-For Revision Review, recompute the canonical plan digest and verify it equals `approval.reviewed_plan_sha256`. Hash every approved dirty overlap and verify it still equals the recorded `reviewed_overlaps` digest. Reject symlinked/out-of-worktree planned paths and any new dirty planned file.
+For Revision Review, recompute the canonical plan digest and verify it equals `approval.reviewed_plan_sha256`. Hash every approved dirty overlap and verify it still equals the recorded `reviewed_overlaps` digest. Reject symlinked/out-of-worktree planned paths. For v3, check non-overlapping dirty patches against current bytes and user hunks; only real conflicts need Review. Validate batch selection and dependency closure before execution.
 
 For Public DataWay, also validate:
 
@@ -23,7 +23,7 @@ For Public DataWay, also validate:
 - the application lookup used a supported create-or-update configuration sink and a distinct Git-ignored state file; a simulated state-write failure restores the previous sink;
 - one code exchange and one successful lookup occur per Application ID; only transient lookup transport failures are retried;
 - Token acceptance checks only `token_expired: false` plus a present non-empty `client_token`; sync/mapping observations do not trigger polling or block implementation;
-- before application-code edits, the stable plan and matching digest-bound execution state pass implementation validation.
+- before application-code edits, the stable plan and matching per-slot identity-bound execution state (legacy state retains its exact plan digest) pass implementation validation.
 
 For the approved built-in testing site, additionally validate:
 
@@ -51,6 +51,8 @@ Run the repository's documented format, build/type-check, unit, integration, and
 - existing network requests, signing, redirects, retries, and cancellation remain unchanged.
 
 Use SDK debug output only as supporting evidence. It does not prove remote ingestion.
+
+A zero process exit is insufficient when individual recorded checks are false. Aggregate every required assertion into the command exit status and distinguish pass, fail and not-run. Test against the installed SDK where possible; a mock event object does not prove the SDK honors edits or exports the same fields. Privacy assertions must name the applicable project requirement or concrete sensitive-data flow; the presence of harmless standard URL parameters is not a failure. Where filtering is required, capture non-empty representative events and inspect the final payload, including derived URL fields. Error-hook tests must prove the previous application handler still runs when telemetry fails. Preserve a failing result until a supported correction is independently rerun; do not hide an unmet applicable requirement by disabling collection or skipping checks. If an earlier test imposed an unwarranted policy, preserve its raw result, explicitly correct its interpretation, and rerun ordinary onboarding plus the cases where the stricter requirement actually applies.
 
 ## Signal checks
 
@@ -85,7 +87,7 @@ When the user requests an inventory or the repository already maintains one, val
 python3 <skill-dir>/scripts/validate_contract.py .rum/instrumentation.json --kind instrumentation
 ```
 
-Every target must have one disposition and evidence or a concrete blocker. If optional `docs/rum-instrumentation.md` was generated, compare it with the JSON inventory.
+Use inventory schema_version 1 with generated_from_plan_revision, repository root/commit, receiver references, targets, artifacts, handoff and remote_verification. Every target must have one disposition and evidence or a concrete blocker. If optional `docs/rum-instrumentation.md` was generated, compare it with the JSON inventory.
 
 Set:
 
@@ -99,3 +101,9 @@ Set:
 ```
 
 Change it only from human-provided console/ingestion evidence. Local HTTP success, SDK debug messages, or an absence of exceptions are not remote proof.
+
+## Onboarding and recovery checks
+
+Evaluate actual Agent interactions as well as script invariants. Complete-input ordinary onboarding must ask no business questions or routine approvals. Missing discoverable inputs are recovered; known missing essential inputs are requested together. Count new external failures separately from repeated questions. Record requested fields, repeated approvals, completion and recovery evidence.
+
+Check independent blocked targets, shared-file batches, per-platform configuration consumption, safe dirty-file patches, minor upgrades, specifically requested optional capabilities, partial lookups, failed state writes, v1 migration, changed credential identities, and idempotent reruns. Use synthetic codes and mocked control-plane responses. An unavailable SDK/toolchain must remain an explicit limitation, not a passing integration result.

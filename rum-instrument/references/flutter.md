@@ -36,3 +36,7 @@ Run `flutter analyze`, tests, and selected platform builds available in the repo
 - navigation, resources, errors, trace allowlist, WebView, and Replay behave as planned;
 - release artifacts match platform versions;
 - privacy canaries are absent.
+
+## Automatic configuration wiring
+
+Prefer existing flavor/config handling. Otherwise wire ignored configuration through documented Flutter build defines (including a supported define-from-file mechanism when available) and native configuration where required. Keep Web and mobile receiver/config paths distinct; validate each selected build actually consumes its slot.

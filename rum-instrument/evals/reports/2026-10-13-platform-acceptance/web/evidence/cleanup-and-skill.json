@@ -1,0 +1,8 @@
+{
+  "skill_path": "/Users/oneandonly/Workspace/ai-skills/rum-instrument/SKILL.md",
+  "skill_sha256": "6a1fdb1a23126b8045e4eafdde3529a2e1edbb9495cbe1a6ddd1329d2c53e6a1",
+  "ports": {
+    "19538": "closed",
+    "19539": "closed"
+  }
+}

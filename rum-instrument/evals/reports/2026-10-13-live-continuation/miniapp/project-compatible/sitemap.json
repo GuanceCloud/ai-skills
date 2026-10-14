@@ -1,0 +1,9 @@
+{
+  "desc": "Local acceptance only",
+  "rules": [
+    {
+      "action": "disallow",
+      "page": "*"
+    }
+  ]
+}

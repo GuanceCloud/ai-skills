@@ -1,0 +1,112 @@
+diff --git a/.gitignore b/.gitignore
+index 0766e35..0ac102f 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,5 @@
+ node_modules/
+ .rum/
+ build/
++config/rum.local.js
++miniprogram_npm/
+diff --git a/app.js b/app.js
+index 6241c06..c13db03 100644
+--- a/app.js
++++ b/app.js
+@@ -1 +1,3 @@
++require('./rum').initializeRum()
++
+ App({})
+diff --git a/config/rum.example.js b/config/rum.example.js
+new file mode 100644
+index 0000000..9672694
+--- /dev/null
++++ b/config/rum.example.js
+@@ -0,0 +1,6 @@
++// Copy to rum.local.js and supply this build's non-secret RUM configuration.
++// The receiver must be reachable from the MiniApp runtime and permitted there.
++module.exports = {
++  applicationId: '',
++  datakitOrigin: '',
++}
+diff --git a/package-lock.json b/package-lock.json
+new file mode 100644
+index 0000000..ebcaa71
+--- /dev/null
++++ b/package-lock.json
+@@ -0,0 +1,25 @@
++{
++  "name": "miniapp",
++  "lockfileVersion": 2,
++  "requires": true,
++  "packages": {
++    "": {
++      "name": "miniapp",
++      "dependencies": {
++        "@cloudcare/rum-miniapp": "2.2.20"
++      }
++    },
++    "node_modules/@cloudcare/rum-miniapp": {
++      "version": "2.2.20",
++      "resolved": "https://registry.npmjs.org/@cloudcare/rum-miniapp/-/rum-miniapp-2.2.20.tgz",
++      "integrity": "sha512-L1Novgt6AaiWLg7sQsJDbywuKBiah/heHyRwJGVn/313KpEkCG5FhzKNuL1ePFMArHSMcM2chzB8RI1oBrXjAw=="
++    }
++  },
++  "dependencies": {
++    "@cloudcare/rum-miniapp": {
++      "version": "2.2.20",
++      "resolved": "https://registry.npmjs.org/@cloudcare/rum-miniapp/-/rum-miniapp-2.2.20.tgz",
++      "integrity": "sha512-L1Novgt6AaiWLg7sQsJDbywuKBiah/heHyRwJGVn/313KpEkCG5FhzKNuL1ePFMArHSMcM2chzB8RI1oBrXjAw=="
++    }
++  }
++}
+diff --git a/package.json b/package.json
+new file mode 100644
+index 0000000..c31c732
+--- /dev/null
++++ b/package.json
+@@ -0,0 +1,7 @@
++{
++  "name": "miniapp",
++  "private": true,
++  "dependencies": {
++    "@cloudcare/rum-miniapp": "2.2.20"
++  }
++}
+diff --git a/rum.js b/rum.js
+new file mode 100644
+index 0000000..f726e27
+--- /dev/null
++++ b/rum.js
+@@ -0,0 +1,32 @@
++let initialized = false
++
++function initializeRum() {
++  if (initialized) return
++  try {
++    const config = require('./config/rum.local')
++    if (!config.applicationId || !config.datakitOrigin) {
++      throw new Error('Missing RUM configuration')
++    }
++    const { datafluxRum } = require('@cloudcare/rum-miniapp')
++    const miniProgram = wx.getAccountInfoSync().miniProgram
++    datafluxRum.init({
++      applicationId: config.applicationId,
++      datakitOrigin: config.datakitOrigin,
++      service: 'miniapp',
++      env: miniProgram.envVersion,
++      version: miniProgram.version || undefined,
++      trackInteractions: true,
++      trackResourceQueryString: false,
++      trackRequestErrorResponseBody: false,
++      trackLaunchOptions: false,
++      allowedTracingUrls: [],
++      remoteConfiguration: false,
++    })
++    initialized = true
++  } catch (_) {
++    // Monitoring failures must not interrupt the MiniApp startup.
++    console.warn('[RUM] Initialization failed; check local config and SDK build.')
++  }
++}
++
++module.exports = { initializeRum }

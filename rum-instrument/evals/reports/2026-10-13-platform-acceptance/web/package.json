@@ -1,0 +1,24 @@
+{
+  "name": "vue-rum-acceptance",
+  "version": "1.2.3",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "vue-tsc --noEmit",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 19538"
+  },
+  "dependencies": {
+    "@cloudcare/browser-rum": "3.3.21",
+    "vue": "3.5.22",
+    "vue-router": "4.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.10",
+    "@vitejs/plugin-vue": "6.0.1",
+    "typescript": "5.9.3",
+    "vite": "7.1.9",
+    "vue-tsc": "3.1.1"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "rum-catalog-fixture",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@cloudcare/browser-rum": "3.3.21"
+  }
+}

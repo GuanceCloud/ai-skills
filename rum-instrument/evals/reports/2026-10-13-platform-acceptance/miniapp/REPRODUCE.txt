@@ -1,0 +1,35 @@
+小程序平台验收复现（仅本机，不上传）
+
+工程：/private/tmp/rum-platform-acceptance/miniapp/project
+SDK：@cloudcare/rum-miniapp 2.2.20
+微信工具：1.02.1911180；touristappid 来自安装工具源码的官方游客分支。
+
+1. 离线完整性与页面编译：
+python3 /private/tmp/rum-platform-acceptance/miniapp/validate.py
+该脚本聚合 JSON/JS/wcc/wcsc 结果，任一失败会非零退出。
+
+2. 官方 NPM 本地打包（不需要私钥或登录）：
+/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /private/tmp/rum-platform-acceptance/miniapp/build-npm.cjs
+已通过：miniProgramPackNum=1、warnList=[]。
+
+3. 实际平台运行前置：
+用户已经授权临时开启并恢复 IDE 服务端口。
+通过微信开发者工具 GUI：设置 → 安全设置 → 服务端口，记录原状态并临时开启。
+本次 CUA 无法读到窗口，两次应用连接 timeoutReached，全局库存读取也超时；没有点击或设置变更。
+官方 CLI 的 --port 只选监听端口，不会开启全局服务权限；没有受支持的 CLI 开关选项。
+
+4. UI 能用且已开启服务端口后，启动本地模拟接收器：
+python3 /private/tmp/rum-platform-acceptance/miniapp/receiver.py
+仅绑定 127.0.0.1:19529。DataKit 是模拟接收器，不是远端入库证明。
+
+5. 使用安装版本支持的旧 CLI 参数：
+/Applications/wechatwebdevtools.app/Contents/MacOS/cli --auto /private/tmp/rum-platform-acceptance/miniapp/project --auto-port 19532 --port 19531
+当前实际结果：exit 255，服务端口关闭。不能报告模拟器启动成功。
+在受限沙盒运行旧 CLI 会将 listen 错误不断重试到65536，且错误处理会误返回exit0；需使用经允许的沙盒外执行。
+
+6. 真正进入平台运行后才验证首页、资源请求、交互、受控错误和输入内容负向检查，检查非空 receiver-events.jsonl；不得用 mock wx/App/Page 代替。
+登录状态、游客项目运行及SDK兼容性尚未能验证。
+
+7. 结束后通过 GUI 恢复服务端口原状态（本次为关闭），停止本次接收器/自动化服务。本次没有实际开启，不需要恢复；19529/19531/19532 无监听。
+
+所有初次失败均保留；report-before-gui-attempt.json 是前一轮报告。未经授权不得上传预览、切换账户或修改远端控制台。

@@ -1,0 +1,20 @@
+{
+  "same_request": true,
+  "reused_installed_skill": true,
+  "installer_runs": 0,
+  "business_questions": 0,
+  "routine_confirmations": 0,
+  "source_and_config_unchanged": true,
+  "single_initializer": true,
+  "hashes": {
+    "app.js": "c52ba5d7dc5f0b8e9d5703f66e625831eb78e75a3271be7ea74fa144b8499efd",
+    "rum.js": "2a1cdad8daced913a72e82f027f2777b25a5275de231b2a6d53679abf50ae631",
+    ".gitignore": "380c55287f246f6a494d0bb6804104211ea216a8ce525c3258cce7ed8ba59310",
+    "config/rum.local.js": "7a18a764e476c186d8a80cad42e65c097c3dd15a88fd65b507e7a11adbad6431",
+    "config/rum.example.js": "3a86f8c1845e4f986a81730fa2d898d91693484147fe75994939071b7b02175a",
+    "package.json": "b76101def396cc5af4237de512b788d07095e884cac4bb55b99792bfb17a6763",
+    "package-lock.json": "ee4444a57ba71ac8d5a43648680ad22778cd4ba8247c460989af9b700040ef89",
+    ".rum/plan.json": "6dc0924f6fb5c90dfbc058db735e40d60d2277d072d06d346968ac4638794de9",
+    "installed_skill": "6276334cf95bfaf12404b74af6c98282c40a37f79228ce23c3fcafea99c8d506"
+  }
+}

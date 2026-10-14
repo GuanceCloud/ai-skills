@@ -1,0 +1,169 @@
+{
+  "checks": [
+    {
+      "name": "production_vue_mount",
+      "passed": true
+    },
+    {
+      "name": "public_dataway_configuration",
+      "passed": true,
+      "detail": {
+        "app": true,
+        "site": true,
+        "token_present": true,
+        "no_datakit": true,
+        "replay_off": true,
+        "trace_off": true,
+        "config_unchanged": true
+      }
+    },
+    {
+      "name": "application_resource_and_error_handler",
+      "passed": true
+    },
+    {
+      "name": "spa_navigation",
+      "passed": true
+    },
+    {
+      "name": "nonempty_real_sdk_upload",
+      "passed": true
+    },
+    {
+      "name": "view_sent",
+      "passed": true
+    },
+    {
+      "name": "resource_sent",
+      "passed": true
+    },
+    {
+      "name": "error_sent",
+      "passed": true
+    },
+    {
+      "name": "correct_app_in_upload",
+      "passed": true
+    },
+    {
+      "name": "local_draft_not_collected",
+      "passed": true
+    },
+    {
+      "name": "receiver_http_success",
+      "passed": false
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/v1/write/rum",
+      "bytes": 1371,
+      "measurements": {
+        "view": 1,
+        "resource": 0,
+        "error": 0
+      },
+      "canary_absent": true,
+      "expected_app": true
+    },
+    {
+      "method": "POST",
+      "path": "/v1/write/rum",
+      "bytes": 15852,
+      "measurements": {
+        "view": 1,
+        "resource": 7,
+        "error": 1
+      },
+      "canary_absent": true,
+      "expected_app": true
+    },
+    {
+      "method": "POST",
+      "path": "/v1/write/rum",
+      "bytes": 1501,
+      "measurements": {
+        "view": 1,
+        "resource": 0,
+        "error": 0
+      },
+      "canary_absent": true,
+      "expected_app": true
+    },
+    {
+      "method": "POST",
+      "path": "/v1/write/rum",
+      "bytes": 1453,
+      "measurements": {
+        "view": 1,
+        "resource": 0,
+        "error": 0
+      },
+      "canary_absent": true,
+      "expected_app": true
+    }
+  ],
+  "responses": [
+    {
+      "path": "/v1/write/rum",
+      "status": 200,
+      "cors_origin": "http://127.0.0.1:19538",
+      "cors_credentials": "true",
+      "content_type": null,
+      "response_body_readable": false
+    },
+    {
+      "path": "/v1/write/rum",
+      "status": 200,
+      "cors_origin": "http://127.0.0.1:19538",
+      "cors_credentials": "true",
+      "content_type": null,
+      "response_body_readable": false
+    },
+    {
+      "path": "/v1/write/rum",
+      "status": 200,
+      "cors_origin": "http://127.0.0.1:19538",
+      "cors_credentials": "true",
+      "content_type": null,
+      "response_body_readable": false
+    },
+    {
+      "path": "/v1/write/rum",
+      "status": 200,
+      "cors_origin": "http://127.0.0.1:19538",
+      "cors_credentials": "true",
+      "content_type": null,
+      "response_body_readable": false
+    }
+  ],
+  "failures": [
+    {
+      "path": "/v1/write/rum",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/v1/write/rum",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/v1/write/rum",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/v1/write/rum",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "consoleCounts": {
+    "errors": 0,
+    "cors": 0
+  },
+  "pageErrors": {
+    "count": 1
+  },
+  "remote_ingestion_verified": false,
+  "proof_level": "Real Browser SDK sent requests to user-authorized test DataWay; no server-side query performed",
+  "sensitive_output": "No credential values, request query strings, headers, raw payloads, console text or bundle source stored"
+}

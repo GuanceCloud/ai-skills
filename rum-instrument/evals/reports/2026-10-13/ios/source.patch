@@ -1,0 +1,172 @@
+diff --git a/.gitignore b/.gitignore
+index 0766e35..07b83f9 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,3 @@
+-node_modules/
+ .rum/
+-build/
++Config/*.local.xcconfig
++Pods/
+diff --git a/Sources/AppDelegate.swift b/Sources/AppDelegate.swift
+index b372700..2acb846 100644
+--- a/Sources/AppDelegate.swift
++++ b/Sources/AppDelegate.swift
+@@ -1,3 +1,48 @@
+ import UIKit
++import GuanceSDK
+ 
+-final class AppDelegate: UIResponder, UIApplicationDelegate {}
++final class AppDelegate: UIResponder, UIApplicationDelegate {
++    func application(
++        _ application: UIApplication,
++        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
++    ) -> Bool {
++        RumBootstrap.start()
++        return true
++    }
++}
++
++private enum RumBootstrap {
++    private static var started = false
++
++    static func start() {
++        guard !started else { return }
++        let info = Bundle.main.infoDictionary ?? [:]
++        func value(_ key: String) -> String? {
++            guard let text = info[key] as? String,
++                  !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
++                  !text.contains("$(") else { return nil }
++            return text
++        }
++        guard let endpoint = value("RUM_DATAKIT_URL"),
++              let url = URL(string: endpoint),
++              ["http", "https"].contains(url.scheme ?? ""),
++              url.host != nil,
++              let appID = value("RUM_APP_ID"),
++              let environment = value("RUM_ENV") else {
++            NSLog("RUM configuration missing or invalid; monitoring is disabled")
++            return
++        }
++        let config = FTSDKConfig(datakitUrl: endpoint)
++        config.env = environment
++        config.service = Bundle.main.bundleIdentifier ?? "apple-app"
++        FTSDKAgent.start(withConfigOptions: config)
++        let rum = FTRumConfig(appid: appID)
++        rum.enableTraceUserView = true
++        rum.enableTraceWebView = false
++        rum.enableTrackAppCrash = false
++        rum.enableTrackAppANR = false
++        rum.enableTrackAppFreeze = false
++        FTSDKAgent.sharedInstance().startRum(withConfigOptions: rum)
++        started = true
++    }
++}
+diff --git a/Config/RUM-Info.plist b/Config/RUM-Info.plist
+new file mode 100644
+index 0000000..268f866
+--- /dev/null
++++ b/Config/RUM-Info.plist
+@@ -0,0 +1,29 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
++<plist version="1.0">
++<dict>
++	<key>CFBundleExecutable</key>
++	<string>$(EXECUTABLE_NAME)</string>
++	<key>CFBundleIdentifier</key>
++	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
++	<key>CFBundleName</key>
++	<string>$(PRODUCT_NAME)</string>
++	<key>CFBundlePackageType</key>
++	<string>APPL</string>
++	<key>CFBundleShortVersionString</key>
++	<string>$(MARKETING_VERSION)</string>
++	<key>CFBundleVersion</key>
++	<string>$(CURRENT_PROJECT_VERSION)</string>
++	<key>NSAppTransportSecurity</key>
++	<dict>
++		<key>NSAllowsLocalNetworking</key>
++		<true/>
++	</dict>
++	<key>RUM_APP_ID</key>
++	<string>$(RUM_APP_ID)</string>
++	<key>RUM_DATAKIT_URL</key>
++	<string>$(RUM_DATAKIT_URL)</string>
++	<key>RUM_ENV</key>
++	<string>$(RUM_ENV)</string>
++</dict>
++</plist>
+diff --git a/Config/RUM-PhoneApp.local.xcconfig.example b/Config/RUM-PhoneApp.local.xcconfig.example
+new file mode 100644
+index 0000000..5c9af3d
+--- /dev/null
++++ b/Config/RUM-PhoneApp.local.xcconfig.example
+@@ -0,0 +1,4 @@
++// Copy to matching .local.xcconfig. Escape URL // with /$()/ in xcconfig.
++RUM_DATAKIT_URL =
++RUM_APP_ID =
++RUM_ENV =
+diff --git a/Config/RUM-PhoneApp.xcconfig b/Config/RUM-PhoneApp.xcconfig
+new file mode 100644
+index 0000000..2dd35b7
+--- /dev/null
++++ b/Config/RUM-PhoneApp.xcconfig
+@@ -0,0 +1,3 @@
++#include? "RUM-PhoneApp.local.xcconfig"
++GENERATE_INFOPLIST_FILE = NO
++INFOPLIST_FILE = Config/RUM-Info.plist
+diff --git a/Config/RUM-TVApp.local.xcconfig.example b/Config/RUM-TVApp.local.xcconfig.example
+new file mode 100644
+index 0000000..5c9af3d
+--- /dev/null
++++ b/Config/RUM-TVApp.local.xcconfig.example
+@@ -0,0 +1,4 @@
++// Copy to matching .local.xcconfig. Escape URL // with /$()/ in xcconfig.
++RUM_DATAKIT_URL =
++RUM_APP_ID =
++RUM_ENV =
+diff --git a/Config/RUM-TVApp.xcconfig b/Config/RUM-TVApp.xcconfig
+new file mode 100644
+index 0000000..afa1c7b
+--- /dev/null
++++ b/Config/RUM-TVApp.xcconfig
+@@ -0,0 +1,3 @@
++#include? "RUM-TVApp.local.xcconfig"
++GENERATE_INFOPLIST_FILE = NO
++INFOPLIST_FILE = Config/RUM-Info.plist
+diff --git a/Podfile b/Podfile
+new file mode 100644
+index 0000000..fdbf052
+--- /dev/null
++++ b/Podfile
+@@ -0,0 +1,13 @@
++source 'https://cdn.cocoapods.org/'
++project 'App.xcodeproj'
++use_frameworks!
++
++target 'PhoneApp' do
++  platform :ios, '17.0'
++  pod 'GuanceSDK', '1.6.7'
++end
++
++target 'TVApp' do
++  platform :tvos, '17.0'
++  pod 'GuanceSDK', '1.6.7'
++end
+diff --git a/scripts/build-rum.sh b/scripts/build-rum.sh
+new file mode 100755
+index 0000000..a62a1a7
+--- /dev/null
++++ b/scripts/build-rum.sh
+@@ -0,0 +1,10 @@
++#!/bin/sh
++set -eu
++cd "$(dirname "$0")/.."
++case "${1:-}" in
++    PhoneApp) sdk=iphonesimulator ;;
++    TVApp) sdk=appletvsimulator ;;
++    *) echo "Usage: $0 PhoneApp|TVApp" >&2; exit 2 ;;
++esac
++# Run pod install first after restoring the complete Xcode project.
++exec xcodebuild -workspace App.xcworkspace -scheme "$1" -configuration Debug     -sdk "$sdk" -xcconfig "Config/RUM-$1.xcconfig" CODE_SIGNING_ALLOWED=NO build

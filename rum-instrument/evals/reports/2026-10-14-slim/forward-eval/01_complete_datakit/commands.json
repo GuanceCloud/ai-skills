@@ -1,0 +1,196 @@
+[
+  {
+    "command": [
+      "git",
+      "init",
+      "-q"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "add",
+      "."
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "-c",
+      "user.name=RUM Evaluation",
+      "-c",
+      "user.email=rum-eval@example.invalid",
+      "commit",
+      "-qm",
+      "synthetic baseline"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "status",
+      "--short"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "diff"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "cb3357260dda11b9425a9b12dc3fa9481fd0a581\n",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/detect_rum_targets.py",
+      "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+      "--pretty"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "{\n  \"repository\": {\n    \"dirty_paths\": [],\n    \"git_commit\": \"cb3357260dda11b9425a9b12dc3fa9481fd0a581\",\n    \"root\": \"/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture\",\n    \"scan_scope\": \".\"\n  },\n  \"schema_version\": 1,\n  \"targets\": [\n    {\n      \"application_id_slots\": [\n        \"web\"\n      ],\n      \"confidence\": \"high\",\n      \"evidence\": [\n        \"index.html\"\n      ],\n      \"existing_rum_markers\": {\n        \"browser-rum-global\": [\n          \"test-support/rum-sdk-double.js\"\n        ]\n      },\n      \"id\": \"web:.\",\n      \"path\": \".\",\n      \"platform\": \"web\",\n      \"variants\": [\n        \"browser\"\n      ]\n    }\n  ],\n  \"warnings\": []\n}\n",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/validate_contract.py",
+      ".rum/draft.json",
+      "--complete-draft",
+      ".rum/plan.json",
+      "--repository",
+      "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "created validated v3 plan; implementation still requires --phase implement\n",
+    "stderr": "warning: DataKit readiness is not recorded; local implementation may proceed, but remote ingestion remains unverified\n",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/validate_contract.py",
+      ".rum/plan.json",
+      "--phase",
+      "plan"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "valid rum plan: revision 1 (plan)\n",
+    "stderr": "warning: DataKit readiness is not recorded; local implementation may proceed, but remote ingestion remains unverified\n",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/validate_contract.py",
+      ".rum/plan.json",
+      "--phase",
+      "implement",
+      "--repository",
+      "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "valid rum plan: revision 1 (implement)\n",
+    "stderr": "warning: DataKit readiness is not recorded; local implementation may proceed, but remote ingestion remains unverified\n",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "npm",
+      "run",
+      "check"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "\n> rum-behavior-fixture@1.0.0 check\n> node --check src/main.js\n\n",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "npm",
+      "test"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 1,
+    "stdout": "\n> rum-behavior-fixture@1.0.0 test\n> node tests/smoke.cjs\n\n",
+    "stderr": "Error: listen EPERM: operation not permitted 127.0.0.1:19529\n    at Server.setupListenHandle [as _listen2] (node:net:1295:21)\n    at listenInCluster (node:net:1360:12)\n    at doListen (node:net:1498:7)\n    at processTicksAndRejections (node:internal/process/task_queues:82:21) {\n  code: 'EPERM',\n  errno: -1,\n  syscall: 'listen',\n  address: '127.0.0.1',\n  port: 19529\n}\nnpm ERR! code 1\nnpm ERR! path /private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture\nnpm ERR! command failed\nnpm ERR! command sh -c node tests/smoke.cjs\n",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--stat"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": " rum.config.json | 9 ++++++++-\n src/main.js     | 9 +++++++++\n 2 files changed, 17 insertions(+), 1 deletion(-)\n",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "node",
+      "/private/tmp/rum-slim-forward-eval-20261014/node16-compatible-smoke.cjs"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "{\"mode\":\"controlled-SDK-and-local-HTTP-receiver\",\"initializers\":1,\"startup_preserved\":true,\"request_preserved\":true,\"sdk_failure_startup_preserved\":true,\"configuration\":{\"applicationId\":\"synthetic-web-01\",\"datakitOrigin\":\"http://127.0.0.1:19529\",\"service\":\"synthetic-web-fixture\",\"version\":\"1.0.0\",\"env\":\"test\",\"sessionSampleRate\":35},\"events\":[{\"type\":\"view\",\"applicationId\":\"synthetic-web-01\",\"service\":\"synthetic-web-fixture\",\"version\":\"1.0.0\",\"env\":\"test\"},{\"type\":\"resource\",\"applicationId\":\"synthetic-web-01\",\"service\":\"synthetic-web-fixture\",\"version\":\"1.0.0\",\"env\":\"test\"},{\"type\":\"error\",\"applicationId\":\"synthetic-web-01\",\"service\":\"synthetic-web-fixture\",\"version\":\"1.0.0\",\"env\":\"test\"}],\"real_sdk_verified\":false,\"backend_ingestion_verified\":false}\n",
+    "stderr": "",
+    "sandbox": "tool-authorized localhost listener",
+    "expected_exit": 0
+  }
+]

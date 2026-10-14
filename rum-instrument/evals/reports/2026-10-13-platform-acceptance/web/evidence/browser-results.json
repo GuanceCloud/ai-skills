@@ -1,0 +1,117 @@
+{
+  "checks": [
+    {
+      "name": "production_vue_mount",
+      "passed": true
+    },
+    {
+      "name": "runtime_configuration_consumed",
+      "passed": true,
+      "detail": {
+        "config": {
+          "applicationId": "eval_vue_acceptance",
+          "datakitOrigin": "http://127.0.0.1:19539",
+          "service": "vue-rum-acceptance",
+          "version": "1.2.3",
+          "env": "production",
+          "sessionReplaySampleRate": 0
+        },
+        "additionalCalls": 0,
+        "recording": false
+      }
+    },
+    {
+      "name": "single_init_and_repeated_initialization_guard",
+      "passed": true,
+      "detail": 0
+    },
+    {
+      "name": "no_replay_or_trace_configuration",
+      "passed": true
+    },
+    {
+      "name": "actual_initializer_block_executes_once",
+      "passed": true,
+      "detail": [
+        {
+          "startOffset": 71,
+          "endOffset": 467,
+          "count": 1
+        },
+        {
+          "startOffset": 46,
+          "endOffset": 473,
+          "count": 4
+        },
+        {
+          "startOffset": 0,
+          "endOffset": 501,
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "original_application_error_handler_preserved",
+      "passed": true
+    },
+    {
+      "name": "spa_navigation_preserved",
+      "passed": true
+    },
+    {
+      "name": "nonempty_sdk_payload",
+      "passed": true,
+      "detail": {
+        "count": 5,
+        "bytes": 29118
+      }
+    },
+    {
+      "name": "view_event_and_route_exported",
+      "passed": true
+    },
+    {
+      "name": "resource_event_exported",
+      "passed": true
+    },
+    {
+      "name": "error_event_exported",
+      "passed": true
+    },
+    {
+      "name": "harmless_query_allowed",
+      "passed": true
+    },
+    {
+      "name": "local_draft_not_custom_collected",
+      "passed": true
+    },
+    {
+      "name": "application_requests_no_trace_headers",
+      "passed": true
+    },
+    {
+      "name": "sdk_abort_application_survives",
+      "passed": true,
+      "detail": {
+        "elapsed": 56,
+        "messages": [
+          "Failed to load resource: net::ERR_FAILED",
+          "RUM initialization unavailable; application continues"
+        ]
+      }
+    },
+    {
+      "name": "sdk_stall_application_survives",
+      "passed": true,
+      "detail": {
+        "elapsed": 1824,
+        "messages": [
+          "Failed to load resource: net::ERR_FAILED",
+          "RUM initialization unavailable; application continues"
+        ]
+      }
+    }
+  ],
+  "remoteVerification": false
+}

@@ -1,0 +1,2 @@
+{"path": "/v1/datakit/pull?filters=true", "encoding": null, "body": ""}
+{"path": "/v1/write/rum", "encoding": "deflate", "body": ""}

@@ -1,0 +1,36 @@
+{
+  "authorization": "User explicitly allowed temporary enabling and restoration of WeChat IDE service port",
+  "attempts": [
+    {
+      "operation": "cua.getApp('/Applications/wechatwebdevtools.app')",
+      "result": "Computer Use server error -10005: timeoutReached",
+      "elapsed_seconds": 70.6506
+    },
+    {
+      "operation": "cua.getState()",
+      "result": "js execution timed out; kernel reset",
+      "elapsed_seconds": 30.029
+    },
+    {
+      "operation": "cua.getApp('微信开发者工具')",
+      "result": "Invalid app: 微信开发者工具",
+      "elapsed_seconds": 0.2498
+    },
+    {
+      "operation": "cua.getApp('com.tencent.webplusdevtools')",
+      "result": "Computer Use server error -10005: timeoutReached",
+      "elapsed_seconds": 8.1533
+    }
+  ],
+  "ui_read_success": false,
+  "clicks_performed": 0,
+  "setting_mutations": 0,
+  "original_state": "disabled (official CLI exit 255)",
+  "final_state": "disabled (official CLI recheck exit 255)",
+  "restoration": "Not required: no setting mutation occurred",
+  "runtime": "not_run",
+  "receiver_started": false,
+  "test_port_listeners": false,
+  "cleanup": "No local receiver or automation service was started; ports 19529, 19531, 19532 have no listener",
+  "remaining_blocker": "CUA could not obtain usable native application UI. Installed CLI has no supported enable-service-port option. Further runtime/login compatibility is unknown."
+}

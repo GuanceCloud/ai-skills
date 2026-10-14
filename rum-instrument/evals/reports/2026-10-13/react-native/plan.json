@@ -1,0 +1,244 @@
+{
+  "approval": {
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1,
+    "status": "approved"
+  },
+  "batches": [
+    {
+      "approval": {
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1,
+        "status": "approved"
+      },
+      "depends_on": [],
+      "id": "rn-core",
+      "target_ids": [
+        "react-native:."
+      ]
+    }
+  ],
+  "handoff": [
+    "Complete actual native app scaffolding and native SDK autolinking, then build on device/simulator.",
+    "Configure Android ft-plugin and native repository settings once actual root Gradle build exists; validate native resource/launch capture.",
+    "Supply release env/version through final native deployment configuration.",
+    "Loopback receiver requires device-specific connectivity; no remote ingestion claim."
+  ],
+  "planned_changes": [
+    {
+      "dependency_decision": {
+        "action": "add",
+        "compatibility": "Published peer range react-native >=0.63.4 <1.0 includes 0.80.0; SDK contains New Architecture branches; native compatibility cannot be built in incomplete skeleton.",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/react-native/quick-start/",
+          "https://registry.npmjs.org/@cloudcare%2freact-native-mobile/latest"
+        ],
+        "owner": "GuanceCloud",
+        "package": "@cloudcare/react-native-mobile",
+        "verified_at": "2026-10-13",
+        "version": "0.4.2"
+      },
+      "edits": [
+        "Add exact SDK 0.4.2 dependency"
+      ],
+      "file": "package.json",
+      "order": 1,
+      "purpose": "Add exact SDK 0.4.2 dependency",
+      "risk": "Incomplete native skeleton prevents native linking, startup/resource/plugin validation",
+      "rollback": "Restore baseline index/package; remove added rum modules",
+      "target_id": "react-native:.",
+      "validation": [
+        "Node syntax checks",
+        "Actual SDK JavaScript with mocked RN native bridge",
+        "Native toolchain availability audit"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Maintain non-secret wrapper configuration for both platforms"
+      ],
+      "file": "rum-config.js",
+      "order": 2,
+      "purpose": "Maintain non-secret wrapper configuration for both platforms",
+      "risk": "Incomplete native skeleton prevents native linking, startup/resource/plugin validation",
+      "rollback": "Restore baseline index/package; remove added rum modules",
+      "target_id": "react-native:.",
+      "validation": [
+        "Node syntax checks",
+        "Actual SDK JavaScript with mocked RN native bridge",
+        "Native toolchain availability audit"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Initialize SDK then RUM once, catch bridge/load failures"
+      ],
+      "file": "rum.js",
+      "order": 3,
+      "purpose": "Initialize SDK then RUM once, catch bridge/load failures",
+      "risk": "Incomplete native skeleton prevents native linking, startup/resource/plugin validation",
+      "rollback": "Restore baseline index/package; remove added rum modules",
+      "target_id": "react-native:.",
+      "validation": [
+        "Node syntax checks",
+        "Actual SDK JavaScript with mocked RN native bridge",
+        "Native toolchain availability audit"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Start RUM from maintained JS entry"
+      ],
+      "file": "index.js",
+      "order": 4,
+      "purpose": "Start RUM from maintained JS entry",
+      "risk": "Incomplete native skeleton prevents native linking, startup/resource/plugin validation",
+      "rollback": "Restore baseline index/package; remove added rum modules",
+      "target_id": "react-native:.",
+      "validation": [
+        "Node syntax checks",
+        "Actual SDK JavaScript with mocked RN native bridge",
+        "Native toolchain availability audit"
+      ]
+    }
+  ],
+  "repository": {
+    "commit": "c6e52858528b1aa3ea985c7aeb9b484974a1a43b",
+    "initial_status": [],
+    "root": "${EVAL_ROOT}/react-native/project"
+  },
+  "request": {
+    "application_id_input": {
+      "kind": "map",
+      "references": {
+        "android": {
+          "value": "eval_rn_android"
+        },
+        "ios": {
+          "value": "eval_rn_ios"
+        }
+      }
+    },
+    "intent": "implement",
+    "receiver": {
+      "endpoint": {
+        "value": "http://127.0.0.1:19529"
+      },
+      "mode": "datakit"
+    }
+  },
+  "risks": [
+    "Native skeleton has no settings.gradle/root build.gradle/gradlew/Podfile/AppRegistry/App component and only placeholder Xcode project",
+    "SDK auto error handler behavior must be verified"
+  ],
+  "schema_version": 3,
+  "targets": [
+    {
+      "application_id_slots": [
+        "android",
+        "ios"
+      ],
+      "application_ids": {
+        "android": {
+          "value": "eval_rn_android"
+        },
+        "ios": {
+          "value": "eval_rn_ios"
+        }
+      },
+      "application_types": {
+        "android": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "reactnative",
+          "verification": "not_applicable"
+        },
+        "ios": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "reactnative",
+          "verification": "not_applicable"
+        }
+      },
+      "artifacts": {},
+      "blockers": [],
+      "disposition": "planned",
+      "evidence": [
+        "package.json",
+        "index.js",
+        "android/app/build.gradle",
+        "ios/App.xcodeproj/project.pbxproj"
+      ],
+      "existing_instrumentation": {
+        "files": [],
+        "sdk": null,
+        "signals": [],
+        "status": "none",
+        "version": null
+      },
+      "id": "react-native:.",
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/react-native/quick-start/",
+        "https://github.com/GuanceCloud/datakit-react-native"
+      ],
+      "path": ".",
+      "platform": "react-native",
+      "privacy": {
+        "custom_context": "none",
+        "optional_signals": "No Logs, Trace, Replay, WebView, native crash/ANR/freeze"
+      },
+      "profile": {
+        "env": {
+          "confidence": "low",
+          "source": "rum-config.js deployment override; SDK fallback if omitted",
+          "value": null
+        },
+        "sampling": {
+          "confidence": "high",
+          "source": "SDK documented defaults preserved",
+          "value": null
+        },
+        "service": {
+          "confidence": "high",
+          "source": "package.json#name",
+          "value": "react-native-rum-app"
+        },
+        "signals": {
+          "replay": false,
+          "rum": true
+        },
+        "version": {
+          "confidence": "low",
+          "source": "native application version; skeleton does not define release version",
+          "value": null
+        }
+      },
+      "receiver_mapping": {
+        "base_config": "FTMobileReactNative.sdkConfig({datakitUrl})",
+        "rum_config": "FTReactNativeRUM.setConfig({androidAppId,iOSAppId})"
+      },
+      "variants": [
+        "android",
+        "ios"
+      ]
+    }
+  ],
+  "validation": [
+    "Dependency installation",
+    "Real JS SDK wrapper tests with native bridge doubles",
+    "No native build claimed"
+  ]
+}

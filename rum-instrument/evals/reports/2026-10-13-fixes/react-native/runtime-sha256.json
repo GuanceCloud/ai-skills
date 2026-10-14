@@ -1,0 +1,15 @@
+{
+  "SKILL.md": "f246487c15b3c52c22f47166d6617e70045e157600f4c44ef122dcff7af1230d",
+  "references/common.md": "f6c0cf6fd0793cab8c1abbc8ecfd903481d8fe631e0937baeedad4056354eec4",
+  "references/execution.md": "dacabd961060f09b2358acabf21bceb88e0a793e93db21d3201f823ea7608082",
+  "references/contracts.md": "c39e79dbab18395fb904ca32ae6f5a79a71035a1e4c0f366bb4453acd0c4036d",
+  "references/privacy-security.md": "7eaecf9594e57035f1d0a4405a5981f7f08b9f7f4e106bd6fe41ae5591243ca0",
+  "references/validation.md": "322382bd2c01084c42b6b49a4d46148f1c7bd710c1a998be7ba463520607b11b",
+  "references/react-native.md": "b56ff37956a1ae872c18eb452ab783472c50afda2c156e7ace45ad06c856eec2",
+  "references/official-sources.json": "9759390e740577cf753ffcf231bb0fbd04de9a27515bf35717bdb47930f42b9a",
+  "assets/react-native-error-handler.cjs": "cbaab8137406aacfb765dd32a577a42f746cfa7d607757c5b5c217a9bb93d104",
+  "assets/datakit-plan.example.json": "85f86eb846d7185e3e376d994cc78281f4518b30b9d1927217b19335c017b147",
+  "scripts/detect_rum_targets.py": "3bfb5cf7f7548a2838372fb7ddf34ce580cc9247090cb8e0204e89f31472b325",
+  "scripts/validate_contract.py": "cc0177b05220f72b5355379b3ba143d9e7e5fc12c29f925cef414ed2dca711bf",
+  "scripts/resolve_rum_application.py": "4876a4abbfaabb16128956068a866c9b5205f4b6e270f07020a0017a314e8f62"
+}

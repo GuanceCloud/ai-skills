@@ -1,0 +1,12 @@
+<view class="page">
+  <text class="title">第二步：RUM 真机验收</text>
+  <text class="status">{{status}}</text>
+  <button id="resource" data-name="phone-resource" bindtap="requestResource">1. 检查网络并请求资源</button>
+  <button id="action" data-name="phone-action" bindtap="recordAction">2. 点击交互 · {{actions}}</button>
+  <button id="error" data-name="phone-error" bindtap="triggerError">3. 触发测试错误</button>
+  <text class="status">4. 输入下方测试文本，然后回车并收起键盘。请勿输入真实个人信息。</text>
+  <text selectable="{{true}}">RUM_PHONE_INPUT_CANARY</text>
+  <input id="private-input" placeholder="输入上面的测试文本" bindinput="handleInput" />
+  <text class="status">{{inputDone ? '已完成输入步骤' : '尚未输入'}}</text>
+  <text class="status">5. 再点击交互，保持页面 30 秒，然后退出小程序。回到聊天反馈网络与计数结果。</text>
+</view>

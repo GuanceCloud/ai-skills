@@ -1,0 +1,10 @@
+{
+  "test_ports": {
+    "exit": 1,
+    "output": ""
+  },
+  "user_ide_port": {
+    "exit": 0,
+    "output": "COMMAND     PID       USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nwechatweb 75349 oneandonly   35u  IPv4 0xc7716bb19d10beb6      0t0  TCP 127.0.0.1:56657 (LISTEN)\n"
+  }
+}

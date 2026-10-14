@@ -1,0 +1,5 @@
+
+> vue-rum-acceptance@1.2.3 build
+> vue-tsc --noEmit && vite build
+
+src/rum-config.ts(11,5): error TS2353: Object literal may only specify known properties, and 'site' does not exist in type 'RumInitConfiguration'.

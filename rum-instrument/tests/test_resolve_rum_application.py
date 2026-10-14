@@ -547,6 +547,7 @@ class ResolveRumApplicationTests(unittest.TestCase):
         temporary_code = "synthetic-temporary-code"
         client_token = "synthetic-client-token"
         with tempfile.TemporaryDirectory() as temporary:
+            temporary = str(Path(temporary).resolve())
             repository = Path(temporary) / "repository"
             repository.mkdir()
             self.init_git(repository)
@@ -688,7 +689,7 @@ class ResolveRumApplicationTests(unittest.TestCase):
             },
         }
         with tempfile.TemporaryDirectory() as temporary:
-            repository = Path(temporary)
+            repository = Path(temporary).resolve()
             self.init_git(repository)
             (repository / ".gitignore").write_text(".rum/\n", encoding="utf-8")
             secret_file = repository / ".rum" / "client-token.env"
@@ -751,7 +752,7 @@ class ResolveRumApplicationTests(unittest.TestCase):
             ai_api_url="https://ai-api.guance.com",
         )
         with tempfile.TemporaryDirectory() as temporary:
-            repository = Path(temporary)
+            repository = Path(temporary).resolve()
             self.init_git(repository)
             (repository / ".gitignore").write_text(".rum/\n", encoding="utf-8")
             stderr = io.StringIO()

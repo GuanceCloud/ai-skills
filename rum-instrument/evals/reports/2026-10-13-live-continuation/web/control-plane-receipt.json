@@ -1,0 +1,14 @@
+{
+  "app_id": "new_skill_001",
+  "site": "http://testing-openway.dataflux.cn",
+  "tls_scope": "User-authorized built-in test AI API only; no global TLS changes",
+  "helper_result": "resolved",
+  "plan_validation_exit": 0,
+  "implement_validation_exit": 0,
+  "resume_result": "reused",
+  "temporary_code_consumed_once": true,
+  "secret_sink_archived": false,
+  "api_key_persisted": false,
+  "strict_build_exit": 0,
+  "initial_build_failure": "Modern Node invoked npm, but child scripts inherited system Node 15; corrected process PATH to Node 24 and build passed."
+}

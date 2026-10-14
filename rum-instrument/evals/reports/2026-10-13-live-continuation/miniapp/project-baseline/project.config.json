@@ -1,0 +1,29 @@
+{
+	"description": "Isolated local RUM SDK acceptance project",
+	"compileType": "miniprogram",
+	"appid": "touristappid",
+	"projectname": "rum-miniapp-baseline",
+	"setting": {
+		"urlCheck": false,
+		"es6": true,
+		"enhance": false,
+		"minified": false,
+		"nodeModules": false
+	},
+	"packOptions": {
+		"ignore": [
+			{
+				"type": "folder",
+				"value": "node_modules"
+			},
+			{
+				"type": "folder",
+				"value": ".rum"
+			}
+		]
+	},
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"libVersion": "2.11.1",
+	"condition": {}
+}

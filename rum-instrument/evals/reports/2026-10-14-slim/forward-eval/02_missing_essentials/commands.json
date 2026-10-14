@@ -1,0 +1,91 @@
+[
+  {
+    "command": [
+      "git",
+      "init",
+      "-q"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/02_missing_essentials/fixture",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "add",
+      "."
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/02_missing_essentials/fixture",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "-c",
+      "user.name=RUM Evaluation",
+      "-c",
+      "user.email=rum-eval@example.invalid",
+      "commit",
+      "-qm",
+      "synthetic baseline"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/02_missing_essentials/fixture",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "status",
+      "--short"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/02_missing_essentials/fixture",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "diff"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/02_missing_essentials/fixture",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/02_missing_essentials/fixture",
+    "exit_code": 0,
+    "stdout": "ae7dfea3837e2505111b97434d733f2b8bd43e46\n",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/detect_rum_targets.py",
+      "/private/tmp/rum-slim-forward-eval-20261014/02_missing_essentials/fixture",
+      "--pretty"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/02_missing_essentials/fixture",
+    "exit_code": 0,
+    "stdout": "{\n  \"repository\": {\n    \"dirty_paths\": [],\n    \"git_commit\": \"ae7dfea3837e2505111b97434d733f2b8bd43e46\",\n    \"root\": \"/private/tmp/rum-slim-forward-eval-20261014/02_missing_essentials/fixture\",\n    \"scan_scope\": \".\"\n  },\n  \"schema_version\": 1,\n  \"targets\": [\n    {\n      \"application_id_slots\": [\n        \"web\"\n      ],\n      \"confidence\": \"high\",\n      \"evidence\": [\n        \"index.html\"\n      ],\n      \"existing_rum_markers\": {\n        \"browser-rum-global\": [\n          \"test-support/rum-sdk-double.js\"\n        ]\n      },\n      \"id\": \"web:.\",\n      \"path\": \".\",\n      \"platform\": \"web\",\n      \"variants\": [\n        \"browser\"\n      ]\n    }\n  ],\n  \"warnings\": []\n}\n",
+    "stderr": "",
+    "expected_exit": 0
+  }
+]

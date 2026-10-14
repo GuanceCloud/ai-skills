@@ -1,0 +1,5 @@
+{
+  "original_request": "请按 http://127.0.0.1:18763/rum.md 完成当前项目 RUM 接入。datakitUrl: http://127.0.0.1:19529 appId: eval_ios",
+  "question": "项目包含 PhoneApp 和 TVApp。建议本次仅给 PhoneApp 接入 eval_ios；请确认是否仅接入 PhoneApp，或若两者都接入，请同时给出 TVApp 的 App ID。",
+  "answer": "两个应用都接入。PhoneApp 使用 eval_ios，TVApp 使用 eval_tvos，接收地址都沿用已给的 DataKit。"
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "pid": 80052,
+    "command": "../Versions/74.0.3729.169/wechatwebdevtools Helper.app/Contents/MacOS/node ./cli.js --open /private/tmp/rum-platform-acceptance/miniapp/project-baseline",
+    "action": "terminated own hung CLI"
+  },
+  {
+    "pid": 80053,
+    "command": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools Helper.app/Contents/MacOS/node /Applications/wechatwebdevtools.app/Contents/Resources/package.nw/js/common/cli/index.js /Applications/wechatwebdevtools.app/Contents/MacOS/cli.js --open /private/tmp/rum-platform-acceptance/miniapp/project-baseline",
+    "action": "terminated own hung CLI"
+  }
+]

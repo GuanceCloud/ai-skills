@@ -1,0 +1,24 @@
+diff --git a/index.js b/index.js
+index 336ce12..657e4dc 100644
+--- a/index.js
++++ b/index.js
+@@ -1 +1,6 @@
+-export {}
++const { startRum } = require('./rum');
++
++// The skeleton has no App component or AppRegistry registration yet.
++// Consume this promise before mounting the eventual application.
++const rumReady = startRum();
++module.exports = { rumReady };
+diff --git a/package.json b/package.json
+index 3627041..9d70930 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,7 @@
+ {
+   "name": "react-native-rum-app",
+   "dependencies": {
++    "@cloudcare/react-native-mobile": "0.4.2",
+     "react-native": "0.80.0"
+   }
+ }

@@ -1,0 +1,6 @@
+{
+  "command": "python3 -B -m unittest discover -s rum-instrument/tests -q",
+  "tests": 170,
+  "exit_code": 0,
+  "elapsed_seconds": 10.117
+}

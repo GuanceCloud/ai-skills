@@ -1,0 +1,100 @@
+diff --git a/.gitignore b/.gitignore
+index 0766e35..0b6aecd 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,4 @@
+ node_modules/
+ .rum/
+ build/
++rum-config.js
+diff --git a/index.html b/index.html
+index e85ba17..bec3b7b 100644
+--- a/index.html
++++ b/index.html
+@@ -1 +1 @@
+-<!doctype html><html><head><title>RUM eval</title></head><body><div id="app"></div><script type="module" src="/src/main.ts"></script></body></html>
++<!doctype html><html><head><title>RUM eval</title><script src="/rum-config.js"></script></head><body><div id="app"></div><script type="module" src="/src/main.ts"></script></body></html>
+diff --git a/src/main.ts b/src/main.ts
+index 765c429..9b719a2 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -1 +1,3 @@
+-import "./rum"
++import { startRum } from "./rum";
++
++void startRum();
+diff --git a/src/rum.ts b/src/rum.ts
+index f0980e8..72cbe70 100644
+--- a/src/rum.ts
++++ b/src/rum.ts
+@@ -1,5 +1,52 @@
+-import { datafluxRum } from "@cloudcare/browser-rum";
++type RumRuntimeConfig = {
++  applicationId: string;
++  datakitOrigin: string;
++  service?: string;
++  env?: string;
++  version?: string;
++  sessionSampleRate?: number;
++};
+ 
+-export function startRum(): void {
+-  datafluxRum.init(window.__RUM_CONFIG__);
++declare global {
++  interface Window {
++    __RUM_CONFIG__?: RumRuntimeConfig;
++    __RUM_START__?: Promise<boolean>;
++  }
++}
++
++/** One shared startup per page, including repeated calls and module reloads. */
++export function startRum(): Promise<boolean> {
++  if (typeof window === "undefined") return Promise.resolve(false);
++  if (window.__RUM_START__) return window.__RUM_START__;
++  const config = window.__RUM_CONFIG__;
++  if (!config?.applicationId || !config.datakitOrigin) {
++    console.warn("RUM is disabled: runtime configuration is missing.");
++    return Promise.resolve(false);
++  }
++  window.__RUM_START__ = import("@cloudcare/browser-rum")
++    .then(({ datafluxRum }) => {
++      if (!datafluxRum.getInitConfiguration()) {
++        datafluxRum.init({
++          applicationId: config.applicationId,
++          datakitOrigin: config.datakitOrigin,
++          service: config.service || "vue-existing-rum",
++          env: config.env,
++          version: config.version,
++          ...(config.sessionSampleRate !== undefined
++            ? { sessionSampleRate: config.sessionSampleRate }
++            : {}),
++          sessionReplaySampleRate: 0,
++          sessionReplayOnErrorSampleRate: 0,
++        });
++      }
++      const initialized = Boolean(datafluxRum.getInitConfiguration());
++      if (!initialized) delete window.__RUM_START__;
++      return initialized;
++    })
++    .catch(() => {
++      delete window.__RUM_START__;
++      console.warn("RUM failed to initialize; application startup can continue.");
++      return false;
++    });
++  return window.__RUM_START__;
+ }
+diff --git a/rum-config.example.js b/rum-config.example.js
+new file mode 100644
+index 0000000..3774c08
+--- /dev/null
++++ b/rum-config.example.js
+@@ -0,0 +1,9 @@
++// Copy to rum-config.js and supply deployment release values when available.
++// This local receiver is for the authorized evaluation only.
++window.__RUM_CONFIG__ = {
++  applicationId: "eval_web",
++  datakitOrigin: "http://127.0.0.1:19529",
++  service: "vue-existing-rum",
++  // env: "<deployment environment>",
++  // version: "<release version>",
++};

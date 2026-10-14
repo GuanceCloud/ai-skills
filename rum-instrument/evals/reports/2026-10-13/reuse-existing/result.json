@@ -1,0 +1,100 @@
+{
+  "case": "reuse-existing",
+  "completion": {
+    "full_platform_build": false,
+    "local_source_integration": true,
+    "real_sdk_runtime_smoke": false,
+    "remote_ingestion_verified": false,
+    "source_change_required": false
+  },
+  "counts": {
+    "business_question_rounds": 0,
+    "business_questions": 0,
+    "control_plane_calls": 0,
+    "credential_exchanges": 0,
+    "implement_validation_attempts": 2,
+    "plan_validation_attempts": 2,
+    "routine_confirmation_rounds": 0,
+    "sdk_api_primary_source_checks": 1,
+    "sdk_install_attempts": 1,
+    "sdk_install_successes": 1,
+    "sdk_upgrade_attempts": 0,
+    "skill_install_attempts": 0,
+    "skill_update_checks": 0
+  },
+  "discovery": {
+    "application_id_reused": true,
+    "configuration_source": "config/rum.local.js",
+    "endpoint_reused": true,
+    "existing_initializer": "rum.js called before App() in app.js",
+    "initial_git_status": "clean",
+    "platform": "WeChat MiniApp",
+    "receiver_mode": "datakit",
+    "sdk": "@cloudcare/rum-miniapp",
+    "version": "2.2.20"
+  },
+  "limits": [
+    "精简 fixture 缺少 app.json 指向的 pages/index/index 页面，没有项目构建/测试 scripts；未扩张脚手架。",
+    "没有执行微信开发者工具构建或真机测试；VM 使用 SDK stub，不能证明 SDK 实际遥测。",
+    "未验证页面切换、真实资源与错误事件、隐私 canary 的实际导出 payload 或网络 trace header。",
+    "现有 DataKit 地址 http://127.0.0.1:19529 指向运行设备本地；采集器、真机可达性、request 合法域名需在目标环境确认。",
+    "未操作远程控制台、部署或上传，未声称远程入库。"
+  ],
+  "modifications": {
+    "case_artifacts": [
+      "smoke-results.json",
+      "result.json"
+    ],
+    "ignored_internal_files": [
+      "project/.rum/plan.json"
+    ],
+    "installed_generated_files": [
+      "project/node_modules/"
+    ],
+    "reason": "现有初始化、配置来源、隐私选项和失败保护有效，保留现有实现，无重复注入。",
+    "tracked_source_files": []
+  },
+  "next_steps": [
+    "在完整小程序工程使用微信开发者工具构建 npm 并进行真机采集验证。",
+    "针对运行环境配置可达且合法的 DataKit 接收地址，确认 RUM 采集器和控制台入库。"
+  ],
+  "request": "帮我接入 RUM。",
+  "status": "existing_integration_reused_local_verification_complete",
+  "unexpected_issues": [
+    {
+      "issue": "First plan descriptors contained both source and value",
+      "resolution": "Moved source metadata to provenance; plan/implement revalidation passed without user question."
+    }
+  ],
+  "validation": [
+    {
+      "check": "Detector and maintained app.json/app.js/project.config.json",
+      "result": "one independent MiniApp confirmed"
+    },
+    {
+      "check": "Official MiniApp access guide and installed 2.2.20 index.d.ts",
+      "result": "package, receiver mapping and configured privacy API fields supported",
+      "source": "https://docs.guance.com/real-user-monitoring/miniapp/app-access/"
+    },
+    {
+      "check": "npm ci --ignore-scripts --no-audit --no-fund",
+      "result": "passed; installed locked SDK without dependency change"
+    },
+    {
+      "check": "node --check app.js / rum.js / config/rum.local.js",
+      "result": "passed"
+    },
+    {
+      "check": "schema v3 plan and implementation validators",
+      "result": "passed after correcting source/value descriptor construction; warns remote readiness unverified"
+    },
+    {
+      "check": "VM wrapper smoke with mocked SDK",
+      "result": "4 scenarios passed: config consumption and single init before App; absent SDK; absent config; thrown init and retry"
+    },
+    {
+      "check": "Git diff and ignores",
+      "result": "tracked working tree unchanged; local config, plan and node_modules ignored"
+    }
+  ]
+}

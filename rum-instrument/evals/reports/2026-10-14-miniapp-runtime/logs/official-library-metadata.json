@@ -1,0 +1,27 @@
+{
+  "source": "Official IDE WeappVendor/cfg.json",
+  "notGrayList": [
+    "3.17.3",
+    "3.17.2",
+    "3.16.3",
+    "3.16.2"
+  ],
+  "usageRateList": [
+    {
+      "percentage": 52.05,
+      "sdkVer": "3.17.3"
+    },
+    {
+      "percentage": 38.67,
+      "sdkVer": "3.17.4"
+    },
+    {
+      "percentage": 2.32,
+      "sdkVer": "3.15.3"
+    },
+    {
+      "percentage": 2.06,
+      "sdkVer": "3.16.3"
+    }
+  ]
+}

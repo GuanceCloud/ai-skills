@@ -1,0 +1,12 @@
+{
+  "platform_base_library": "3.17.4",
+  "ide": "1.02.1911180",
+  "observed_ui": [
+    "Uncaught SyntaxError: Unexpected token .",
+    "渲染层错误",
+    "Uncaught ReferenceError: wx is not defined"
+  ],
+  "automator": "Tool.getInfo responds, App.getCurrentPage never responds; 45s timeout",
+  "repair": "Select installed official base library 2.11.1 using project-local libVersion, preserve global settings",
+  "evidence": "/Users/oneandonly/Library/Application Support/微信开发者工具/WeappVendor/2.11.1.wxvpkg"
+}

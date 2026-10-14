@@ -1,0 +1,275 @@
+{
+  "approval": {
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1,
+    "status": "approved"
+  },
+  "batches": [
+    {
+      "approval": {
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1,
+        "status": "approved"
+      },
+      "depends_on": [],
+      "id": "web-core",
+      "target_ids": [
+        "web:."
+      ]
+    }
+  ],
+  "handoff": [
+    "Collector readiness and remote ingestion remain unverified"
+  ],
+  "planned_changes": [
+    {
+      "dependency_decision": {
+        "action": "preserve",
+        "compatibility": "Existing SDK version supports applicationId/datakitOrigin; validate against downloaded definitions.",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/web/app-access/"
+        ],
+        "owner": "GuanceCloud",
+        "package": "@cloudcare/browser-rum",
+        "verified_at": "2026-10-13",
+        "version": "3.3.5"
+      },
+      "edits": [
+        "Ignore dependencies and local runtime config"
+      ],
+      "file": ".gitignore",
+      "order": 1,
+      "purpose": "Ignore dependencies and local runtime config",
+      "risk": "Runtime config must be served before browser main entry",
+      "rollback": "Restore baseline maintained source; remove newly added config example and ignore rules",
+      "target_id": "web:.",
+      "validation": [
+        "Real SDK TypeScript check",
+        "Real SDK esbuild bundle",
+        "Browser smoke test"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "preserve",
+        "compatibility": "Existing SDK version supports applicationId/datakitOrigin; validate against downloaded definitions.",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/web/app-access/"
+        ],
+        "owner": "GuanceCloud",
+        "package": "@cloudcare/browser-rum",
+        "verified_at": "2026-10-13",
+        "version": "3.3.5"
+      },
+      "edits": [
+        "Credential-free deployment runtime config example"
+      ],
+      "file": "rum-config.example.js",
+      "order": 2,
+      "purpose": "Credential-free deployment runtime config example",
+      "risk": "Runtime config must be served before browser main entry",
+      "rollback": "Restore baseline maintained source; remove newly added config example and ignore rules",
+      "target_id": "web:.",
+      "validation": [
+        "Real SDK TypeScript check",
+        "Real SDK esbuild bundle",
+        "Browser smoke test"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "preserve",
+        "compatibility": "Existing SDK version supports applicationId/datakitOrigin; validate against downloaded definitions.",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/web/app-access/"
+        ],
+        "owner": "GuanceCloud",
+        "package": "@cloudcare/browser-rum",
+        "verified_at": "2026-10-13",
+        "version": "3.3.5"
+      },
+      "edits": [
+        "Load runtime config before main entry"
+      ],
+      "file": "index.html",
+      "order": 3,
+      "purpose": "Load runtime config before main entry",
+      "risk": "Runtime config must be served before browser main entry",
+      "rollback": "Restore baseline maintained source; remove newly added config example and ignore rules",
+      "target_id": "web:.",
+      "validation": [
+        "Real SDK TypeScript check",
+        "Real SDK esbuild bundle",
+        "Browser smoke test"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "preserve",
+        "compatibility": "Existing SDK version supports applicationId/datakitOrigin; validate against downloaded definitions.",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/web/app-access/"
+        ],
+        "owner": "GuanceCloud",
+        "package": "@cloudcare/browser-rum",
+        "verified_at": "2026-10-13",
+        "version": "3.3.5"
+      },
+      "edits": [
+        "Execute existing shared initializer"
+      ],
+      "file": "src/main.ts",
+      "order": 4,
+      "purpose": "Execute existing shared initializer",
+      "risk": "Runtime config must be served before browser main entry",
+      "rollback": "Restore baseline maintained source; remove newly added config example and ignore rules",
+      "target_id": "web:.",
+      "validation": [
+        "Real SDK TypeScript check",
+        "Real SDK esbuild bundle",
+        "Browser smoke test"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "preserve",
+        "compatibility": "Existing SDK version supports applicationId/datakitOrigin; validate against downloaded definitions.",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/web/app-access/"
+        ],
+        "owner": "GuanceCloud",
+        "package": "@cloudcare/browser-rum",
+        "verified_at": "2026-10-13",
+        "version": "3.3.5"
+      },
+      "edits": [
+        "Load SDK safely, use runtime configuration and initialize once"
+      ],
+      "file": "src/rum.ts",
+      "order": 5,
+      "purpose": "Load SDK safely, use runtime configuration and initialize once",
+      "risk": "Runtime config must be served before browser main entry",
+      "rollback": "Restore baseline maintained source; remove newly added config example and ignore rules",
+      "target_id": "web:.",
+      "validation": [
+        "Real SDK TypeScript check",
+        "Real SDK esbuild bundle",
+        "Browser smoke test"
+      ]
+    }
+  ],
+  "repository": {
+    "commit": "9b1b03f8437a23a0a55751f73f27d5484c979175",
+    "initial_status": [],
+    "root": "${EVAL_ROOT}/web/project"
+  },
+  "request": {
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "eval_web"
+      }
+    },
+    "intent": "implement",
+    "receiver": {
+      "endpoint": {
+        "value": "http://127.0.0.1:19529"
+      },
+      "mode": "datakit"
+    }
+  },
+  "risks": [
+    "Project is a skeleton with no build scripts or Vue mounted application"
+  ],
+  "schema_version": 3,
+  "targets": [
+    {
+      "application_id_slots": [
+        "web"
+      ],
+      "application_ids": {
+        "web": {
+          "value": "eval_web"
+        }
+      },
+      "application_types": {
+        "web": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "web",
+          "verification": "not_applicable"
+        }
+      },
+      "artifacts": {},
+      "blockers": [],
+      "disposition": "planned",
+      "evidence": [
+        "package.json",
+        "index.html",
+        "src/main.ts",
+        "src/rum.ts"
+      ],
+      "existing_instrumentation": {
+        "files": [
+          "src/rum.ts"
+        ],
+        "sdk": "@cloudcare/browser-rum",
+        "signals": [
+          "rum"
+        ],
+        "status": "partial",
+        "version": "3.3.5"
+      },
+      "id": "web:.",
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/web/app-access/"
+      ],
+      "path": ".",
+      "platform": "web",
+      "privacy": {
+        "custom_fields": [],
+        "replay": "disabled"
+      },
+      "profile": {
+        "env": {
+          "confidence": "medium",
+          "source": "window.__RUM_CONFIG__.env",
+          "value": null
+        },
+        "sampling": {
+          "confidence": "high",
+          "source": "SDK documented default",
+          "value": 100
+        },
+        "service": {
+          "confidence": "high",
+          "source": "package.json#name",
+          "value": "vue-existing-rum"
+        },
+        "signals": {
+          "replay": false,
+          "rum": true
+        },
+        "version": {
+          "confidence": "medium",
+          "source": "window.__RUM_CONFIG__.version",
+          "value": null
+        }
+      },
+      "receiver_mapping": {
+        "applicationId": "eval_web",
+        "datakitOrigin": "http://127.0.0.1:19529"
+      },
+      "variants": [
+        "browser"
+      ]
+    }
+  ],
+  "validation": [
+    "Actual installed SDK typecheck and bundle",
+    "Representative local browser smoke"
+  ]
+}

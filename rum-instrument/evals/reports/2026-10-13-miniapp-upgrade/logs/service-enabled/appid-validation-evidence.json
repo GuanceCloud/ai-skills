@@ -1,0 +1,7 @@
+{
+  "source": "/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/e1aa86671c672ee925dc86d4ae5dddb1.js",
+  "sha256": "b49f5d5db9e00432fd5fd52663ecf087150ebf176551005249b439ce230128fa",
+  "method": "formatProject",
+  "excerpt": "if(!s||s===o.default.TOURIST_APPID||s===o.default.GAME_TOURIST_APPID)throw this.logService.warn(\"[automation_game] formatProject reject tourist/empty appid\",{projectpath:e,appid:s||\"(empty)\",isTouristAppid:s===o.default.TOURIST_APPID,isGameTouristAppid:s===o.default.GAME_TOURIST_APPID}),this.createCodedError(\"APPID_ERROR\",d.default.config.CLI_INVALID_APPID);",
+  "interpretation": "Official CLI project validation explicitly rejects empty/tourist AppID before starting the runtime. No code or validation was modified."
+}

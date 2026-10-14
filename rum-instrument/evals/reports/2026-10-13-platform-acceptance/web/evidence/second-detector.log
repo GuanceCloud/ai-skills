@@ -1,0 +1,46 @@
+{
+  "repository": {
+    "dirty_paths": [
+      "M README.md",
+      " M package-lock.json",
+      " M package.json",
+      " M src/main.ts",
+      "?? .env.example",
+      "?? .env.production",
+      "?? scripts/acceptance.mjs",
+      "?? src/rum.ts"
+    ],
+    "git_commit": "db9ef5a8ab3de741bdb2ecc2cf948f022475c8cd",
+    "root": "/private/tmp/rum-platform-acceptance/web",
+    "scan_scope": "."
+  },
+  "schema_version": 1,
+  "targets": [
+    {
+      "application_id_slots": [
+        "web"
+      ],
+      "confidence": "high",
+      "evidence": [
+        "index.html",
+        "package.json",
+        "src/main.ts"
+      ],
+      "existing_rum_markers": {
+        "browser-rum-package": [
+          "package.json"
+        ],
+        "javascript-rum-api": [
+          "src/rum.ts"
+        ]
+      },
+      "id": "web:.",
+      "path": ".",
+      "platform": "web",
+      "variants": [
+        "browser"
+      ]
+    }
+  ],
+  "warnings": []
+}

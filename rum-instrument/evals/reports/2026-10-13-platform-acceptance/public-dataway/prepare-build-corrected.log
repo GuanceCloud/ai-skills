@@ -1,0 +1,15 @@
+
+> vue-rum-acceptance@1.2.3 build
+> vue-tsc --noEmit && vite build
+
+vite v7.1.9 building for production...
+transforming...
+✓ 229 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.36 kB │ gzip:   0.28 kB
+dist/assets/index-B9F5CDAa.css    0.21 kB │ gzip:   0.17 kB
+dist/assets/rum-BZ5CHDsD.js       0.23 kB │ gzip:   0.20 kB
+dist/assets/index-CM4w4scw.js    87.70 kB │ gzip:  34.97 kB
+dist/assets/index-W0AwIvqE.js   409.57 kB │ gzip: 132.00 kB
+✓ built in 697ms

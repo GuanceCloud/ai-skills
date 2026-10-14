@@ -1,0 +1,38 @@
+{
+  "status": "passed",
+  "checks": {
+    "nonempty_real_sdk_payload": true,
+    "view_resource_error_present": true,
+    "correct_application_id": true,
+    "sdk_version_1_7_5": true,
+    "configuration_consumed": true,
+    "representative_http_success": true,
+    "error_stack_preserved": true,
+    "bounded_view": true,
+    "canaries_absent": true,
+    "request_behavior_preserved": true,
+    "trace_headers_absent": true,
+    "authorization_masked": true,
+    "single_initializer_source": true,
+    "one_initializer_per_process": true,
+    "device_arm64_api34": true,
+    "runtime_no_app_crash": true
+  },
+  "measurement_counts": {
+    "view": 1,
+    "resource": 1,
+    "error": 1
+  },
+  "cold_start_count": 2,
+  "process_ids": [
+    "4344",
+    "4495"
+  ],
+  "remote_ingestion_verified": false,
+  "limitations": [
+    "Manual core View and Error APIs; no plugin-based automatic Activity/Fragment instrumentation claim",
+    "Real OkHttp Resource interceptor; synthetic request only",
+    "No crash capture, Replay, Trace, Logs, release signing or physical-device coverage",
+    "DataKit-protocol local mock only; no real DataKit or remote ingestion verification"
+  ]
+}

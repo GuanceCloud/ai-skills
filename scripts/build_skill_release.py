@@ -8,6 +8,7 @@ import gzip
 import hashlib
 import json
 import os
+import re
 from pathlib import Path, PurePosixPath
 import shutil
 import stat
@@ -28,7 +29,7 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def included_files(repo: Path, root: Path) -> list[Path]:
+def included_files(repo: Path, root: Path, include: list[str] | None = None) -> list[Path]:
     result: list[Path] = []
     relative_root = root.relative_to(repo).as_posix()
     process = subprocess.run(
@@ -39,6 +40,8 @@ def included_files(repo: Path, root: Path) -> list[Path]:
     tracked = sorted((repo / item.decode("utf-8") for item in process.stdout.split(b"\0") if item), key=lambda item: item.as_posix())
     for path in tracked:
         relative = path.relative_to(root)
+        if include is not None and relative.parts[0] not in include:
+            continue
         if any(part in EXCLUDED_DIRS for part in relative.parts):
             continue
         if path.is_symlink():
@@ -73,6 +76,15 @@ def validate_manifest(repo: Path, manifest: dict) -> list[dict]:
         skill_root = repo / relative
         if not (skill_root / "SKILL.md").is_file():
             raise ValueError(f"missing SKILL.md: {relative}/SKILL.md")
+        include = skill.get("package_include")
+        if include is not None:
+            if (not isinstance(include, list) or not include
+                    or not all(isinstance(v, str) and v not in {".", ".."}
+                               and re.fullmatch(r"[A-Za-z0-9_.-]+", v) for v in include)
+                    or len(set(include)) != len(include) or "SKILL.md" not in include):
+                raise ValueError(f"invalid package_include for {name}")
+            if any(not (skill_root / item).exists() for item in include):
+                raise ValueError(f"missing package_include path for {name}")
         setup = skill.get("setup", {})
         if not isinstance(setup, dict) or set(setup) - {"unix", "windows"}:
             raise ValueError(f"invalid setup platforms for {name}")
@@ -156,7 +168,7 @@ def build(repo: Path, output: Path, version: str) -> None:
     entries: list[dict] = []
     for skill in skills:
         name, source = skill["name"], repo / skill["path"]
-        files = included_files(repo, source)
+        files = included_files(repo, source, skill.get("package_include"))
         stage = stage_root / name
         stage.mkdir(parents=True)
         for source_file in files:
@@ -184,7 +196,7 @@ def build(repo: Path, output: Path, version: str) -> None:
     for base in (output, version_root):
         (base / "skills-index.json").write_text(json_text, encoding="utf-8", newline="\n")
         (base / "skills-index.tsv").write_text(tsv_text, encoding="utf-8", newline="\n")
-    for name in ("install.sh", "install.ps1", "uninstall.sh", "uninstall.ps1"):
+    for name in ("install.sh", "install.ps1", "uninstall.sh", "uninstall.ps1", "rum.md"):
         shutil.copyfile(repo / name, output / name)
         shutil.copyfile(repo / name, version_root / name)
     shutil.rmtree(stage_root)

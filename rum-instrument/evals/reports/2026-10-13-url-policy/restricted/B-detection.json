@@ -1,0 +1,34 @@
+{
+  "repository": {
+    "dirty_paths": [],
+    "git_commit": "7b93e14625ef42df7a88c42ea40233a672327367",
+    "root": "/private/tmp/rum-url-policy-eval/restricted/B",
+    "scan_scope": "."
+  },
+  "schema_version": 1,
+  "targets": [
+    {
+      "application_id_slots": [
+        "web"
+      ],
+      "confidence": "high",
+      "evidence": [
+        "index.html",
+        "package.json",
+        "src/main.js"
+      ],
+      "existing_rum_markers": {
+        "browser-rum-package": [
+          "package.json"
+        ]
+      },
+      "id": "web:.",
+      "path": ".",
+      "platform": "web",
+      "variants": [
+        "browser"
+      ]
+    }
+  ],
+  "warnings": []
+}

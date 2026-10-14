@@ -34,3 +34,7 @@ Run available Unity edit-mode/play-mode tests and platform build checks. Verify:
 - errors/logs/custom events are bounded;
 - platform artifacts match the player build;
 - privacy canaries are absent.
+
+## Automatic configuration wiring
+
+Prefer existing Unity build configuration. Otherwise add an ignored input consumed by a maintained build preprocessing step or documented SDK config path. Keep per-platform IDs distinct and never edit generated native projects. Verify the built configuration contains the selected client settings without exposing values.

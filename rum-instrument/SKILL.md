@@ -1,171 +1,87 @@
 ---
 name: rum-instrument
-description: "Plan, audit, implement, repair, and validate Real User Monitoring across Web, MiniApp, Android, iOS/tvOS, macOS, HarmonyOS, React Native, Flutter, UniApp, C++, and Unity repositories. Use for browser/mobile RUM access, Public DataWay or DataKit delivery, Session Replay, RUM-to-APM tracing, or an existing RUM integration review—even when the user supplies only an Application ID and receiver variables."
+description: "Install, implement, repair, and validate RUM in Web, MiniApp, native and cross-platform applications. Use for RUM onboarding or existing-integration review, including requests with only an application ID and receiver."
 ---
 
 # RUM Instrumentation
 
-Instrument every deployable target through one convergent, plan-first workflow. Keep user input minimal and infer repository-specific details from maintained code and configuration.
+Complete ordinary core RUM from one request: discover, fill missing essentials, prepare, resolve configuration, implement, verify. Reuse a usable installed Skill; the distribution's `rum.md` handles first installation without routine update checks.
 
-## Non-negotiable boundaries
+## Boundaries
 
-- Preserve one valid initializer; never add a parallel integration.
-- Edit maintained source only. Do not edit generated output or vendored SDKs.
-- Verify current SDK versions and APIs from primary sources before changing dependencies or initialization.
-- Keep authorization codes, API Keys, and Client Token values out of tracked files, plans, commands, logs, diffs, and responses.
-- Keep Session Replay off unless explicitly requested and privacy-reviewed.
-- Do not perform console mutations, deployment, or artifact upload without exact authorization.
-- Do not claim remote ingestion from local HTTP success or SDK debug output.
-
-## Load references progressively
-
-Read only what the current phase needs:
-
-1. Read [references/common.md](references/common.md) to normalize input and targets.
-2. Read [references/execution.md](references/execution.md) before writing a plan or application files.
-3. Read [references/contracts.md](references/contracts.md) only when creating or validating `.rum/plan.json`.
-4. Read [references/control-plane.md](references/control-plane.md) only for Public DataWay.
-5. After detection, read each matching platform reference listed below.
-6. Read [references/privacy-security.md](references/privacy-security.md) when custom data, Trace, Replay, WebView, or release artifacts are present or requested.
-7. Read [references/validation.md](references/validation.md) before final verification.
-
-| Target | Reference |
-|---|---|
-| Web, SPA, MPA, SSR, Electron, Flutter Web | [references/web.md](references/web.md) |
-| MiniApp | [references/miniapp.md](references/miniapp.md) |
-| Android | [references/android.md](references/android.md) |
-| iOS/tvOS | [references/apple.md](references/apple.md) |
-| macOS | [references/macos.md](references/macos.md) |
-| HarmonyOS | [references/harmonyos.md](references/harmonyos.md) |
-| React Native | [references/react-native.md](references/react-native.md) |
-| Flutter mobile | [references/flutter.md](references/flutter.md) |
-| UniApp | [references/uniapp.md](references/uniapp.md) |
-| C++ | [references/cpp.md](references/cpp.md) |
-| Unity | [references/unity.md](references/unity.md) |
+- Preserve one valid initializer and unrelated user work. Edit maintained application source, never generated/vendor code.
+- Keep authorization codes, API Keys, and Client Token values out of tracked files, plans, commands, logs, diffs, and responses. Only the helper reads/writes credential values.
+- “Integrate/接入”, implement and repair authorize necessary local changes. Audit/validate is read-only; plan writes only the plan. No routine second approval.
+- Preserve existing sampling and optional signals; do not enable absent Logs, Trace, Replay or uploads unless requested. Existing explicit authorization is sufficient.
+- Remote creation, deployment and uploads require authorization for that action. A confirmation cannot override failed path, credential or integrity checks.
+- Local HTTP success is not proof of remote ingestion.
 
 ## Minimal prompt
 
-Accept YAML-like fields in natural language.
+```text
+请使用 rum-instrument 完成当前项目的 RUM 接入。
 
-Public DataWay:
-
-```yaml
-datawayUrl: {{DATAWAY_URL}}
-appId: {{APP_ID}}
-temporaryAuthCode: <one-time code> # required only for implementation
-applicationType: web              # optional
+datawayUrl: <receiver>
+appId: <RUM application ID>
+temporaryAuthCode: <one-time code>
 ```
 
-DataKit:
-
-```yaml
-datakitUrl: {{DATAKIT_URL}}
-appId: {{APP_ID}}
-applicationType: web # optional
-```
-
-For multiple independently deployed applications, accept target-keyed `appId` and `applicationType` maps. Never copy one scalar ID across multiple slots.
-
-Do not request `clientToken`, `aiApiEndpoint`, platform, service, version, environment, sampling, tracing, or replay before repository analysis. Infer receiver mode from `datawayUrl` versus `datakitUrl` and reject conflicting URL families.
-
-Accept a literal `temporaryAuthCode` directly in one Prompt. Redact it to `prompt:provided`, pass it to the helper through stdin after authorization, and never repeat it. Keep `env:RUM_TEMP_AUTH_CODE` only as an automation option.
-
-Resolve application type in this order:
-
-1. user value;
-2. Public DataWay application API metadata;
-3. repository evidence.
-
-Require review when a user value conflicts with API metadata.
+DataKit uses `datakitUrl` and omits the code. Accept prose, snippets and existing configuration; empty values are missing. `applicationType` is optional. Prefer explicit input → confirmed conversation → effective project configuration → verifiable defaults. Never guess a receiver or copy one ID across independent applications. Record a code only as `prompt:provided`. Pass it through process stdin after preflight; do not ask again when valid saved configuration can be reused.
 
 ## Workflow
 
-### 1. Inspect safely
+### Discover and complete
 
-Read repository instructions, Git status, commit, manifests, entry points, existing RUM code, generated paths, and documented validation commands. Preserve unrelated work.
+Inspect repository instructions, Git differences, manifests, maintained startup/configuration and available checks. Run `python3 <skill-dir>/scripts/detect_rum_targets.py <repository-root> --pretty`; add `--scope` only for a user-limited directory. Confirm deployable targets and wrapper ownership from source before mapping IDs.
 
-Interpret intent:
+Read the matching platform adapter below. Infer package manager, entry, service, version and environment from the project. Inspect actual sensitive-data flows; harmless standard URL/query fields alone do not block onboarding. Ask once for currently missing essentials and actual conflicts, after discovery. New invalid answers/API conflicts may justify a focused follow-up. Continue independent targets.
 
-- Audit/validate: remain read-only unless repair is requested.
-- Plan: write only `.rum/plan.json` when writes are allowed, then stop.
-- Implement/integrate/repair: create and validate the plan, then continue in the same run when no material blocker exists.
+### Prepare and resolve
 
-Do not require a routine second approval for explicit implementation. Require Revision Review only for ambiguous IDs, application-type conflict, pre-existing dirty overlap, dependency replacement/upgrade/removal, new optional signals, release artifacts, test-only TLS/site behavior, external Token sinks, remote mutation, or material scope drift.
+For Public DataWay, first read [control-plane.md](references/control-plane.md), resolve the non-secret receiver reference into concrete `endpoint.value`, and obtain official site metadata with `resolve_rum_application.py --dataway-url <origin> --site-only`.
 
-### 2. Detect targets
+Use [contracts.md](references/contracts.md) to create a v3 plan from discovered facts; its draft-completion command fills structural defaults. Keep the full target list. A single target gets one batch; shared edits or dependent targets need explicit batches. Never invent SDK compatibility evidence or approval receipts.
 
-Run:
+Plan minimal platform-native configuration wiring, ignore rules and value-free examples. Record before/prepared file digests as described in [contracts.md](references/contracts.md), then validate the plan and repository before applying this preparation. Preserve existing valid SDKs; verify new dependencies against the adapter's official sources. Necessary compatible stable same-major upgrades need evidence; replacement/major/0.x migrations need specific authorization.
 
-```bash
-python3 <skill-dir>/scripts/detect_rum_targets.py <repository-root> --pretty
-```
+Validate with `python3 <skill-dir>/scripts/validate_contract.py .rum/plan.json --phase prepare --repository <root>` before non-secret preparation; this checks authorization and file baselines without credential state. Plan-only requests use `--phase plan`. Internal plan creation and adjustment are not user approval steps.
 
-Use `--scope <relative-directory>` only for an explicit subdirectory scope. Confirm detector candidates from real manifests and startup paths. Treat wrapper-owned native projects as one logical target unless repository evidence proves independent deployment.
-
-Read the matching platform references and the corresponding entry in `references/official-sources.json`. Verify current APIs and compatibility before choosing a dependency change.
-
-### 3. Build and validate the plan
-
-Infer core RUM, receiver mapping, Application ID mapping, service/version/environment sources, and repository validation. Preserve existing optional signals; do not enable absent Logs, Trace, Replay, WebView, crash capture, remote config, or artifact upload silently.
-
-Write `.rum/plan.json` using [references/contracts.md](references/contracts.md), then run:
+After the declared non-secret preparation, resolve Public DataWay credentials:
 
 ```bash
-python3 <skill-dir>/scripts/validate_contract.py .rum/plan.json --kind plan --phase plan
+python3 <skill-dir>/scripts/resolve_rum_application.py --plan .rum/plan.json --repository <root> --temporary-auth-code-stdin
 ```
 
-Keep the plan stable when only network, credential, Token persistence, or mapping observations change.
+The helper checks host support and secure file creation/replacement, then performs credential-free network preflight before reading a code. It never polls mapping state and restores the previous sink if checkpoint persistence fails. Public DataWay credential storage currently requires macOS/Linux POSIX permissions; native Windows must use WSL with a Linux filesystem or a supported host. Add `--resume` when state exists. DataKit skips resolution. Unknown DataKit reachability does not prevent local implementation.
 
-### 4. Resolve Public DataWay configuration
-
-During planning, resolve only the site:
+### Implement and verify
 
 ```bash
-python3 <skill-dir>/scripts/resolve_rum_application.py \
-  --dataway-url <origin> \
-  --site-only
+python3 <skill-dir>/scripts/validate_contract.py .rum/plan.json --phase implement --repository <root> --execution-state .rum/control-plane-state.json
 ```
 
-During planning, record the exact non-secret sink path, format, scope, and slot keys. During authorized implementation, use that existing or new Git-ignored runtime/build configuration file that the target already knows how to consume. Choose `dotenv`, `json`, `properties`, or `xcconfig`; do not add a dotenv loader to a native application.
+Omit execution state for DataKit. For independent subsets use the same `--targets` selection in resolution and implementation, including complete batches and unfinished prerequisites. Apply only validated changes. Read [execution.md](references/execution.md) for dirty-file overlaps, batch authorization or scope conflicts.
 
-```bash
-python3 <skill-dir>/scripts/resolve_rum_application.py \
-  --dataway-url <origin> \
-  --app-id <slot>=<application-id> \
-  --temporary-auth-code-stdin \
-  --client-token-key <slot>=<runtime-key> \
-  --client-token-sink <git-ignored-config-file> \
-  --sink-format <dotenv|json|properties|xcconfig> \
-  --state-file <git-ignored-state-file> \
-  --plan-digest <canonical-plan-digest> \
-  --repository <repository-root>
-```
+Run existing build/type checks and a representative runtime smoke: configuration consumed, one initializer, application startup/request behavior preserved, representative events and no demonstrated sensitive-data exposure. Optional signals need testing only when in scope. Read [validation.md](references/validation.md) for payload investigation, recovery acceptance or requested platform-wide evaluation.
 
-The helper performs credential-free network preflight before reading the code, exchanges the code once, looks up each application once, and accepts a Token only when `token_expired` is exactly `false` and `client_token` is present. It retries only transient lookup transport failures and never polls mapping state.
+If the runtime fails, check the smallest no-RUM baseline. A failing baseline limits runtime evidence; preserve completed integration and give one actionable next step. Do not turn ordinary onboarding into repeated IDE installation/login/GUI troubleshooting. Continue deeper environment repair only when requested or clearly needed and within scope.
 
-The helper atomically creates or updates the reviewed sink, preserves unrelated keys, sets mode `0600`, and writes separate non-secret state. If state persistence fails, it restores the previous sink. Never open or print the sink.
+Report changes and checks briefly. For each target, identify the actual Application ID, application name if known (never infer it from `service`), receiver/mode and test versus production configuration, including synthetic IDs or local capture receivers. State source integration, runtime verification and backend ingestion separately as passed, failed, blocked or not run, with the evidence and necessary next step. Never use empty payloads as privacy proof. Persistent inventories are optional.
 
-Before application-code edits, validate the plan/state pair:
+## Load references progressively
 
-```bash
-python3 <skill-dir>/scripts/validate_contract.py .rum/plan.json \
-  --phase implement \
-  --execution-state <state-file> \
-  --repository <repository-root>
-```
+Normal new onboarding reads this file, one platform adapter, and the current contract; add control-plane for Public DataWay. Do not read every reference in advance.
 
-Require the state to match the plan digest, concrete Application IDs, application types, runtime keys, sink path/format, Git-ignore status, and file mode.
-
-### 5. Implement
-
-Initialize core RUM once at the canonical startup point. Preserve lifecycle, config precedence, networking, signing, retries, consent, and framework ownership. Use Public DataWay Client Token configuration only in Public DataWay mode. DataKit never uses the application API, authorization code, API Key, or Client Token.
-
-For DataKit, allow local implementation when collector or runtime reachability is unknown. Record those checks as warnings and handoff; they gate only a claim of successful remote ingestion.
-
-### 6. Validate and deliver
-
-Run repository format, build/type-check, unit, integration, packaging, and a representative local smoke test. Prove single initialization, correct receiver branch, safe data collection, and unchanged application requests.
-
-Write `.rum/instrumentation.json` only when the user requests a durable machine-readable inventory or the repository already maintains one. Otherwise provide the same evidence in the final response. Keep remote verification false without external ingestion evidence.
-
-Report changed files, local proof, warnings/handoff, rollback, and whether ingestion was remotely verified.
+| Condition | Read |
+|---|---|
+| Web, SPA/MPA, SSR, Electron, Flutter Web | [web.md](references/web.md) |
+| MiniApp | [miniapp.md](references/miniapp.md) |
+| Android | [android.md](references/android.md) |
+| iOS/tvOS, macOS | [apple.md](references/apple.md), [macos.md](references/macos.md) for the matching target only |
+| HarmonyOS | [harmonyos.md](references/harmonyos.md) |
+| React Native, Flutter, UniApp | Matching [React Native](references/react-native.md), [Flutter](references/flutter.md), [UniApp](references/uniapp.md) adapter |
+| C++, Unity | Matching [C++](references/cpp.md), [Unity](references/unity.md) adapter |
+| Ambiguous mapping, application type or inferred settings | Relevant section of [common.md](references/common.md) |
+| Replay/Trace/artifacts requested or existing; sensitive collection | Relevant section of [privacy-security.md](references/privacy-security.md) |
+| Existing v2 plan / v1 state migration | [contracts-legacy.md](references/contracts-legacy.md); retain original binding checks |
+| Built-in test site / TLS exception | [testing-site.md](references/testing-site.md) |

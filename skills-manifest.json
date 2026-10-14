@@ -8,7 +8,7 @@
     { "name": "monitor", "path": "monitor", "setup": {} },
     { "name": "otel-instrument", "path": "otel-instrument", "setup": {} },
     { "name": "owl-diagnostics", "path": "owl-diagnostics", "setup": {} },
-    { "name": "rum-instrument", "path": "rum-instrument", "setup": {} },
+    { "name": "rum-instrument", "path": "rum-instrument", "setup": {}, "package_include": ["SKILL.md", "agents", "scripts", "references", "assets"] },
     { "name": "sls2dql", "path": "sls2dql", "setup": {} },
     { "name": "trivy-cluster-scan", "path": "trivy-cluster-scan", "setup": {} },
     { "name": "unit", "path": "unit", "setup": {} }

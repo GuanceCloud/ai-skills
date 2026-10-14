@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-13",
+  "method": "independent_agent_runs",
+  "skill_source": "repository working tree",
+  "scope": "isolated temporary fixture repositories; no live account or control-plane calls",
+  "runs": [
+    {
+      "scenario": "minimal request without connection information",
+      "fixture": "vue-existing plus maintained HTML entry",
+      "business_question_rounds": 1,
+      "routine_approval_questions": 0,
+      "requested_user_fields": [
+        "appId",
+        "receiver URL",
+        "temporaryAuthCode only if Public DataWay"
+      ],
+      "repeated_answer_requests": 0,
+      "outcome": "discovery completed; waiting for one consolidated missing-information answer",
+      "evidence": [
+        "identified declared SDK and missing startup invocation",
+        "found no effective receiver/application configuration",
+        "did not invent a receiver mode to create an invalid plan",
+        "no code or credentials consumed"
+      ],
+      "limitations": [
+        "no user answer was simulated; subsequent implementation was not exercised"
+      ]
+    },
+    {
+      "scenario": "complete DataKit connection input",
+      "fixture": "vue-existing plus maintained HTML entry",
+      "business_question_rounds": 0,
+      "routine_approval_questions": 0,
+      "requested_user_fields": [],
+      "repeated_answer_requests": 0,
+      "outcome": "local integration completed and mock smoke passed",
+      "evidence": [
+        "plan and implementation validation passed",
+        "runtime configuration wired and consumed",
+        "startup invokes one initializer",
+        "SDK load failure isolated with recovery",
+        "Replay remains disabled",
+        "URL privacy canaries checked",
+        "git diff --check passed"
+      ],
+      "remote_verification": false,
+      "limitations": [
+        "npm registry ENOTFOUND: real SDK build/type validation not completed",
+        "DataKit port unreachable: no remote ingestion evidence",
+        "fixture has no production build configuration; browser event delivery not exercised"
+      ]
+    }
+  ],
+  "script_recovery_coverage": "tests/test_onboarding.py validates multi-sink checkpoints, partial lookup/write failures, legacy migration, code-plan drift and credential identity changes",
+  "interpretation": "Observed interaction counts for two runs, not a statistical completion-rate claim.",
+  "follow_up_evaluation": "reports/2026-10-13/report.md",
+  "fix_verification": "reports/2026-10-13-fixes/report.md",
+  "url_policy_correction": "reports/2026-10-13-url-policy/report.md"
+}

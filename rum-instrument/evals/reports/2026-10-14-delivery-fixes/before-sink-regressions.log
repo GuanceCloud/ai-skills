@@ -1,0 +1,156 @@
+======================================================================
+FAIL: test_json_overlapping_or_empty_path_components_are_rejected (test_review_regressions.ReviewRegressionTests.test_json_overlapping_or_empty_path_components_are_rejected) (keys={'a': 'rum', 'b': 'rum.token'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 72, in test_json_overlapping_or_empty_path_components_are_rejected
+    with self.subTest(keys=keys), self.assertRaises(R.ResolutionError):
+                                  ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: ResolutionError not raised
+
+======================================================================
+FAIL: test_json_overlapping_or_empty_path_components_are_rejected (test_review_regressions.ReviewRegressionTests.test_json_overlapping_or_empty_path_components_are_rejected) (keys={'a': 'rum..token'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 72, in test_json_overlapping_or_empty_path_components_are_rejected
+    with self.subTest(keys=keys), self.assertRaises(R.ResolutionError):
+                                  ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: ResolutionError not raised
+
+======================================================================
+FAIL: test_json_overlapping_or_empty_path_components_are_rejected (test_review_regressions.ReviewRegressionTests.test_json_overlapping_or_empty_path_components_are_rejected) (keys={'a': '.token'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 72, in test_json_overlapping_or_empty_path_components_are_rejected
+    with self.subTest(keys=keys), self.assertRaises(R.ResolutionError):
+                                  ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: ResolutionError not raised
+
+======================================================================
+FAIL: test_json_path_conflicts_fail_before_code_without_modifying_sink (test_review_regressions.ReviewRegressionTests.test_json_path_conflicts_fail_before_code_without_modifying_sink) (config={'rum': None})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 63, in test_json_path_conflicts_fail_before_code_without_modifying_sink
+    with self.assertRaises(R.ResolutionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: ResolutionError not raised
+
+======================================================================
+FAIL: test_json_path_conflicts_fail_before_code_without_modifying_sink (test_review_regressions.ReviewRegressionTests.test_json_path_conflicts_fail_before_code_without_modifying_sink) (config={'rum': []})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 66, in test_json_path_conflicts_fail_before_code_without_modifying_sink
+    self.code_reader.assert_not_called()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oneandonly/miniconda3/lib/python3.13/unittest/mock.py", line 940, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'mock' to not have been called. Called 1 times.
+Calls: [call()].
+
+======================================================================
+FAIL: test_json_path_conflicts_fail_before_code_without_modifying_sink (test_review_regressions.ReviewRegressionTests.test_json_path_conflicts_fail_before_code_without_modifying_sink) (config={'rum': 'keep'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 66, in test_json_path_conflicts_fail_before_code_without_modifying_sink
+    self.code_reader.assert_not_called()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oneandonly/miniconda3/lib/python3.13/unittest/mock.py", line 940, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'mock' to not have been called. Called 1 times.
+Calls: [call()].
+
+======================================================================
+FAIL: test_json_path_conflicts_fail_before_code_without_modifying_sink (test_review_regressions.ReviewRegressionTests.test_json_path_conflicts_fail_before_code_without_modifying_sink) (config={'rum.clientToken': 'keep'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 66, in test_json_path_conflicts_fail_before_code_without_modifying_sink
+    self.code_reader.assert_not_called()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oneandonly/miniconda3/lib/python3.13/unittest/mock.py", line 940, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'mock' to not have been called. Called 1 times.
+Calls: [call()].
+
+======================================================================
+FAIL: test_json_path_conflicts_fail_before_code_without_modifying_sink (test_review_regressions.ReviewRegressionTests.test_json_path_conflicts_fail_before_code_without_modifying_sink) (config={'rum': {'clientToken': {'keep': 1}}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 66, in test_json_path_conflicts_fail_before_code_without_modifying_sink
+    self.code_reader.assert_not_called()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oneandonly/miniconda3/lib/python3.13/unittest/mock.py", line 940, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'mock' to not have been called. Called 1 times.
+Calls: [call()].
+
+======================================================================
+FAIL: test_json_path_conflicts_fail_before_code_without_modifying_sink (test_review_regressions.ReviewRegressionTests.test_json_path_conflicts_fail_before_code_without_modifying_sink)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 68, in test_json_path_conflicts_fail_before_code_without_modifying_sink
+    self.assertEqual([], self.calls)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != [('https://cn3-ai-api.guance.com/api/v1/ac[137 chars]o'})]
+
+Second list contains 2 additional elements.
+First extra element 0:
+('https://cn3-ai-api.guance.com/api/v1/account/accesskey/exchange', {'code': 'synthetic-one-time-code'})
+
+- []
++ [('https://cn3-ai-api.guance.com/api/v1/account/accesskey/exchange',
++   {'code': 'synthetic-one-time-code'}),
++  ('https://cn3-ai-api.guance.com/api/v1/rum/app/get', {'app_id': 'web_demo'})]
+
+======================================================================
+FAIL: test_json_paths_create_objects_and_keep_flat_keys (test_review_regressions.ReviewRegressionTests.test_json_paths_create_objects_and_keep_flat_keys)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 49, in test_json_paths_create_objects_and_keep_flat_keys
+    self.assertEqual({'rum': {'clientToken': 'synthetic-a'}, 'TOKEN': 'synthetic-b'},
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     json.loads(rendered))
+                     ^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rum': {'clientToken': 'synthetic-a'}, 'TOKEN': 'synthetic-b'} != {'TOKEN': 'synthetic-b', 'rum.clientToken': 'synthetic-a'}
+- {'TOKEN': 'synthetic-b', 'rum': {'clientToken': 'synthetic-a'}}
+?                              ^^^^^                            -
+
++ {'TOKEN': 'synthetic-b', 'rum.clientToken': 'synthetic-a'}
+?                              ^
+
+
+======================================================================
+FAIL: test_legacy_json_preflight_precedes_code_and_network (test_review_regressions.ReviewRegressionTests.test_legacy_json_preflight_precedes_code_and_network)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 105, in test_legacy_json_preflight_precedes_code_and_network
+    site_lookup.assert_not_called()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/oneandonly/miniconda3/lib/python3.13/unittest/mock.py", line 940, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'resolve_site' to not have been called. Called 1 times.
+Calls: [call('https://cn3-openway.guance.com')].
+
+======================================================================
+FAIL: test_nested_json_configuration_is_consumed_and_reused (test_review_regressions.ReviewRegressionTests.test_nested_json_configuration_is_consumed_and_reused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 36, in test_nested_json_configuration_is_consumed_and_reused
+    self.assertEqual('synthetic-client-value-web_demo', config['rum']['clientToken'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'synthetic-client-value-web_demo' != 'old-synthetic'
+- synthetic-client-value-web_demo
++ old-synthetic
+
+
+======================================================================
+FAIL: test_shared_json_parent_child_slots_fail_before_code (test_review_regressions.ReviewRegressionTests.test_shared_json_parent_child_slots_fail_before_code)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_review_regressions.py", line 83, in test_shared_json_parent_child_slots_fail_before_code
+    with self.assertRaises(R.ResolutionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: ResolutionError not raised
+
+----------------------------------------------------------------------
+Ran 17 tests in 3.274s
+
+FAILED (failures=13)

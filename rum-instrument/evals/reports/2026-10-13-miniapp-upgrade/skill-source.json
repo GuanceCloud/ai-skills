@@ -1,0 +1,6 @@
+{
+  "source": "Current repository working tree, not installed Skill",
+  "skill_sha256": "6a1fdb1a23126b8045e4eafdde3529a2e1edbb9495cbe1a6ddd1329d2c53e6a1",
+  "runtime_files_unchanged_since_previous_acceptance": true,
+  "scope": "Upgraded WeChat developer tool; localhost synthetic receiver; no real authorization codes or remote console writes"
+}

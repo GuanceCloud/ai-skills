@@ -1,0 +1,44 @@
+{
+  "sdk": "3.3.5",
+  "real_sdk": true,
+  "mock_receiver": true,
+  "initial": {
+    "calls": 1,
+    "config": {
+      "applicationId": "eval_web",
+      "datakitOrigin": "http://127.0.0.1:19529",
+      "service": "vue-existing-rum",
+      "env": "eval-local",
+      "version": "eval-release",
+      "sessionReplaySampleRate": 0,
+      "sessionReplayOnErrorSampleRate": 0
+    },
+    "recording": false
+  },
+  "browserErrors": [
+    "synthetic unhandled error"
+  ],
+  "privacy": {
+    "CANARY_INPUT": true,
+    "CANARY_COOKIE": true,
+    "CANARY_AUTH": true,
+    "CANARY_BODY": true,
+    "CANARY_QUERY": false,
+    "CANARY_HASH": false,
+    "CANARY_RESOURCE_QUERY": true
+  },
+  "request_behavior_preserved": true,
+  "capture_count": 1,
+  "capture_endpoints": [
+    "/v1/write/rum"
+  ],
+  "failure": {
+    "result": false,
+    "dom": true
+  },
+  "warnings": [
+    "Failed to load resource: net::ERR_FAILED",
+    "RUM failed to initialize; application startup can continue.",
+    "RUM failed to initialize; application startup can continue."
+  ]
+}

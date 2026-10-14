@@ -1,0 +1,9 @@
+{
+  "name": "rum-behavior-fixture",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "check": "node --check src/main.js",
+    "test": "node tests/smoke.cjs"
+  }
+}

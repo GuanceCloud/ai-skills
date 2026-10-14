@@ -1,0 +1,79 @@
+{
+  "authorization": "User stated IDE service port is enabled and login complete; preserve user settings",
+  "cli_launch": {
+    "exit": 0,
+    "result": "Open project with automation enabled success",
+    "evidence": "logs/cli-auto-user-enabled.log"
+  },
+  "automator": "miniprogram-automator 0.12.1 from official npm package",
+  "tool_info": {
+    "version": "1.02.1911180",
+    "SDKVersion": "3.17.4",
+    "proof": "Tool.getInfo real WebSocket response"
+  },
+  "ui_observation": {
+    "simulator": "Window and navigation title rendered, page body blank",
+    "console": [
+      "Uncaught SyntaxError: Unexpected token .",
+      "Uncaught ReferenceError: wx is not defined"
+    ],
+    "platform_guest_mode": "touristappid; no real MiniApp AppID used"
+  },
+  "runtime_failure": {
+    "operation": "App.getCurrentPage",
+    "result": "No response; bounded probe exit 124 after 45 seconds",
+    "SDK_application_execution": "Not proven",
+    "evidence": "logs/runtime-probe-retry.log"
+  },
+  "compatibility_attempts": [
+    {
+      "project": "project",
+      "change": "Set local project.config.json libVersion=2.11.1 using installed official library",
+      "result": "Tool still reports SDKVersion3.17.4; same timeout"
+    },
+    {
+      "project": "project-compatible",
+      "change": "Fresh isolated project path with libVersion2.11.1 before first launch",
+      "result": "Tool still reports SDKVersion3.17.4; same timeout"
+    }
+  ],
+  "control": {
+    "project": "project-baseline",
+    "rum_dependency": false,
+    "rum_initialization": false,
+    "result": "Blank simulator; Tool.getInfo replies with SDKVersion3.17.4; App.getCurrentPage times out after20s, exit124",
+    "evidence": "logs/runtime-probe-baseline.log",
+    "interpretation": "The startup/automation failure also occurs without the RUM SDK; observed evidence does not establish an SDK integration defect."
+  },
+  "signal_checks": {
+    "view": "not_run: platform baseline cannot execute page lifecycle",
+    "resource": "not_run: platform baseline cannot execute page lifecycle",
+    "error": "not_run: platform baseline cannot execute page lifecycle",
+    "action": "not_run: platform baseline cannot execute page lifecycle",
+    "initialization_idempotency": "not_run: platform baseline cannot execute page lifecycle",
+    "privacy_canary": "not_run: platform baseline cannot execute page lifecycle",
+    "negative_trace_headers": "not_run: platform baseline cannot execute page lifecycle"
+  },
+  "receiver": {
+    "endpoint": "http://127.0.0.1:19529",
+    "started": true,
+    "stopped": true,
+    "captured_posts": 0,
+    "external_endpoint_used": false
+  },
+  "cleanup": {
+    "all_three_test_projects_closed": true,
+    "receiver_stopped": true,
+    "test_ports_no_listener": [
+      19529,
+      19531,
+      19532,
+      19533,
+      19534
+    ],
+    "user_ide_port_56657_still_listening": true,
+    "service_port_setting_changed": false,
+    "login_changed": false,
+    "upload_or_preview": false
+  }
+}

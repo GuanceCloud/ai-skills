@@ -1,0 +1,132 @@
+diff --git a/.gitignore b/.gitignore
+index 0766e35..0a8310a 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,2 @@
+-node_modules/
+ .rum/
+-build/
++rum.properties
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 8a29c97..ee82ec4 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -1,7 +1,35 @@
++import java.util.Properties
++
+ plugins {
+     id("com.android.application")
+ }
+ 
++val rumProperties = Properties().apply {
++    val config = rootProject.file("rum.properties")
++    if (config.isFile) config.inputStream().use { load(it) }
++}
++fun rumValue(name: String): String = providers.gradleProperty(name)
++    .orElse(providers.environmentVariable(name)).orNull
++    ?: rumProperties.getProperty(name, "")
++fun quoted(value: String) = "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"")
++    .replace("\n", "\\n").replace("\r", "\\r") + "\""
++
+ android {
+     namespace = "com.example.rum"
++    buildFeatures { buildConfig = true }
++    defaultConfig {
++        for (key in listOf("RUM_DATAKIT_URL", "RUM_APP_ID", "RUM_ENV")) {
++            buildConfigField("String", key, quoted(rumValue(key)))
++        }
++    }
++}
++
++repositories {
++    mavenCentral()
++    maven { url = uri("https://mvnrepo.guance.com/repository/maven-releases") }
++}
++
++dependencies {
++    implementation("com.cloudcare.ft.mobile.sdk.tracker.agent:ft-sdk:1.7.5")
++    implementation("com.google.code.gson:gson:2.8.9")
+ }
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+index 83debf5..da65dae 100644
+--- a/app/src/main/AndroidManifest.xml
++++ b/app/src/main/AndroidManifest.xml
+@@ -1,3 +1,4 @@
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android">
++    <uses-permission android:name="android.permission.INTERNET" />
+     <application android:name=".App" />
+ </manifest>
+diff --git a/app/src/main/java/com/example/rum/App.kt b/app/src/main/java/com/example/rum/App.kt
+index d7e61b6..92c56eb 100644
+--- a/app/src/main/java/com/example/rum/App.kt
++++ b/app/src/main/java/com/example/rum/App.kt
+@@ -1,5 +1,36 @@
+ package com.example.rum
+ 
+ import android.app.Application
++import android.util.Log
++import com.ft.sdk.FTRUMConfig
++import com.ft.sdk.FTSDKConfig
++import com.ft.sdk.FTSdk
+ 
+-class App : Application()
++class App : Application() {
++    override fun onCreate() {
++        super.onCreate()
++        if (BuildConfig.RUM_DATAKIT_URL.isBlank() || BuildConfig.RUM_APP_ID.isBlank() ||
++            BuildConfig.RUM_ENV.isBlank()) {
++            Log.w("RUM", "RUM configuration missing; monitoring is disabled")
++            return
++        }
++        try {
++            val config = FTSDKConfig.builder(BuildConfig.RUM_DATAKIT_URL)
++                .setServiceName(packageName)
++                .setEnv(BuildConfig.RUM_ENV)
++                .setEnableAccessAndroidID(false)
++            FTSdk.install(config)
++            FTSdk.initRUMWithConfig(
++                FTRUMConfig()
++                    .setRumAppId(BuildConfig.RUM_APP_ID)
++                    .setEnableTraceUserView(true)
++                    .setEnableTraceWebView(false)
++                    .setEnableTrackAppCrash(false)
++                    .setEnableTrackAppANR(false)
++                    .setEnableTrackAppUIBlock(false)
++            )
++        } catch (error: Exception) {
++            Log.w("RUM", "RUM initialization failed; application startup continues")
++        }
++    }
++}
+diff --git a/app/src/debug/AndroidManifest.xml b/app/src/debug/AndroidManifest.xml
+new file mode 100644
+index 0000000..7afed05
+--- /dev/null
++++ b/app/src/debug/AndroidManifest.xml
+@@ -0,0 +1,3 @@
++<manifest xmlns:android="http://schemas.android.com/apk/res/android">
++    <application android:networkSecurityConfig="@xml/rum_network_security" />
++</manifest>
+diff --git a/app/src/debug/res/xml/rum_network_security.xml b/app/src/debug/res/xml/rum_network_security.xml
+new file mode 100644
+index 0000000..49c4498
+--- /dev/null
++++ b/app/src/debug/res/xml/rum_network_security.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<network-security-config>
++    <base-config cleartextTrafficPermitted="false" />
++    <domain-config cleartextTrafficPermitted="true">
++        <domain>127.0.0.1</domain>
++    </domain-config>
++</network-security-config>
+diff --git a/rum.properties.example b/rum.properties.example
+new file mode 100644
+index 0000000..6d1eed7
+--- /dev/null
++++ b/rum.properties.example
+@@ -0,0 +1,4 @@
++# Copy to rum.properties; CI can supply -PRUM_* instead.
++RUM_DATAKIT_URL=
++RUM_APP_ID=
++RUM_ENV=

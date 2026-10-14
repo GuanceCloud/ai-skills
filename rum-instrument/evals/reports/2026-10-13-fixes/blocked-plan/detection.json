@@ -1,0 +1,30 @@
+{
+  "repository": {
+    "dirty_paths": [],
+    "git_commit": "893fb9b6c2a9b41602ad532176934e0453cb9df5",
+    "root": "/private/tmp/rum-blocked-plan-final/project",
+    "scan_scope": "."
+  },
+  "schema_version": 1,
+  "targets": [
+    {
+      "application_id_slots": [
+        "miniapp"
+      ],
+      "confidence": "high",
+      "evidence": [
+        "app.js",
+        "app.json",
+        "project.config.json"
+      ],
+      "existing_rum_markers": {},
+      "id": "miniapp:.",
+      "path": ".",
+      "platform": "miniapp",
+      "variants": [
+        "native"
+      ]
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,18 @@
+{
+  "19529": {
+    "listening": false,
+    "output": ""
+  },
+  "19532": {
+    "listening": false,
+    "output": ""
+  },
+  "19534": {
+    "listening": false,
+    "output": ""
+  },
+  "20166": {
+    "listening": true,
+    "output": "COMMAND    PID       USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nElectron 68090 oneandonly   64u  IPv4 0xa16f8ae7d38fe185      0t0  TCP 127.0.0.1:20166 (LISTEN)"
+  }
+}

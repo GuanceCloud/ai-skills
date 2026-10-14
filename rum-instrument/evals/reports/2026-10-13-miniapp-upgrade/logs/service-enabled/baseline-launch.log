@@ -1,0 +1,23 @@
+[error] {
+  code: 'APPID_ERROR',
+  message: 'Error: 不存在此 AppID 请检查后重新输入Error: 不存在此 AppID 请检查后重新输入\n' +
+    '    at N.createCodedError (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/e1aa86671c672ee925dc86d4ae5dddb1.js:2:14050)\n' +
+    '    at N.formatProject (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/e1aa86671c672ee925dc86d4ae5dddb1.js:2:12336)\n' +
+    '    at async N._doInitElectronBackend (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/e1aa86671c672ee925dc86d4ae5dddb1.js:2:7574)\n' +
+    '    at async N.initElectronBackend (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/e1aa86671c672ee925dc86d4ae5dddb1.js:2:7439)\n' +
+    '    at async Proxy.<anonymous> (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/c8b5f82c855e2105d3a7cb9da007475c.js:2:682)\n' +
+    '    at async exports.auto [as method] (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/3f4b5a7224d7b710a48a9b753d705048.js:2:3136)\n' +
+    '    at async exports.execV2WSAPI (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/1c52e22ebb880937c313e2cce3a5b7d2.js:2:1318)\n' +
+    '    at async exports.handleWsApiMessage (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/0ac94e0dd9725677f53c22067280ca25.js:2:265)\n' +
+    '    at async c._clientMessageHandler (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/e662f33f90d7c54bd12f5b2a695fbb1d.js:2:3435)\n' +
+    '    at async c._handleClientMessage (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/bd0bd23655b22e066b1a71c99f9c5dc6.js:2:3030)'
+}
+- initialize
+
+(node:84016) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `Electron --trace-deprecation ...` to show where the warning was created)
+✔ IDE server has started, listening on http://127.0.0.1:20166
+- preparing
+- Fetching AppID () permissions
+✔ Using AppID: touristappid
+✖ Fetching AppID (touristappid) detailed information

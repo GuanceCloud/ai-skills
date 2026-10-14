@@ -1,0 +1,45 @@
+{
+    "name": "@cloudcare/browser-rum",
+    "version": "3.3.21",
+    "main": "cjs/index.js",
+    "module": "esm/index.js",
+    "types": "types/index.d.ts",
+    "dependencies": {
+        "@cloudcare/browser-core": "3.3.21",
+        "@cloudcare/browser-worker": "3.3.21"
+    },
+    "description": "Guance Browser SDK RUM Package",
+    "browserSdkCapabilities": {
+        "sessionReplayWebGLPlugin": 1
+    },
+    "scripts": {
+        "dev": "webpack serve --open --mode=development",
+        "build": "run-s build:cjs build:esm build:bundle",
+        "build:cjs": "rm -rf cjs && babel --config-file ./babel.cjs.json --out-dir cjs ./src && npm run replace-build-env cjs && node ../../scripts/strip-source-map-sources-content.js cjs",
+        "build:esm": "rm -rf esm && babel --config-file ./babel.esm.json --out-dir esm ./src && npm run replace-build-env esm && node ../../scripts/strip-source-map-sources-content.js esm",
+        "build:bundle": "rm -rf bundle && webpack --mode=production && npm run check:bundle-size && npm run check:bundle-contract",
+        "check:bundle-size": "node ../../scripts/check-bundle-size.js bundle/dataflux-rum.js",
+        "check:bundle-contract": "node ../../scripts/check-bundle-property-contract.js bundle/dataflux-rum.js rum && node ../../scripts/check-rum-webgl-boundary.js bundle/dataflux-rum.js",
+        "replace-build-env": "node ../../scripts/replace-build-env.js",
+        "publish:oss:current": "npm run build:bundle && node ./scripts/publish-oss.js current",
+        "publish:oss:lts": "npm run build:bundle && node ./scripts/publish-oss.js lts",
+        "publish:oss:test": "npm run build:bundle && node ./scripts/publish-oss.js test"
+    },
+    "keywords": [
+        "dataflux",
+        "rum",
+        "sdk"
+    ],
+    "repository": {
+        "url": "https://github.com/GuanceCloud/datakit-js",
+        "type": "git",
+        "directory": "packages/rum"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "author": "dataflux",
+    "license": "MIT",
+    "homepage": "https://github.com/GuanceCloud/datakit-js/README.md",
+    "gitHead": "e5d40dc11781d32f2f2d26e476750844d1248c7b"
+}

@@ -31,3 +31,7 @@ Plan native mapping/dSYM and H5 Sourcemaps per actual release, without remote up
 ## Validation
 
 Run the available HBuilderX/CLI checks and platform builds. Verify variant routing, correct IDs, single JS/native initialization, maintained-source-only edits, unchanged requests, trace allowlist, bridge/WebView ownership, artifact identity, and privacy canaries.
+
+## Automatic configuration wiring
+
+Use maintained conditional compilation and documented framework/plugin configuration for the selected output. Add ignored build-time values through the existing toolchain, never generated unpackage files. Do not assume H5 configuration works for native or MiniApp outputs.

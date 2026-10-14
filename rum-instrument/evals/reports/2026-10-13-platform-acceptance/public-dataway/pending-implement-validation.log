@@ -1,0 +1,3 @@
+error: batch web requires resolved input or authorization
+error: selected targets contain unresolved blockers
+error: Public DataWay implementation requires --execution-state

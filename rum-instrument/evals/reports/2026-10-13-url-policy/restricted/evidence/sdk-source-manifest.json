@@ -1,0 +1,11 @@
+{
+  "browser-rum/package.json": {
+    "sha256": "e0fce8f623f298da5cf703d5ffcc87e657b33c75d60cb8919a7f627ffa295e7b"
+  },
+  "browser-rum/esm/domain/assembly.js": {
+    "sha256": "b5e842a9b41bc64c101c4004cf98aa98a8049abf83b568d0ee3406e0f4061811"
+  },
+  "browser-core/esm/dataMap.js": {
+    "sha256": "a928d65bed73a450a4905faa0dcdaae1b4d3a64ce2357d18f3c785906ecb0993"
+  }
+}

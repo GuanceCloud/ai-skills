@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.rum/
+evidence/
+.env*.local
+
+# Acceptance archive: preserve the recorded evidence in this repository.
+!evidence/
+!evidence/**

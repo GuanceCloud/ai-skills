@@ -1,0 +1,1 @@
+<view class="page"><text class="title">RUM 小程序验收</text><text class="status">{{status}}</text><button id="resource" bindtap="requestResource">请求本地资源</button><button id="action" bindtap="recordAction">记录交互 {{actions}}</button><button id="error" bindtap="triggerError">触发测试错误</button><input id="private-input" placeholder="此输入不应进入自定义遥测" bindinput="handleInput" /></view>

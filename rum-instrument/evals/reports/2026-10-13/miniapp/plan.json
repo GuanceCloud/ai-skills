@@ -1,0 +1,287 @@
+{
+  "approval": {
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1,
+    "status": "approved"
+  },
+  "batches": [
+    {
+      "approval": {
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1,
+        "status": "approved"
+      },
+      "depends_on": [],
+      "id": "miniapp-core",
+      "target_ids": [
+        "miniapp:."
+      ]
+    }
+  ],
+  "handoff": [
+    "No remote ingestion proof; complete app and use developer tools build npm before platform run",
+    "No remote console/domain allowlist modification authorized"
+  ],
+  "planned_changes": [
+    {
+      "dependency_decision": {
+        "action": "add",
+        "compatibility": "Official CommonJS package supports native WeChat miniapp entrypoint",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/miniapp/app-access/",
+          "https://registry.npmjs.org/@cloudcare%2Frum-miniapp/latest"
+        ],
+        "owner": "Cloudcare",
+        "package": "@cloudcare/rum-miniapp",
+        "verified_at": "2026-10-13",
+        "version": "2.2.20"
+      },
+      "edits": [
+        "Add pinned official RUM dependency"
+      ],
+      "file": "package.json",
+      "order": 1,
+      "purpose": "Add pinned official RUM dependency",
+      "risk": "Full MiniApp build requires real platform toolchain and complete app",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "node --check app.js",
+        "node ../verify.cjs"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Lock SDK and transitive dependencies"
+      ],
+      "file": "package-lock.json",
+      "order": 2,
+      "purpose": "Lock SDK and transitive dependencies",
+      "risk": "Full MiniApp build requires real platform toolchain and complete app",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "node --check app.js",
+        "node ../verify.cjs"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Initialize RUM before App"
+      ],
+      "file": "app.js",
+      "order": 3,
+      "purpose": "Initialize RUM before App",
+      "risk": "Full MiniApp build requires real platform toolchain and complete app",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "node --check app.js",
+        "node ../verify.cjs"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add guarded single initializer"
+      ],
+      "file": "rum.js",
+      "order": 4,
+      "purpose": "Add guarded single initializer",
+      "risk": "Full MiniApp build requires real platform toolchain and complete app",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "node --check app.js",
+        "node ../verify.cjs"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Credential-free runtime config example"
+      ],
+      "file": "config/rum.example.js",
+      "order": 5,
+      "purpose": "Credential-free runtime config example",
+      "risk": "Full MiniApp build requires real platform toolchain and complete app",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "node --check app.js",
+        "node ../verify.cjs"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Ignored DataKit runtime configuration"
+      ],
+      "file": "config/rum.local.js",
+      "order": 6,
+      "purpose": "Ignored DataKit runtime configuration",
+      "risk": "Full MiniApp build requires real platform toolchain and complete app",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "node --check app.js",
+        "node ../verify.cjs"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Ignore local runtime values and MiniApp generated npm output"
+      ],
+      "file": ".gitignore",
+      "order": 7,
+      "purpose": "Ignore local runtime values and MiniApp generated npm output",
+      "risk": "Full MiniApp build requires real platform toolchain and complete app",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "node --check app.js",
+        "node ../verify.cjs"
+      ]
+    }
+  ],
+  "repository": {
+    "commit": "21bf6128a7c0afec8693c502b16587679fea658b",
+    "initial_status": [],
+    "root": "${EVAL_ROOT}/miniapp/project"
+  },
+  "request": {
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "eval_miniapp"
+      }
+    },
+    "intent": "implement",
+    "receiver": {
+      "endpoint": {
+        "value": "http://127.0.0.1:19529"
+      },
+      "mode": "datakit",
+      "readiness": {
+        "checks": {
+          "network_reachability": {
+            "handoff": [
+              "Validate on complete MiniApp with actual runtime and collector"
+            ],
+            "status": "unknown"
+          },
+          "rum_collector": {
+            "handoff": [
+              "Validate on complete MiniApp with actual runtime and collector"
+            ],
+            "status": "unknown"
+          }
+        },
+        "status": "unknown"
+      }
+    }
+  },
+  "risks": [
+    "Incomplete app skeleton: missing pages/index/index files and placeholder platform appid",
+    "127.0.0.1 receiver works only for host testing, not real device production domain allowlist"
+  ],
+  "schema_version": 3,
+  "targets": [
+    {
+      "application_id_slots": [
+        "miniapp"
+      ],
+      "application_ids": {
+        "miniapp": {
+          "value": "eval_miniapp"
+        }
+      },
+      "application_types": {
+        "miniapp": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "miniapp",
+          "verification": "not_applicable"
+        }
+      },
+      "artifacts": {},
+      "blockers": [],
+      "disposition": "planned",
+      "evidence": [
+        "app.js",
+        "app.json",
+        "project.config.json"
+      ],
+      "existing_instrumentation": {
+        "files": [],
+        "sdk": null,
+        "signals": [],
+        "status": "none",
+        "version": null
+      },
+      "id": "miniapp:.",
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/miniapp/app-access/"
+      ],
+      "path": ".",
+      "platform": "miniapp",
+      "privacy": {
+        "custom_fields": false,
+        "query_capture": false,
+        "replay": false,
+        "trace": false
+      },
+      "profile": {
+        "env": {
+          "confidence": "high",
+          "source": "wx.getAccountInfoSync().miniProgram.envVersion",
+          "value": null
+        },
+        "service": {
+          "confidence": "high",
+          "source": "target identity",
+          "value": "miniapp"
+        },
+        "signals": {
+          "rum": true
+        },
+        "version": {
+          "confidence": "high",
+          "source": "wx.getAccountInfoSync().miniProgram.version",
+          "value": null
+        }
+      },
+      "receiver_mapping": {
+        "applicationId": "config/rum.local.js#applicationId",
+        "datakitOrigin": "config/rum.local.js#datakitOrigin"
+      },
+      "variants": [
+        "native"
+      ]
+    }
+  ],
+  "validation": [
+    "Static syntax",
+    "Real package API loading with mocked wx runtime",
+    "Mock SDK startup order and failure containment",
+    "Idempotent repeated onboarding"
+  ]
+}

@@ -18,6 +18,7 @@ ai-skills/
 ├── sls2dql/
 ├── trivy-cluster-scan/
 ├── unit/
+├── rum.md                  # Agent onboarding entrypoint
 ├── install.sh
 ├── install.ps1
 ├── uninstall.sh
@@ -37,7 +38,7 @@ ai-skills/
 | `grafana-to-guance-dashboard` | Convert and audit Grafana dashboards for Guance | Grafana dashboard JSON | Guance dashboard JSON and audit notes |
 | `otel-instrument` | Instrument C++, C#/.NET, Erlang/Elixir, Go, Java, JavaScript/TypeScript, Kotlin, PHP, Python, Ruby, Rust, and Swift repositories with OpenTelemetry | Git repository plus selected signals and trace depth | Instrumented source and existing deployment config, local validation evidence, module inventory, and unresolved runtime handoff |
 | `owl-diagnostics` | Query Guance data with `owl` and write diagnostic reports | Time range and diagnostic target | Evidence-backed Markdown report |
-| `rum-instrument` | Plan, audit, implement, repair, and validate RUM for Web, MiniApp, Android, Apple platforms, HarmonyOS, React Native, Flutter, UniApp, C++, and Unity | RUM Application ID plus Public DataWay or DataKit receiver variables | Intent-aware `.rum/plan.json`, instrumented targets, validation evidence, and a handoff report; optional inventory |
+| `rum-instrument` | Plan, audit, implement, repair, and validate RUM for Web, MiniApp, Android, Apple platforms, HarmonyOS, React Native, Flutter, UniApp, C++, and Unity | RUM Application ID plus Public DataWay or DataKit receiver variables | Batch-aware `.rum/plan.json`, instrumented targets, resumable configuration and validation evidence; optional inventory |
 | `sls2dql` | Convert Alibaba Cloud SLS queries to GuanceDB DQL | SLS query plus namespace/source/index options | Conversion result and diagnostics |
 | `trivy-cluster-scan` | Run authorized, scan-only Trivy cluster and image security assessment with official remediation reporting | Authorized cluster scope, optional app paths, optional runtime confirmation | JSON scan artifacts and evidence-backed remediation report |
 | `unit` | Generate Guance unit metadata from a metrics CSV | `csv/{{name}}*.csv` | `output/unit/{{name}}.json` |
@@ -241,49 +242,42 @@ Runtime requirement: Node.js 18 or newer.
 
 ## RUM Instrumentation
 
-`rum-instrument` detects every deployable RUM target, reviews existing instrumentation, infers platform-specific configuration, and creates a revisioned plan before changing application code. The user only needs to provide the matching RUM Application ID and receiver source variables. Authorization comes from the request verb; there is no extra `approvalMode` variable.
-
-Plan and implement a Public DataWay integration in one Prompt:
+Give the agent this prompt to reuse or install the Skill, inspect the project, and continue through implementation and validation:
 
 ```text
-使用 $rum-instrument 规划并实施当前仓库的 RUM 接入。
+请按 https://static.guance.com/skills/rum.md 完成当前项目的 RUM 接入。
 
-datawayUrl: {{DATAWAY_URL}}
-appId: {{APP_ID}}
-applicationType: {{APPLICATION_TYPE}} # optional
-temporaryAuthCode: <paste the temporary authorization code>
+datawayUrl: <接收地址>
+appId: <应用 ID>
+temporaryAuthCode: <临时授权码>
 ```
 
-Plan and implement a DataKit integration:
+For DataKit, use `datakitUrl` and omit the authorization code. Existing effective configuration and SDK snippets are accepted; omit fields the project already supplies. The agent discovers targets first and asks once for remaining essentials. `applicationType` is optional. Ordinary implementation needs no routine second approval; audit/validate remains read-only.
 
-```text
-使用 $rum-instrument 规划并实施当前仓库的 RUM 接入。
+Runtime requirements: a Git worktree with an initial commit, Python 3.10+, and the target application's build/runtime tools. Public DataWay credential storage requires macOS/Linux POSIX permissions; native Windows must use WSL with a Linux filesystem or a supported host, and fails before reading a code. Windows installation and catalog-only discovery remain available. The agent selects its own installation adapter and reuses a usable installed Skill. Updates use the guarded upgrade path only when requested or needed; locally modified Skills are not automatically overwritten. Stable and commit-versioned `rum.md` entrypoints use the same checksummed distribution and support mirrors.
 
-datakitUrl: {{DATAKIT_URL}}
-appId: {{APP_ID}}
-applicationType: {{APPLICATION_TYPE}} # optional
+The Skill provides Web, MiniApp, Android, Apple, HarmonyOS, React Native, Flutter, UniApp, C++ and Unity adapters. Base RUM preserves valid initialization, sampling and optional signals. Independent applications need distinct IDs; a UniApp root HTML entry belongs to its wrapper. New optional signals, dependency migrations and remote actions require their specific authorization. Delivery reports identify each target's actual Application ID, receiver and test/production configuration, separating source integration, runtime verification and backend ingestion. Native and Web adapters share the same policy for ordinary SDK URL fields and demonstrated sensitive data.
+
+The agent manages schema v3 plans and state internally. Start with the [Public DataWay/Web draft](rum-instrument/assets/public-dataway-draft.example.json) or [DataKit/MiniApp draft](rum-instrument/assets/plan-draft.example.json), replacing example facts with discovered evidence. Resolve non-secret Public DataWay address references into a concrete origin before execution. See the [current contract](rum-instrument/references/contracts.md) for source normalization, batches and configuration sinks.
+
+Agent-side commands, not additional user steps:
+
+```sh
+python3 <skill-dir>/scripts/detect_rum_targets.py <root> --pretty
+python3 <skill-dir>/scripts/validate_contract.py .rum/draft.json --complete-draft .rum/plan.json --repository <root>
+python3 <skill-dir>/scripts/validate_contract.py .rum/plan.json --phase prepare --repository <root>
+# Apply only the declared non-secret preparation, then resolve credentials.
+python3 <skill-dir>/scripts/resolve_rum_application.py --plan .rum/plan.json --repository <root> --temporary-auth-code-stdin
+python3 <skill-dir>/scripts/validate_contract.py .rum/plan.json --phase implement --repository <root> --execution-state .rum/control-plane-state.json
 ```
 
-Use `plan`, `audit`, or read-only `validate` when the desired result is only a pending plan or report. Use `implement`, `integrate`, `repair`, or `plan and implement` to authorize ordinary core-RUM repository changes in the same run.
+Use the same `--targets` selection for every unfinished member of the selected batches and their unfinished prerequisites. Completed members of a shared batch are excluded from execution and credential resolution even when listed; their configuration and checkpoints remain protected. Add `--resume` when state exists. DataKit skips resolution and execution state; unknown reachability does not prevent local implementation.
 
-For React Native, Flutter mobile, UniApp Native, Unity, or a monorepo with multiple independently deployed applications, map IDs by platform instead of reusing one ID:
+New draft completion records planned-file baselines. Before non-secret configuration preparation, the agent records the intended result digest and validates the repository; subsequent checks accept that exact preparation and reject later user changes. Public DataWay checks host support, secure destination creation/replacement and network reachability before consuming a code, exchanges once, and checkpoints each successful application. Both plan and legacy CLI modes validate sink encoding, format and destination shape before reading a code. JSON dot-separated keys address nested objects; ambiguous literal dotted keys or incompatible structures require repair before resolution. API Keys remain in memory; Client Tokens go directly to ignored native configuration. Code-plan changes do not invalidate credential identity. Existing v2 plans and legacy helper arguments remain supported; v1 state migration retains its original binding checks.
 
-```yaml
-appId:
-  web: {{WEB_APP_ID}}
-  android: {{ANDROID_APP_ID}}
-  ios: {{IOS_APP_ID}}
-```
+RUM release archives contain only `SKILL.md`, `agents`, `scripts`, `references` and `assets` through `package_include`. Tests and evaluation evidence stay in the repository. The package smoke builds the actual tar/zip archives, checks contents/checksums, and exercises detection, draft completion, implementation validation and mocked credential resolution/resume from the extracted runtime.
 
-For Public DataWay, planning needs only `datawayUrl` and `appId`; the helper matches the receiver to a supported official site catalog without consuming a temporary authorization code. The only built-in test mapping is `http://testing-openway.dataflux.cn` to `https://testing-ft2x-ai-api.dataflux.cn`; operational configuration is never loaded from `evals/`. For a one-Prompt implementation, include the one-time code directly in `temporaryAuthCode`. After the stable plan passes validation, the helper verifies the Token/state sinks and performs credential-free DataWay/AI API reachability checks before reading the code. It exchanges the code once, calls `/api/v1/rum/app/get` once per Application ID, and accepts a non-empty Client Token exactly when `token_expired` is false; sync/mapping fields are observations only and do not trigger polling. The helper atomically creates or updates a reviewed dotenv, JSON, properties, or xcconfig runtime/build sink, preserves unrelated entries, and writes separate digest-bound, non-secret execution state without changing the plan revision. `temporaryAuthCode: env:RUM_TEMP_AUTH_CODE` remains supported for automation. `clientToken` and `aiApiEndpoint` do not belong in the standard prompt.
-
-The Skill infers platform, entry point, `service`, `version`, environment source, sampling, and core privacy controls from the repository. It analyzes optional Logs, Trace, Replay, WebView, native reliability signals, Remote Config, Canvas Replay, and release artifacts only when already present or explicitly requested. User-defined `applicationType` wins; otherwise authorized Public DataWay implementation uses AI API metadata, with repository detection as the fallback. DataKit skips the control plane; unknown collector or runtime reachability permits local implementation but remains a warning/handoff and prevents a claim of remote ingestion. An explicit implementation request continues automatically after a safe plan is validated. A plan-only request—or an implementation containing ambiguous IDs, type conflicts, dirty overlap, dependency upgrades/replacements, new optional signals/artifacts, test exceptions, unsafe Token sinks, remote mutations, or material scope drift—stops for review. Revision Review is bound to the canonical plan digest and any approved dirty-file digest; changing either invalidates approval. Generate `.rum/instrumentation.json` only when requested or when the repository already maintains one. Approve an exact pending revision with:
-
-```text
-Use $rum-instrument to implement .rum/plan.json revision 1.
-```
-
-The Skill never copies one scalar Application ID to multiple independent applications, exposes a temporary code, API Key, or Public DataWay Client Token to Agent-visible output, edits generated output, uploads Sourcemaps/symbols, or claims remote ingestion without evidence.
+Run `python3 -B -m unittest discover -s rum-instrument/tests -q`, `python3 -B -m unittest discover -s tests -p 'test_*rum*' -q`, and `python3 -B tests/test_installers.py`. RUM script CI currently runs on macOS/Linux; Windows CI covers the installers and credential-free host-boundary checks. [The evidence index](rum-instrument/evals/README.md) records platform coverage, historical reports and the latest verification. Web has a recorded real test-site chain with user-confirmed backend data; Android has local emulator evidence. MiniApp has phone-preview evidence for core events and privacy canaries through a LAN capture receiver; production domain access, backend ingestion and repeated integration remain unverified on that device. Other native platforms retain explicit gaps. These are not claims of universal device or production acceptance.
 
 ## OpenTelemetry Instrumentation
 
@@ -334,7 +328,7 @@ Build and validate deterministic artifacts locally:
 ./release.sh --dry-run --output ./dist/skills-release
 ```
 
-Publishing is performed on every push to `main`, with `workflow_dispatch` available for an idempotent recovery run. The workflow publishes immutable `versions/<commit-sha>/...` objects first and updates `install.sh`, `install.ps1`, `uninstall.sh`, `uninstall.ps1`, `skills-index.json`, and `skills-index.tsv` last. Versioned objects use a one-year immutable cache policy; stable entrypoints use `no-cache`. CI then downloads every public file and verifies its SHA-256.
+Publishing is performed on every push to `main`, with `workflow_dispatch` available for an idempotent recovery run. The workflow publishes immutable `versions/<commit-sha>/...` objects first and updates `install.sh`, `install.ps1`, `uninstall.sh`, `uninstall.ps1`, `rum.md`, `skills-index.json`, and `skills-index.tsv` last. Versioned objects use a one-year immutable cache policy; stable entrypoints use `no-cache`. CI then downloads every public file and verifies its SHA-256.
 
 Configure these GitHub repository settings:
 

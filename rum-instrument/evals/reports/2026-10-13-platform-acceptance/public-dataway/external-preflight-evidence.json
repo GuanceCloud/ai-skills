@@ -1,0 +1,11 @@
+{
+  "provenance": "Parent agent reported verified-TLS tests, not rerun by this worker",
+  "status": "blocked_certificate_trust",
+  "dataway_head_http_status": 404,
+  "python_default_trust": "certificate verification failure",
+  "curl_default_trust_exit": 60,
+  "trusted_ca_available": false,
+  "user_choice": "retain TLS verification",
+  "authorization_code_consumed": false,
+  "browser_external_telemetry_run": false
+}

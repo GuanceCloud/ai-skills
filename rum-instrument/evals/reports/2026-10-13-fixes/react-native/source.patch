@@ -1,0 +1,94 @@
+diff --git a/rum.js b/rum.js
+index 058093f..031236a 100644
+--- a/rum.js
++++ b/rum.js
+@@ -1,4 +1,6 @@
+ const config = require('./rum-config');
++const { installRumErrorHandler } = require('./rum-error-handler.cjs');
++const { rumErrorPayload } = require('./rum-error-payload');
+ 
+ // Keep the promise across module reloads; native setup remains wrapper-owned.
+ const state = globalThis.__APP_RUM_STATE__ || { baseConfigured: false, ready: null };
+@@ -21,7 +23,7 @@ function startRum() {
+       androidAppId: config.androidAppId,
+       iOSAppId: config.iOSAppId,
+       enableAutoTrackUserAction: true,
+-      enableAutoTrackError: true,
++      enableAutoTrackError: false, // SDK 0.4.2 does not preserve application error chaining.
+       enableNativeUserResource: true,
+       // JS owns actions and eventual router views; avoid native duplicates.
+       enableNativeUserAction: false,
+@@ -31,6 +33,10 @@ function startRum() {
+       enableTrackNativeAppANR: false,
+       enableTrackNativeFreeze: false,
+     });
++    state.disposeErrorHandler = installRumErrorHandler(globalThis.ErrorUtils, (error, isFatal) => {
++      const payload = rumErrorPayload(error, isFatal);
++      return FTReactNativeRUM.addError(payload.stack, payload.message, payload.properties);
++    });
+     return true;
+   }).catch(() => {
+     state.ready = null;
+diff --git a/rum-error-handler.cjs b/rum-error-handler.cjs
+new file mode 100644
+index 0000000..d6497a3
+--- /dev/null
++++ b/rum-error-handler.cjs
+@@ -0,0 +1,34 @@
++'use strict';
++
++// Copy into maintained application source only when the selected SDK's automatic
++// error handler fails chaining tests. Disable that SDK hook before installing this.
++const marker = Symbol.for('guance.rum.applicationErrorHandler');
++
++function installRumErrorHandler(errorUtils, reportError) {
++  if (!errorUtils || typeof errorUtils.getGlobalHandler !== 'function' ||
++      typeof errorUtils.setGlobalHandler !== 'function' || typeof reportError !== 'function') {
++    throw new TypeError('A working ErrorUtils API and report callback are required');
++  }
++  const previous = errorUtils.getGlobalHandler();
++  if (typeof previous !== 'function') throw new TypeError('Existing error handler is required');
++  if (previous[marker]) return previous[marker];
++
++  function handler(error, isFatal) {
++    try {
++      // Preserve timing, arguments, receiver, return value and thrown exceptions.
++      return previous.apply(this, arguments);
++    } finally {
++      // Monitoring must not delay or replace application error handling.
++      Promise.resolve().then(() => reportError(error, isFatal)).catch(() => {});
++    }
++  }
++  const dispose = () => {
++    // A later framework/monitoring hook owns its replacement; do not clobber it.
++    if (errorUtils.getGlobalHandler() === handler) errorUtils.setGlobalHandler(previous);
++  };
++  Object.defineProperty(handler, marker, { value: dispose });
++  errorUtils.setGlobalHandler(handler);
++  return dispose;
++}
++
++module.exports = { installRumErrorHandler };
+diff --git a/rum-error-payload.js b/rum-error-payload.js
+new file mode 100644
+index 0000000..431b97a
+--- /dev/null
++++ b/rum-error-payload.js
+@@ -0,0 +1,17 @@
++'use strict';
++
++// Error messages and arbitrary object fields may contain application data.
++// Keep bounded categories and locations in maintained, allowlisted source files.
++const categories = new Set(['Error', 'TypeError', 'RangeError', 'ReferenceError', 'SyntaxError']);
++function rumErrorPayload(error, isFatal) {
++  const category = error && categories.has(error.name) ? error.name : 'Error';
++  const frames = [];
++  const stack = error && typeof error.stack === 'string' ? error.stack.slice(0, 16384) : '';
++  for (const line of stack.split('\n').slice(1, 33)) {
++    const match = line.match(/(?:^|[/\\])(index\.js|App\.js|rum\.js):(\d{1,6}):(\d{1,6})\)?$/);
++    if (match) frames.push(`at ${match[1]}:${match[2]}:${match[3]}`);
++    if (frames.length === 12) break;
++  }
++  return { stack: frames.join('\n'), message: category, properties: { is_fatal: isFatal === true } };
++}
++module.exports = { rumErrorPayload };

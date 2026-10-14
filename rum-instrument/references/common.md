@@ -2,14 +2,16 @@
 
 ## Minimal connection normalization
 
-Use these exact inference rules:
+Accept natural language, SDK snippets and existing variable references without asking users to reformat. Treat empty fields as missing. Resolve explicit user input, confirmed conversation context, effective project configuration, then verifiable defaults. Finish discovery before one consolidated missing-information question. Never guess an Application ID or receiver from an unrelated hostname.
+
+Use these receiver rules:
 
 | Supplied fields | Receiver mode | Normalized endpoint |
 |---|---|---|
 | `datawayUrl`, `appId` (optional `temporaryAuthCode`) | `public_dataway` | `receiver.endpoint` from `datawayUrl` |
 | `datakitUrl`, `appId` | `datakit` | `receiver.endpoint` from `datakitUrl` |
 
-Reject multiple URL field families. Do not infer Public DataWay versus DataKit from a generic URL. `clientToken` and `aiApiEndpoint` are not standard-prompt inputs.
+Reject multiple URL field families. A generic URL can be identified by an exact official site-catalog match or effective SDK receiver configuration; otherwise ask for the receiver mode with the other missing information. `clientToken` and `aiApiEndpoint` are not standard-prompt inputs.
 
 Normalize sources:
 
@@ -99,7 +101,7 @@ Infer rather than ask before planning:
 | Logs | inspect only when present or requested | disabled |
 | Trace | inspect only when present or requested | disabled |
 | Replay | inspect only when present or requested; require consent/masking evidence | disabled |
-| sampling | existing environment-driven values | platform-supported, environment-driven proposal |
+| sampling | existing environment-driven values | selected SDK's documented default |
 | user/context fields | existing reviewed allowlist | none |
 | remote config | inspect only when present or requested | disabled |
 | Sourcemap/symbol upload | inspect only when present or requested | omitted |

@@ -9,6 +9,7 @@ import copy
 from datetime import date
 import hashlib
 import json
+import os
 from pathlib import Path, PurePosixPath
 import re
 import stat
@@ -390,6 +391,7 @@ def validate_target_review_scope(
     target: dict[str, Any],
     location: str,
     errors: list[str],
+    *, modern: bool = False,
 ) -> list[str]:
     existing = target.get("existing_instrumentation")
     existing_signals: set[str] = set()
@@ -444,7 +446,8 @@ def validate_target_review_scope(
             and canonical not in existing_signals
             and enabled
         ):
-            reasons.append(f"{location}: new optional signal {canonical}")
+            if not (modern and scope_authorized(target, f"signal:{canonical}")):
+                reasons.append(f"{location}: new optional signal {canonical}")
     if planned and not core_rum_enabled:
         errors.append(
             f"{location}.profile.signals.rum must be enabled for a planned RUM target"
@@ -461,7 +464,7 @@ def validate_target_review_scope(
                 f"{location}.artifacts.{artifact}",
                 errors,
             )
-            if planned and enabled:
+            if planned and enabled and not (modern and scope_authorized(target, f"artifact:{artifact}")):
                 reasons.append(
                     f"{location}: new release artifact scope {artifact}"
                 )
@@ -943,6 +946,8 @@ def validate_planned_file(value: Any, location: str, errors: list[str]) -> None:
         return
 
     path = PurePosixPath(value)
+    if path.as_posix() != value:
+        errors.append(f"{location} must use a canonical repository-relative path")
     if path.is_absolute() or value == "." or ".." in path.parts:
         errors.append(f"{location} must stay within the repository")
     if any(part.lower() in GENERATED_PATH_PARTS for part in path.parts):
@@ -1018,6 +1023,7 @@ def validate_planned_changes(
 
     covered_targets: set[str] = set()
     used_orders: set[int] = set()
+    file_receipts: dict[str, tuple[Any, Any]] = {}
     for index, change in enumerate(value):
         location = f"planned_changes[{index}]"
         if not isinstance(change, dict):
@@ -1035,6 +1041,23 @@ def validate_planned_changes(
             covered_targets.add(target_id)
 
         validate_planned_file(change.get("file"), f"{location}.file", errors)
+        before = change.get("before_sha256")
+        prepared = change.get("prepared_sha256")
+        if "before_sha256" in change and not (
+            before == "missing" or isinstance(before, str) and SHA256_PATTERN.fullmatch(before)
+        ):
+            errors.append(f"{location}.before_sha256 must be a SHA-256 digest or missing")
+        if "prepared_sha256" in change and (
+            not isinstance(prepared, str) or not SHA256_PATTERN.fullmatch(prepared)
+            or before is None or before == prepared
+        ):
+            errors.append(f"{location}.prepared_sha256 requires a distinct result digest and before_sha256")
+        filename = change.get("file")
+        if isinstance(filename, str):
+            receipt = (before, prepared)
+            if filename in file_receipts and file_receipts[filename] != receipt:
+                errors.append(f"{location}: changes to one file must share its before/prepared digests")
+            file_receipts[filename] = receipt
         order = change.get("order")
         if not isinstance(order, int) or isinstance(order, bool) or order < 1:
             errors.append(f"{location}.order must be a positive integer")
@@ -1071,6 +1094,9 @@ def plan_review_digest(plan: Any) -> str:
         "revision": revision,
         "reviewed_overlaps": reviewed_overlaps,
     }
+    for batch in canonical.get("batches", []):
+        receipt = batch.get("approval", {})
+        batch["approval"] = {"revision": receipt.get("revision"), "reviewed_overlaps": receipt.get("reviewed_overlaps", [])}
     payload = json.dumps(
         canonical,
         ensure_ascii=False,
@@ -1131,7 +1157,7 @@ def validate_revision_review(
             )
 
 
-def validate_plan(plan: Any, phase: str) -> tuple[list[str], list[str]]:
+def _validate_plan_legacy(plan: Any, phase: str, *, modern: bool = False) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
 
@@ -1292,7 +1318,7 @@ def validate_plan(plan: Any, phase: str) -> tuple[list[str], list[str]]:
             )
         elif "readiness" in receiver:
             errors.append("request.receiver.readiness is valid only for datakit")
-        if len(receiver_client_token_sinks) > 1:
+        if len(receiver_client_token_sinks) > 1 and not modern:
             errors.append(
                 "request.receiver.client_tokens must use one shared sink path, "
                 "format, and scope"
@@ -1325,7 +1351,7 @@ def validate_plan(plan: Any, phase: str) -> tuple[list[str], list[str]]:
     application_slot_owners: dict[str, str] = {}
     active_receiver_slots: set[str] = set()
     material_review_reasons: list[str] = []
-    if external_client_token_sink:
+    if external_client_token_sink and not (modern and scope_authorized(plan, "external_sink")):
         material_review_reasons.append("external Client Token sink")
     for index, target in enumerate(targets):
         location = f"targets[{index}]"
@@ -1450,7 +1476,7 @@ def validate_plan(plan: Any, phase: str) -> tuple[list[str], list[str]]:
             if not isinstance(target.get(field), dict):
                 errors.append(f"{location}.{field} must be an object")
         material_review_reasons.extend(
-            validate_target_review_scope(target, location, errors)
+            validate_target_review_scope(target, location, errors, modern=modern)
         )
         if not target.get("evidence"):
             warnings.append(f"{location} has no repository evidence")
@@ -1534,6 +1560,10 @@ def validate_plan(plan: Any, phase: str) -> tuple[list[str], list[str]]:
         for change in (planned_changes if isinstance(planned_changes, list) else [])
         if isinstance(change, dict)
         and isinstance(change.get("dependency_decision"), dict)
+        and not (modern and change["dependency_decision"].get("action") in REVIEW_REQUIRED_DEPENDENCY_ACTIONS and (
+            compatible_upgrade(change["dependency_decision"])
+            or scope_authorized(change, "dependency")
+        ))
     }
     for field in ("validation", "risks", "handoff"):
         if not isinstance(plan.get(field), list):
@@ -1629,9 +1659,9 @@ def validate_plan(plan: Any, phase: str) -> tuple[list[str], list[str]]:
                 review_reasons.append(
                     "dependency " + "/".join(risky_dependency_actions)
                 )
-            if control_plane_catalog == TESTING_CONTROL_PLANE_CATALOG:
+            if control_plane_catalog == TESTING_CONTROL_PLANE_CATALOG and not (modern and scope_authorized(plan, "testing_site")):
                 review_reasons.append("testing control-plane override")
-            if control_plane_tls_verification == "disabled_for_testing":
+            if control_plane_tls_verification == "disabled_for_testing" and not (modern and scope_authorized(plan, "disabled_tls")):
                 review_reasons.append("disabled TLS verification")
             review_reasons.extend(sorted(set(material_review_reasons)))
             if review_reasons:
@@ -1670,7 +1700,7 @@ def validate_plan(plan: Any, phase: str) -> tuple[list[str], list[str]]:
     return errors, warnings
 
 
-def validate_control_plane_state(
+def _validate_control_plane_state_legacy(
     state: Any,
     plan: dict[str, Any],
     *,
@@ -2009,7 +2039,7 @@ def validate_control_plane_state(
                         errors.append(
                             "control-plane state secret_sink.path must be Git-ignored"
                         )
-                elif not revision_reviewed:
+                elif not revision_reviewed and not (plan.get("schema_version") == 3 and scope_authorized(plan, "external_sink")):
                     errors.append(
                         "an external Client Token sink requires revision_review"
                     )
@@ -2369,6 +2399,87 @@ def _git_status_paths(repository: Path) -> set[str]:
     return paths
 
 
+def _hunk_range(start: str, count: str) -> tuple[int, int]:
+    """Use zero-based half-open lines, or a point at a zero-length hunk's gap."""
+    size = int(count) if count else 1
+    begin = int(start) - 1 if size else int(start)
+    return begin, begin + size
+
+
+def _hunks_overlap(left: tuple[int, int], right: tuple[int, int]) -> bool:
+    a, b = left
+    c, d = right
+    if a == b and c == d:
+        return a == c
+    if a == b:
+        return c < a < d
+    if c == d:
+        return a < c < b
+    return a < d and c < b
+
+
+def nonoverlapping_dirty_edit(plan: dict[str, Any], filename: str, repository: Path) -> bool:
+    """Check an exact proposed patch against current bytes and HEAD-to-worktree hunks."""
+    changes = [c for c in plan.get("planned_changes", []) if c.get("file") == filename]
+    proofs = [c.get("dirty_patch") for c in changes]
+    if not proofs or any(not isinstance(p, dict) for p in proofs):
+        return False
+    try:
+        current = (repository / filename).read_bytes()
+        digest = "sha256:" + hashlib.sha256(current).hexdigest()
+        user_diff = subprocess.run(
+            ["git", "-C", str(repository), "diff", "HEAD", "--no-ext-diff", "--unified=0", "--", filename],
+            capture_output=True, check=True,
+        ).stdout.decode("utf-8")
+        tracked = subprocess.run(["git", "-C", str(repository), "cat-file", "-e", f"HEAD:{filename}"], capture_output=True).returncode == 0
+        if not tracked or not user_diff or "Binary files" in user_diff or "rename from" in user_diff:
+            return False
+        pattern = r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@"
+        user_ranges = [_hunk_range(m[2], m[3]) for m in re.findall(pattern, user_diff, re.M)]
+        for proof in proofs:
+            patch = proof.get("patch")
+            if proof.get("sha256") != digest or not isinstance(patch, str):
+                return False
+            numstat = subprocess.run(["git", "-C", str(repository), "apply", "--numstat", "-z", "-"], input=patch.encode(), capture_output=True)
+            fields = numstat.stdout.rstrip(b"\0").split(b"\t")
+            if numstat.returncode or len(fields) != 3 or fields[2].decode() != filename:
+                return False
+            hunks = re.findall(pattern, patch, re.M)
+            planned = [_hunk_range(m[0], m[1]) for m in hunks]
+            if not planned or any(_hunks_overlap(p, u) for p in planned for u in user_ranges):
+                return False
+            # Git may relocate a valid hunk onto user edits outside its declared
+            # range. Require exact positions; C locale keeps diagnostics stable.
+            check = subprocess.run(
+                ["git", "-C", str(repository), "apply", "--check", "--verbose", "--unidiff-zero", "-"],
+                input=patch.encode(), capture_output=True, env={**os.environ, "LC_ALL": "C"},
+            )
+            if check.returncode:
+                return False
+            # Git reports a +1 offset for a correctly positioned pure deletion
+            # because its new-side zero-length header names the preceding gap.
+            # Compare actual positions to old-side coordinates plus prior edits.
+            positions, delta = [], 0
+            for old_start, old_count, _, new_count in hunks:
+                positions.append(_hunk_range(old_start, old_count)[0] + 1 + delta)
+                delta += int(new_count or 1) - int(old_count or 1)
+            for number, position in re.findall(rb"^Hunk #(\d+) succeeded at (\d+) .*\(offset ", check.stderr, re.M):
+                if int(number) > len(positions) or int(position) != positions[int(number) - 1]:
+                    return False
+        return True
+    except (OSError, UnicodeError, subprocess.CalledProcessError):
+        return False
+
+
+def file_digest(path: Path) -> str:
+    """Fingerprint maintained source without serializing its contents."""
+    if not path.exists():
+        return "missing"
+    if not path.is_file() or path.is_symlink():
+        raise ValueError("planned source must be a regular non-symlink file")
+    return "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def validate_repository_state(plan: Any, repository: Path) -> list[str]:
     errors: list[str] = []
     resolved_repository = repository.resolve()
@@ -2429,14 +2540,19 @@ def validate_repository_state(plan: Any, repository: Path) -> list[str]:
             errors.append(
                 f"planned file escapes the repository or traverses a symlink: {planned_file}"
             )
+    if errors:
+        return errors
 
-    dirty_planned_files = sorted(dirty_paths & planned_files)
     initial_paths = {
         _status_path(line)
         for line in repository_contract.get("initial_status", [])
         if isinstance(line, str) and _status_path(line)
     }
     approval = plan.get("approval", {}) if isinstance(plan, dict) else {}
+    if plan.get("schema_version") == 3:
+        reviewed_batches = [b for b in plan.get("batches", []) if b.get("approval", {}).get("basis") == "revision_review" and b["approval"].get("status") == "approved"]
+        if reviewed_batches:
+            approval = {**approval, "basis": "revision_review", "reviewed_overlaps": [o for b in reviewed_batches for o in b["approval"].get("reviewed_overlaps", [])]}
     reviewed_overlaps = {
         overlap.get("file"): overlap.get("sha256")
         for overlap in approval.get("reviewed_overlaps", [])
@@ -2446,8 +2562,28 @@ def validate_repository_state(plan: Any, repository: Path) -> list[str]:
     }
     unreviewed_dirty: list[str] = []
     changed_reviewed: list[str] = []
-    for planned_file in dirty_planned_files:
+    changes_by_file = {c["file"]: c for c in plan.get("planned_changes", [])}
+    for planned_file in sorted(planned_files):
+        change = changes_by_file[planned_file]
+        try:
+            actual_digest = file_digest(resolved_repository / planned_file)
+        except (OSError, ValueError):
+            errors.append(f"cannot verify planned source: {planned_file}")
+            continue
+        before, prepared = change.get("before_sha256"), change.get("prepared_sha256")
+        # The expected preparation result is declared BEFORE editing, as part of
+        # the authorized plan. Never learn it from whatever happens to be on disk.
+        if before is not None and prepared != before and actual_digest == prepared:
+            continue
+        if before is not None and actual_digest != before:
+            errors.append(f"planned file changed after planning or preparation: {planned_file}")
+            continue
+        if planned_file not in dirty_paths and planned_file not in initial_paths:
+            continue
         if planned_file not in initial_paths:
+            unreviewed_dirty.append(planned_file)
+            continue
+        if plan.get("schema_version") == 3 and nonoverlapping_dirty_edit(plan, planned_file, resolved_repository):
             continue
         expected_digest = reviewed_overlaps.get(planned_file)
         if (
@@ -2460,7 +2596,6 @@ def validate_repository_state(plan: Any, repository: Path) -> list[str]:
         if not candidate.is_file() or candidate.is_symlink():
             changed_reviewed.append(planned_file)
             continue
-        actual_digest = "sha256:" + hashlib.sha256(candidate.read_bytes()).hexdigest()
         if actual_digest != expected_digest:
             changed_reviewed.append(planned_file)
     if unreviewed_dirty:
@@ -2491,16 +2626,444 @@ def validate_repository_state(plan: Any, repository: Path) -> list[str]:
     return errors
 
 
+def scope_authorized(owner: dict[str, Any], scope: str) -> bool:
+    """Receipts record existing user intent; they cannot override failed safety checks."""
+    receipts = owner.get("authorizations", {})
+    receipt = receipts.get(scope) if isinstance(receipts, dict) else None
+    if not isinstance(receipt, dict) or not is_nonempty_string(receipt.get("evidence")):
+        return False
+    conditions = receipt.get("conditions", {})
+    required = {
+        "signal:replay": {"consent", "masking", "exclusions", "sampling"},
+        "signal:canvas_replay": {"consent", "masking", "exclusions", "sampling"},
+        "signal:tracing": {"allowlist", "request_compatibility"},
+        "disabled_tls": {"test_only"},
+    }.get(scope, set())
+    return isinstance(conditions, dict) and all(
+        is_nonempty_string(conditions.get(key)) for key in required
+    )
+
+
+def compatible_upgrade(decision: dict[str, Any]) -> bool:
+    if decision.get("action") != "upgrade":
+        return False
+    versions = []
+    for key in ("from_version", "version"):
+        match = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)", str(decision.get(key, "")))
+        if not match:
+            return False
+        versions.append(tuple(map(int, match.groups())))
+    before, after = versions
+    return (
+        decision.get("upgrade_kind") == "compatible_minor"
+        and before[0] > 0 and before[0] == after[0] and before < after
+        and is_nonempty_string(decision.get("necessity"))
+        and is_nonempty_string(decision.get("compatibility"))
+    )
+
+
+def select_plan(plan: dict[str, Any], targets: list[str] | None = None) -> dict[str, Any]:
+    """Project an already structurally validated v3 plan onto complete execution batches."""
+    if plan.get("schema_version") != 3:
+        if targets:
+            raise ValueError("--targets requires a schema v3 plan")
+        return copy.deepcopy(plan)
+    all_targets = {t["id"]: t for t in plan["targets"]}
+    unfinished = {
+        key for key, target in all_targets.items()
+        if target.get("disposition") not in {"existing", "instrumented", "skipped"}
+    }
+    completed = {
+        key for key, target in all_targets.items()
+        if target.get("disposition") in {"existing", "instrumented"}
+    }
+    selected = set(targets) if targets is not None else unfinished
+    if (targets is not None and not selected) or selected - set(all_targets):
+        raise ValueError("select at least one declared target")
+    # Explicit full-batch selections and the default selection must execute the
+    # same remaining work, without resolving credentials for completed members.
+    selected = selected & unfinished
+    batches = {batch["id"]: batch for batch in plan["batches"]}
+    selected_batches = [b for b in batches.values() if selected & set(b["target_ids"])]
+    for batch in selected_batches:
+        if not (set(batch["target_ids"]) & unfinished) <= selected:
+            raise ValueError(f"select the complete shared batch {batch['id']}")
+        for dependency in batch.get("depends_on", []):
+            dependency_ids = set(batches[dependency]["target_ids"])
+            if not dependency_ids <= selected | completed:
+                raise ValueError(f"batch {batch['id']} requires batch {dependency}")
+    ordered = []
+    pending_batches = {b["id"]: b for b in selected_batches}
+    while pending_batches:
+        ready = sorted(key for key, batch in pending_batches.items() if not set(batch.get("depends_on", [])) & set(pending_batches))
+        if not ready:
+            raise ValueError("batch dependencies contain a cycle")
+        for key in ready:
+            ordered.append(pending_batches.pop(key))
+    selected_batches = ordered
+    result = copy.deepcopy(plan)
+    result["targets"] = [t for t in result["targets"] if t["id"] in selected]
+    result["planned_changes"] = [c for c in result["planned_changes"] if c["target_id"] in selected]
+    result["batches"] = copy.deepcopy(selected_batches)
+    slots = {slot for t in result["targets"] for slot in t["application_id_slots"]}
+    receiver = result["request"]["receiver"]
+    if "client_tokens" in receiver:
+        receiver["client_tokens"] = {k: v for k, v in receiver["client_tokens"].items() if k in slots}
+    # Global input provenance is validated before projection; do not reinterpret a scalar.
+    ids = {k: v for t in result["targets"] for k, v in t["application_ids"].items()}
+    if ids:
+        result["request"]["application_id_input"] = {"kind": "map", "references": ids}
+    if len(selected_batches) == 1:
+        result["approval"] = copy.deepcopy(selected_batches[0]["approval"])
+    else:
+        approved = all(b["approval"]["status"] == "approved" for b in selected_batches)
+        result["approval"] = {
+            "status": "approved" if approved else "pending",
+            "basis": "explicit_implementation_request",
+            "revision": plan["approval"]["revision"],
+            "blockers": [] if approved else ["one or more selected batches need input"],
+        }
+    return result
+
+
+def validate_batches(plan: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    batches = plan.get("batches")
+    if not isinstance(batches, list) or not batches:
+        return ["v3 batches must be a non-empty array"]
+    targets = {t.get("id") for t in plan.get("targets", []) if isinstance(t, dict)}
+    owners: dict[str, str] = {}
+    graph: dict[str, list[str]] = {}
+    for batch in batches:
+        if not isinstance(batch, dict) or not is_nonempty_string(batch.get("id")):
+            errors.append("each batch requires an id")
+            continue
+        key = batch["id"]
+        if key in graph:
+            errors.append(f"duplicate batch {key}")
+        ids, dependencies = batch.get("target_ids"), batch.get("depends_on", [])
+        validate_nonempty_string_list(ids, f"batch {key}.target_ids", errors)
+        if not isinstance(dependencies, list) or any(not is_nonempty_string(d) for d in dependencies):
+            errors.append(f"batch {key}.depends_on must be an array of batch ids")
+            dependencies = []
+        graph[key] = dependencies
+        for target in ids if isinstance(ids, list) else []:
+            if not isinstance(target, str):
+                continue
+            if target not in targets or target in owners:
+                errors.append(f"batch {key} has unknown or repeated target {target}")
+            owners[target] = key
+        if not isinstance(batch.get("approval"), dict):
+            errors.append(f"batch {key} requires approval")
+        elif batch["approval"].get("revision") != plan["approval"].get("revision"):
+            errors.append(f"batch {key} must use the current plan revision")
+    if set(owners) != targets:
+        errors.append("batches must cover every target exactly once")
+    visiting, visited = set(), set()
+    def visit(key: str) -> None:
+        if key in visiting:
+            errors.append("batch dependencies contain a cycle")
+            return
+        if key in visited:
+            return
+        visiting.add(key)
+        for dep in graph[key]:
+            if dep not in graph:
+                errors.append(f"batch {key} has unknown dependency {dep}")
+            else:
+                visit(dep)
+        visiting.remove(key)
+        visited.add(key)
+    for key in graph:
+        visit(key)
+    # A shared runtime file is also a shared edit, even if it is Git-ignored.
+    sinks: dict[str, tuple[str, str, str]] = {}
+    sink_keys: set[tuple[str, str]] = set()
+    receiver_tokens = plan.get("request", {}).get("receiver", {}).get("client_tokens", {})
+    for target in plan.get("targets", []):
+        for slot in target.get("application_id_slots", []):
+            sink = receiver_tokens.get(slot, {}).get("sink")
+            if not isinstance(sink, dict):
+                continue
+            filename = sink.get("path")
+            if not isinstance(filename, str):
+                continue
+            filename = str(Path(filename))
+            identity = (sink.get("format"), sink.get("scope"), owners.get(target["id"]))
+            if filename in sinks and sinks[filename] != identity:
+                errors.append(f"shared configuration {filename} requires one batch, format and scope")
+            sinks[filename] = identity
+            key = (filename, sink.get("key"))
+            if key in sink_keys:
+                errors.append(f"duplicate runtime key in {filename}")
+            sink_keys.add(key)
+    file_owners: dict[str, str] = {}
+    for change in plan.get("planned_changes", []):
+        if not isinstance(change, dict):
+            continue
+        filename, batch = change.get("file"), owners.get(change.get("target_id"))
+        if not isinstance(filename, str):
+            continue
+        if filename in file_owners and file_owners[filename] != batch:
+            errors.append(f"shared file {filename} must belong to one batch")
+        file_owners[filename] = batch
+    return errors
+
+
+def validate_resolution_endpoint(plan: dict[str, Any]) -> list[str]:
+    """A plan may retain references; executing the control plane needs an origin."""
+    receiver = plan.get("request", {}).get("receiver", {})
+    if plan.get("targets") and receiver.get("mode") == "public_dataway":
+        if not is_nonempty_string(receiver.get("endpoint", {}).get("value")):
+            return ["request.receiver.endpoint.value is required before Public DataWay execution; "
+                    "resolve the non-secret address from its source and record the concrete origin"]
+    return []
+
+
+def validate_plan(plan: Any, phase: str, targets: list[str] | None = None) -> tuple[list[str], list[str]]:
+    if phase == "prepare":
+        phase = "implement"
+    if not isinstance(plan, dict) or plan.get("schema_version") != 3:
+        errors, warnings = _validate_plan_legacy(plan, phase)
+        if targets is not None:
+            errors.append("--targets requires a schema v3 plan")
+        return errors, warnings
+    if not isinstance(plan.get("request"), dict) or not isinstance(plan.get("approval"), dict):
+        return ["v3 request and summary approval must be objects"], []
+    summary = plan["approval"]
+    if summary.get("status") not in {"pending", "approved"} or summary.get("basis") not in APPROVAL_BASES or not isinstance(summary.get("blockers"), list):
+        return ["v3 summary approval requires status, basis and blockers"], []
+    # Validate the full graph before selecting a subset: selection cannot hide bad paths,
+    # duplicate IDs, malformed references, or an ambiguous scalar application ID.
+    structural = copy.deepcopy(plan)
+    structural["schema_version"] = 2
+    structural["approval"] = {
+        "status": "pending", "basis": "plan_only_request" if plan.get("request", {}).get("intent") in PLAN_ONLY_INTENTS else "explicit_implementation_request",
+        "blockers": ["structural validation"], "revision": plan.get("approval", {}).get("revision"),
+    }
+    errors, warnings = _validate_plan_legacy(structural, "plan", modern=True)
+    if errors:
+        return errors, warnings
+    errors.extend(validate_batches(plan))
+    if errors:
+        return errors, warnings
+    # Validate authorization for every batch, even when another batch is selected.
+    for batch in plan["batches"]:
+        projected = copy.deepcopy(plan)
+        ids = set(batch["target_ids"])
+        projected["targets"] = [t for t in projected["targets"] if t["id"] in ids]
+        projected["planned_changes"] = [c for c in projected["planned_changes"] if c["target_id"] in ids]
+        slots = {s for t in projected["targets"] for s in t["application_id_slots"]}
+        receiver = projected["request"]["receiver"]
+        if "client_tokens" in receiver:
+            receiver["client_tokens"] = {k: v for k, v in receiver["client_tokens"].items() if k in slots}
+        application_ids = {k: v for t in projected["targets"] for k, v in t["application_ids"].items()}
+        if application_ids:
+            projected["request"]["application_id_input"] = {"kind": "map", "references": application_ids}
+        projected["approval"] = copy.deepcopy(batch["approval"])
+        if projected["approval"].get("basis") == "revision_review":
+            # The user reviews the original full plan, never an invisible projection.
+            receipt_plan = copy.deepcopy(plan)
+            receipt_plan["approval"] = projected["approval"]
+            validate_revision_review(receipt_plan, projected["approval"], errors)
+        projected["schema_version"] = 2
+        if projected["approval"].get("basis") == "revision_review":
+            projected["approval"]["reviewed_plan_sha256"] = plan_review_digest(projected)
+        batch_errors, _ = _validate_plan_legacy(projected, "plan", modern=True)
+        errors.extend(f"batch {batch['id']}: {e}" for e in batch_errors)
+    if phase == "implement" or targets is not None:
+        try:
+            selected = select_plan(plan, targets)
+        except ValueError as exc:
+            errors.append(str(exc))
+        else:
+            if phase == "implement":
+                errors.extend(validate_resolution_endpoint(selected))
+            for batch in selected["batches"]:
+                if batch["approval"].get("status") != "approved":
+                    errors.append(f"batch {batch['id']} requires resolved input or authorization")
+            if any(t.get("disposition") in {"blocked", "failed"} or t.get("blockers") for t in selected["targets"]):
+                errors.append("selected targets contain unresolved blockers")
+    return errors, warnings
+
+
+def receiver_origin(value: Any) -> str | None:
+    """Match the resolver's origin normalization without accepting paths or credentials."""
+    if not isinstance(value, str) or not is_valid_origin(value.strip(), {"http", "https"}):
+        return None
+    parsed = urlsplit(value.strip())
+    return f"{parsed.scheme.lower()}://{parsed.netloc.lower()}"
+
+
+def credential_binding(plan: dict[str, Any], slot: str, repository: Path, *, normalize_endpoint: bool = True) -> str:
+    receiver = plan["request"]["receiver"]
+    target = next(t for t in plan["targets"] if slot in t["application_ids"])
+    sink = copy.deepcopy(receiver["client_tokens"][slot]["sink"])
+    sink["path"] = str((repository / sink["path"]).resolve())
+    endpoint = copy.deepcopy(receiver["endpoint"])
+    origin = receiver_origin(endpoint.get("value"))
+    if normalize_endpoint and origin is not None:
+        endpoint["value"] = origin
+    identity = {
+        "repository": str(repository.resolve()), "receiver": endpoint,
+        "control_plane": {k: receiver["control_plane"].get(k) for k in ("catalog", "site_code", "ai_api_endpoint", "tls_verification")},
+        "slot": slot, "app_id": target["application_ids"][slot], "sink": sink,
+        "source": receiver["client_tokens"][slot]["source"],
+    }
+    return "sha256:" + hashlib.sha256(json.dumps(identity, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def credential_binding_matches(entry: dict[str, Any], plan: dict[str, Any], slot: str, repository: Path) -> bool:
+    # Old v2 checkpoints must still match the complete original identity before
+    # URL normalization is migrated. Metadata and sink integrity are checked next.
+    return entry.get("binding") in (
+        credential_binding(plan, slot, repository),
+        credential_binding(plan, slot, repository, normalize_endpoint=False),
+    )
+
+
+def validate_control_plane_state(state: Any, plan: dict[str, Any], *, repository: Path | None = None, state_path: Path | None = None) -> tuple[list[str], list[str]]:
+    if not isinstance(state, dict) or state.get("schema_version") != 2:
+        return _validate_control_plane_state_legacy(state, plan, repository=repository, state_path=state_path)
+    if repository is None:
+        return ["state v2 validation requires --repository"], []
+    errors, warnings = [], []
+    if state.get("kind") != "rum_control_plane_state":
+        errors.append("invalid control-plane state kind")
+    entries = state.get("slots")
+    if not isinstance(entries, dict):
+        return ["state v2 slots must be an object"], []
+    for slot in plan.get("request", {}).get("receiver", {}).get("client_tokens", {}):
+        entry = entries.get(slot)
+        if not isinstance(entry, dict):
+            errors.append(f"missing recoverable state for slot {slot}")
+            continue
+        if not credential_binding_matches(entry, plan, slot, repository):
+            errors.append(f"credential identity changed for slot {slot}; resolve only this slot again")
+            continue
+        # Reuse the complete v1 validation for site, app metadata, paths and permissions.
+        single = copy.deepcopy(plan)
+        single["request"]["receiver"]["client_tokens"] = {slot: plan["request"]["receiver"]["client_tokens"][slot]}
+        single["targets"] = [t for t in single["targets"] if slot in t["application_ids"]]
+        for batch in single.get("batches", []):
+            if any(t["id"] in batch["target_ids"] for t in single["targets"]):
+                single["approval"] = batch["approval"]
+                break
+        legacy = copy.deepcopy(entry.get("state", {}))
+        if not isinstance(legacy, dict) or not isinstance(legacy.get("site"), dict):
+            errors.append(f"malformed checkpoint for slot {slot}")
+            continue
+        legacy["plan_digest"] = plan_review_digest(single)
+        saved_origin = receiver_origin(legacy["site"].get("dataway_url"))
+        if saved_origin is None or saved_origin != receiver_origin(plan["request"]["receiver"]["endpoint"].get("value")):
+            errors.append(f"receiver metadata changed for slot {slot}")
+        ee, ww = _validate_control_plane_state_legacy(legacy, single, repository=repository, state_path=state_path)
+        errors.extend(ee)
+        warnings.extend(ww)
+        try:
+            sink_path = Path(legacy["secret_sink"]["path"])
+            if not sink_path.is_file() or any(p.is_symlink() for p in (sink_path, *sink_path.parents)):
+                raise ValueError()
+            digest = "sha256:" + hashlib.sha256(sink_path.read_bytes()).hexdigest()
+            if entry.get("sink_sha256") != digest:
+                errors.append(f"runtime configuration changed for slot {slot}; verify it before resuming")
+        except (OSError, KeyError, TypeError, ValueError):
+            errors.append(f"cannot verify runtime configuration integrity for slot {slot}")
+    validate_sensitive_values(state, "control_plane_state", errors)
+    return errors, warnings
+
+
+def complete_plan_draft(draft: Any, repository: Path) -> dict[str, Any]:
+    """Complete structural defaults only; facts and authorization remain caller input."""
+    if not isinstance(draft, dict) or draft.get("schema_version", 3) != 3:
+        raise ValueError("draft completion accepts only a v3 plan object")
+    root = repository.resolve()
+    if Path(_git_output(root, "rev-parse", "--show-toplevel")).resolve() != root:
+        raise ValueError("--repository must be the Git worktree root")
+    plan = copy.deepcopy(draft)
+    plan.setdefault("schema_version", 3)
+    # Preserve a supplied discovery baseline; never refresh it during a resume.
+    if "repository" not in plan:
+        plan["repository"] = {"root": ".", "commit": _git_output(root, "rev-parse", "HEAD"),
+                              "initial_status": _git_output(root, "status", "--porcelain=v1", "--untracked-files=all").splitlines()}
+    request = plan.get("request")
+    targets = plan.get("targets")
+    if not isinstance(request, dict) or not isinstance(targets, list) or not targets:
+        raise ValueError("draft requires request and the complete discovered targets list")
+    intent = request.get("intent")
+    if intent not in PLAN_ONLY_INTENTS | IMPLEMENTATION_INTENTS:
+        raise ValueError("draft requires an explicit request.intent")
+    if intent in IMPLEMENTATION_INTENTS and not is_nonempty_string(request.get("authorization_evidence")):
+        raise ValueError("implementation draft requires request.authorization_evidence from the actual user request")
+    for field in ("validation", "risks", "handoff", "planned_changes"):
+        plan.setdefault(field, [])
+    for target in targets:
+        if not isinstance(target, dict):
+            raise ValueError("draft targets must be objects")
+        for field in ("receiver_mapping", "privacy", "artifacts"):
+            target.setdefault(field, {})
+        target.setdefault("blockers", [])
+        target.setdefault("disposition", "planned")
+        target.setdefault("profile", {"signals": {"rum": True, "logs": "preserve", "tracing": "preserve", "replay": "preserve"}})
+        # Identity, type, evidence and existing instrumentation are never guessed.
+    if "batches" not in plan:
+        if len(targets) != 1:
+            raise ValueError("multiple targets require explicit batches and dependencies")
+        plan["batches"] = [{"id": "core", "target_ids": [targets[0].get("id")], "depends_on": []}]
+    if not isinstance(plan["batches"], list):
+        raise ValueError("batches must be an array")
+    revision = plan.get("approval", {}).get("revision", 1) if isinstance(plan.get("approval", {}), dict) else 1
+    by_id = {t.get("id"): t for t in targets if isinstance(t.get("id"), str)}
+    def approval(reasons):
+        return {"status": "approved" if intent in IMPLEMENTATION_INTENTS and not reasons else "pending",
+                "basis": "explicit_implementation_request" if intent in IMPLEMENTATION_INTENTS else "plan_only_request",
+                "blockers": reasons, "revision": revision}
+    for batch in plan["batches"]:
+        if not isinstance(batch, dict) or not isinstance(batch.get("target_ids"), list):
+            raise ValueError("each batch requires target_ids")
+        reasons = []
+        for tid in batch["target_ids"]:
+            if not isinstance(tid, str) or tid not in by_id:
+                raise ValueError("batch references an unknown target")
+            t = by_id[tid]
+            if not isinstance(t["blockers"], list):
+                raise ValueError("target blockers must be an array")
+            reasons.extend(t["blockers"])
+            if t["disposition"] in {"blocked", "failed"} and not t["blockers"]:
+                reasons.append(f"target {tid} is {t['disposition']}")
+        # An explicit summary decision may encode an unresolved review. Never
+        # replace it with a stronger generated batch approval.
+        batch.setdefault("approval", copy.deepcopy(plan["approval"]) if "approval" in plan else approval(reasons))
+    reasons = [reason for t in targets for reason in t["blockers"]]
+    plan.setdefault("approval", approval(reasons))
+    if "repository" not in draft:
+        # Only a new discovery captures source baselines. Re-completing a plan
+        # must never bless user changes by silently refreshing its fingerprints.
+        for change in plan["planned_changes"]:
+            path_errors: list[str] = []
+            validate_planned_file(change.get("file"), "planned file", path_errors)
+            if path_errors:
+                raise ValueError("; ".join(path_errors))
+            path = root / change["file"]
+            if any(p.is_symlink() for p in (path, *path.parents)):
+                raise ValueError("planned file cannot traverse symlinks")
+            change.setdefault("before_sha256", file_digest(path))
+    return plan
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("document", type=Path)
+    parser.add_argument("--complete-draft", type=Path, metavar="NEW_PLAN", help="complete structural defaults, validate, and create a new v3 plan; never overwrite")
     parser.add_argument(
         "--kind",
         choices=("auto", "plan", "instrumentation"),
         default="auto",
     )
-    parser.add_argument("--phase", choices=("plan", "implement"), default="plan")
+    parser.add_argument("--phase", choices=("plan", "prepare", "implement"), default="plan",
+                        help="prepare checks authorization/repository before non-secret setup, without credential state")
     parser.add_argument("--repository", type=Path)
+    parser.add_argument("--targets", nargs="+", help="complete v3 batch target IDs")
     parser.add_argument(
         "--execution-state",
         type=Path,
@@ -2520,10 +3083,45 @@ def main() -> int:
     except json.JSONDecodeError as error:
         print(f"invalid JSON: {error}", file=sys.stderr)
         return 1
+    if arguments.complete_draft is not None:
+        if (arguments.repository is None or arguments.phase != "plan" or arguments.kind == "instrumentation"
+                or arguments.targets or arguments.execution_state or arguments.print_review_digest):
+            parser.error("--complete-draft requires --repository and full plan-phase validation only")
+        try:
+            document = complete_plan_draft(document, arguments.repository)
+            errors, warnings = validate_plan(document, "plan")
+            if errors:
+                for error in errors:
+                    print(f"error: {error}", file=sys.stderr)
+                return 1
+            for warning in warnings:
+                print(f"warning: {warning}", file=sys.stderr)
+            destination = arguments.complete_draft.absolute()
+            if any(p.is_symlink() for p in (destination, *destination.parents)):
+                raise ValueError("plan output cannot traverse symlinks")
+            if not destination.resolve().is_relative_to(arguments.repository.resolve()):
+                raise ValueError("plan output must stay inside --repository")
+            # Exclusive creation preserves all existing plans and recovery records.
+            fd = os.open(destination, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+            with os.fdopen(fd, "w", encoding="utf-8") as stream:
+                stream.write(json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+            print("created validated v3 plan; implementation still requires --phase implement")
+            return 0
+        except (OSError, ValueError) as error:
+            print(f"error: {error}", file=sys.stderr)
+            return 1
     if arguments.print_review_digest:
         if not isinstance(document, dict) or "generated_from_plan_revision" in document:
             parser.error("--print-review-digest requires a plan document")
-        print(plan_review_digest(document))
+        digest_plan = copy.deepcopy(document)
+        if arguments.targets:
+            if document.get("schema_version") != 3:
+                parser.error("--targets requires a schema v3 plan")
+            matches = [b for b in document.get("batches", []) if set(b.get("target_ids", [])) == set(arguments.targets)]
+            if len(matches) != 1:
+                parser.error("review digest selection must identify exactly one complete batch")
+            digest_plan["approval"] = matches[0]["approval"]
+        print(plan_review_digest(digest_plan))
         return 0
 
     execution_state = None
@@ -2547,6 +3145,8 @@ def main() -> int:
             else "plan"
         )
     if kind == "instrumentation":
+        if arguments.targets is not None:
+            parser.error("--targets requires a plan")
         if arguments.phase != "plan":
             parser.error("--phase is valid only for plan documents")
         if arguments.repository is not None:
@@ -2557,8 +3157,10 @@ def main() -> int:
     else:
         if arguments.phase != "implement" and arguments.execution_state is not None:
             parser.error("--execution-state requires --phase implement")
-        errors, warnings = validate_plan(document, arguments.phase)
-        if arguments.phase == "implement":
+        errors, warnings = validate_plan(document, arguments.phase, arguments.targets)
+        if document.get("schema_version") == 3 and not errors and arguments.phase in {"prepare", "implement"}:
+            document = select_plan(document, arguments.targets)
+        if arguments.phase in {"prepare", "implement"}:
             if arguments.repository is None:
                 errors.append("implementation validation requires --repository")
             elif not errors:
@@ -2570,7 +3172,7 @@ def main() -> int:
                 if isinstance(document, dict)
                 else None
             )
-            if receiver_mode == "public_dataway":
+            if arguments.phase == "implement" and receiver_mode == "public_dataway" and document.get("targets"):
                 if execution_state is None:
                     errors.append(
                         "Public DataWay implementation requires --execution-state"

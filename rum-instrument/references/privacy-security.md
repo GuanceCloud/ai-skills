@@ -2,7 +2,7 @@
 
 ## Data minimization
 
-Default to collecting operational RUM fields only. Do not add:
+Use the official SDK's standard operational fields for base RUM. Do not add custom collection or context containing:
 
 - request or response bodies;
 - authorization headers, cookies, session tokens, or credentials;
@@ -12,6 +12,8 @@ Default to collecting operational RUM fields only. Do not add:
 - unbounded custom Action/context values.
 
 Review existing custom context and Action payloads even when the SDK integration itself is valid. Replace broad objects such as request parameters with bounded categorical fields or approved opaque identifiers.
+
+Standard SDK URL/query/fragment fields are not automatically prohibited by this custom-data rule. Discover explicit project filtering requirements and concrete sensitive-data flows from maintained code/configuration. Ordinary routing parameters need no additional user confirmation and do not justify blocking base RUM. If actual credentials/personal data would be collected, or a project explicitly forbids a field, apply supported protection and verify it; if that requirement cannot be met, block only the affected scope with specific evidence. Do not infer sensitive exposure merely from an arbitrary test marker appearing in a standard field.
 
 ## Receiver credentials
 
@@ -25,7 +27,7 @@ Application IDs and receiver URLs are configuration. A temporary authorization c
 - do not echo, print, diff, stage, screenshot, or otherwise inspect credential values or the generated secret file;
 - never place a real authorization code, API Key, or Client Token in command arguments, tracked source, fixtures, logs, or execution state.
 
-The helper creates or atomically updates a reviewed dotenv, JSON, properties, or xcconfig sink, preserves unrelated entries, requires separate digest-bound recoverable state, restores the previous sink if state persistence fails, and refuses in-repository Token/state files that Git does not ignore. Select a format already consumed by the target; never add a dotenv loader to native code merely for this workflow. If the repository has no safe runtime/build-time injection source, keep implementation blocked and leave value injection to the human deployment system.
+The helper creates or atomically updates a reviewed dotenv, JSON, properties, or xcconfig sink, preserves unrelated entries, requires separate identity-bound recoverable state, restores the previous sink if state persistence fails, and refuses in-repository Token/state files that Git does not ignore. Prefer a format already consumed by the target. If missing, automatically add minimal platform-native runtime/build-time wiring, ignore rules and credential-free examples, then prove consumption. Never add a dotenv loader to native code merely for this workflow. Only a real platform or external deployment limitation blocks the affected target.
 
 An insecure TLS context is permitted only for an explicitly approved test-site catalog. Keep that context scoped to AI API requests in the helper, preserve verified TLS for official catalogs, and never persist certificate errors or credential-bearing response content.
 
@@ -68,7 +70,7 @@ Credential-like values found in comments or disabled examples are findings, not 
 
 ## Negative-test canaries
 
-Use synthetic, non-secret canaries for:
+Choose negative tests from actual sensitive-data flows, prohibited custom collection, and explicit project exclusions. Record which requirement each synthetic, non-secret canary represents. Relevant locations include:
 
 - input text;
 - query parameter and dynamic path;
@@ -77,4 +79,4 @@ Use synthetic, non-secret canaries for:
 - custom context/action field;
 - excluded Replay component.
 
-Inspect exported/local-capture payloads when possible and assert no canary appears. Separately prove that the application request and user-visible behavior remain unchanged.
+For those prohibited values, inspect exported/local-capture payloads and assert no canary appears. Separately test that harmless standard fields and representative RUM events still work and that application requests/user-visible behavior remain unchanged. Do not turn all URL parameters or arbitrary markers into forbidden values.

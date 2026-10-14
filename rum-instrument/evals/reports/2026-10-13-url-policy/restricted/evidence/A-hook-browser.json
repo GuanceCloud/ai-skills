@@ -1,0 +1,854 @@
+{
+  "behavior": {
+    "url": "http://127.0.0.1:65280/?page=2&sort=price",
+    "page": "2",
+    "initCount": 1,
+    "hooks": [
+      {
+        "_gc": {
+          "sdk_name": "df_web_rum_sdk",
+          "sdk_version": "3.3.21",
+          "drift": 1,
+          "configuration": {
+            "session_sample_rate": 100,
+            "session_replay_sample_rate": 0,
+            "session_on_error_sample_rate": 0,
+            "session_replay_on_error_sample_rate": 0
+          },
+          "document_version": 1,
+          "page_states": [
+            {
+              "state": "active",
+              "start": 0
+            }
+          ],
+          "view_update_time": 1
+        },
+        "terminal": {
+          "type": "web"
+        },
+        "application": {
+          "id": "eval_catalog"
+        },
+        "device": {
+          "os": "Mac OS",
+          "os_version": "10.15.7",
+          "os_version_major": "10",
+          "browser": "Chrome",
+          "browser_version": "155.0.0.0",
+          "browser_version_major": "155",
+          "screen_size": "1280*720",
+          "network_type": "wifi",
+          "device": "PC",
+          "time_zone": "Asia/Shanghai",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+        },
+        "env": "synthetic-test",
+        "service": "rum-catalog-fixture",
+        "version": "fixture",
+        "source": "browser",
+        "date": 1791873539824,
+        "user": {
+          "id": "5326c276-5f2e-4e58-9728-1b82b69749b8",
+          "is_signin": "F",
+          "is_login": false
+        },
+        "session": {
+          "type": "user",
+          "id": "d9a795d1-4c46-4329-83ba-2b4acac99de8",
+          "is_forced_session": false,
+          "sampled_for_error_replay": false,
+          "sampled_for_error_session": false
+        },
+        "view": {
+          "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+          "name": "/",
+          "url": "http://127.0.0.1:65280/?policy_marker=A_PROHIBITED_QUERY_SYNTHETIC",
+          "referrer": "",
+          "host": "127.0.0.1:65280",
+          "path": "/",
+          "path_group": "/",
+          "pathname": "/",
+          "url_query": {
+            "policy_marker": "A_PROHIBITED_QUERY_SYNTHETIC"
+          },
+          "action": {
+            "count": 0
+          },
+          "frustration": {
+            "count": 0
+          },
+          "cumulative_layout_shift": 0,
+          "error": {
+            "count": 0
+          },
+          "is_active": true,
+          "loading_type": "initial_load",
+          "long_task": {
+            "count": 0
+          },
+          "resource": {
+            "count": 0
+          },
+          "time_spent": 52000000
+        },
+        "display": {
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "context": {},
+        "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+        "path": "/",
+        "start_clocks": {
+          "relative": 0,
+          "time_stamp": 1791873539824
+        },
+        "type": "view",
+        "privacy": {
+          "replay_level": "mask-user-input"
+        }
+      },
+      {
+        "_gc": {
+          "sdk_name": "df_web_rum_sdk",
+          "sdk_version": "3.3.21",
+          "drift": 1,
+          "configuration": {
+            "session_sample_rate": 100,
+            "session_replay_sample_rate": 0,
+            "session_on_error_sample_rate": 0,
+            "session_replay_on_error_sample_rate": 0
+          }
+        },
+        "terminal": {
+          "type": "web"
+        },
+        "application": {
+          "id": "eval_catalog"
+        },
+        "device": {
+          "os": "Mac OS",
+          "os_version": "10.15.7",
+          "os_version_major": "10",
+          "browser": "Chrome",
+          "browser_version": "155.0.0.0",
+          "browser_version_major": "155",
+          "screen_size": "1280*720",
+          "network_type": "wifi",
+          "device": "PC",
+          "time_zone": "Asia/Shanghai",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+        },
+        "env": "synthetic-test",
+        "service": "rum-catalog-fixture",
+        "version": "fixture",
+        "source": "browser",
+        "date": 1791873539829,
+        "user": {
+          "id": "5326c276-5f2e-4e58-9728-1b82b69749b8",
+          "is_signin": "F",
+          "is_login": false
+        },
+        "session": {
+          "type": "user",
+          "id": "d9a795d1-4c46-4329-83ba-2b4acac99de8",
+          "is_forced_session": false
+        },
+        "view": {
+          "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+          "name": "/",
+          "url": "http://127.0.0.1:65280/?policy_marker=A_PROHIBITED_QUERY_SYNTHETIC",
+          "referrer": "",
+          "host": "127.0.0.1:65280",
+          "path": "/",
+          "path_group": "/",
+          "pathname": "/",
+          "url_query": {
+            "policy_marker": "A_PROHIBITED_QUERY_SYNTHETIC"
+          }
+        },
+        "display": {
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "context": {},
+        "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+        "path": "/",
+        "start_clocks": {
+          "relative": 0,
+          "time_stamp": 1791873539824
+        },
+        "resource": {
+          "id": "6d3e7c6a-33fd-4180-9581-9eba48a9ab25",
+          "type": "js",
+          "url": "http://127.0.0.1:65280/src/main.js",
+          "url_host": "127.0.0.1",
+          "url_path": "/src/main.js",
+          "url_path_group": "/src/main.js",
+          "url_query": {},
+          "method": "GET",
+          "status": 200,
+          "status_group": "2xx",
+          "delivery_type": "other",
+          "protocol": "http/1.1",
+          "duration": 5400000,
+          "size": 266,
+          "encoded_body_size": 266,
+          "decoded_body_size": 266,
+          "transfer_size": 566,
+          "firstbyte": 2300000,
+          "trans": 300000,
+          "download_time": {
+            "duration": 300000,
+            "start": 5100000
+          },
+          "first_byte_time": {
+            "duration": 2300000,
+            "start": 2800000
+          },
+          "ttfb": 2300000,
+          "tcp": 200000,
+          "connect_time": {
+            "duration": 200000,
+            "start": 2600000
+          },
+          "dns": 0,
+          "dns_time": {
+            "duration": 0,
+            "start": 2600000
+          },
+          "render_blocking_status": "non-blocking"
+        },
+        "type": "resource"
+      },
+      {
+        "_gc": {
+          "sdk_name": "df_web_rum_sdk",
+          "sdk_version": "3.3.21",
+          "drift": 0,
+          "configuration": {
+            "session_sample_rate": 100,
+            "session_replay_sample_rate": 0,
+            "session_on_error_sample_rate": 0,
+            "session_replay_on_error_sample_rate": 0
+          }
+        },
+        "terminal": {
+          "type": "web"
+        },
+        "application": {
+          "id": "eval_catalog"
+        },
+        "device": {
+          "os": "Mac OS",
+          "os_version": "10.15.7",
+          "os_version_major": "10",
+          "browser": "Chrome",
+          "browser_version": "155.0.0.0",
+          "browser_version_major": "155",
+          "screen_size": "1280*720",
+          "network_type": "wifi",
+          "device": "PC",
+          "time_zone": "Asia/Shanghai",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+        },
+        "env": "synthetic-test",
+        "service": "rum-catalog-fixture",
+        "version": "fixture",
+        "source": "browser",
+        "date": 1791873539829,
+        "user": {
+          "id": "5326c276-5f2e-4e58-9728-1b82b69749b8",
+          "is_signin": "F",
+          "is_login": false
+        },
+        "session": {
+          "type": "user",
+          "id": "d9a795d1-4c46-4329-83ba-2b4acac99de8",
+          "is_forced_session": false
+        },
+        "view": {
+          "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+          "name": "/",
+          "url": "http://127.0.0.1:65280/?policy_marker=A_PROHIBITED_QUERY_SYNTHETIC",
+          "referrer": "",
+          "host": "127.0.0.1:65280",
+          "path": "/",
+          "path_group": "/",
+          "pathname": "/",
+          "url_query": {
+            "policy_marker": "A_PROHIBITED_QUERY_SYNTHETIC"
+          }
+        },
+        "display": {
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "context": {},
+        "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+        "path": "/",
+        "start_clocks": {
+          "relative": 0,
+          "time_stamp": 1791873539824
+        },
+        "resource": {
+          "id": "2463e315-e418-4b0c-8ed1-397ad5780123",
+          "type": "js",
+          "url": "http://127.0.0.1:65280/probe.js",
+          "url_host": "127.0.0.1",
+          "url_path": "/probe.js",
+          "url_path_group": "/probe.js",
+          "url_query": {},
+          "method": "GET",
+          "status": 200,
+          "status_group": "2xx",
+          "delivery_type": "other",
+          "protocol": "http/1.1",
+          "duration": 4900000,
+          "size": 1175234,
+          "encoded_body_size": 1175234,
+          "decoded_body_size": 1175234,
+          "transfer_size": 1175534,
+          "firstbyte": 900000,
+          "trans": 1300000,
+          "download_time": {
+            "duration": 1300000,
+            "start": 3600000
+          },
+          "first_byte_time": {
+            "duration": 900000,
+            "start": 2700000
+          },
+          "ttfb": 900000,
+          "render_blocking_status": "non-blocking"
+        },
+        "type": "resource"
+      },
+      {
+        "_gc": {
+          "sdk_name": "df_web_rum_sdk",
+          "sdk_version": "3.3.21",
+          "drift": 0,
+          "configuration": {
+            "session_sample_rate": 100,
+            "session_replay_sample_rate": 0,
+            "session_on_error_sample_rate": 0,
+            "session_replay_on_error_sample_rate": 0
+          }
+        },
+        "terminal": {
+          "type": "web"
+        },
+        "application": {
+          "id": "eval_catalog"
+        },
+        "device": {
+          "os": "Mac OS",
+          "os_version": "10.15.7",
+          "os_version_major": "10",
+          "browser": "Chrome",
+          "browser_version": "155.0.0.0",
+          "browser_version_major": "155",
+          "screen_size": "1280*720",
+          "network_type": "wifi",
+          "device": "PC",
+          "time_zone": "Asia/Shanghai",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+        },
+        "env": "synthetic-test",
+        "service": "rum-catalog-fixture",
+        "version": "fixture",
+        "source": "browser",
+        "date": 1791873539824,
+        "user": {
+          "id": "5326c276-5f2e-4e58-9728-1b82b69749b8",
+          "is_signin": "F",
+          "is_login": false
+        },
+        "session": {
+          "type": "user",
+          "id": "d9a795d1-4c46-4329-83ba-2b4acac99de8",
+          "is_forced_session": false
+        },
+        "view": {
+          "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+          "name": "/",
+          "url": "http://127.0.0.1:65280/?policy_marker=A_PROHIBITED_QUERY_SYNTHETIC",
+          "referrer": "",
+          "host": "127.0.0.1:65280",
+          "path": "/",
+          "path_group": "/",
+          "pathname": "/",
+          "url_query": {
+            "policy_marker": "A_PROHIBITED_QUERY_SYNTHETIC"
+          }
+        },
+        "display": {
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "context": {},
+        "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+        "path": "/",
+        "start_clocks": {
+          "relative": 0,
+          "time_stamp": 1791873539824
+        },
+        "resource": {
+          "id": "28177fd1-5dea-44a2-aea1-64fb63d8b21f",
+          "type": "document",
+          "url": "http://127.0.0.1:65280/?policy_marker=A_PROHIBITED_QUERY_SYNTHETIC",
+          "url_host": "127.0.0.1",
+          "url_path": "/",
+          "url_path_group": "/",
+          "url_query": {
+            "policy_marker": "A_PROHIBITED_QUERY_SYNTHETIC"
+          },
+          "method": "GET",
+          "status": 200,
+          "status_group": "2xx",
+          "delivery_type": "other",
+          "protocol": "http/1.1",
+          "duration": 1400000,
+          "size": 293,
+          "encoded_body_size": 293,
+          "decoded_body_size": 293,
+          "transfer_size": 593,
+          "firstbyte": 400000,
+          "trans": 200000,
+          "download_time": {
+            "duration": 200000,
+            "start": 1200000
+          },
+          "first_byte_time": {
+            "duration": 400000,
+            "start": 800000
+          },
+          "ttfb": 400000,
+          "render_blocking_status": "non-blocking"
+        },
+        "type": "resource"
+      },
+      {
+        "_gc": {
+          "sdk_name": "df_web_rum_sdk",
+          "sdk_version": "3.3.21",
+          "drift": 1,
+          "configuration": {
+            "session_sample_rate": 100,
+            "session_replay_sample_rate": 0,
+            "session_on_error_sample_rate": 0,
+            "session_replay_on_error_sample_rate": 0
+          }
+        },
+        "terminal": {
+          "type": "web"
+        },
+        "application": {
+          "id": "eval_catalog"
+        },
+        "device": {
+          "os": "Mac OS",
+          "os_version": "10.15.7",
+          "os_version_major": "10",
+          "browser": "Chrome",
+          "browser_version": "155.0.0.0",
+          "browser_version_major": "155",
+          "screen_size": "1280*720",
+          "network_type": "wifi",
+          "device": "PC",
+          "time_zone": "Asia/Shanghai",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+        },
+        "env": "synthetic-test",
+        "service": "rum-catalog-fixture",
+        "version": "fixture",
+        "source": "browser",
+        "date": 1791873539882,
+        "user": {
+          "id": "5326c276-5f2e-4e58-9728-1b82b69749b8",
+          "is_signin": "F",
+          "is_login": false
+        },
+        "session": {
+          "type": "user",
+          "id": "d9a795d1-4c46-4329-83ba-2b4acac99de8",
+          "is_forced_session": false
+        },
+        "view": {
+          "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+          "name": "/",
+          "url": "http://127.0.0.1:65280/?policy_marker=A_PROHIBITED_QUERY_SYNTHETIC",
+          "referrer": "",
+          "host": "127.0.0.1:65280",
+          "path": "/",
+          "path_group": "/",
+          "pathname": "/",
+          "url_query": {
+            "policy_marker": "A_PROHIBITED_QUERY_SYNTHETIC"
+          }
+        },
+        "display": {
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "context": {},
+        "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+        "path": "/",
+        "start_clocks": {
+          "relative": 0,
+          "time_stamp": 1791873539824
+        },
+        "resource": {
+          "id": "f0e3cc04-4d10-4708-acd2-f3e3b1bd9228",
+          "type": "image",
+          "url": "http://127.0.0.1:65280/favicon.ico",
+          "url_host": "127.0.0.1",
+          "url_path": "/favicon.ico",
+          "url_path_group": "/favicon.ico",
+          "url_query": {},
+          "method": "GET",
+          "status": 200,
+          "status_group": "2xx",
+          "delivery_type": "other",
+          "protocol": "http/1.1",
+          "duration": 1400000,
+          "size": 293,
+          "encoded_body_size": 293,
+          "decoded_body_size": 293,
+          "transfer_size": 593,
+          "firstbyte": 500000,
+          "trans": 400000,
+          "download_time": {
+            "duration": 400000,
+            "start": 1000000
+          },
+          "first_byte_time": {
+            "duration": 500000,
+            "start": 500000
+          },
+          "ttfb": 500000,
+          "render_blocking_status": "non-blocking"
+        },
+        "type": "resource"
+      },
+      {
+        "_gc": {
+          "sdk_name": "df_web_rum_sdk",
+          "sdk_version": "3.3.21",
+          "drift": 1,
+          "configuration": {
+            "session_sample_rate": 100,
+            "session_replay_sample_rate": 0,
+            "session_on_error_sample_rate": 0,
+            "session_replay_on_error_sample_rate": 0
+          }
+        },
+        "terminal": {
+          "type": "web"
+        },
+        "application": {
+          "id": "eval_catalog"
+        },
+        "device": {
+          "os": "Mac OS",
+          "os_version": "10.15.7",
+          "os_version_major": "10",
+          "browser": "Chrome",
+          "browser_version": "155.0.0.0",
+          "browser_version_major": "155",
+          "screen_size": "1280*720",
+          "network_type": "wifi",
+          "device": "PC",
+          "time_zone": "Asia/Shanghai",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+        },
+        "env": "synthetic-test",
+        "service": "rum-catalog-fixture",
+        "version": "fixture",
+        "source": "browser",
+        "date": 1791873540587,
+        "user": {
+          "id": "5326c276-5f2e-4e58-9728-1b82b69749b8",
+          "is_signin": "F",
+          "is_login": false
+        },
+        "session": {
+          "type": "user",
+          "id": "d9a795d1-4c46-4329-83ba-2b4acac99de8",
+          "is_forced_session": false
+        },
+        "view": {
+          "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+          "name": "/",
+          "url": "http://127.0.0.1:65280/?policy_marker=A_PROHIBITED_QUERY_SYNTHETIC",
+          "referrer": "",
+          "host": "127.0.0.1:65280",
+          "path": "/",
+          "path_group": "/",
+          "pathname": "/",
+          "url_query": {
+            "policy_marker": "A_PROHIBITED_QUERY_SYNTHETIC"
+          },
+          "in_foreground": true
+        },
+        "display": {
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "context": {},
+        "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+        "path": "/",
+        "start_clocks": {
+          "relative": 0,
+          "time_stamp": 1791873539824
+        },
+        "error": {
+          "id": "a5502a6b-d3b7-4ba9-823b-89c5f24529cd",
+          "message": "Synthetic representative error",
+          "source": "custom",
+          "stack": "Error: Synthetic representative error\n  at eval @ :370:30\n  at UtilityScript.evaluate @ <anonymous>:372:16\n  at UtilityScript.<anonymous> @ <anonymous>:1:44",
+          "handling_stack": "Error: \n  at callMonitored @ http://127.0.0.1:65280/probe.js:242:17\n  at Object.addError @ http://127.0.0.1:65280/probe.js:237:14\n  at eval @ :370:30\n  at UtilityScript.evaluate @ <anonymous>:372:16\n  at UtilityScript.<anonymous> @ <anonymous>:1:44",
+          "type": "Error",
+          "handling": "handled",
+          "source_type": "browser"
+        },
+        "type": "error"
+      },
+      {
+        "_gc": {
+          "sdk_name": "df_web_rum_sdk",
+          "sdk_version": "3.3.21",
+          "drift": 1,
+          "configuration": {
+            "session_sample_rate": 100,
+            "session_replay_sample_rate": 0,
+            "session_on_error_sample_rate": 0,
+            "session_replay_on_error_sample_rate": 0
+          }
+        },
+        "terminal": {
+          "type": "web"
+        },
+        "application": {
+          "id": "eval_catalog"
+        },
+        "device": {
+          "os": "Mac OS",
+          "os_version": "10.15.7",
+          "os_version_major": "10",
+          "browser": "Chrome",
+          "browser_version": "155.0.0.0",
+          "browser_version_major": "155",
+          "screen_size": "1280*720",
+          "network_type": "wifi",
+          "device": "PC",
+          "time_zone": "Asia/Shanghai",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+        },
+        "env": "synthetic-test",
+        "service": "rum-catalog-fixture",
+        "version": "fixture",
+        "source": "browser",
+        "date": 1791873540636,
+        "user": {
+          "id": "5326c276-5f2e-4e58-9728-1b82b69749b8",
+          "is_signin": "F",
+          "is_login": false
+        },
+        "session": {
+          "type": "user",
+          "id": "d9a795d1-4c46-4329-83ba-2b4acac99de8",
+          "is_forced_session": false
+        },
+        "view": {
+          "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+          "name": "/",
+          "url": "http://127.0.0.1:65280/?page=2&sort=price",
+          "referrer": "",
+          "host": "127.0.0.1:65280",
+          "path": "/",
+          "path_group": "/",
+          "pathname": "/",
+          "url_query": {
+            "page": "2",
+            "sort": "price"
+          }
+        },
+        "display": {
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "context": {},
+        "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+        "path": "/",
+        "start_clocks": {
+          "relative": 0,
+          "time_stamp": 1791873539824
+        },
+        "resource": {
+          "id": "f646a2c2-d02c-4f6a-bb6e-cc2dd25a559f",
+          "type": "fetch",
+          "duration": 1000000,
+          "method": "GET",
+          "status": 200,
+          "status_group": "2xx",
+          "url": "http://127.0.0.1:65280/api/catalog?page=2&sort=price",
+          "url_host": "127.0.0.1",
+          "url_path": "/api/catalog",
+          "url_path_group": "/api/catalog",
+          "url_query": {
+            "page": "2",
+            "sort": "price"
+          },
+          "delivery_type": "other",
+          "protocol": "http/1.1",
+          "size": 11,
+          "encoded_body_size": 11,
+          "decoded_body_size": 11,
+          "transfer_size": 311,
+          "firstbyte": 400000,
+          "trans": 200000,
+          "download_time": {
+            "duration": 200000,
+            "start": 800000
+          },
+          "first_byte_time": {
+            "duration": 400000,
+            "start": 400000
+          },
+          "ttfb": 400000,
+          "render_blocking_status": "non-blocking"
+        },
+        "type": "resource"
+      },
+      {
+        "_gc": {
+          "sdk_name": "df_web_rum_sdk",
+          "sdk_version": "3.3.21",
+          "drift": 0,
+          "configuration": {
+            "session_sample_rate": 100,
+            "session_replay_sample_rate": 0,
+            "session_on_error_sample_rate": 0,
+            "session_replay_on_error_sample_rate": 0
+          }
+        },
+        "terminal": {
+          "type": "web"
+        },
+        "application": {
+          "id": "eval_catalog"
+        },
+        "device": {
+          "os": "Mac OS",
+          "os_version": "10.15.7",
+          "os_version_major": "10",
+          "browser": "Chrome",
+          "browser_version": "155.0.0.0",
+          "browser_version_major": "155",
+          "screen_size": "1280*720",
+          "network_type": "wifi",
+          "device": "PC",
+          "time_zone": "Asia/Shanghai",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+        },
+        "env": "synthetic-test",
+        "service": "rum-catalog-fixture",
+        "version": "fixture",
+        "source": "browser",
+        "date": 1791873540679,
+        "user": {
+          "id": "5326c276-5f2e-4e58-9728-1b82b69749b8",
+          "is_signin": "F",
+          "is_login": false
+        },
+        "session": {
+          "type": "user",
+          "id": "d9a795d1-4c46-4329-83ba-2b4acac99de8",
+          "is_forced_session": false
+        },
+        "view": {
+          "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+          "name": "/",
+          "url": "http://127.0.0.1:65280/?page=2&sort=price",
+          "referrer": "",
+          "host": "127.0.0.1:65280",
+          "path": "/",
+          "path_group": "/",
+          "pathname": "/",
+          "url_query": {
+            "page": "2",
+            "sort": "price"
+          }
+        },
+        "display": {
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "context": {},
+        "id": "a80ff48c-b4fc-4040-a1de-ca8bf21df05b",
+        "path": "/",
+        "start_clocks": {
+          "relative": 0,
+          "time_stamp": 1791873539824
+        },
+        "resource": {
+          "id": "84fe67ac-938a-4f63-a9aa-f737868d3569",
+          "type": "image",
+          "url": "http://127.0.0.1:65280/favicon.ico",
+          "url_host": "127.0.0.1",
+          "url_path": "/favicon.ico",
+          "url_path_group": "/favicon.ico",
+          "url_query": {},
+          "method": "GET",
+          "status": 200,
+          "status_group": "2xx",
+          "delivery_type": "other",
+          "protocol": "http/1.1",
+          "duration": 900000,
+          "size": 293,
+          "encoded_body_size": 293,
+          "decoded_body_size": 293,
+          "transfer_size": 593,
+          "firstbyte": 400000,
+          "trans": 100000,
+          "download_time": {
+            "duration": 100000,
+            "start": 800000
+          },
+          "first_byte_time": {
+            "duration": 400000,
+            "start": 400000
+          },
+          "ttfb": 400000,
+          "render_blocking_status": "non-blocking"
+        },
+        "type": "resource"
+      }
+    ]
+  },
+  "consoleMessages": [],
+  "api": [
+    {
+      "run": "A-hook",
+      "url": "/api/catalog?page=2&sort=price"
+    }
+  ]
+}

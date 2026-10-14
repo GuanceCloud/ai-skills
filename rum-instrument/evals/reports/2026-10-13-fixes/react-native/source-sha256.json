@@ -1,0 +1,8 @@
+{
+  "index.js": "e482df7cf6c4d3c78871966421b69b51f22593238c0f23bc625ae7608690497e",
+  "package.json": "e68bd7d620ddea429a03f6af7fd22761bcdaffc5eb5cb9b8a5cc578972fdc719",
+  "rum.js": "a72a36156a108a870b5a087cf4c4d8252e94def767e32b1a610866d4fe0996c5",
+  "rum-config.js": "ab0c4b8d55653291f1a3e803f6ddd7f61f5938db966526a8f599443576229ec5",
+  "rum-error-handler.cjs": "cbaab8137406aacfb765dd32a577a42f746cfa7d607757c5b5c217a9bb93d104",
+  "rum-error-payload.js": "2ef683de57cb1d457d6e6fa8bb5ae99e70251db6a31b81a1f058c0ddec39ba26"
+}

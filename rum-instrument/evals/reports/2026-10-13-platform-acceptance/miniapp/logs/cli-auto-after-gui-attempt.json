@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+    "--auto",
+    "/private/tmp/rum-platform-acceptance/miniapp/project",
+    "--auto-port",
+    "19532",
+    "--port",
+    "19531"
+  ],
+  "exit": 255
+}

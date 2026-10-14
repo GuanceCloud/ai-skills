@@ -1,0 +1,80 @@
+======================================================================
+ERROR: test_equivalent_receiver_urls_resolve_once_and_resume (test_onboarding.ResolverTests.test_equivalent_receiver_urls_resolve_once_and_resume)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_onboarding.py", line 259, in test_equivalent_receiver_urls_resolve_once_and_resume
+    self.assertEqual('resolved', self.resolve()['status'])
+                                 ~~~~~~~~~~~~^^
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_onboarding.py", line 224, in resolve
+    return R.resolve_plan(self.plan, self.root, self.state_path, targets=targets, resume=resume, code_reader=self.code_reader, json_poster=self.poster)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/resolve_rum_application.py", line 1183, in resolve_plan
+    raise ResolutionError("configuration saved; revise application metadata and resume without another code: " + "; ".join(errors))
+resolve_rum_application_for_smoke.ResolutionError: configuration saved; revise application metadata and resume without another code: receiver metadata changed for slot web
+
+======================================================================
+ERROR: test_external_sink_review_survives_multi_batch_resolution_and_resume (test_onboarding.ResolverTests.test_external_sink_review_survives_multi_batch_resolution_and_resume)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_onboarding.py", line 330, in test_external_sink_review_survives_multi_batch_resolution_and_resume
+    self.assertEqual('resolved', self.resolve()['status'])
+                                 ~~~~~~~~~~~~^^
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_onboarding.py", line 224, in resolve
+    return R.resolve_plan(self.plan, self.root, self.state_path, targets=targets, resume=resume, code_reader=self.code_reader, json_poster=self.poster)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/resolve_rum_application.py", line 1081, in resolve_plan
+    snapshot = inspect_secret_sink(
+        path, sink_format=sink["format"], keys={slot: sink["key"]}, repository=repository,
+        allow_external=selected["approval"].get("basis") == "revision_review" or validator.scope_authorized(selected, "external_sink"),
+    )
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/resolve_rum_application.py", line 629, in inspect_secret_sink
+    raise ResolutionError(
+        "an external client-token sink requires --allow-external-secret-sink"
+    )
+resolve_rum_application_for_smoke.ResolutionError: an external client-token sink requires --allow-external-secret-sink
+
+======================================================================
+ERROR: test_legacy_raw_url_binding_migrates_without_exchange (test_onboarding.ResolverTests.test_legacy_raw_url_binding_migrates_without_exchange)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_onboarding.py", line 293, in test_legacy_raw_url_binding_migrates_without_exchange
+    self.assertEqual('reused', self.resolve(resume=True)['status'])
+                               ~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_onboarding.py", line 224, in resolve
+    return R.resolve_plan(self.plan, self.root, self.state_path, targets=targets, resume=resume, code_reader=self.code_reader, json_poster=self.poster)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/resolve_rum_application.py", line 1093, in resolve_plan
+    raise ResolutionError("saved configuration needs repair before resuming: " + "; ".join(errors))
+resolve_rum_application_for_smoke.ResolutionError: saved configuration needs repair before resuming: receiver metadata changed for slot web
+
+======================================================================
+FAIL: test_dependency_authorization_does_not_override_a_blocker (test_onboarding.PlanTests.test_dependency_authorization_does_not_override_a_blocker)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_onboarding.py", line 139, in test_dependency_authorization_does_not_override_a_blocker
+    self.assertTrue(any('dependency decision is blocked' in e for e in errors))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_upgrade_exemption_never_authorizes_removal_or_blocked_decisions (test_onboarding.PlanTests.test_upgrade_exemption_never_authorizes_removal_or_blocked_decisions) (action='remove')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_onboarding.py", line 131, in test_upgrade_exemption_never_authorizes_removal_or_blocked_decisions
+    self.assertTrue(V.validate_plan(plan, 'implement')[0])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_upgrade_exemption_never_authorizes_removal_or_blocked_decisions (test_onboarding.PlanTests.test_upgrade_exemption_never_authorizes_removal_or_blocked_decisions) (action='blocked')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_onboarding.py", line 131, in test_upgrade_exemption_never_authorizes_removal_or_blocked_decisions
+    self.assertTrue(V.validate_plan(plan, 'implement')[0])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [] is not true
+
+----------------------------------------------------------------------
+Ran 37 tests in 6.957s
+
+FAILED (failures=3, errors=3)

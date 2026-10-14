@@ -1,0 +1,40 @@
+{
+  "method": "installed-helper-with-mocked-control-plane-transport",
+  "passed": true,
+  "helper_path": "${EVAL_ROOT}/control/skills/rum-instrument/scripts/resolve_rum_application.py",
+  "platforms": [
+    "Web",
+    "MiniApp",
+    "Android",
+    "iOS"
+  ],
+  "formats": [
+    "json",
+    "dotenv",
+    "properties",
+    "xcconfig"
+  ],
+  "first_run": {
+    "exchange_calls": 1,
+    "app_lookups": 4,
+    "persisted_slots": [
+      "web",
+      "miniapp",
+      "ios"
+    ],
+    "failed_slot": "android"
+  },
+  "resume": {
+    "exchange_calls": 1,
+    "app_lookups": [
+      "android"
+    ],
+    "preserved_prior_sinks": true
+  },
+  "local_plan_change_resume": {
+    "network_calls": 0,
+    "code_reads": 0
+  },
+  "state_and_plan_contain_no_credentials": true,
+  "real_remote_requests": 0
+}

@@ -1,0 +1,22 @@
+plugins { id 'com.android.application' }
+def rum = new Properties()
+rootProject.file('rum.properties').withInputStream { rum.load(it) }
+android {
+ namespace 'com.example.rumacceptance'
+ compileSdk 34
+ defaultConfig { applicationId 'com.example.rumacceptance'; minSdk 23; targetSdk 34; versionCode 1; versionName '1.0-acceptance' }
+ buildFeatures { buildConfig true }
+ defaultConfig {
+ buildConfigField 'String', 'RUM_APP_ID', '"' + rum.getProperty('RUM_APP_ID') + '"'
+ buildConfigField 'String', 'RUM_DATAKIT_URL', '"' + rum.getProperty('RUM_DATAKIT_URL') + '"'
+ buildConfigField 'String', 'RUM_ENV', '"' + rum.getProperty('RUM_ENV') + '"'
+ }
+ compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
+}
+
+dependencies {
+ implementation 'com.cloudcare.ft.mobile.sdk.tracker.agent:ft-sdk:1.7.5'
+ implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+ implementation 'com.google.code.gson:gson:2.10.1'
+ implementation 'androidx.annotation:annotation:1.7.1'
+}

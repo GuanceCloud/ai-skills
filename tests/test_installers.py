@@ -46,6 +46,7 @@ class InstallerTests(unittest.TestCase):
         shutil.copy2(REPO / "install.ps1", self.repo / "install.ps1")
         shutil.copy2(REPO / "uninstall.sh", self.repo / "uninstall.sh")
         shutil.copy2(REPO / "uninstall.ps1", self.repo / "uninstall.ps1")
+        shutil.copy2(REPO / "rum.md", self.repo / "rum.md")
         skill = self.repo / "demo-skill"
         skill.mkdir()
         (skill / "SKILL.md").write_text("---\nname: demo-skill\n---\n", encoding="utf-8")
@@ -106,6 +107,46 @@ class InstallerTests(unittest.TestCase):
     def without_yes(command: list[str]) -> list[str]:
         yes = "-Yes" if os.name == "nt" else "--yes"
         return [argument for argument in command if argument != yes]
+
+    def test_runtime_package_filter_keeps_assets_and_excludes_evidence(self):
+        root = self.repo / "demo-skill"
+        for name in ("scripts/helper.py", "references/guide.md", "assets/example.json", "tests/test_helper.py", "evals/reports/screenshot.png"):
+            path = root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("fixture")
+        manifest_path = self.repo / "skills-manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["skills"][0]["package_include"] = ["SKILL.md", "scripts", "references", "assets"]
+        manifest_path.write_text(json.dumps(manifest))
+        subprocess.run(["git", "-C", str(self.repo), "add", "."], check=True)
+        output = self.root / "filtered"
+        self.build(output, VERSION_ONE)
+        import tarfile
+        import zipfile
+        archive_root = output / "versions" / VERSION_ONE / "skills"
+        with tarfile.open(archive_root / "demo-skill.tar.gz") as archive:
+            tar_names = archive.getnames()
+            metadata = archive.extractfile("demo-skill/.skill-files.list").read().decode()
+        with zipfile.ZipFile(archive_root / "demo-skill.zip") as archive:
+            zip_names = archive.namelist()
+        for names in (tar_names, zip_names):
+            self.assertIn("demo-skill/scripts/helper.py", names)
+            self.assertIn("demo-skill/assets/example.json", names)
+            self.assertFalse(any("/evals" in n or "/tests" in n for n in names))
+        self.assertNotIn("evals/", metadata)
+        self.assertNotIn("tests/", metadata)
+        manifest["skills"][0]["package_include"] = ["SKILL.md", "../outside"]
+        manifest_path.write_text(json.dumps(manifest))
+        result = subprocess.run([sys.executable, str(REPO / "scripts/build_skill_release.py"), "--repo", str(self.repo), "--output", str(self.root / "invalid"), "--version", VERSION_ONE], capture_output=True)
+        self.assertNotEqual(0, result.returncode)
+
+    def test_rum_entrypoint_is_versioned_and_checksummed(self):
+        output = self.root / "release"
+        self.build(output, VERSION_ONE)
+        content = (REPO / "rum.md").read_bytes()
+        for prefix in (output, output / "versions" / VERSION_ONE):
+            self.assertEqual(content, (prefix / "rum.md").read_bytes())
+            self.assertIn(f"{digest(prefix / 'rum.md')}  rum.md", (prefix / "SHA256SUMS").read_text())
 
     def test_reproducible_archives_and_safe_upgrade(self):
         release_one = self.root / "release-one"

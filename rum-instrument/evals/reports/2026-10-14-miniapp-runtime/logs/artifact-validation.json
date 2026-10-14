@@ -1,0 +1,9 @@
+{
+  "artifact_checks_passed": true,
+  "json_files": 20,
+  "javascript_files": 3,
+  "local_links": 21,
+  "git_diff_check": true,
+  "wechat_appid_redacted": true,
+  "runtime_acceptance": "blocked"
+}

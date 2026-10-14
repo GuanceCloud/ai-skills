@@ -1,0 +1,6 @@
+Error: Failed connecting to ws://127.0.0.1:19532, check if target project window is opened with automation enabled
+    at Launcher.connectTool (/private/tmp/rum-platform-acceptance/miniapp/tooling/node_modules/miniprogram-automator/out/Launcher.js:1:3020)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async Launcher.connect (/private/tmp/rum-platform-acceptance/miniapp/tooling/node_modules/miniprogram-automator/out/Launcher.js:1:2600)
+    at async Automator.connect (/private/tmp/rum-platform-acceptance/miniapp/tooling/node_modules/miniprogram-automator/out/Automator.js:1:1352)
+    at async /private/tmp/rum-platform-acceptance/miniapp/runtime-probe.cjs:5:14

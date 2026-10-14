@@ -1,0 +1,5 @@
+2026-10-13T08:36:24.058Z automator:protocol 2026-10-13 16:36:24:055 SEND ► {"id":"30a64f8c-2520-4b91-989e-da5c0a3a7107","method":"Tool.getInfo","params":{}}
+2026-10-13T08:36:24.068Z automator:protocol 2026-10-13 16:36:24:068 ◀ RECV {"id":"30a64f8c-2520-4b91-989e-da5c0a3a7107","result":{"version":"1.02.1911180","SDKVersion":"3.17.4"}}
+2026-10-13T08:36:24.068Z automator:protocol 2026-10-13 16:36:24:068 SEND ► {"id":"8dd036a4-77d1-4d16-9dba-dc9bea97f3fc","method":"App.enableLog","params":{}}
+2026-10-13T08:36:24.068Z automator:protocol 2026-10-13 16:36:24:068 SEND ► {"id":"6b58ed40-8ffe-4562-80fc-cb3dc20d9174","method":"App.getCurrentPage","params":{}}
+runtime probe timeout after 20s

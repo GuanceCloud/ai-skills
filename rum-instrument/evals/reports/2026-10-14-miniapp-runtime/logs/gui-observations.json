@@ -1,0 +1,21 @@
+{
+  "source": "CUA observed native AX and screenshots; manually transcribed, not a saved raw AX export",
+  "gray_console": {
+    "base_library": "3.17.4",
+    "warning": "正在使用灰度中的基础库 3.17.4 进行调试",
+    "error": "Cannot destructure property 'rawPath' of 't.getPageMetaByWebviewId(...)' as it is null."
+  },
+  "stable_hang_prompt": "模拟器长时间没有响应，请确认你的业务逻辑中是否有复杂运算，或者死循环",
+  "cleanup_observed": [
+    "Clicked 终止模拟器 in isolated baseline window",
+    "Observed 模拟器处于终止状态",
+    "Closed isolated window",
+    "Observed IDE 项目列表"
+  ],
+  "gui_control_interruptions": [
+    "frontmostApplicationChanged",
+    "noWindowsAvailable",
+    "user changed app state"
+  ],
+  "scope": "No other user project opened or modified"
+}

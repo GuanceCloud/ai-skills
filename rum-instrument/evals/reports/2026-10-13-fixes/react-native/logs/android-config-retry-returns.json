@@ -1,0 +1,73 @@
+{
+  "pass": true,
+  "platform": "android",
+  "mode": "config-retry",
+  "originalThrows": false,
+  "sdkVersion": "0.4.2",
+  "realSdkJavaScript": true,
+  "bridgeDouble": true,
+  "nativePlatformSelectionExecuted": false,
+  "missingBridgeRecovery": null,
+  "first": [
+    false,
+    false,
+    false
+  ],
+  "originalHandlerCalls": 1,
+  "reports": [
+    [
+      "at index.js:12:9",
+      "TypeError",
+      {
+        "is_fatal": true,
+        "sdk_bridge_info": "{\"react_native\":\"0.4.2\"}"
+      }
+    ]
+  ],
+  "calls": [
+    {
+      "method": "sdkConfig",
+      "config": {
+        "datakitUrl": "http://127.0.0.1:19529",
+        "service": "react-native-rum-app",
+        "remoteConfiguration": false
+      }
+    },
+    {
+      "method": "setConfig",
+      "config": {
+        "androidAppId": "eval_rn_android",
+        "iOSAppId": "eval_rn_ios",
+        "enableAutoTrackUserAction": true,
+        "enableAutoTrackError": false,
+        "enableNativeUserResource": true,
+        "enableNativeUserAction": false,
+        "enableNativeUserView": false,
+        "enableTraceWebView": false,
+        "enableTrackNativeCrash": false,
+        "enableTrackNativeAppANR": false,
+        "enableTrackNativeFreeze": false
+      }
+    },
+    {
+      "method": "setConfig",
+      "config": {
+        "androidAppId": "eval_rn_android",
+        "iOSAppId": "eval_rn_ios",
+        "enableAutoTrackUserAction": true,
+        "enableAutoTrackError": false,
+        "enableNativeUserResource": true,
+        "enableNativeUserAction": false,
+        "enableNativeUserView": false,
+        "enableTraceWebView": false,
+        "enableTrackNativeCrash": false,
+        "enableTrackNativeAppANR": false,
+        "enableTrackNativeFreeze": false
+      }
+    }
+  ],
+  "warnings": [
+    "RUM startup failed; application startup may continue."
+  ],
+  "unhandled": []
+}

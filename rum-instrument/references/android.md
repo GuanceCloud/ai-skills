@@ -18,7 +18,7 @@ Preserve existing OkHttp/interceptor behavior. Avoid adding both plugin and manu
 
 ## Privacy and artifacts
 
-Review Android privacy/permission declarations and official desensitization hooks. Do not collect view text, EditText content, request bodies, complete URLs, or unbounded custom properties.
+Review Android privacy/permission declarations and official desensitization hooks. Keep input text, request bodies and unbounded objects out of custom collection. Apply the shared [data-minimization policy](privacy-security.md#data-minimization) to standard SDK fields: ordinary resource URLs are allowed; demonstrated sensitive values and explicit project exclusions require supported filtering and payload verification.
 
 Plan R8/ProGuard mapping and native symbols against the exact variant/version/build ID. Keep upload credentials outside Gradle files and do not upload without authorization.
 
@@ -33,3 +33,7 @@ Run the module's Gradle unit/lint/build tasks for the selected variants. Verify:
 - WebView/native bridge does not duplicate browser RUM;
 - mapping/native symbols match the built artifact;
 - privacy canaries are absent.
+
+## Automatic configuration wiring
+
+Prefer existing Gradle properties or build variant configuration. If absent, wire an ignored properties file into the application BuildConfig fields using the project's existing Gradle DSL, then consume those fields at initialization. Preserve flavors and distinguish a developer-local value file from CI injection. Do not place values directly in tracked Gradle/source files.

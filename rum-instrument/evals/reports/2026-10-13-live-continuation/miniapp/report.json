@@ -1,0 +1,250 @@
+{
+  "scope": "Independent rum-instrument forward-test: full WeChat MiniApp project and real SDK build",
+  "skill": "/Users/oneandonly/Workspace/ai-skills/rum-instrument/SKILL.md",
+  "project": "/private/tmp/rum-platform-acceptance/miniapp/project",
+  "sdk": {
+    "name": "@cloudcare/rum-miniapp",
+    "version": "2.2.20",
+    "latest_verified": true,
+    "registry_evidence": "logs/sdk-registry.json"
+  },
+  "platform": {
+    "wechat_version": "1.02.1911180",
+    "guest_appid": "touristappid",
+    "guest_evidence": "Installed official extensions/appservice/index.js explicitly branches on touristappid",
+    "other_app": "/Applications/小程序开发者工具.app is Alipay com.ant.miniprogram 1.5.10"
+  },
+  "checks": {
+    "plan_contract": "pass",
+    "implement_contract": "pass",
+    "json_and_js_syntax": "pass",
+    "official_wxml_compile": "pass",
+    "official_wxss_compile": "pass",
+    "official_npm_build": "pass",
+    "ide_cli_npm_build": "blocked: service port disabled, exit 255",
+    "ide_cli_auto": "pass: official CLI launch exit0 and real Tool.getInfo response",
+    "sdk_in_real_miniapp_runtime": "blocked: blank page and App.getCurrentPage timeout, reproduced without RUM",
+    "view_resource_error_action_payloads": "not_run",
+    "privacy_payload_assertions": "not_run",
+    "remote_ingestion": "unverified"
+  },
+  "npm_build": {
+    "miniProgramPackNum": 1,
+    "otherNpmPackNum": 0,
+    "warnList": []
+  },
+  "compiled_sdk_file_count": 57,
+  "compiled_sdk_bytes": 275308,
+  "port_failure_analysis": {
+    "sandbox_result": "ERR_SOCKET_BAD_PORT 65536, misleading exit 0",
+    "cause": "Official CLI getAvailablePort starts at 3799; on every listen error increments without upper bound. Sandbox blocks listen, so scan reaches invalid port.",
+    "unsandboxed_result": "No bad-port error; explicit service port disabled, exit 255",
+    "explicit_port_result": "--port 19531 does not override required global IDE service permission"
+  },
+  "unchanged_settings": [
+    "No global service-port toggle",
+    "No login/account changes",
+    "No remote domain allowlist edits",
+    "No previews or uploads"
+  ],
+  "receiver": {
+    "endpoint": "http://127.0.0.1:19529",
+    "kind": "local simulation only",
+    "started": true,
+    "external_endpoint_used": false,
+    "stopped": true,
+    "captured_posts": 0
+  },
+  "next_steps": [
+    "Use a compatible WeChat developer-tool/base-library combination; current installed IDE1.02.1911180 loads3.17.4 and blank-page startup reproduces without RUM",
+    "Project-local libVersion2.11.1 did not change actual Tool.getInfo result; do not claim compatibility was repaired",
+    "Once baseline page can run, rerun real SDK event/idempotency/privacy probes against localhost; preserve existing user login and service setting"
+  ],
+  "artifacts": [
+    "project/.rum/plan.json",
+    "logs/plan-validation.log",
+    "logs/implement-validation.log",
+    "logs/static-results.json",
+    "logs/cli-results.json",
+    "logs/npm-build-result.json",
+    "build/wxml.js",
+    "build/wxss.js",
+    "logs/gui-attempts.json",
+    "logs/official-cli-options.json",
+    "logs/official-cli-service-prerequisite.txt",
+    "logs/cli-auto-after-gui-attempt.log",
+    "logs/gui-cleanup-check.json",
+    "REPRODUCE.txt",
+    "report-before-user-enabled.json",
+    "logs/cli-auto-user-enabled.log",
+    "logs/runtime-probe-retry.log",
+    "logs/runtime-initial-ui-error.json",
+    "logs/runtime-probe-lib2111-ready.log",
+    "logs/runtime-probe-compatible.log",
+    "logs/runtime-probe-baseline.log",
+    "logs/runtime-cleanup.json",
+    "logs/runtime-final-port-check.json",
+    "project-compatible",
+    "project-baseline",
+    "logs/ui-version-repair.json",
+    "logs/ui-version-repair-cleanup.json",
+    "logs/cli-open-baseline-ui-repair.log",
+    "report-before-ui-version-repair.json"
+  ],
+  "gui_followup": {
+    "authorization": "User explicitly allowed temporary enabling and restoration of WeChat IDE service port",
+    "attempts": [
+      {
+        "operation": "cua.getApp('/Applications/wechatwebdevtools.app')",
+        "result": "Computer Use server error -10005: timeoutReached",
+        "elapsed_seconds": 70.6506
+      },
+      {
+        "operation": "cua.getState()",
+        "result": "js execution timed out; kernel reset",
+        "elapsed_seconds": 30.029
+      },
+      {
+        "operation": "cua.getApp('微信开发者工具')",
+        "result": "Invalid app: 微信开发者工具",
+        "elapsed_seconds": 0.2498
+      },
+      {
+        "operation": "cua.getApp('com.tencent.webplusdevtools')",
+        "result": "Computer Use server error -10005: timeoutReached",
+        "elapsed_seconds": 8.1533
+      }
+    ],
+    "ui_read_success": false,
+    "clicks_performed": 0,
+    "setting_mutations": 0,
+    "original_state": "disabled (official CLI exit 255)",
+    "final_state": "disabled (official CLI recheck exit 255)",
+    "restoration": "Not required: no setting mutation occurred",
+    "runtime": "not_run",
+    "receiver_started": false,
+    "test_port_listeners": false,
+    "cleanup": "No local receiver or automation service was started; ports 19529, 19531, 19532 have no listener",
+    "remaining_blocker": "CUA could not obtain usable native application UI. Installed CLI has no supported enable-service-port option. Further runtime/login compatibility is unknown."
+  },
+  "runtime_followup": {
+    "authorization": "User stated IDE service port is enabled and login complete; preserve user settings",
+    "cli_launch": {
+      "exit": 0,
+      "result": "Open project with automation enabled success",
+      "evidence": "logs/cli-auto-user-enabled.log"
+    },
+    "automator": "miniprogram-automator 0.12.1 from official npm package",
+    "tool_info": {
+      "version": "1.02.1911180",
+      "SDKVersion": "3.17.4",
+      "proof": "Tool.getInfo real WebSocket response"
+    },
+    "ui_observation": {
+      "simulator": "Window and navigation title rendered, page body blank",
+      "console": [
+        "Uncaught SyntaxError: Unexpected token .",
+        "Uncaught ReferenceError: wx is not defined"
+      ],
+      "platform_guest_mode": "touristappid; no real MiniApp AppID used"
+    },
+    "runtime_failure": {
+      "operation": "App.getCurrentPage",
+      "result": "No response; bounded probe exit 124 after 45 seconds",
+      "SDK_application_execution": "Not proven",
+      "evidence": "logs/runtime-probe-retry.log"
+    },
+    "compatibility_attempts": [
+      {
+        "project": "project",
+        "change": "Set local project.config.json libVersion=2.11.1 using installed official library",
+        "result": "Tool still reports SDKVersion3.17.4; same timeout"
+      },
+      {
+        "project": "project-compatible",
+        "change": "Fresh isolated project path with libVersion2.11.1 before first launch",
+        "result": "Tool still reports SDKVersion3.17.4; same timeout"
+      }
+    ],
+    "control": {
+      "project": "project-baseline",
+      "rum_dependency": false,
+      "rum_initialization": false,
+      "result": "Blank simulator; Tool.getInfo replies with SDKVersion3.17.4; App.getCurrentPage times out after20s, exit124",
+      "evidence": "logs/runtime-probe-baseline.log",
+      "interpretation": "The startup/automation failure also occurs without the RUM SDK; observed evidence does not establish an SDK integration defect."
+    },
+    "signal_checks": {
+      "view": "not_run: platform baseline cannot execute page lifecycle",
+      "resource": "not_run: platform baseline cannot execute page lifecycle",
+      "error": "not_run: platform baseline cannot execute page lifecycle",
+      "action": "not_run: platform baseline cannot execute page lifecycle",
+      "initialization_idempotency": "not_run: platform baseline cannot execute page lifecycle",
+      "privacy_canary": "not_run: platform baseline cannot execute page lifecycle",
+      "negative_trace_headers": "not_run: platform baseline cannot execute page lifecycle"
+    },
+    "receiver": {
+      "endpoint": "http://127.0.0.1:19529",
+      "started": true,
+      "stopped": true,
+      "captured_posts": 0,
+      "external_endpoint_used": false
+    },
+    "cleanup": {
+      "all_three_test_projects_closed": true,
+      "receiver_stopped": true,
+      "test_ports_no_listener": [
+        19529,
+        19531,
+        19532,
+        19533,
+        19534
+      ],
+      "user_ide_port_56657_still_listening": true,
+      "service_port_setting_changed": false,
+      "login_changed": false,
+      "upload_or_preview": false
+    }
+  },
+  "ui_version_repair_followup": {
+    "purpose": "Check official project Details / Local Settings / Debug base library UI for an override of project.config libVersion",
+    "project": "project-baseline",
+    "result": "blocked_before_project_settings",
+    "cli": {
+      "command": [
+        "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+        "--open",
+        "/private/tmp/rum-platform-acceptance/miniapp/project-baseline"
+      ],
+      "observed": "starting ide...; no completion; own hung CLI processes terminated",
+      "evidence": "logs/cli-open-baseline-ui-repair.log",
+      "exit_after_cleanup": 143
+    },
+    "cua": [
+      {
+        "method": "getApp(bundle ID)",
+        "result": "Computer Use server error -10005: timeoutReached"
+      },
+      {
+        "method": "getApp(application path)",
+        "result": "Computer Use server error -10005: timeoutReached"
+      },
+      {
+        "method": "listApps",
+        "result": "com.tencent.webplusdevtools isRunning=false"
+      },
+      {
+        "method": "computer.launch_app",
+        "result": "API unavailable: launch_app is not a function; no action occurred"
+      }
+    ],
+    "independent_process_observation": "Only two CLI node processes existed; no WeChat developer-tool main process was observed",
+    "settings_opened": false,
+    "project_ui_settings_changed": false,
+    "global_settings_changed": false,
+    "user_projects_changed": false,
+    "base_library_override_hypothesis": "Not tested through UI; project-file overrides from previous round did not alter actual SDKVersion. Do not claim a UI selection was attempted or failed.",
+    "cleanup": "Terminated verified own CLI PIDs80052/80053; no receiver or new automation service was started",
+    "next_step": "Need a running compatible developer-tool environment; then inspect project-specific debug library selection and validate a pure baseline before RUM"
+  }
+}

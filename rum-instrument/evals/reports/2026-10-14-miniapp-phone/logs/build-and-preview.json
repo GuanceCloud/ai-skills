@@ -1,0 +1,20 @@
+{
+  "build_npm": {
+    "exit": 0,
+    "cost_ms": 24099,
+    "warnings": []
+  },
+  "preview": {
+    "tool": "create_preview_qrcode",
+    "exit": 0,
+    "success": true,
+    "bytes": 311156
+  },
+  "baseline_preview": {
+    "exit": "timeout",
+    "qr_file_created": true,
+    "user_runtime_passed": true
+  },
+  "release_upload": false,
+  "credential_exchange": false
+}

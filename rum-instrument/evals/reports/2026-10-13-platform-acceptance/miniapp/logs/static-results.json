@@ -1,0 +1,95 @@
+[
+  {
+    "name": "json:app.json",
+    "exit": 0
+  },
+  {
+    "name": "json:project.config.json",
+    "exit": 0
+  },
+  {
+    "name": "json:sitemap.json",
+    "exit": 0
+  },
+  {
+    "name": "json:pages/index/index.json",
+    "exit": 0
+  },
+  {
+    "name": "json:package.json",
+    "exit": 0
+  },
+  {
+    "name": "json:package-lock.json",
+    "exit": 0
+  },
+  {
+    "name": "syntax-app.js",
+    "command": [
+      "node",
+      "--check",
+      "app.js"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "syntax-rum.js",
+    "command": [
+      "node",
+      "--check",
+      "rum.js"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "syntax-pages_index_index.js",
+    "command": [
+      "node",
+      "--check",
+      "pages/index/index.js"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "syntax-config_rum.example.js",
+    "command": [
+      "node",
+      "--check",
+      "config/rum.example.js"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "syntax-config_rum.local.js",
+    "command": [
+      "node",
+      "--check",
+      "config/rum.local.js"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "wxml-compile",
+    "command": [
+      "/Applications/wechatwebdevtools.app/Contents/Resources/package.nw/js/vendor/wcc",
+      "-d",
+      "-o",
+      "/private/tmp/rum-platform-acceptance/miniapp/build/wxml.js",
+      "pages/index/index.wxml"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "wxss-compile",
+    "command": [
+      "/Applications/wechatwebdevtools.app/Contents/Resources/package.nw/js/vendor/wcsc",
+      "-lc",
+      "-js",
+      "-o",
+      "/private/tmp/rum-platform-acceptance/miniapp/build/wxss.js",
+      "app.wxss",
+      "pages/index/index.wxss"
+    ],
+    "exit": 0
+  }
+]

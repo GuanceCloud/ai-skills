@@ -1,0 +1,158 @@
+{
+  "approval": {
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1,
+    "status": "approved"
+  },
+  "batches": [
+    {
+      "approval": {
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1,
+        "status": "approved"
+      },
+      "depends_on": [],
+      "id": "web",
+      "target_ids": [
+        "web:."
+      ]
+    }
+  ],
+  "handoff": [
+    "Require official supported URL/derived-field filtering and actual payload privacy pass before enabling collection",
+    "DataKit remote ingestion remains unverified"
+  ],
+  "planned_changes": [],
+  "repository": {
+    "commit": "3f5b0e7f2a52c9e55214c29c5b5e2ed3f5272d89",
+    "initial_status": [],
+    "root": "."
+  },
+  "request": {
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "eval_web_fixes"
+      }
+    },
+    "intent": "implement",
+    "receiver": {
+      "endpoint": {
+        "value": "http://127.0.0.1:19529"
+      },
+      "mode": "datakit",
+      "readiness": {
+        "checks": {
+          "network_reachability": {
+            "evidence": [],
+            "handoff": [
+              "Verify reachability from the application runtime."
+            ],
+            "status": "unknown"
+          },
+          "rum_collector": {
+            "evidence": [],
+            "handoff": [
+              "Verify collector configuration before claiming remote ingestion."
+            ],
+            "status": "unknown"
+          }
+        },
+        "status": "unknown"
+      }
+    }
+  },
+  "risks": [
+    "Protected derived query values may leak despite beforeSend URL mutation"
+  ],
+  "schema_version": 3,
+  "targets": [
+    {
+      "application_id_slots": [
+        "web"
+      ],
+      "application_ids": {
+        "web": {
+          "value": "eval_web_fixes"
+        }
+      },
+      "application_types": {
+        "web": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "web",
+          "verification": "not_applicable"
+        }
+      },
+      "artifacts": {},
+      "blockers": [
+        "Browser RUM 3.3.21 beforeSend cannot sanitize protected derived view.url_query; no supported compatible newer release exists in npm latest. Must verify actual payload before any initializer edits."
+      ],
+      "disposition": "blocked",
+      "evidence": [
+        "index.html",
+        "package.json",
+        "package-lock.json",
+        "src/main.js"
+      ],
+      "existing_instrumentation": {
+        "files": [],
+        "sdk": null,
+        "signals": [],
+        "status": "none",
+        "version": null
+      },
+      "id": "web:.",
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/web/app-access/",
+        "https://registry.npmjs.org/@cloudcare%2fbrowser-rum/latest"
+      ],
+      "path": ".",
+      "platform": "web",
+      "privacy": {
+        "evidence": [
+          "Installed SDK esm/domain/assembly.js allows view.url and view.referrer, not view.url_query; View cannot be discarded."
+        ],
+        "session_replay": false,
+        "status": "blocked"
+      },
+      "profile": {
+        "env": {
+          "confidence": "low",
+          "source": "proposed runtime config",
+          "value": null
+        },
+        "service": {
+          "confidence": "high",
+          "source": "package.json#name",
+          "value": "eval-web-fixes"
+        },
+        "signals": {
+          "logs": "preserve",
+          "replay": false,
+          "rum": true,
+          "tracing": "preserve"
+        },
+        "version": {
+          "confidence": "high",
+          "source": "package.json#version",
+          "value": "1.0.0"
+        }
+      },
+      "receiver_mapping": {
+        "applicationId": "eval_web_fixes",
+        "datakitOrigin": "http://127.0.0.1:19529"
+      },
+      "variants": [
+        "browser"
+      ]
+    }
+  ],
+  "validation": [
+    "node --check src/main.js",
+    "Run isolated real SDK browser payload compatibility probe outside application startup"
+  ]
+}

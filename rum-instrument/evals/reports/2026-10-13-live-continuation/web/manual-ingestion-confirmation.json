@@ -1,0 +1,12 @@
+{
+  "confirmation_date": "2026-10-13",
+  "timezone": "Asia/Shanghai",
+  "workspace_id": "wksp_4b57c7bab38e4a2d9630f675dc20015d",
+  "application_id": "new_skill_001",
+  "status": "confirmed",
+  "method": "user_manual_verification",
+  "user_statement": "我验证了数据存在",
+  "verified_scope": "RUM data exists in the target application backend",
+  "agent_backend_query_performed": false,
+  "per_event_type_counts_reconciled": false
+}

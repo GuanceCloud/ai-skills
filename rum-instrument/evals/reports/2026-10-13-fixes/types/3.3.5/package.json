@@ -1,0 +1,12 @@
+{
+  "name": "rum-types-retest-3-3-5",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@cloudcare/browser-rum": "3.3.5"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2"
+  }
+}

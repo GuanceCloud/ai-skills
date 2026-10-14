@@ -1,0 +1,270 @@
+{
+  "schema_version": 3,
+  "repository": {
+    "root": "/private/tmp/rum-platform-acceptance/android/project",
+    "commit": "f9cca8d903c832a82a731b1ca14988cc96233ef8",
+    "initial_status": []
+  },
+  "request": {
+    "intent": "implement",
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "eval_android_acceptance"
+      }
+    },
+    "receiver": {
+      "mode": "datakit",
+      "endpoint": {
+        "value": "http://127.0.0.1:19529"
+      },
+      "readiness": {
+        "status": "unknown",
+        "checks": {
+          "rum_collector": {
+            "status": "unknown",
+            "evidence": [],
+            "handoff": [
+              "Verify collector configuration before claiming remote ingestion."
+            ]
+          },
+          "network_reachability": {
+            "status": "unknown",
+            "evidence": [],
+            "handoff": [
+              "Verify reachability from the application runtime."
+            ]
+          }
+        }
+      }
+    }
+  },
+  "targets": [
+    {
+      "id": "android:app",
+      "path": "app",
+      "platform": "android",
+      "variants": [
+        "debug"
+      ],
+      "evidence": [
+        "app/build.gradle",
+        "app/src/main/AndroidManifest.xml"
+      ],
+      "application_id_slots": [
+        "android"
+      ],
+      "application_ids": {
+        "android": {
+          "value": "eval_android_acceptance"
+        }
+      },
+      "application_types": {
+        "android": {
+          "value": "android",
+          "source": "repository",
+          "confidence": "high",
+          "verification": "not_applicable",
+          "api_value": null
+        }
+      },
+      "existing_instrumentation": {
+        "status": "none",
+        "files": [],
+        "sdk": null,
+        "version": null,
+        "signals": []
+      },
+      "profile": {
+        "signals": {
+          "rum": true,
+          "logs": false,
+          "tracing": false,
+          "replay": false
+        },
+        "env": {
+          "value": null,
+          "source": "BuildConfig.RUM_ENV",
+          "confidence": "high"
+        },
+        "service": {
+          "value": "com.example.rumacceptance",
+          "source": "BuildConfig.APPLICATION_ID",
+          "confidence": "high"
+        },
+        "version": {
+          "value": "1.0-acceptance",
+          "source": "defaultConfig.versionName",
+          "confidence": "high"
+        }
+      },
+      "receiver_mapping": {
+        "datakitUrl": "FTSDKConfig.builder(BuildConfig.RUM_DATAKIT_URL)",
+        "appId": "FTRUMConfig.setRumAppId(BuildConfig.RUM_APP_ID)"
+      },
+      "privacy": {
+        "custom_data": "No custom user context; synthetic fixed Error/View names; header/body/input canaries excluded",
+        "optional_signals": "No Logs/Trace/Replay/crash/WebView/plugin; manual bounded View and Error; manual OkHttp interceptor resource instrumentation"
+      },
+      "artifacts": {},
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/android/app-access/"
+      ],
+      "disposition": "planned",
+      "blockers": []
+    }
+  ],
+  "planned_changes": [
+    {
+      "target_id": "android:app",
+      "file": "app/build.gradle",
+      "order": 1,
+      "purpose": "Complete core RUM integration using verified official SDK APIs",
+      "edits": [
+        "Add one Application initializer or minimal configuration and representative SDK signal smoke path"
+      ],
+      "dependency_decision": {
+        "action": "add",
+        "package": "com.cloudcare.ft.mobile.sdk.tracker.agent:ft-sdk",
+        "version": "1.7.5",
+        "owner": "GuanceCloud",
+        "compatibility": "AGP 8.5.2 / Gradle 8.7 / Java 17, minSdk 23; official SDK AAR and source signatures inspected",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/android/app-access/"
+        ],
+        "verified_at": "2026-10-13"
+      },
+      "validation": [
+        "assembleDebug",
+        "lintDebug",
+        "real emulator SDK local receiver payload assertions"
+      ],
+      "risk": "Local simulator only; remote ingestion remains unverified",
+      "rollback": "Revert this file to fixture baseline"
+    },
+    {
+      "target_id": "android:app",
+      "file": "app/src/main/java/com/example/rumacceptance/App.java",
+      "order": 2,
+      "purpose": "Complete core RUM integration using verified official SDK APIs",
+      "edits": [
+        "Add one Application initializer or minimal configuration and representative SDK signal smoke path"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "assembleDebug",
+        "lintDebug",
+        "real emulator SDK local receiver payload assertions"
+      ],
+      "risk": "Local simulator only; remote ingestion remains unverified",
+      "rollback": "Revert this file to fixture baseline"
+    },
+    {
+      "target_id": "android:app",
+      "file": "app/src/main/java/com/example/rumacceptance/MainActivity.java",
+      "order": 3,
+      "purpose": "Complete core RUM integration using verified official SDK APIs",
+      "edits": [
+        "Add one Application initializer or minimal configuration and representative SDK signal smoke path"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "assembleDebug",
+        "lintDebug",
+        "real emulator SDK local receiver payload assertions"
+      ],
+      "risk": "Local simulator only; remote ingestion remains unverified",
+      "rollback": "Revert this file to fixture baseline"
+    },
+    {
+      "target_id": "android:app",
+      "file": "app/src/debug/AndroidManifest.xml",
+      "order": 4,
+      "purpose": "Complete core RUM integration using verified official SDK APIs",
+      "edits": [
+        "Add one Application initializer or minimal configuration and representative SDK signal smoke path"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "assembleDebug",
+        "lintDebug",
+        "real emulator SDK local receiver payload assertions"
+      ],
+      "risk": "Local simulator only; remote ingestion remains unverified",
+      "rollback": "Revert this file to fixture baseline"
+    },
+    {
+      "target_id": "android:app",
+      "file": "app/src/debug/res/xml/network_security_config.xml",
+      "order": 5,
+      "purpose": "Complete core RUM integration using verified official SDK APIs",
+      "edits": [
+        "Add one Application initializer or minimal configuration and representative SDK signal smoke path"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "assembleDebug",
+        "lintDebug",
+        "real emulator SDK local receiver payload assertions"
+      ],
+      "risk": "Local simulator only; remote ingestion remains unverified",
+      "rollback": "Revert this file to fixture baseline"
+    },
+    {
+      "target_id": "android:app",
+      "file": "rum.properties.example",
+      "order": 6,
+      "purpose": "Complete core RUM integration using verified official SDK APIs",
+      "edits": [
+        "Add one Application initializer or minimal configuration and representative SDK signal smoke path"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "assembleDebug",
+        "lintDebug",
+        "real emulator SDK local receiver payload assertions"
+      ],
+      "risk": "Local simulator only; remote ingestion remains unverified",
+      "rollback": "Revert this file to fixture baseline"
+    }
+  ],
+  "validation": [
+    "plan and implement contract preflight before RUM edits",
+    "assembleDebug lintDebug",
+    "local payload non-empty View Resource Error and canary checks",
+    "single initializer per app process"
+  ],
+  "risks": [],
+  "handoff": [],
+  "approval": {
+    "status": "approved",
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1
+  },
+  "batches": [
+    {
+      "id": "android-core",
+      "target_ids": [
+        "android:app"
+      ],
+      "depends_on": [],
+      "approval": {
+        "status": "approved",
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1
+      }
+    }
+  ]
+}

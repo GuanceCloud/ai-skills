@@ -1,0 +1,120 @@
+{
+  "case": "android",
+  "status": "partial_source_integration",
+  "business_questions": 0,
+  "business_confirmations": 0,
+  "installation": {
+    "command": "sh install.sh --base-url http://127.0.0.1:18763 --skill rum-instrument --agent codex --scope user --yes --dest ${EVAL_ROOT}/android/skills",
+    "exit_code": 0,
+    "schema_version": 1,
+    "name": "rum-instrument",
+    "version": "ebaddc3a8c835cc3f046920b0595a782a34d6459",
+    "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+    "source": "http://127.0.0.1:18763/versions/ebaddc3a8c835cc3f046920b0595a782a34d6459/skills/rum-instrument.tar.gz",
+    "installed_at": "2026-10-13T03:55:49Z"
+  },
+  "skill_read": "${EVAL_ROOT}/android/skills/rum-instrument/SKILL.md",
+  "references_read": [
+    "common.md",
+    "execution.md",
+    "contracts.md",
+    "android.md",
+    "validation.md",
+    "official-sources.json"
+  ],
+  "modified_files": [
+    ".gitignore",
+    "rum.properties",
+    "rum.properties.example",
+    "app/build.gradle.kts",
+    "app/src/main/AndroidManifest.xml",
+    "app/src/debug/AndroidManifest.xml",
+    "app/src/debug/res/xml/rum_network_security.xml",
+    "app/src/main/java/com/example/rum/App.kt"
+  ],
+  "sdk": {
+    "version": "1.7.5",
+    "source": "official Maven metadata, POM, sources.jar and AAR downloaded",
+    "gson": "2.8.9 official POM downloaded",
+    "min_sdk_verified_from_aar": 21
+  },
+  "validation": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": "./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug",
+      "exit_code": 127,
+      "output": "[Errno 2] No such file or directory: './gradlew'"
+    },
+    {
+      "command": "java -version",
+      "exit_code": 0,
+      "output": "java version \"1.8.0_261\"\nJava(TM) SE Runtime Environment (build 1.8.0_261-b12)\nJava HotSpot(TM) 64-Bit Server VM (build 25.261-b12, mixed mode)\n"
+    },
+    {
+      "command": "adb devices",
+      "exit_code": 127,
+      "output": "[Errno 2] No such file or directory: 'adb'"
+    },
+    {
+      "command": "validate_contract.py --phase plan",
+      "exit_code": 0
+    },
+    {
+      "command": "validate_contract.py --phase implement --repository project",
+      "exit_code": 0
+    },
+    {
+      "command": "Python static source/API/XML/ignore checks",
+      "exit_code": 0
+    },
+    {
+      "command": "curl http://127.0.0.1:19529",
+      "exit_code": 7
+    },
+    {
+      "command": "Download official Maven sources/POM/AAR and inspect AndroidManifest.xml",
+      "exit_code": 0
+    }
+  ],
+  "mock_real_boundary": {
+    "real": [
+      "local HTTP Skill install with integrity verification",
+      "Git fixture edits",
+      "official SDK downloads and API inspection"
+    ],
+    "mock": [
+      "project is minimal fixture"
+    ],
+    "not_executed": [
+      "Android compilation",
+      "SDK runtime smoke",
+      "payload capture",
+      "remote ingestion",
+      "control-plane",
+      "deployment"
+    ]
+  },
+  "rerun": {
+    "same_request": true,
+    "reinstalled": false,
+    "business_questions": 0,
+    "business_confirmations": 0,
+    "file_hashes_unchanged": true,
+    "duplicate_initializers": false
+  },
+  "defects": [],
+  "limitations": [
+    "No root Gradle settings/build/Wrapper; AGP/Kotlin/compileSdk/app minSdk not available from fixture. SDK AAR declares minSdk 21.",
+    "Only Java 8 available; no Gradle or adb",
+    "Source integration enables Activity RUM only; automatic click/network requires complete build/plugin choice and actual app boundaries",
+    "No Activity/network implementation exists to smoke test",
+    "Local collector port 19529 refused connection",
+    "Android loopback needs adb reverse; debug-only HTTP exception was added",
+    "SDK default sampling retained, optional crash/ANR/UI block/WebView/Logs/Trace/Replay off; actual emitted payload privacy remains unverified"
+  ],
+  "remote_ingestion_verified": false
+}

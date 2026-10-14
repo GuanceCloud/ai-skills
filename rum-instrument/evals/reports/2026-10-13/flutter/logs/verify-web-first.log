@@ -1,0 +1,5 @@
+PASS mocked Browser SDK: success
+PASS mocked Browser SDK: missing-config
+PASS mocked Browser SDK: missing-sdk
+PASS mocked Browser SDK: init-failure
+PASS maintained HTML loading order; no real Browser SDK/runtime execution is claimed.

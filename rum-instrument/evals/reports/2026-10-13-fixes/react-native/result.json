@@ -1,0 +1,42 @@
+{
+  "status": "passed_javascript_regression",
+  "first_plan_passed": true,
+  "first_plan_exit": 0,
+  "implement_validation_exit": 0,
+  "business_questions": 0,
+  "repeated_questions": 0,
+  "routine_approval_requests": 0,
+  "sandbox_escalations": 2,
+  "baseline_exit": 1,
+  "baseline_failure": "SDK automatic hook returns undefined rather than original handler return value",
+  "harness_initial_false_green": {
+    "observed_exit": 0,
+    "reason": "Assertion catch used SDK-replaced console.error, which threw before setting process.exitCode; unhandled rejection listener then suppressed the error",
+    "correction": "Default process.exitCode=1; diagnostics use fs.writeSync; only final full assertion completion sets exitCode=0",
+    "retained_log": "logs/baseline-strict.log"
+  },
+  "cases_passed": 24,
+  "cases_failed": 0,
+  "aggregate_exit": 0,
+  "sdk_version": "0.4.2",
+  "sdk_files_unchanged": 109,
+  "sdk_real_javascript": true,
+  "bridge_double": true,
+  "native_build_run": false,
+  "remote_ingestion_verified": false,
+  "changed_files": [
+    "rum.js",
+    "rum-error-handler.cjs",
+    "rum-error-payload.js"
+  ],
+  "receipt": {
+    "schema_version": 1,
+    "name": "rum-instrument",
+    "version": "97bff6dd3ab0fb1601b41aadbc1a47847811b99b",
+    "archive_sha256": "41ab6cd9b73dc2ffab0faf2c0341f0d21101661e38927de027aacf41c07d0175",
+    "source": "http://127.0.0.1:18764/versions/97bff6dd3ab0fb1601b41aadbc1a47847811b99b/skills/rum-instrument.tar.gz",
+    "installed_at": "2026-10-13T06:00:15Z"
+  },
+  "runtime_hashes": "runtime-sha256.json",
+  "missing_bridge_limitation": "Failure remains nonfatal. SDK retains null native bridge; restoring bridge alone cannot recover in the same cached JS modules. Recovery test reloads SDK JS after restoring bridge, representing module/process restart."
+}

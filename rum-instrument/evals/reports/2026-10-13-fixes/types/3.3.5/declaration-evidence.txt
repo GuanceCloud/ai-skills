@@ -1,0 +1,51 @@
+1: export interface Context {
+2:   [x: string]: ContextValue
+3: }
+4: export interface User {
+5:   id?: string | undefined
+6:   email?: string | undefined
+7:   name?: string | undefined
+8:   [key: string]: unknown
+9: }
+10: export type SessionPersistence = 'cookie' | 'local-storage'
+11: 
+12: export declare const ConsoleApiName: {
+13:   readonly log: 'log'
+14:   readonly debug: 'debug'
+15:   readonly info: 'info'
+16:   readonly warn: 'warn'
+17:   readonly error: 'error'
+18: }
+19: export type ConsoleApiName = typeof ConsoleApiName
+20: 
+21: export declare const RawReportType: {
+22:   readonly intervention: 'intervention'
+23:   readonly deprecation: 'deprecation'
+24:   readonly cspViolation: 'csp_violation'
+25: }
+26: export type RawReportType = (typeof RawReportType)[keyof typeof RawReportType]
+27: 
+28: export interface SiteInitConfiguration {
+29:   /**
+30:    *  Data reporting token in openway mode, obtained from the TrueWatch Cloud console. Required.
+110:   SKYWALKING_V3 = 'skywalking_v3',
+111:   JAEGER = 'jaeger'
+112: }
+113: export declare const DefaultPrivacyLevel: {
+114:   readonly ALLOW: 'allow'
+115:   readonly MASK: 'mask'
+116:   readonly MASK_USER_INPUT: 'mask-user-input'
+117: }
+118: export type DefaultPrivacyLevel =
+119:   (typeof DefaultPrivacyLevel)[keyof typeof DefaultPrivacyLevel]
+120: 
+121: export const NodePrivacyLevel = {
+122:   IGNORE: 'ignore',
+123:   HIDDEN: 'hidden',
+124:   ALLOW: DefaultPrivacyLevel.ALLOW,
+125:   MASK: DefaultPrivacyLevel.MASK,
+126:   MASK_USER_INPUT: DefaultPrivacyLevel.MASK_USER_INPUT
+127: } as const
+128: export type NodePrivacyLevel =
+129:   (typeof NodePrivacyLevel)[keyof typeof NodePrivacyLevel]
+130: export type OriginMatchOption = string | RegExp

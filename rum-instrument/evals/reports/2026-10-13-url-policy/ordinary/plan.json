@@ -1,0 +1,314 @@
+{
+  "schema_version": 3,
+  "repository": {
+    "root": ".",
+    "commit": "9e38996a36c0a7964119a05da567b3da81eba6a3",
+    "initial_status": []
+  },
+  "request": {
+    "intent": "implement",
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "eval_catalog"
+      }
+    },
+    "receiver": {
+      "mode": "datakit",
+      "endpoint": {
+        "value": "http://127.0.0.1:19529"
+      },
+      "readiness": {
+        "status": "unknown",
+        "checks": {
+          "rum_collector": {
+            "status": "unknown",
+            "evidence": [],
+            "handoff": [
+              "Verify collector configuration before claiming remote ingestion."
+            ]
+          },
+          "network_reachability": {
+            "status": "unknown",
+            "evidence": [],
+            "handoff": [
+              "Verify reachability from the application runtime."
+            ]
+          }
+        }
+      }
+    }
+  },
+  "targets": [
+    {
+      "id": "web:.",
+      "path": ".",
+      "platform": "web",
+      "variants": [
+        "browser"
+      ],
+      "evidence": [
+        "index.html",
+        "src/main.js",
+        "package.json"
+      ],
+      "application_id_slots": [
+        "web"
+      ],
+      "application_ids": {
+        "web": {
+          "value": "eval_catalog"
+        }
+      },
+      "application_types": {
+        "web": {
+          "value": "web",
+          "source": "repository",
+          "confidence": "high",
+          "verification": "not_applicable",
+          "api_value": null
+        }
+      },
+      "existing_instrumentation": {
+        "status": "none",
+        "files": [],
+        "sdk": "@cloudcare/browser-rum",
+        "version": "3.3.21",
+        "signals": []
+      },
+      "profile": {
+        "signals": {
+          "rum": true,
+          "logs": "preserve",
+          "tracing": "preserve",
+          "replay": false
+        },
+        "service": {
+          "value": "rum-catalog-fixture",
+          "source": "package.json#name",
+          "confidence": "high"
+        },
+        "version": {
+          "value": null,
+          "source": "runtime:CATALOG_RUM.version",
+          "confidence": "high"
+        },
+        "env": {
+          "value": null,
+          "source": "runtime:CATALOG_RUM.env",
+          "confidence": "high"
+        },
+        "sampling": {
+          "value": 100,
+          "source": "SDK default sessionSampleRate",
+          "confidence": "high"
+        }
+      },
+      "receiver_mapping": {
+        "applicationId": "eval_catalog",
+        "datakitOrigin": "http://127.0.0.1:19529"
+      },
+      "privacy": {
+        "evidence": [
+          "src/main.js only uses page and sort; no sensitive routes or explicit filtering requirement"
+        ],
+        "standard_url_fields": "preserve",
+        "custom_context": "none",
+        "replay": "disabled"
+      },
+      "artifacts": {},
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/web/app-access/"
+      ],
+      "disposition": "planned",
+      "blockers": []
+    }
+  ],
+  "planned_changes": [
+    {
+      "target_id": "web:.",
+      "file": "src/bootstrap.js",
+      "order": 1,
+      "purpose": "Initialize RUM before importing application, catch SDK load failure",
+      "edits": [
+        "Initialize RUM before importing application, catch SDK load failure"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "npm run build",
+        "real SDK Chrome local smoke"
+      ],
+      "risk": "Preserve startup and navigation",
+      "rollback": "Revert this RUM integration file change"
+    },
+    {
+      "target_id": "web:.",
+      "file": "src/rum.js",
+      "order": 2,
+      "purpose": "One SDK initializer with runtime configuration and Replay disabled",
+      "edits": [
+        "One SDK initializer with runtime configuration and Replay disabled"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "npm run build",
+        "real SDK Chrome local smoke"
+      ],
+      "risk": "Preserve startup and navigation",
+      "rollback": "Revert this RUM integration file change"
+    },
+    {
+      "target_id": "web:.",
+      "file": "rum-config.js",
+      "order": 3,
+      "purpose": "Maintain non-secret runtime configuration with optional release/env wiring",
+      "edits": [
+        "Maintain non-secret runtime configuration with optional release/env wiring"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "npm run build",
+        "real SDK Chrome local smoke"
+      ],
+      "risk": "Preserve startup and navigation",
+      "rollback": "Revert this RUM integration file change"
+    },
+    {
+      "target_id": "web:.",
+      "file": "index.html",
+      "order": 4,
+      "purpose": "Load runtime config and bootstrap module",
+      "edits": [
+        "Load runtime config and bootstrap module"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "npm run build",
+        "real SDK Chrome local smoke"
+      ],
+      "risk": "Preserve startup and navigation",
+      "rollback": "Revert this RUM integration file change"
+    },
+    {
+      "target_id": "web:.",
+      "file": "scripts/build.mjs",
+      "order": 5,
+      "purpose": "Bundle existing npm SDK and app through esbuild and copy HTML/config",
+      "edits": [
+        "Bundle existing npm SDK and app through esbuild and copy HTML/config"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "npm run build",
+        "real SDK Chrome local smoke"
+      ],
+      "risk": "Preserve startup and navigation",
+      "rollback": "Revert this RUM integration file change"
+    },
+    {
+      "target_id": "web:.",
+      "file": "package.json",
+      "order": 6,
+      "purpose": "Add build command and esbuild development dependency, preserve SDK 3.3.21",
+      "edits": [
+        "Add build command and esbuild development dependency, preserve SDK 3.3.21"
+      ],
+      "dependency_decision": {
+        "action": "preserve",
+        "package": "@cloudcare/browser-rum",
+        "owner": "GuanceCloud",
+        "version": "3.3.21",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/web/app-access/"
+        ],
+        "compatibility": "Existing pinned version; installed official package reviewed",
+        "verified_at": "2026-10-13"
+      },
+      "validation": [
+        "npm run build",
+        "real SDK Chrome local smoke"
+      ],
+      "risk": "Preserve startup and navigation",
+      "rollback": "Revert this RUM integration file change"
+    },
+    {
+      "target_id": "web:.",
+      "file": ".gitignore",
+      "order": 7,
+      "purpose": "Ignore dependencies, generated build and evaluation evidence",
+      "edits": [
+        "Ignore dependencies, generated build and evaluation evidence"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "npm run build",
+        "real SDK Chrome local smoke"
+      ],
+      "risk": "Preserve startup and navigation",
+      "rollback": "Revert this RUM integration file change"
+    },
+    {
+      "target_id": "web:.",
+      "file": "README.md",
+      "order": 8,
+      "purpose": "Document build, runtime configuration and verification limitations",
+      "edits": [
+        "Document build, runtime configuration and verification limitations"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "npm run build",
+        "real SDK Chrome local smoke"
+      ],
+      "risk": "Preserve startup and navigation",
+      "rollback": "Revert this RUM integration file change"
+    }
+  ],
+  "validation": [
+    "Build with real SDK",
+    "Capture non-empty View Resource Error events",
+    "Verify navigation, requests, init count, runtime config and SDK load failure",
+    "Rerun discovery and integration no-op"
+  ],
+  "risks": [
+    "Remote ingestion remains unverified"
+  ],
+  "handoff": [
+    "Supply release version and environment using runtime configuration for deployment; confirm real DataKit ingestion separately"
+  ],
+  "approval": {
+    "status": "approved",
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1
+  },
+  "batches": [
+    {
+      "id": "web",
+      "target_ids": [
+        "web:."
+      ],
+      "depends_on": [],
+      "approval": {
+        "status": "approved",
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1
+      }
+    }
+  ]
+}

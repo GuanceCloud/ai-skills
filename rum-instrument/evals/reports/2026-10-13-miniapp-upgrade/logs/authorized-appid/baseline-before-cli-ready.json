@@ -1,0 +1,4 @@
+{
+  "status": "failed",
+  "message": "Failed connecting to ws://127.0.0.1:19534, check if target project window is opened with automation enabled"
+}

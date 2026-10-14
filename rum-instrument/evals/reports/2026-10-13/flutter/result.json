@@ -1,0 +1,395 @@
+{
+  "case_directory": "${EVAL_ROOT}/flutter",
+  "changed_files": [
+    "project/pubspec.yaml",
+    "project/lib/main.dart",
+    "project/lib/rum.dart",
+    "project/lib/rum_stub.dart",
+    "project/lib/rum_mobile.dart",
+    "project/config/rum.example.json",
+    "project/config/rum.local.json (ignored)",
+    "project/.gitignore",
+    "project/web/index.html",
+    "project/web/rum.js",
+    "project/web/rum-config.example.js",
+    "project/web/rum-config.local.js (ignored)",
+    "project/.rum/plan.json (ignored internal plan)"
+  ],
+  "commands": [
+    {
+      "command": "curl -fsS http://127.0.0.1:18763/rum.md -o logs/rum.md",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/rum.md",
+      "note": "user-authorized local mirror"
+    },
+    {
+      "command": "curl -fsS http://127.0.0.1:18763/install.sh -o install.sh",
+      "exit_code": 0,
+      "log": null,
+      "note": "downloaded local installer"
+    },
+    {
+      "command": "sh install.sh --base-url http://127.0.0.1:18763 --skill rum-instrument --agent codex --scope user --yes --dest ${EVAL_ROOT}/flutter/skills",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/install.log",
+      "note": "installed only to this case"
+    },
+    {
+      "command": "cat skills/rum-instrument/SKILL.md and references/common.md execution.md flutter.md web.md contracts.md validation.md privacy-security.md",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/skill-rerun-read.md",
+      "note": "read newly installed Skill and matching adapters"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/detect_rum_targets.py project --pretty",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/detect-first.json",
+      "note": "Android/iOS/Web slots discovered with no business questions"
+    },
+    {
+      "command": "command -v flutter; command -v dart",
+      "exit_code": 1,
+      "log": null,
+      "note": "neither executable on PATH"
+    },
+    {
+      "command": "curl -fsS https://pub.dev/api/packages/ft_mobile_agent_flutter -o logs/flutter-package.json",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/flutter-package.json",
+      "note": "official metadata"
+    },
+    {
+      "command": "curl -fsS https://registry.npmjs.org/@cloudcare%2Fbrowser-rum/latest -o logs/browser-package.json",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/browser-package.json",
+      "note": "official metadata"
+    },
+    {
+      "command": "curl -fsS https://pub.dev/api/archives/ft_mobile_agent_flutter-0.5.7.tar.gz -o sdk/flutter.tar.gz",
+      "exit_code": 0,
+      "log": null,
+      "note": "public SDK source archive; SHA-256 verified against pub.dev metadata"
+    },
+    {
+      "command": "curl -fsS https://registry.npmjs.org/@cloudcare/browser-rum/-/browser-rum-3.3.21.tgz -o sdk/browser.tgz",
+      "exit_code": 0,
+      "log": null,
+      "note": "public SDK source archive, extracted for inspection"
+    },
+    {
+      "command": "curl -fsS https://static.guance.com/browser-sdk/v3/dataflux-rum.js -o sdk/browser-cdn.js",
+      "exit_code": 0,
+      "log": null,
+      "note": "actual CDN bytes contain 3.3.21"
+    },
+    {
+      "command": "python3 prepare_plan.py",
+      "exit_code": 0,
+      "log": null,
+      "note": "schema v3 single shared application batch"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase plan",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/plan-validation.log",
+      "note": "warned readiness not recorded, local implementation allowed"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase implement --repository project",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/implement-validation.log",
+      "note": "passed before source edits"
+    },
+    {
+      "command": "node --check project/web/rum.js && node --check project/web/rum-config.local.js",
+      "exit_code": 0,
+      "log": null,
+      "note": "JavaScript syntax only"
+    },
+    {
+      "command": "python3 run_checks.py",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/toolchain-checks.json",
+      "note": "runner completed; six actual Flutter invocations each failed 127"
+    },
+    {
+      "command": "node verify-web.cjs",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/verify-web-first.log",
+      "note": "mock Browser SDK only"
+    },
+    {
+      "command": "python3 verify-static.py",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/verify-static-first.log",
+      "note": "textual Dart/source API inspection only"
+    },
+    {
+      "command": "curl -fsS http://127.0.0.1:18763/rum.md -o logs/rum-rerun.md",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/rum-rerun.md",
+      "note": "repeat original request"
+    },
+    {
+      "command": "cat skills/rum-instrument/SKILL.md",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/skill-rerun-read.md",
+      "note": "reuse previously read installation"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/detect_rum_targets.py project --pretty",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/detect-rerun.json",
+      "note": "existing integration recognized"
+    },
+    {
+      "command": "node verify-web.cjs",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/verify-web-rerun.log",
+      "note": "repeat mock checks"
+    },
+    {
+      "command": "python3 verify-static.py",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/verify-static-rerun.log",
+      "note": "repeat source checks"
+    },
+    {
+      "command": "git -C project diff --check",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/project.diff",
+      "note": "whitespace passed"
+    },
+    {
+      "command": "python3 inline source/config/plan/installed Skill hash comparison",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/flutter/logs/rerun-result.json",
+      "note": "all hashes unchanged"
+    },
+    {
+      "command": "flutter pub get",
+      "exit_code": 127,
+      "log": "logs/pub-get.log"
+    },
+    {
+      "command": "flutter analyze",
+      "exit_code": 127,
+      "log": "logs/analyze.log"
+    },
+    {
+      "command": "flutter test",
+      "exit_code": 127,
+      "log": "logs/flutter-test.log"
+    },
+    {
+      "command": "flutter build web",
+      "exit_code": 127,
+      "log": "logs/build-web.log"
+    },
+    {
+      "command": "flutter build apk --dart-define-from-file=config/rum.local.json",
+      "exit_code": 127,
+      "log": "logs/build-apk.log"
+    },
+    {
+      "command": "flutter build ios --no-codesign --dart-define-from-file=config/rum.local.json",
+      "exit_code": 127,
+      "log": "logs/build-ios.log"
+    }
+  ],
+  "defects": [
+    {
+      "category": "integration_privacy_failure",
+      "code_left_unchanged_to_preserve_trial": true,
+      "description": "beforeSend sanitizes event.view.url/resource.url/referrer, but actual SDK exported payload still includes query canary through derived view_url_query. Mock test checked only direct URLs and falsely supported an overly broad privacy conclusion.",
+      "evidence": [
+        "logs/parent-browser-smoke.json",
+        "logs/parent-local-payloads.json"
+      ],
+      "privacy_passed": false,
+      "severity": "high",
+      "suggested_followup": "Cover SDK-derived query fields in sanitizer and assert against actual exported payload, then rerun real Browser SDK smoke."
+    }
+  ],
+  "handoff": [
+    "Fix and retest actual Browser SDK query-derived payload leak before treating privacy validation as passed",
+    "Use complete application and Flutter toolchain compatible with pubspec and plugin; run flutter pub get and resolve native toolchains",
+    "Mobile: copy config/rum.example.json when needed, then run with --dart-define-from-file=config/rum.local.json on a Flutter version supporting that flag; otherwise pass equivalent --dart-define key/value arguments",
+    "Web: retain web/rum-config.local.js in the actual build input and set env/version for each release; current version 1.0.0 comes from pubspec.yaml",
+    "Wire actual app Navigator/routes and privacy-safe HTTP resource instrumentation when those features exist",
+    "Complete real device/browser validation and collector evidence before claiming ingestion"
+  ],
+  "install": {
+    "command": "sh install.sh --base-url http://127.0.0.1:18763 --skill rum-instrument --agent codex --scope user --yes --dest ${EVAL_ROOT}/flutter/skills",
+    "exit_code": 0,
+    "install_count": 1,
+    "read_references": [
+      "common.md",
+      "execution.md",
+      "contracts.md",
+      "validation.md",
+      "privacy-security.md",
+      "flutter.md",
+      "web.md",
+      "official-sources.json#flutter",
+      "official-sources.json#web"
+    ],
+    "read_skill_paths": [
+      "${EVAL_ROOT}/flutter/skills/rum-instrument/SKILL.md"
+    ],
+    "real_user_install_untouched": true,
+    "receipt": {
+      "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+      "installed_at": "2026-10-13T04:20:10Z",
+      "name": "rum-instrument",
+      "schema_version": 1,
+      "source": "http://127.0.0.1:18763/versions/ebaddc3a8c835cc3f046920b0595a782a34d6459/skills/rum-instrument.tar.gz",
+      "version": "ebaddc3a8c835cc3f046920b0595a782a34d6459"
+    }
+  },
+  "limitations": [
+    "Neither flutter nor dart is on PATH; six requested validation commands returned 127",
+    "No resolved Dart dependency lock or compiled output was fabricated; downloaded package source is not an installed/resolved Flutter dependency graph",
+    "Android app build.gradle is only a plugin declaration; manifest is <manifest />; iOS pbxproj is only one deployment target assignment; complete platform builds require the real application skeleton",
+    "Native automatic resource events and native cold-start events are not instrumented in this skeleton; root view and Flutter errors are wired",
+    "Loopback HTTP DataKit is for local testing; device reachability, Android network permissions/cleartext policy and iOS transport policy were not enabled or validated",
+    "Browser CDN is major-version URL; verified current bytes are 3.3.21 but later CDN changes may update it",
+    "Original agent smoke tests were mock/static; parent supplemental test exercised real Chrome and Browser SDK only, using a Flutter bootstrap replacement and mocked receiver. Native SDK and Flutter app still did not run."
+  ],
+  "observations": [
+    "Official mobile package imports dart:io; conditional export is required for Web compatibility and was applied",
+    "Official Flutter resource wrapper captures request/response headers and response body; this empty app has no business client, so automatic resource collection remains off until concrete privacy-safe client instrumentation is possible",
+    "No startup Gradle plugin/custom Application added: native cold-launch events are not claimed and platform skeleton lacks a real build configuration"
+  ],
+  "official_sources": [
+    "https://docs.guance.com/real-user-monitoring/flutter/app-access/",
+    "https://docs.guance.com/real-user-monitoring/web/app-access/",
+    "https://pub.dev/api/packages/ft_mobile_agent_flutter",
+    "https://registry.npmjs.org/@cloudcare%2Fbrowser-rum/latest",
+    "https://static.guance.com/browser-sdk/v3/dataflux-rum.js"
+  ],
+  "original_request": "请按 http://127.0.0.1:18763/rum.md 完成当前项目 RUM 接入。datakitUrl: http://127.0.0.1:19529；Android appId: eval_flutter_android；iOS appId: eval_flutter_ios；Web appId: eval_flutter_web。",
+  "project": "${EVAL_ROOT}/flutter/project",
+  "questions": {
+    "business_question_count": 0,
+    "host_permission_escalations": 5,
+    "questions": [],
+    "routine_confirmation_count": 0
+  },
+  "rerun": {
+    "all_source_config_and_skill_hashes_unchanged": true,
+    "business_questions": 0,
+    "hashes": {
+      ".gitignore": "f05355f1305e1b29a7def0146e574d4c508acc7c69f22d0f2c058b6bab1fa6e9",
+      ".rum/plan.json": "2f8d0b29d29a9afc16881199b15afe07962e11079909cffb81ea2ba499ffd617",
+      "config/rum.example.json": "0cde74f600a98fd2d48adf7b368e610b99394ce28532b689076c69d05d442764",
+      "config/rum.local.json": "bab375c87bebe169df8c0a23c517e012d39010b3a39cacc8ad3ebc362fedf814",
+      "installed_skill": "bc2d1e052cfab06d1b5de083855e42f504bfaf6669781342b45b82e7981d3f32",
+      "lib/main.dart": "099b4f4327ac6a580ad59c271f86e5f40ec1ab3c9e12e3a5df8b55dbfccf542b",
+      "lib/rum.dart": "c8a041aef7d861223ba568d4017210b2c338dda574c7decb4a7722a73bd2862f",
+      "lib/rum_mobile.dart": "4514cc159bc64b1eb8981e78d62b583a33c250ee34fc651bb6f8bbf61ac074bf",
+      "lib/rum_stub.dart": "1f317ac79740e21ecdb20c0e8022995512eb25efe2a4aa488b677c91759f1531",
+      "pubspec.yaml": "89b0851984c773c6b4aa8f9fe74e347c145bb7dc41a2309b8b4b85cd5248d553",
+      "web/index.html": "4433a0e2ef5a8eeb99f8d0c4762790d023a28dc356d642f2f1cc9eb7e94e3342",
+      "web/rum-config.example.js": "d0f20587bba3ddd052f221d402da7c85d0f3e3697cdd31fd50018262e4aa5fd2",
+      "web/rum-config.local.js": "a3969d55b2829ee9d83d002110f6d26a374a8db8bcaf7459be51660d2fcdd446",
+      "web/rum.js": "7cc0920d38d40cc69e29813c5e89f52dff4d076f4734bfd872f30bf302b943c7"
+    },
+    "installer_runs": 0,
+    "native_initialization": "single by static inspection only",
+    "reused_installed_skill": true,
+    "routine_confirmations": 0,
+    "same_request": true,
+    "web_initialization": "single under mock SDK test"
+  },
+  "scenario": "flutter",
+  "sdk": {
+    "browser": "3.3.21",
+    "browser_cdn_bytes_downloaded": true,
+    "browser_mode": "official v3 CDN before Flutter bootstrap",
+    "browser_real_sdk_executed": true,
+    "browser_real_sdk_execution_note": "Parent supplemental test: real Chrome and downloaded official CDN, mocked receiver and Flutter bootstrap; no Flutter/Dart runtime",
+    "flutter": "0.5.7",
+    "flutter_archive_sha256": "a7c6604c9838ddaf7e7145d72111bb7cec716fbe3ba6ec8f2c2c721e6c3314d9",
+    "flutter_archive_verified": true,
+    "flutter_dependency_installed": false,
+    "flutter_dependency_resolution": "not available; flutter pub get exit 127",
+    "flutter_native_dependencies": {
+      "android_ft_native": "1.1.3",
+      "android_ft_sdk": "1.7.3",
+      "ios_FTMobileSDK": "1.6.5"
+    }
+  },
+  "status": "partial_source_integration_with_real_browser_privacy_failure_and_no_flutter_toolchain",
+  "supplemental_evidence": {
+    "files": [
+      "logs/parent-browser-smoke.json",
+      "logs/parent-local-payloads.json"
+    ],
+    "inspected": true,
+    "provided_by": "parent agent",
+    "received_after_original_result": true,
+    "source_modified_after_evidence": false
+  },
+  "validation": {
+    "control_plane_contacted": false,
+    "deployment_or_upload": false,
+    "flutter_analyze_passed": false,
+    "flutter_pub_get_passed": false,
+    "flutter_test_passed": false,
+    "javascript_syntax_passed": true,
+    "native": "static textual inspection only; no Dart compiler or native bridge execution",
+    "original_agent_web_smoke": "Passed constructed mock events only; lacked derived-field coverage",
+    "parent_supplemental_browser": {
+      "capture_count": 2,
+      "flutter_engine": "stub bootstrap only; no Dart or Flutter runtime",
+      "initial": {
+        "calls": 1,
+        "config": {
+          "allowedTracingUrls": [],
+          "applicationId": "eval_flutter_web",
+          "datakitOrigin": "http://127.0.0.1:19529",
+          "service": "rum_eval_mobile",
+          "sessionReplayOnErrorSampleRate": 0,
+          "sessionReplaySampleRate": 0,
+          "trackUserInteractions": true,
+          "version": "1.0.0"
+        },
+        "replay": false
+      },
+      "privacy": {
+        "CANARY_FLUTTER_HASH": true,
+        "CANARY_FLUTTER_QUERY": false
+      },
+      "privacy_passed": false,
+      "real_browser": true,
+      "real_browser_sdk": true,
+      "receiver": "mocked in Playwright",
+      "remote_ingestion_verified": false
+    },
+    "payload_privacy": "Actual Browser SDK payload captured by parent contains CANARY_FLUTTER_QUERY in view_url_query. Initial mock sanitizer test remains passed but insufficient. Mobile payload remains unverified.",
+    "plan_passed": true,
+    "platform_build_passed": false,
+    "pre_implementation_contract_passed": true,
+    "real_browser_privacy_passed": false,
+    "real_collector_contacted": false,
+    "remote_ingestion_verified": false,
+    "static_checks": [
+      "Independent Android/iOS IDs consumed from String.fromEnvironment",
+      "Web uses independent runtime configuration and Web ID",
+      "Conditional export excludes dart:io plugin from Web",
+      "Initialization follows ensureInitialized and precedes runApp",
+      "API names and parameters checked against downloaded official source",
+      "No duplicate native SDK setup",
+      "Trace/Logs/Replay/native crash/Android ID disabled"
+    ],
+    "web_mock_tests": [
+      "Initialize once across repeated script evaluation",
+      "Correct DataKit origin and Web application ID",
+      "No Client Token/site or overridden session sampling",
+      "SDK/config missing and init exceptions do not throw through to app startup",
+      "URL query/fragment/userinfo canaries removed by beforeSend on mock events",
+      "HTML config/SDK/init precede Flutter bootstrap"
+    ]
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-13",
+  "source": "repository working tree; isolated install; not the user-installed Skill",
+  "final_snapshot": "8e68e5828349590d1ae4695c10d588341222953c",
+  "final_archive_sha256": "f9401018aef594ddabd9cf91cced89f072b61c5346db4c75c599434739d1aedb",
+  "runtime_files_matching": 24,
+  "regression": {
+    "rum_tests": 170,
+    "installer_tests": 5,
+    "portability_tests": 1,
+    "registry_tests": 1,
+    "unique_total": 177,
+    "passed": 177,
+    "installed_rum_suite": 170,
+    "installed_suite_is_repeat_not_additional_unique_tests": true
+  },
+  "issues": {
+    "react_native_error_chain": {
+      "status": "fixed_application_adapter",
+      "real_sdk": "0.4.2",
+      "cases_passed": 24,
+      "native_bridge": "mock",
+      "vendor_files_unchanged": 109
+    },
+    "web_types": {
+      "status": "fixed_compatible_update",
+      "sdk_from": "3.3.5",
+      "sdk_to": "3.3.21",
+      "typescript": "7.0.2",
+      "strict": true,
+      "skipLibCheck": false,
+      "fresh_npm_ci_exit": 0,
+      "original_source_typecheck_exit": 0,
+      "original_source_bundle_exit": 0
+    },
+    "miniapp_detection": {
+      "status": "fixed",
+      "variant": "native",
+      "confidence": "high",
+      "real_sdk_smoke_exit": 0
+    },
+    "plan_schema_guidance": {
+      "status": "example_and_blocked_state_guidance_added",
+      "new_unit_regressions": 2,
+      "independent_final_first_plan_exit": 0,
+      "blocked_implementation_exit": 1,
+      "business_questions": 0
+    },
+    "web_query_privacy": {
+      "status": "filtering_limitation_only_not_a_general_onboarding_blocker",
+      "sdk": "3.3.21",
+      "real_browser_probe_exit": 1,
+      "privacy_passed": false,
+      "events": [
+        "view",
+        "resource",
+        "error"
+      ],
+      "application_initializer_added": false,
+      "business_questions": 0,
+      "routine_confirmations": 0,
+      "historical_status": "upstream_unresolved_local_onboarding_blocked"
+    }
+  },
+  "boundaries": {
+    "native_builds_verified": false,
+    "remote_ingestion_verified": false,
+    "production_publish_performed": false,
+    "user_skill_modified": false
+  },
+  "interpretation_correction": {
+    "report": "../2026-10-13-url-policy/report.md",
+    "original_results_preserved": true,
+    "blanket_web_block_retracted": true,
+    "meaning": "Raw query presence alone is not a privacy failure. The recorded probe demonstrates filtering limitations under a stricter condition, not inability to perform ordinary RUM onboarding."
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "error: batch web requires resolved input or authorization\nerror: selected targets contain unresolved blockers\n"
+}

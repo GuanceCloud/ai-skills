@@ -1,0 +1,55 @@
+{
+  "scriptId": "5",
+  "url": "http://127.0.0.1:19538/assets/rum-TdOdUbKf.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [
+        {
+          "startOffset": 0,
+          "endOffset": 501,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "r",
+      "ranges": [
+        {
+          "startOffset": 46,
+          "endOffset": 473,
+          "count": 4
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [
+        {
+          "startOffset": 71,
+          "endOffset": 467,
+          "count": 1
+        },
+        {
+          "startOffset": 390,
+          "endOffset": 466,
+          "count": 0
+        }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [
+        {
+          "startOffset": 166,
+          "endOffset": 255,
+          "count": 1
+        }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

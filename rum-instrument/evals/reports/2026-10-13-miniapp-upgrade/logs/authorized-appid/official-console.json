@@ -1,0 +1,13 @@
+- initialize
+
+(node:86841) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `Electron --trace-deprecation ...` to show where the warning was created)
+✔ IDE server has started, listening on http://127.0.0.1:20166
+- Executing agent atomic tool
+✖ Executing agent atomic tool
+[error] Error: agent.skills is empty in app.json
+    at w (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar.unpacked/js/common/cli/index.js:214:158937)
+    at t.tool (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar.unpacked/js/common/cli/index.js:214:150163)
+    at global.v2Handler (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar.unpacked/js/common/cli/index.js:214:143372)
+    at /Applications/wechatwebdevtools.app/Contents/Resources/app.asar.unpacked/js/common/cli/index.js:129:44889
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)

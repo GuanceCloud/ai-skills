@@ -1,0 +1,7 @@
+Starting: Intent { cmp=com.example.rumacceptance/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.example.rumacceptance/.MainActivity
+TotalTime: 754
+WaitTime: 757
+Complete

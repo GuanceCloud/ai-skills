@@ -1739,7 +1739,7 @@ class ValidateContractTests(unittest.TestCase):
         self.assertTrue(any("application_types must be an object" in error for error in errors))
         self.assertTrue(any("validation must be a non-empty array" in error for error in errors))
 
-    def test_repository_state_allows_changes_created_after_planning(self):
+    def test_repository_state_rejects_unreceipted_changes_after_planning(self):
         with tempfile.TemporaryDirectory() as temporary:
             repository = Path(temporary)
             subprocess.run(["git", "init", "-q", str(repository)], check=True)
@@ -1778,7 +1778,7 @@ class ValidateContractTests(unittest.TestCase):
                 encoding="utf-8",
             )
             errors = VALIDATOR.validate_repository_state(plan, repository)
-            self.assertEqual([], errors)
+            self.assertTrue(any("unreviewed uncommitted changes" in error for error in errors))
 
     def test_repository_state_handles_unicode_and_space_paths(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -1811,6 +1811,8 @@ class ValidateContractTests(unittest.TestCase):
             plan = valid_plan()
             plan["repository"]["commit"] = commit
             plan["planned_changes"][0]["file"] = planned_path
+            plan["planned_changes"][0]["before_sha256"] = "sha256:" + hashlib.sha256(source.read_bytes()).hexdigest()
+            plan["planned_changes"][0]["prepared_sha256"] = "sha256:" + hashlib.sha256(b"export const changed = true\n").hexdigest()
             source.write_text("export const changed = true\n", encoding="utf-8")
 
             errors = VALIDATOR.validate_repository_state(plan, repository)

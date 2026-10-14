@@ -1,0 +1,139 @@
+{
+  "schema_version": 3,
+  "repository": {
+    "root": "/private/tmp/rum-url-policy-eval/restricted/A",
+    "commit": "eb48369422ebec71b310440d6526738710b8eae7",
+    "initial_status": []
+  },
+  "request": {
+    "intent": "implement",
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "eval_catalog"
+      }
+    },
+    "receiver": {
+      "mode": "datakit",
+      "endpoint": {
+        "value": "http://127.0.0.1:19529"
+      },
+      "readiness": {
+        "status": "unknown",
+        "checks": {
+          "rum_collector": {
+            "status": "unknown",
+            "evidence": [],
+            "handoff": [
+              "Verify collector configuration before claiming remote ingestion."
+            ]
+          },
+          "network_reachability": {
+            "status": "unknown",
+            "evidence": [],
+            "handoff": [
+              "Verify reachability from the application runtime."
+            ]
+          }
+        }
+      }
+    }
+  },
+  "targets": [
+    {
+      "id": "web:.",
+      "path": ".",
+      "platform": "web",
+      "variants": [
+        "browser"
+      ],
+      "evidence": [
+        "package.json",
+        "index.html",
+        "src/main.js",
+        "AGENTS.md"
+      ],
+      "application_id_slots": [
+        "web"
+      ],
+      "application_ids": {
+        "web": {
+          "value": "eval_catalog"
+        }
+      },
+      "application_types": {
+        "web": {
+          "value": "web",
+          "source": "repository",
+          "confidence": "high",
+          "verification": "not_applicable",
+          "api_value": null
+        }
+      },
+      "existing_instrumentation": {
+        "status": "none",
+        "files": [],
+        "sdk": null,
+        "version": null,
+        "signals": []
+      },
+      "profile": {
+        "signals": {
+          "rum": true,
+          "logs": "preserve",
+          "tracing": "preserve",
+          "replay": false
+        }
+      },
+      "receiver_mapping": {
+        "applicationId": "eval_catalog",
+        "datakitOrigin": "http://127.0.0.1:19529"
+      },
+      "privacy": {
+        "requirement": "Explicit project requirement prohibits all query values in every RUM field; 3.3.21 beforeSend cannot modify view.url_query; remedy must be verified before initialization.",
+        "remedy": "Verify actual SDK exports before application initialization; do not rewrite routes or SDK."
+      },
+      "artifacts": {},
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/web/app-access/"
+      ],
+      "disposition": "blocked",
+      "blockers": [
+        "Explicit project requirement prohibits all query values in every RUM field; 3.3.21 beforeSend cannot modify view.url_query; remedy must be verified before initialization."
+      ]
+    }
+  ],
+  "planned_changes": [],
+  "validation": [
+    "Actual SDK 3.3.21 Chrome local payload capability probe outside application checkout"
+  ],
+  "risks": [
+    "Explicit project requirement prohibits all query values in every RUM field; 3.3.21 beforeSend cannot modify view.url_query; remedy must be verified before initialization."
+  ],
+  "handoff": [],
+  "approval": {
+    "status": "pending",
+    "basis": "explicit_implementation_request",
+    "blockers": [
+      "Explicit project requirement prohibits all query values in every RUM field; 3.3.21 beforeSend cannot modify view.url_query; remedy must be verified before initialization."
+    ],
+    "revision": 1
+  },
+  "batches": [
+    {
+      "id": "web",
+      "target_ids": [
+        "web:."
+      ],
+      "depends_on": [],
+      "approval": {
+        "status": "pending",
+        "basis": "explicit_implementation_request",
+        "blockers": [
+          "Explicit project requirement prohibits all query values in every RUM field; 3.3.21 beforeSend cannot modify view.url_query; remedy must be verified before initialization."
+        ],
+        "revision": 1
+      }
+    }
+  ]
+}

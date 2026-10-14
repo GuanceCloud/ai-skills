@@ -1,0 +1,4 @@
+error: planned_changes[0].dependency_decision.owner must be a non-empty string
+error: planned_changes[0].dependency_decision.compatibility must be a non-empty string
+error: planned_changes[0].dependency_decision.official_sources must be a non-empty array
+error: planned_changes[0].dependency_decision.verified_at must be an ISO date

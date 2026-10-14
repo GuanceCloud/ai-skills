@@ -1,0 +1,290 @@
+[
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "success",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"success\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "success",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"success\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "reject",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"reject\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "reject",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"reject\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "throw",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"throw\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "throw",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"throw\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "never",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"never\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "never",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"never\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "config-retry",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\nFTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"config-retry\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "config-retry",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\nFTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"config-retry\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "missing-retry",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"missing-retry\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "android",
+      "missing-retry",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"missing-retry\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "success",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"success\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "success",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"success\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "reject",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"reject\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "reject",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"reject\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "throw",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"throw\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "throw",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"throw\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "never",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"never\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "never",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"never\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "config-retry",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\nFTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"config-retry\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "config-retry",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\nFTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"config-retry\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "missing-retry",
+      "original-returns"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"missing-retry\",\"originalThrows\":false,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/private/tmp/rum-rn-fix-eval/verify.cjs",
+      "ios",
+      "missing-retry",
+      "original-throws"
+    ],
+    "exit": 0,
+    "stdout": "FTRUMConfig\n{\"pass\":true,\"platform\":\"ios\",\"mode\":\"missing-retry\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+    "stderr": ""
+  }
+]

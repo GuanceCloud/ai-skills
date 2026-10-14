@@ -1,0 +1,68 @@
+{
+  "timestamp_utc": "2026-10-13T06:02:50.460195+00:00",
+  "versions": {
+    "@cloudcare/browser-rum": "3.3.21",
+    "@cloudcare/browser-core": "3.3.21",
+    "@cloudcare/browser-worker": "3.3.21",
+    "vue": "3.5.0",
+    "typescript": "7.0.2",
+    "esbuild": "0.28.2"
+  },
+  "source_files": [
+    "src/main.ts",
+    "src/rum.ts"
+  ],
+  "source_modifications": false,
+  "existing_type_assertions": [],
+  "existing_explicit_any": [],
+  "existing_ts_error_suppressions": [],
+  "runtime_executed": false,
+  "original_build_scripts_available": false,
+  "lockfile_note": "Generated offline from actual copied dependency tree; npm metadata cache warnings are retained in original-web-app-lock.log. No fresh-install reproducibility claim for unrelated copied Vue dependencies.",
+  "commands": [
+    {
+      "name": "typecheck",
+      "cwd": "/private/tmp/rum-sdk-types-retest/original-web-app",
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/private/tmp/rum-sdk-types-retest/3.3.21/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--strict",
+        "--skipLibCheck",
+        "false",
+        "--target",
+        "ES2020",
+        "--module",
+        "ESNext",
+        "--moduleResolution",
+        "bundler",
+        "--lib",
+        "ES2020,DOM",
+        "src/main.ts",
+        "src/rum.ts"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "bundle",
+      "cwd": "/private/tmp/rum-sdk-types-retest/original-web-app",
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/rum-full-eval-fsgyxvww/web/test-tools/node_modules/esbuild/bin/esbuild",
+        "src/main.ts",
+        "src/rum.ts",
+        "--bundle",
+        "--format=esm",
+        "--splitting",
+        "--outdir=/private/tmp/rum-sdk-types-retest/original-web-app-build",
+        "--metafile=/private/tmp/rum-sdk-types-retest/original-web-app-logs/bundle-meta.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "\n  ../original-web-app-build/esm-Y7PO6I7G.js    1.1mb ⚠️\n  ../original-web-app-build/chunk-O2P7Z5QT.js  1.2kb\n  ../original-web-app-build/main.js             83b \n  ../original-web-app-build/rum.js              73b \n\n⚡ Done in 32ms\n"
+    }
+  ],
+  "lockfile_sha256": "fc022f8457440aec44b5836b33f1b4d173debda3db326e2c92e394aac940c618"
+}

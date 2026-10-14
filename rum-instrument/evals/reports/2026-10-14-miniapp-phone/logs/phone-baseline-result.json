@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "evidence": "用户反馈：手机点击验证正常",
+  "scope": "no-RUM page rendering and click counter",
+  "preview_command_status": "timeout",
+  "qr_file_created": true
+}

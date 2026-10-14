@@ -1,0 +1,9 @@
+{
+  "command": [
+    "python3",
+    "/private/tmp/rum-url-policy-eval/restricted/verify-evidence.py"
+  ],
+  "returncode": 0,
+  "stdout": "A-baseline events {'error': 1, 'long_task': 1, 'resource': 5, 'view': 2} prohibited_query_absent= False\nA-hook events {'error': 1, 'resource': 6, 'view': 1} prohibited_query_absent= False\nA-reject events {'error': 1, 'resource': 6, 'view': 1} prohibited_query_absent= False\nB-hook events {'error': 1, 'resource': 4, 'view': 4} prohibited_query_absent= False\nVerified blocker decisions, real non-empty SDK payloads, preserved app behavior, and untouched application source.\n",
+  "stderr": ""
+}

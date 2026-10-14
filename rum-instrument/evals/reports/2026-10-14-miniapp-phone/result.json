@@ -1,0 +1,33 @@
+{
+  "rum_batches": 3,
+  "event_counts": {
+    "action": 25,
+    "resource": 1,
+    "error": 1,
+    "view": 3
+  },
+  "phone_health_requests": 1,
+  "trace_header_names": [],
+  "privacy_canary_matches": {
+    "RUM_PHONE_QUERY_CANARY": 0,
+    "RUM_PHONE_INPUT_CANARY": 0
+  },
+  "controlled_error_seen": true,
+  "expected_application_id_seen": true,
+  "remote_guance_ingestion_verified": false,
+  "status": "passed_with_scope_limits",
+  "date": "2026-10-14",
+  "baseline": "passed_user_report",
+  "user_completion": "用户确认按步骤完成，开启手机调试后网络正常",
+  "transport": "phone debug preview to LAN capture, not a real DataKit service",
+  "sdk_version": "2.2.20",
+  "view_unique_ids": 1,
+  "action_unique_ids": 25,
+  "error_stack_present": true,
+  "privacy_input_execution_evidence": "user-reported completion; input values intentionally not recorded",
+  "initialization": "source has one call before App and module guard; payload has one launch action, not an init-call probe",
+  "repeated_integration_idempotence": "not_run_on_phone",
+  "production_domain_validation": "not_verified",
+  "receiver_stopped": true,
+  "raw_capture_sha256": "2e4fb9b3148359319769be41a11321c7a71c6acc36cb3454b581ce56490ecd00"
+}

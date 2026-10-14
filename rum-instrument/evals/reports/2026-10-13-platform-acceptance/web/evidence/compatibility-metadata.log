@@ -1,0 +1,5 @@
+(node:72926) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{
+  "node": "^20.19.0 || >=22.12.0"
+}

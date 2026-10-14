@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/evals/reports/2026-10-14-slim/verify-release.py", line 24, in <module>
+    server=http.server.ThreadingHTTPServer(('127.0.0.1',0),functools.partial(Quiet,directory=str(slim)));thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
+  File "/Users/oneandonly/miniconda3/lib/python3.13/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/Users/oneandonly/miniconda3/lib/python3.13/http/server.py", line 140, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/oneandonly/miniconda3/lib/python3.13/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 1] Operation not permitted

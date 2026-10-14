@@ -1,0 +1,7 @@
+test_mixed_platform_configuration_roundtrip_and_partial_resume (cross_platform_eval.ResolverTests.test_mixed_platform_configuration_roundtrip_and_partial_resume)
+One exchange writes platform-native sinks; retry only the failed app. ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.842s
+
+OK

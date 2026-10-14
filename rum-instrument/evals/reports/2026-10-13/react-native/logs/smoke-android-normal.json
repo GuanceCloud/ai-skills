@@ -1,0 +1,52 @@
+{
+  "platform": "android",
+  "mode": "normal",
+  "actual_sdk": "0.4.2",
+  "real_sdk_javascript": true,
+  "native_bridge_mocked": true,
+  "actual_native_platform_selection_executed": false,
+  "initial_results": [
+    true,
+    true,
+    true
+  ],
+  "calls": [
+    {
+      "method": "sdkConfig",
+      "config": {
+        "datakitUrl": "http://127.0.0.1:19529",
+        "service": "react-native-rum-app",
+        "remoteConfiguration": false
+      }
+    },
+    {
+      "method": "setConfig",
+      "config": {
+        "androidAppId": "eval_rn_android",
+        "iOSAppId": "eval_rn_ios",
+        "enableAutoTrackUserAction": true,
+        "enableAutoTrackError": true,
+        "enableNativeUserResource": true,
+        "enableNativeUserAction": false,
+        "enableNativeUserView": false,
+        "enableTraceWebView": false,
+        "enableTrackNativeCrash": false,
+        "enableTrackNativeAppANR": false,
+        "enableTrackNativeFreeze": false
+      }
+    },
+    {
+      "method": "addError",
+      "args": [
+        "Error: Synthetic JS error\n    at ${EVAL_ROOT}/react-native/smoke.cjs:44:25",
+        "Synthetic JS error",
+        {
+          "sdk_bridge_info": "{\"react_native\":\"0.4.2\"}"
+        }
+      ]
+    }
+  ],
+  "warnings": [],
+  "original_error_handler_preserved": false,
+  "original_error_handler_calls": 0
+}

@@ -1,0 +1,54 @@
+======================================================================
+FAIL: test_uniapp_ownership_preserves_a_sibling_web_application (test_detect_rum_targets.DetectRumTargetsTests.test_uniapp_ownership_preserves_a_sibling_web_application)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_detect_rum_targets.py", line 258, in test_uniapp_ownership_preserves_a_sibling_web_application
+    self.assertEqual(['web:admin', 'uniapp:mobile'], [t['id'] for t in self.targets()])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['web:admin', 'uniapp:mobile'] != ['web:admin', 'uniapp:mobile', 'web:mobile']
+
+Second list contains 1 additional elements.
+First extra element 2:
+'web:mobile'
+
+- ['web:admin', 'uniapp:mobile']
++ ['web:admin', 'uniapp:mobile', 'web:mobile']
+?                              ++++++++++++++
+
+
+======================================================================
+FAIL: test_uniapp_root_html_belongs_to_the_wrapper (test_detect_rum_targets.DetectRumTargetsTests.test_uniapp_root_html_belongs_to_the_wrapper) (with_package=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_detect_rum_targets.py", line 250, in test_uniapp_root_html_belongs_to_the_wrapper
+    self.assertEqual(['uniapp'], [t['platform'] for t in targets])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['uniapp'] != ['uniapp', 'web']
+
+Second list contains 1 additional elements.
+First extra element 1:
+'web'
+
+- ['uniapp']
++ ['uniapp', 'web']
+
+======================================================================
+FAIL: test_uniapp_root_html_belongs_to_the_wrapper (test_detect_rum_targets.DetectRumTargetsTests.test_uniapp_root_html_belongs_to_the_wrapper) (with_package=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_detect_rum_targets.py", line 250, in test_uniapp_root_html_belongs_to_the_wrapper
+    self.assertEqual(['uniapp'], [t['platform'] for t in targets])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['uniapp'] != ['uniapp', 'web']
+
+Second list contains 1 additional elements.
+First extra element 1:
+'web'
+
+- ['uniapp']
++ ['uniapp', 'web']
+
+----------------------------------------------------------------------
+Ran 27 tests in 1.372s
+
+FAILED (failures=3)

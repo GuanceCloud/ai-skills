@@ -1,0 +1,66 @@
+{
+  "system": {
+    "ok": true,
+    "value": {
+      "brand": "devtools",
+      "model": "iPhone 12/13 (Pro)",
+      "system": "iOS 10.0.1",
+      "platform": "devtools",
+      "benchmarkLevel": -1,
+      "pixelRatio": 3,
+      "screenWidth": 390,
+      "screenHeight": 844,
+      "windowWidth": 390,
+      "windowHeight": 753,
+      "statusBarHeight": 47,
+      "safeArea": {
+        "top": 47,
+        "left": 0,
+        "right": 390,
+        "bottom": 810,
+        "width": 390,
+        "height": 763
+      },
+      "language": "zh_CN",
+      "version": "8.0.5",
+      "fontSizeSetting": 16,
+      "SDKVersion": "3.17.4",
+      "host": {
+        "env": "WeChat"
+      },
+      "enableDebug": false,
+      "mode": "default",
+      "deviceOrientation": "portrait",
+      "bluetoothEnabled": true,
+      "locationEnabled": true,
+      "wifiEnabled": true,
+      "albumAuthorized": true,
+      "cameraAuthorized": true,
+      "locationAuthorized": true,
+      "microphoneAuthorized": true,
+      "notificationAuthorized": true,
+      "notificationAlertAuthorized": true,
+      "notificationBadgeAuthorized": true,
+      "notificationSoundAuthorized": true,
+      "phoneCalendarAuthorized": true,
+      "bluetoothAuthorized": true,
+      "locationReducedAccuracy": true,
+      "devicePixelRatio": 3
+    }
+  },
+  "runtime": {
+    "ok": true,
+    "value": {
+      "app": true,
+      "launchCount": 1,
+      "pages": []
+    }
+  },
+  "screenshot": {
+    "ok": true
+  },
+  "relaunch": {
+    "ok": false,
+    "error": "Cannot destructure property 'rawPath' of 't.getPageMetaByWebviewId(...)' as it is null."
+  }
+}

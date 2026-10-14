@@ -1,0 +1,405 @@
+diff --git a/.env.example b/.env.example
+new file mode 100644
+index 0000000..a33957b
+--- /dev/null
++++ b/.env.example
+@@ -0,0 +1,2 @@
++VITE_RUM_APP_ID=eval_vue_acceptance
++VITE_RUM_DATAKIT_URL=http://127.0.0.1:19539
+diff --git a/.env.production b/.env.production
+new file mode 100644
+index 0000000..a33957b
+--- /dev/null
++++ b/.env.production
+@@ -0,0 +1,2 @@
++VITE_RUM_APP_ID=eval_vue_acceptance
++VITE_RUM_DATAKIT_URL=http://127.0.0.1:19539
+diff --git a/README.md b/README.md
+index 612fff2..55e8cd1 100644
+--- a/README.md
++++ b/README.md
+@@ -3,3 +3,9 @@
+ Vue 3 + Vue Router + Vite + TypeScript，包含两个页面、资源请求与可触发错误。
+ 
+ 运行 `npm ci`，`npm run build`，`npm run preview`。正式 build 同时执行 vue-tsc 严格类型检查（skipLibCheck: false）和 Vite production build。
++
++基础 RUM 使用 `.env.production` 的非密钥 Vite 变量。更换接收端或 appId 后重新 `npm run build`；版本和服务读取 package.json，环境读取 Vite 构建 mode。默认 session 采样保持 SDK 默认；Replay 采样设为 0 且不启动 Replay，不配置 Trace/Logs。
++
++初始化通过共享 Promise 只运行一次。通常先完成初始化再挂载路由；SDK 失败或超过 1500ms 时应用仍挂载。
++
++本地验收：`python3 scripts/run.py acceptance node scripts/acceptance.mjs`。需安装 Playwright 并设置 `PLAYWRIGHT_MODULE`，默认复用本机测试工具；`CHROME_PATH` 可覆盖 Chrome 路径。测试启动 localhost 模拟接收器，不代表真实 DataKit 或远端入库。
+diff --git a/package-lock.json b/package-lock.json
+index 6e6c104..dfbe3cd 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -8,6 +8,7 @@
+       "name": "vue-rum-acceptance",
+       "version": "1.2.3",
+       "dependencies": {
++        "@cloudcare/browser-rum": "3.3.21",
+         "vue": "3.5.22",
+         "vue-router": "4.5.1"
+       },
+@@ -61,6 +62,31 @@
+         "node": ">=6.9.0"
+       }
+     },
++    "node_modules/@cloudcare/browser-core": {
++      "version": "3.3.21",
++      "resolved": "https://registry.npmjs.org/@cloudcare/browser-core/-/browser-core-3.3.21.tgz",
++      "integrity": "sha512-oE3Cds/hNqU9R9nckkscnmJlrv1OAnj/eJHU9tiwaZdO3jAUT2fqOBPIRmZ9C0X8T1/fIeFt+4yJpd4ogX6t+A==",
++      "license": "MIT"
++    },
++    "node_modules/@cloudcare/browser-rum": {
++      "version": "3.3.21",
++      "resolved": "https://registry.npmjs.org/@cloudcare/browser-rum/-/browser-rum-3.3.21.tgz",
++      "integrity": "sha512-DBvtO+cvcFVbJlEHPrtuh09ArWAtvKC/YHA0l94fkUqWHytK53dQLtqL55Voj1l/ZTLNMn3n91KHXgBaK0cK3g==",
++      "license": "MIT",
++      "dependencies": {
++        "@cloudcare/browser-core": "3.3.21",
++        "@cloudcare/browser-worker": "3.3.21"
++      }
++    },
++    "node_modules/@cloudcare/browser-worker": {
++      "version": "3.3.21",
++      "resolved": "https://registry.npmjs.org/@cloudcare/browser-worker/-/browser-worker-3.3.21.tgz",
++      "integrity": "sha512-c0HIbZQDjr4WHFTi92jyHOfkvGfGgXpwZZSkHsENnD+DQiHLcsT6E+bmLXf48lB5myMcbdyLLLqk+La0/w4mIg==",
++      "license": "MIT",
++      "dependencies": {
++        "@cloudcare/browser-core": "3.3.21"
++      }
++    },
+     "node_modules/@esbuild/aix-ppc64": {
+       "version": "0.25.12",
+       "resolved": "https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.25.12.tgz",
+@@ -840,6 +866,7 @@
+       "resolved": "https://registry.npmjs.org/@types/node/-/node-22.18.10.tgz",
+       "integrity": "sha512-anNG/V/Efn/YZY4pRzbACnKxNKoBng2VTFydVu8RRs5hQjikP8CQfaeAV59VFSCzKNp90mXiVXW2QzV56rwMrg==",
+       "dev": true,
++      "peer": true,
+       "dependencies": {
+         "undici-types": "~6.21.0"
+       }
+@@ -1033,34 +1060,6 @@
+       "integrity": "sha512-bbPBYYrtZbkt6Os6FiTLCTFxvq4tt3JKall1vRwshA3fdVztsLAatFaZobhkBC8/BrPetoa0oksYoKXoG4ryJg==",
+       "dev": true,
+       "hasInstallScript": true,
+-      "dependencies": {
+-        "@esbuild/aix-ppc64": "0.25.12",
+-        "@esbuild/android-arm": "0.25.12",
+-        "@esbuild/android-arm64": "0.25.12",
+-        "@esbuild/android-x64": "0.25.12",
+-        "@esbuild/darwin-arm64": "0.25.12",
+-        "@esbuild/darwin-x64": "0.25.12",
+-        "@esbuild/freebsd-arm64": "0.25.12",
+-        "@esbuild/freebsd-x64": "0.25.12",
+-        "@esbuild/linux-arm": "0.25.12",
+-        "@esbuild/linux-arm64": "0.25.12",
+-        "@esbuild/linux-ia32": "0.25.12",
+-        "@esbuild/linux-loong64": "0.25.12",
+-        "@esbuild/linux-mips64el": "0.25.12",
+-        "@esbuild/linux-ppc64": "0.25.12",
+-        "@esbuild/linux-riscv64": "0.25.12",
+-        "@esbuild/linux-s390x": "0.25.12",
+-        "@esbuild/linux-x64": "0.25.12",
+-        "@esbuild/netbsd-arm64": "0.25.12",
+-        "@esbuild/netbsd-x64": "0.25.12",
+-        "@esbuild/openbsd-arm64": "0.25.12",
+-        "@esbuild/openbsd-x64": "0.25.12",
+-        "@esbuild/openharmony-arm64": "0.25.12",
+-        "@esbuild/sunos-x64": "0.25.12",
+-        "@esbuild/win32-arm64": "0.25.12",
+-        "@esbuild/win32-ia32": "0.25.12",
+-        "@esbuild/win32-x64": "0.25.12"
+-      },
+       "bin": {
+         "esbuild": "bin/esbuild"
+       },
+@@ -1179,6 +1178,7 @@
+       "resolved": "https://registry.npmjs.org/picomatch/-/picomatch-4.0.7.tgz",
+       "integrity": "sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==",
+       "dev": true,
++      "peer": true,
+       "engines": {
+         "node": ">=12"
+       },
+@@ -1219,34 +1219,7 @@
+       "integrity": "sha512-EAP5ZHcz2ijbgCWwPkpI7zh6bfsri2Ez5FtCy2dCp1k62duXzfG7DLGGh7RU2QQXWwavT+u4qpvDF/TWOiiGTw==",
+       "dev": true,
+       "dependencies": {
+-        "@napi-rs/lzma-linux-x64-gnu": "1.5.1",
+-        "@rollup/rollup-android-arm-eabi": "4.64.5",
+-        "@rollup/rollup-android-arm64": "4.64.5",
+-        "@rollup/rollup-darwin-arm64": "4.64.5",
+-        "@rollup/rollup-darwin-x64": "4.64.5",
+-        "@rollup/rollup-freebsd-arm64": "4.64.5",
+-        "@rollup/rollup-freebsd-x64": "4.64.5",
+-        "@rollup/rollup-linux-arm-gnueabihf": "4.64.5",
+-        "@rollup/rollup-linux-arm-musleabihf": "4.64.5",
+-        "@rollup/rollup-linux-arm64-gnu": "4.64.5",
+-        "@rollup/rollup-linux-arm64-musl": "4.64.5",
+-        "@rollup/rollup-linux-loong64-gnu": "4.64.5",
+-        "@rollup/rollup-linux-loong64-musl": "4.64.5",
+-        "@rollup/rollup-linux-ppc64-gnu": "4.64.5",
+-        "@rollup/rollup-linux-ppc64-musl": "4.64.5",
+-        "@rollup/rollup-linux-riscv64-gnu": "4.64.5",
+-        "@rollup/rollup-linux-riscv64-musl": "4.64.5",
+-        "@rollup/rollup-linux-s390x-gnu": "4.64.5",
+-        "@rollup/rollup-linux-x64-gnu": "4.64.5",
+-        "@rollup/rollup-linux-x64-musl": "4.64.5",
+-        "@rollup/rollup-openbsd-x64": "4.64.5",
+-        "@rollup/rollup-openharmony-arm64": "4.64.5",
+-        "@rollup/rollup-win32-arm64-msvc": "4.64.5",
+-        "@rollup/rollup-win32-ia32-msvc": "4.64.5",
+-        "@rollup/rollup-win32-x64-gnu": "4.64.5",
+-        "@rollup/rollup-win32-x64-msvc": "4.64.5",
+-        "@types/estree": "1.0.9",
+-        "fsevents": "~2.3.2"
++        "@types/estree": "1.0.9"
+       },
+       "bin": {
+         "rollup": "dist/bin/rollup"
+@@ -1314,6 +1287,7 @@
+       "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+       "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
+       "devOptional": true,
++      "peer": true,
+       "bin": {
+         "tsc": "bin/tsc",
+         "tsserver": "bin/tsserver"
+@@ -1333,10 +1307,10 @@
+       "resolved": "https://registry.npmjs.org/vite/-/vite-7.1.9.tgz",
+       "integrity": "sha512-4nVGliEpxmhCL8DslSAUdxlB6+SMrhB0a1v5ijlh1xB1nEPuy1mxaHxysVucLHuWryAxLWg6a5ei+U4TLn/rFg==",
+       "dev": true,
++      "peer": true,
+       "dependencies": {
+         "esbuild": "^0.25.0",
+         "fdir": "^6.5.0",
+-        "fsevents": "~2.3.3",
+         "picomatch": "^4.0.3",
+         "postcss": "^8.5.6",
+         "rollup": "^4.43.0",
+@@ -1413,6 +1387,7 @@
+       "version": "3.5.22",
+       "resolved": "https://registry.npmjs.org/vue/-/vue-3.5.22.tgz",
+       "integrity": "sha512-toaZjQ3a/G/mYaLSbV+QsQhIdMo9x5rrqIpYRObsJ6T/J+RyCSFwN2LHNVH9v8uIcljDNa3QzPVdv3Y6b9hAJQ==",
++      "peer": true,
+       "dependencies": {
+         "@vue/compiler-dom": "3.5.22",
+         "@vue/compiler-sfc": "3.5.22",
+@@ -1488,6 +1463,28 @@
+         "@babel/helper-validator-identifier": "^7.29.7"
+       }
+     },
++    "@cloudcare/browser-core": {
++      "version": "3.3.21",
++      "resolved": "https://registry.npmjs.org/@cloudcare/browser-core/-/browser-core-3.3.21.tgz",
++      "integrity": "sha512-oE3Cds/hNqU9R9nckkscnmJlrv1OAnj/eJHU9tiwaZdO3jAUT2fqOBPIRmZ9C0X8T1/fIeFt+4yJpd4ogX6t+A=="
++    },
++    "@cloudcare/browser-rum": {
++      "version": "3.3.21",
++      "resolved": "https://registry.npmjs.org/@cloudcare/browser-rum/-/browser-rum-3.3.21.tgz",
++      "integrity": "sha512-DBvtO+cvcFVbJlEHPrtuh09ArWAtvKC/YHA0l94fkUqWHytK53dQLtqL55Voj1l/ZTLNMn3n91KHXgBaK0cK3g==",
++      "requires": {
++        "@cloudcare/browser-core": "3.3.21",
++        "@cloudcare/browser-worker": "3.3.21"
++      }
++    },
++    "@cloudcare/browser-worker": {
++      "version": "3.3.21",
++      "resolved": "https://registry.npmjs.org/@cloudcare/browser-worker/-/browser-worker-3.3.21.tgz",
++      "integrity": "sha512-c0HIbZQDjr4WHFTi92jyHOfkvGfGgXpwZZSkHsENnD+DQiHLcsT6E+bmLXf48lB5myMcbdyLLLqk+La0/w4mIg==",
++      "requires": {
++        "@cloudcare/browser-core": "3.3.21"
++      }
++    },
+     "@esbuild/aix-ppc64": {
+       "version": "0.25.12",
+       "resolved": "https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.25.12.tgz",
+@@ -1874,6 +1871,7 @@
+       "resolved": "https://registry.npmjs.org/@types/node/-/node-22.18.10.tgz",
+       "integrity": "sha512-anNG/V/Efn/YZY4pRzbACnKxNKoBng2VTFydVu8RRs5hQjikP8CQfaeAV59VFSCzKNp90mXiVXW2QzV56rwMrg==",
+       "dev": true,
++      "peer": true,
+       "requires": {
+         "undici-types": "~6.21.0"
+       }
+@@ -2124,7 +2122,8 @@
+       "version": "4.0.7",
+       "resolved": "https://registry.npmjs.org/picomatch/-/picomatch-4.0.7.tgz",
+       "integrity": "sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==",
+-      "dev": true
++      "dev": true,
++      "peer": true
+     },
+     "postcss": {
+       "version": "8.5.30",
+@@ -2191,7 +2190,8 @@
+       "version": "5.9.3",
+       "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+       "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
+-      "devOptional": true
++      "devOptional": true,
++      "peer": true
+     },
+     "undici-types": {
+       "version": "6.21.0",
+@@ -2204,6 +2204,7 @@
+       "resolved": "https://registry.npmjs.org/vite/-/vite-7.1.9.tgz",
+       "integrity": "sha512-4nVGliEpxmhCL8DslSAUdxlB6+SMrhB0a1v5ijlh1xB1nEPuy1mxaHxysVucLHuWryAxLWg6a5ei+U4TLn/rFg==",
+       "dev": true,
++      "peer": true,
+       "requires": {
+         "esbuild": "^0.25.0",
+         "fdir": "^6.5.0",
+@@ -2224,6 +2225,7 @@
+       "version": "3.5.22",
+       "resolved": "https://registry.npmjs.org/vue/-/vue-3.5.22.tgz",
+       "integrity": "sha512-toaZjQ3a/G/mYaLSbV+QsQhIdMo9x5rrqIpYRObsJ6T/J+RyCSFwN2LHNVH9v8uIcljDNa3QzPVdv3Y6b9hAJQ==",
++      "peer": true,
+       "requires": {
+         "@vue/compiler-dom": "3.5.22",
+         "@vue/compiler-sfc": "3.5.22",
+diff --git a/package.json b/package.json
+index b43877e..d801d6d 100644
+--- a/package.json
++++ b/package.json
+@@ -10,6 +10,7 @@
+     "preview": "vite preview --host 127.0.0.1 --port 19538"
+   },
+   "dependencies": {
++    "@cloudcare/browser-rum": "3.3.21",
+     "vue": "3.5.22",
+     "vue-router": "4.5.1"
+   },
+diff --git a/scripts/acceptance.mjs b/scripts/acceptance.mjs
+new file mode 100644
+index 0000000..f5d864f
+--- /dev/null
++++ b/scripts/acceptance.mjs
+@@ -0,0 +1,81 @@
++import { createServer } from 'node:http'
++import { readFile, readdir, writeFile } from 'node:fs/promises'
++import { resolve, extname } from 'node:path'
++import { pathToFileURL } from 'node:url'
++const { chromium } = await import(pathToFileURL(process.env.PLAYWRIGHT_MODULE || '/var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/rum-full-eval-fsgyxvww/web/test-tools/node_modules/playwright/index.mjs'))
++const root=resolve(import.meta.dirname,'..'), payloads=[], checks=[], requests=[]
++const check=(name,passed,detail)=>{checks.push({name,passed,detail});console.log(`${passed?'PASS':'FAIL'} ${name}`)}
++const appServer=createServer(async(req,res)=>{
++  const pathname=new URL(req.url,'http://127.0.0.1').pathname
++  const path=pathname.startsWith('/assets/')||['/sample.json','/mark.svg'].includes(pathname)?pathname:'/index.html'
++  try { const data=await readFile(root+'/dist'+path);res.writeHead(200,{'Content-Type':({'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml'})[extname(path)]||'text/plain'});res.end(data) }
++  catch {res.writeHead(404);res.end()}
++})
++const receiver=createServer(async(req,res)=>{
++  const chunks=[];for await(const c of req)chunks.push(c)
++  const body=Buffer.concat(chunks).toString()
++  if(body)payloads.push({url:req.url,method:req.method,body})
++  res.writeHead(200,{'Access-Control-Allow-Origin':'http://127.0.0.1:19538','Access-Control-Allow-Credentials':'true','Access-Control-Allow-Headers':'*','Access-Control-Allow-Methods':'GET,POST,OPTIONS','Content-Type':'application/json'});res.end('{}')
++})
++await Promise.all([new Promise(r=>appServer.listen(19538,'127.0.0.1',r)),new Promise(r=>receiver.listen(19539,'127.0.0.1',r))])
++let browser
++try {
++ browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true})
++ const assets=await readdir(root+'/dist/assets');const rumAsset=assets.find(x=>/^rum-.*\.js$/.test(x))
++ const page=await browser.newPage();const messages=[],errors=[]
++ page.on('console',m=>messages.push({type:m.type(),text:m.text()}));page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>requests.push({url:r.url(),method:r.method(),headers:r.headers()}))
++ const cdp=await page.context().newCDPSession(page);await cdp.send('Profiler.enable');await cdp.send('Profiler.startPreciseCoverage',{callCount:true,detailed:true})
++ await page.goto('http://127.0.0.1:19538/')
++ await page.getByRole('heading',{name:'首页',exact:true}).waitFor()
++ check('production_vue_mount',true)
++ // Import the same emitted module to inspect official SDK state, without altering bundle/source.
++ const rumText=await readFile(root+'/dist/assets/'+rumAsset,'utf8')
++ const sdkFile=(rumText.match(/import\("\.\/([^\"]+\.js)"\)/)||[])[1]
++ if(!sdkFile)throw Error('Cannot locate emitted dynamic SDK import')
++ const initial=await page.evaluate(async({sdkFile,rumAsset})=>{
++   const exports=await import('/assets/'+sdkFile);const sdk=Object.values(exports).find(v=>v&&typeof v.getInitConfiguration==='function')
++   window.__acceptanceSDK=sdk
++   const cfg=sdk.getInitConfiguration();let additionalCalls=0;const original=sdk.init;sdk.init=(...args)=>{additionalCalls++;return original(...args)}
++   const rumExports=await import('/assets/'+rumAsset);const start=Object.values(rumExports).find(v=>typeof v==='function');await Promise.all([start(),start(),start()]);
++   return {config:cfg,additionalCalls,recording:sdk.isRecording()}
++ },{sdkFile,rumAsset})
++ check('runtime_configuration_consumed',initial.config.applicationId==='eval_vue_acceptance'&&initial.config.datakitOrigin==='http://127.0.0.1:19539'&&initial.config.service==='vue-rum-acceptance'&&initial.config.version==='1.2.3'&&initial.config.env==='production',initial)
++ check('single_init_and_repeated_initialization_guard',initial.additionalCalls===0&&!messages.some(m=>/already.*initializ/i.test(m.text)),initial.additionalCalls)
++ check('no_replay_or_trace_configuration',initial.recording===false&&initial.config.sessionReplaySampleRate===0&&!initial.config.allowedTracingOrigins&&!initial.config.site&&!initial.config.clientToken)
++ const coverage=await cdp.send('Profiler.takePreciseCoverage');const rumCoverage=coverage.result.find(s=>s.url.endsWith('/'+rumAsset));await writeFile(root+'/evidence/rum-coverage.json',JSON.stringify(rumCoverage,null,2))
++ const initOffset=rumText.indexOf('n.init(');const initRanges=rumCoverage.functions.flatMap(f=>f.ranges).filter(r=>r.startOffset<=initOffset&&r.endOffset>initOffset).sort((a,b)=>(a.endOffset-a.startOffset)-(b.endOffset-b.startOffset));check('actual_initializer_block_executes_once',initRanges[0]?.count===1,initRanges)
++ await page.getByLabel('本地草稿').fill('CANARY_LOCAL_DRAFT_MUST_NOT_BE_COLLECTED')
++ await page.getByRole('button',{name:'请求资源'}).click();await page.getByText('资源请求成功').waitFor()
++ await page.getByRole('button',{name:'触发错误'}).click();await page.waitForFunction(()=>document.documentElement.dataset.appErrors==='1')
++ check('original_application_error_handler_preserved',true)
++ await page.getByRole('link',{name:'详情',exact:true}).click();await page.getByRole('heading',{name:'详情页',exact:true}).waitFor()
++ check('spa_navigation_preserved',page.url().endsWith('/details?page=2'))
++ await page.waitForTimeout(4000)
++ await page.getByRole('link',{name:'首页',exact:true}).click();await page.waitForTimeout(1000)
++ // Page lifecycle change flushes the real SDK's buffered payload.
++ await page.goto('about:blank');await page.waitForTimeout(700)
++ const body=payloads.map(x=>x.body).join('\n')
++ check('nonempty_sdk_payload',payloads.length>0&&body.length>0,{count:payloads.length,bytes:body.length})
++ check('view_event_and_route_exported',/^view,[^\n]*details/m.test(body))
++ check('resource_event_exported',/^resource,[^\n]*sample\.json/m.test(body))
++ check('error_event_exported',/^error,[^\n]*acceptance-unhandled-error/m.test(body))
++ check('harmless_query_allowed',/page(?:=|%3D|\\=)2/.test(body))
++ check('local_draft_not_custom_collected',!body.includes('CANARY_LOCAL_DRAFT_MUST_NOT_BE_COLLECTED'))
++ check('application_requests_no_trace_headers',requests.filter(r=>/sample\.json/.test(r.url)).every(r=>!Object.keys(r.headers).some(h=>/^(traceparent|tracestate|x-datadog|x-b3)/.test(h))))
++ await page.close()
++ for(const mode of ['abort','stall']){
++  const p=await browser.newPage(),failureMessages=[];p.on('console',m=>failureMessages.push(m.text()));let release
++  const blocked=new Promise(r=>release=r)
++  await p.route('**/assets/'+sdkFile,async route=>{if(mode==='stall')await blocked;await route.abort()})
++  const start=Date.now();await p.goto('http://127.0.0.1:19538/');await p.getByRole('heading',{name:'首页',exact:true}).waitFor({timeout:5000});const elapsed=Date.now()-start
++  await p.getByRole('button',{name:'请求资源'}).click();await p.getByText('资源请求成功').waitFor();await p.getByRole('button',{name:'触发错误'}).click();await p.waitForFunction(()=>document.documentElement.dataset.appErrors==='1')
++  check('sdk_'+mode+'_application_survives',elapsed<5000,{elapsed,messages:failureMessages})
++  release();await p.close()
++ }
++ await writeFile(root+'/evidence/browser-console.json',JSON.stringify({messages,errors},null,2))
++ await writeFile(root+'/evidence/runtime-config.json',JSON.stringify(initial,null,2))
++} catch(error){check('harness_completed',false,String(error.stack||error))}
++finally{
++ await writeFile(root+'/evidence/payloads.json',JSON.stringify(payloads,null,2));await writeFile(root+'/evidence/requests.json',JSON.stringify(requests,null,2));await writeFile(root+'/evidence/browser-results.json',JSON.stringify({checks,remoteVerification:false},null,2));if(browser)await browser.close();appServer.close();receiver.close()
++}
++if(checks.some(x=>!x.passed))process.exitCode=1
+diff --git a/src/main.ts b/src/main.ts
+index 8871865..f35ff9b 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -2,4 +2,9 @@ import { createApp } from 'vue'
+ import App from './App.vue'
+ import { router } from './router'
+ window.addEventListener('error', () => { document.documentElement.dataset.appErrors = String(Number(document.documentElement.dataset.appErrors || '0') + 1) })
+-createApp(App).use(router).mount('#app')
++const rumStartup = import('./rum').then(({ initializeRum }) => initializeRum()).catch(() => {
++  console.warn('RUM module unavailable; application continues')
++})
++// Await ordinary initialization before routing; a stalled SDK cannot prevent startup.
++void Promise.race([rumStartup, new Promise<void>((resolve) => setTimeout(resolve, 1500))])
++  .then(() => createApp(App).use(router).mount('#app'))
+diff --git a/src/rum.ts b/src/rum.ts
+new file mode 100644
+index 0000000..8f3ea58
+--- /dev/null
++++ b/src/rum.ts
+@@ -0,0 +1,23 @@
++let startup: Promise<void> | undefined
++
++export function initializeRum(): Promise<void> {
++  startup ??= (async () => {
++    try {
++      const applicationId = import.meta.env.VITE_RUM_APP_ID
++      const datakitOrigin = import.meta.env.VITE_RUM_DATAKIT_URL
++      if (!applicationId || !datakitOrigin) return
++      const { datafluxRum } = await import('@cloudcare/browser-rum')
++      datafluxRum.init({
++        applicationId,
++        datakitOrigin,
++        service: __APP_SERVICE__,
++        version: __APP_VERSION__,
++        env: import.meta.env.MODE,
++        sessionReplaySampleRate: 0,
++      })
++    } catch {
++      console.warn('RUM initialization unavailable; application continues')
++    }
++  })()
++  return startup
++}

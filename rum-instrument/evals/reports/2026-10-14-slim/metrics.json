@@ -1,0 +1,26 @@
+{
+  "before": {
+    "lines": 995,
+    "words": 8973,
+    "basis": "prior default load: SKILL + common + execution + contracts + privacy-security + validation + web + control-plane"
+  },
+  "after": {
+    "paths": [
+      "SKILL.md",
+      "references/contracts.md",
+      "references/web.md",
+      "references/control-plane.md"
+    ],
+    "lines": 311,
+    "words": 3365
+  },
+  "scope": "ordinary new Web/Public DataWay; registry entries, draft asset and actual project source are additional context; no token/latency measurement claimed",
+  "regression": {
+    "rum": 182,
+    "installers": 6,
+    "portability": 1,
+    "registry": 1,
+    "total": 190
+  },
+  "public_release": "not_run_missing_OSS_environment"
+}

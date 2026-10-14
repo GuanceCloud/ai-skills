@@ -1,0 +1,88 @@
+diff --git a/index.js b/index.js
+index 336ce12..657e4dc 100644
+--- a/index.js
++++ b/index.js
+@@ -1 +1,6 @@
+-export {}
++const { startRum } = require('./rum');
++
++// The skeleton has no App component or AppRegistry registration yet.
++// Consume this promise before mounting the eventual application.
++const rumReady = startRum();
++module.exports = { rumReady };
+diff --git a/package.json b/package.json
+index 3627041..9d70930 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,7 @@
+ {
+   "name": "react-native-rum-app",
+   "dependencies": {
++    "@cloudcare/react-native-mobile": "0.4.2",
+     "react-native": "0.80.0"
+   }
+ }
+diff --git a/rum-config.js b/rum-config.js
+new file mode 100644
+index 0000000..6392fa6
+--- /dev/null
++++ b/rum-config.js
+@@ -0,0 +1,9 @@
++// Non-secret wrapper configuration. Override deployment values here before release.
++// This loopback receiver is for the authorized local evaluation only.
++module.exports = {
++  datakitUrl: 'http://127.0.0.1:19529',
++  androidAppId: 'eval_rn_android',
++  iOSAppId: 'eval_rn_ios',
++  service: 'react-native-rum-app',
++  // env: '<deployment environment>',
++};
+diff --git a/rum.js b/rum.js
+new file mode 100644
+index 0000000..058093f
+--- /dev/null
++++ b/rum.js
+@@ -0,0 +1,43 @@
++const config = require('./rum-config');
++
++// Keep the promise across module reloads; native setup remains wrapper-owned.
++const state = globalThis.__APP_RUM_STATE__ || { baseConfigured: false, ready: null };
++globalThis.__APP_RUM_STATE__ = state;
++
++function startRum() {
++  if (state.ready) return state.ready;
++  state.ready = Promise.resolve().then(async () => {
++    const { FTMobileReactNative, FTReactNativeRUM } = require('@cloudcare/react-native-mobile');
++    if (!state.baseConfigured) {
++      await FTMobileReactNative.sdkConfig({
++        datakitUrl: config.datakitUrl,
++        service: config.service,
++        ...(config.env ? { env: config.env } : {}),
++        remoteConfiguration: false,
++      });
++      state.baseConfigured = true;
++    }
++    await FTReactNativeRUM.setConfig({
++      androidAppId: config.androidAppId,
++      iOSAppId: config.iOSAppId,
++      enableAutoTrackUserAction: true,
++      enableAutoTrackError: true,
++      enableNativeUserResource: true,
++      // JS owns actions and eventual router views; avoid native duplicates.
++      enableNativeUserAction: false,
++      enableNativeUserView: false,
++      enableTraceWebView: false,
++      enableTrackNativeCrash: false,
++      enableTrackNativeAppANR: false,
++      enableTrackNativeFreeze: false,
++    });
++    return true;
++  }).catch(() => {
++    state.ready = null;
++    console.warn('RUM startup failed; application startup may continue.');
++    return false;
++  });
++  return state.ready;
++}
++
++module.exports = { startRum };

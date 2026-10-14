@@ -1,0 +1,12 @@
+{
+  "sink_ignored": true,
+  "state_ignored": true,
+  "sink_mode_0600": true,
+  "sink_regular_not_symlink": true,
+  "sink_empty_by_size": true,
+  "state_not_created": true,
+  "sink_and_state_distinct": true,
+  "initializer_unchanged": true,
+  "token_config_reader_maintained": true,
+  "pending_patch_exists": true
+}

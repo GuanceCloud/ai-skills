@@ -1,0 +1,9 @@
+(node:72881) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'rollup@4.64.5',
+npm WARN EBADENGINE   required: { npm: '>=8.0.0', node: '>=18.0.0' },
+npm WARN EBADENGINE   current: { node: 'v24.19.0', npm: '7.4.0' }
+npm WARN EBADENGINE }
+
+added 99 packages in 13s

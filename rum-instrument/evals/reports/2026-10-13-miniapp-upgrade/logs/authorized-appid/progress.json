@@ -1,0 +1,22 @@
+{
+  "wechat_appid_validation": "passed",
+  "official_auto_command": "passed_after_trust_project",
+  "baseline_app_launch_count": 1,
+  "actual_base_library": "3.17.4",
+  "page_stack": [],
+  "page_error": "Cannot destructure property 'rawPath' of 't.getPageMetaByWebviewId(...)' as it is null.",
+  "rum_sdk_runtime": "not_run",
+  "remote_telemetry_sent": false,
+  "credentials_consumed": false,
+  "gui_diagnostic": "CUA getApp returned Running application not found after prolonged wait; no GUI changes performed",
+  "diagnostic_cli": "check_wechatide_status succeeded (loginExpired false, versionRelation equal, cliTokenRequired false); get_simulator_console and simulator_open_page separately timed out during client authorization",
+  "explicit_open": {
+    "exit_code": 255,
+    "error": "wait IDE port timeout"
+  },
+  "first_auto_launch": "Timed out after 55s; early connection probe failed before port readiness",
+  "gui_elapsed_seconds": 801.841,
+  "baseline_status": "failed_page_not_created",
+  "rum_status": "not_run",
+  "source_skill_sha256": "6a1fdb1a23126b8045e4eafdde3529a2e1edbb9495cbe1a6ddd1329d2c53e6a1"
+}

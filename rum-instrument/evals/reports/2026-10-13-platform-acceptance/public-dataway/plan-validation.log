@@ -1,0 +1,1 @@
+error: targets[0].receiver_mapping.clientToken must contain only a non-secret source reference or disabled/redacted declaration

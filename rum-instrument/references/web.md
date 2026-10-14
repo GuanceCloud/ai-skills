@@ -37,6 +37,10 @@ Derive `service`, `version`, and `env` from build/runtime configuration. Preserv
 
 Keep Replay off by default. When approved, start it only after consent and masking/exclusion setup. Canvas replay requires separate approval.
 
+## Compatibility and sensitive fields
+
+Use standard SDK operational fields for ordinary base RUM. Do not require a URL-stripping hook or a privacy questionnaire. If discovery shows sensitive URL values, explicit filtering requirements, or declaration/build errors, read [web-compatibility.md](web-compatibility.md) and verify the affected behavior with the actual SDK. A version or harmless query parameter alone is not a blocker.
+
 ## Existing-integration review
 
 Check:
@@ -55,3 +59,7 @@ Check:
 Test a clean load, route transition, resource request, handled/unhandled error, and SDK load failure. Prove one initializer, correct receiver branch, stable release identity, trace-header allowlist, absence of privacy canaries, and consent-gated Replay. Generate Sourcemaps only from the release build and do not upload without authorization.
 
 Official SDK package and current examples must be rechecked on the access guide. Current official package ownership is `@cloudcare/browser-rum`.
+
+## Automatic configuration wiring
+
+Prefer existing framework env/runtime config. If absent, add the smallest maintained config module or runtime JSON loader appropriate to the build, and initialize only after it is available. Keep server environment access out of browser code; expose only intended client configuration. Verify the emitted browser config without printing Token values.

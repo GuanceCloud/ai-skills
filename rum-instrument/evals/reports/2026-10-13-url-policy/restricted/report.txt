@@ -1,0 +1,24 @@
+独立 forward-test 结果（2026-10-13）
+
+场景 A：明确政策“所有 URL 查询参数值不得进入任何 RUM 字段”。首次计划 blocked，首次实施门禁拒绝；未生成应用初始化，补问 0 次。原因是适用的明确策略无法由已验证 beforeSend 方案满足，并非 appId/receiver 缺失。
+
+场景 B：用户仅要求基础 RUM；维护态源码在 /auth/callback 从 URL access_token 读入内存认证状态且不清理地址。首次计划 blocked，首次实施门禁拒绝；未生成应用初始化，补问 0 次。阻断依据是实际认证源码的数据流和 SDK 字段映射，不是任意 URL 标记，也没有提出泛化隐私问卷。
+
+两场景按最新 Skill 自主执行：.rum/plan.json 的 plan-phase 均通过；implement-phase 均失败（pending 技术 blocker）。从初始到最终均未编辑 src、package.json、index.html。探针初始化只存在于场景仓库外部。
+
+实际 SDK 与 Chrome 结果：
+- 基线 9 个事件；A 清理钩子 8 个事件；A 拒发 View 8 个事件；B 清理钩子 9 个事件。每轮均包含 View、Resource、Error。
+- A beforeSend 清理 view.url 和 resource.url 并尝试清理 *_query；导出 view_url 已无 query，fields.view_url_query 仍包含明确禁止的合成值；resource_url_query 保留 page/sort。
+- 返回 false 后 View 仍导出，并产生 Can't dismiss view events using beforeSend 警告。
+- B access_token 的合成值同样进入 fields.view_url_query。B 探针测试的是已证实源码流对应的 URL 情景，而非真实登录。
+- Next 按钮继续更新为第 2 页，浏览器 URL 为 /?page=2&sort=price，请求仍为 /api/catalog?page=2&sort=price，每页仅初始化一次。
+- 真正检查隐私要求的 verify-evidence.py --require-privacy 退出 1；验证上述失败支持阻断决策的 verify-evidence.py 退出 0。未把隐私失败记成接入成功。
+
+Skill 阻断依据：
+/private/tmp/rum-url-policy-eval/skills/rum-instrument/SKILL.md：
+“Only an applicable requirement that cannot be met, demonstrated sensitive-data exposure, or an actual application-behavior/build failure blocks the affected scope before credential exchange or new initialization.”
+/private/tmp/rum-url-policy-eval/skills/rum-instrument/references/web.md：
+“Never ask for user confirmation to bypass a demonstrated exposure or an unmet explicit requirement.”
+因此本轮停止的是有具体证据的应用初始化，不向用户请求确认绕过，也不修改 SDK、拦截全局传输或重写应用导航。没有其他可独立完成的应用目标。
+
+限制：仅验证 Browser SDK 3.3.21，不能推断所有未来版本或所有官方方案均不可行。B 的浏览器 URL 探针使用原目录页的主体行为；认证源码单独检查与合成调用。接收器是本机模拟，HTTP 成功不代表真实 DataKit 或远端入库。原始请求、逐事件 JSON、浏览器钩子/警告、方案门禁输出、SDK 源码快照与校验值均保留在本目录。

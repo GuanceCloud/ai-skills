@@ -1,0 +1,113 @@
+{
+  "scope": "Independent rum-instrument forward-test: full WeChat MiniApp project and real SDK build",
+  "skill": "/Users/oneandonly/Workspace/ai-skills/rum-instrument/SKILL.md",
+  "project": "/private/tmp/rum-platform-acceptance/miniapp/project",
+  "sdk": {
+    "name": "@cloudcare/rum-miniapp",
+    "version": "2.2.20",
+    "latest_verified": true,
+    "registry_evidence": "logs/sdk-registry.json"
+  },
+  "platform": {
+    "wechat_version": "1.02.1911180",
+    "guest_appid": "touristappid",
+    "guest_evidence": "Installed official extensions/appservice/index.js explicitly branches on touristappid",
+    "other_app": "/Applications/小程序开发者工具.app is Alipay com.ant.miniprogram 1.5.10"
+  },
+  "checks": {
+    "plan_contract": "pass",
+    "implement_contract": "pass",
+    "json_and_js_syntax": "pass",
+    "official_wxml_compile": "pass",
+    "official_wxss_compile": "pass",
+    "official_npm_build": "pass",
+    "ide_cli_npm_build": "blocked: service port disabled, exit 255",
+    "ide_cli_auto": "blocked: service port disabled, exit 255",
+    "sdk_in_real_miniapp_runtime": "not_run",
+    "view_resource_error_action_payloads": "not_run",
+    "privacy_payload_assertions": "not_run",
+    "remote_ingestion": "unverified"
+  },
+  "npm_build": {
+    "miniProgramPackNum": 1,
+    "otherNpmPackNum": 0,
+    "warnList": []
+  },
+  "compiled_sdk_file_count": 57,
+  "compiled_sdk_bytes": 275308,
+  "port_failure_analysis": {
+    "sandbox_result": "ERR_SOCKET_BAD_PORT 65536, misleading exit 0",
+    "cause": "Official CLI getAvailablePort starts at 3799; on every listen error increments without upper bound. Sandbox blocks listen, so scan reaches invalid port.",
+    "unsandboxed_result": "No bad-port error; explicit service port disabled, exit 255",
+    "explicit_port_result": "--port 19531 does not override required global IDE service permission"
+  },
+  "unchanged_settings": [
+    "No global service-port toggle",
+    "No login/account changes",
+    "No remote domain allowlist edits",
+    "No previews or uploads"
+  ],
+  "receiver": {
+    "endpoint": "http://127.0.0.1:19529",
+    "kind": "local simulation only",
+    "started": false,
+    "external_endpoint_used": false
+  },
+  "next_steps": [
+    "Restore a working native UI connection or have the user enable the official service-port setting in the already authorized GUI workflow; no repeat authorization is needed",
+    "Only once the tool can launch the tourist project, run actual SDK events against receiver.py and verify payloads; preserve login/account state",
+    "After actual validation restore service port to disabled and stop only test-owned services"
+  ],
+  "artifacts": [
+    "project/.rum/plan.json",
+    "logs/plan-validation.log",
+    "logs/implement-validation.log",
+    "logs/static-results.json",
+    "logs/cli-results.json",
+    "logs/npm-build-result.json",
+    "build/wxml.js",
+    "build/wxss.js",
+    "logs/gui-attempts.json",
+    "logs/official-cli-options.json",
+    "logs/official-cli-service-prerequisite.txt",
+    "logs/cli-auto-after-gui-attempt.log",
+    "logs/gui-cleanup-check.json",
+    "REPRODUCE.txt"
+  ],
+  "gui_followup": {
+    "authorization": "User explicitly allowed temporary enabling and restoration of WeChat IDE service port",
+    "attempts": [
+      {
+        "operation": "cua.getApp('/Applications/wechatwebdevtools.app')",
+        "result": "Computer Use server error -10005: timeoutReached",
+        "elapsed_seconds": 70.6506
+      },
+      {
+        "operation": "cua.getState()",
+        "result": "js execution timed out; kernel reset",
+        "elapsed_seconds": 30.029
+      },
+      {
+        "operation": "cua.getApp('微信开发者工具')",
+        "result": "Invalid app: 微信开发者工具",
+        "elapsed_seconds": 0.2498
+      },
+      {
+        "operation": "cua.getApp('com.tencent.webplusdevtools')",
+        "result": "Computer Use server error -10005: timeoutReached",
+        "elapsed_seconds": 8.1533
+      }
+    ],
+    "ui_read_success": false,
+    "clicks_performed": 0,
+    "setting_mutations": 0,
+    "original_state": "disabled (official CLI exit 255)",
+    "final_state": "disabled (official CLI recheck exit 255)",
+    "restoration": "Not required: no setting mutation occurred",
+    "runtime": "not_run",
+    "receiver_started": false,
+    "test_port_listeners": false,
+    "cleanup": "No local receiver or automation service was started; ports 19529, 19531, 19532 have no listener",
+    "remaining_blocker": "CUA could not obtain usable native application UI. Installed CLI has no supported enable-service-port option. Further runtime/login compatibility is unknown."
+  }
+}
