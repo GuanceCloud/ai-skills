@@ -1,0 +1,28 @@
+{
+  "source": "repository runtime snapshot; no user-installed Skill modified",
+  "runtime_file_hashes_matching": 24,
+  "checks": [
+    {
+      "command": "python3 -B -m unittest discover -s rum-instrument/tests -q",
+      "tests": 170,
+      "exit_code": 0
+    },
+    {
+      "command": "python3 -B tests/test_rum_instrument_portability.py",
+      "tests": 1,
+      "exit_code": 0
+    },
+    {
+      "command": "python3 -B tests/test_skill_registry.py",
+      "tests": 1,
+      "exit_code": 0
+    },
+    {
+      "command": "python3 -B -m unittest discover -s rum-instrument/tests -p test_skill_contract.py -q",
+      "tests": 13,
+      "exit_code": 0,
+      "repeat": "subset rerun after adding final evaluation fixture"
+    }
+  ],
+  "unique_tests": 172
+}

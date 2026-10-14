@@ -1,0 +1,12 @@
+{
+  "config": {
+    "applicationId": "eval_vue_acceptance",
+    "datakitOrigin": "http://127.0.0.1:19539",
+    "service": "vue-rum-acceptance",
+    "version": "1.2.3",
+    "env": "production",
+    "sessionReplaySampleRate": 0
+  },
+  "additionalCalls": 0,
+  "recording": false
+}

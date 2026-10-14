@@ -1,0 +1,12 @@
+{
+  "command": [
+    "python3",
+    "/private/tmp/rum-url-policy-eval/skills/rum-instrument/scripts/validate_contract.py",
+    ".rum/plan.json",
+    "--phase",
+    "plan"
+  ],
+  "exit": 0,
+  "stdout": "valid rum plan: revision 1 (plan)\n",
+  "stderr": ""
+}

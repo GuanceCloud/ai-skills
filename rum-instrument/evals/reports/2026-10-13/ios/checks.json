@@ -1,0 +1,47 @@
+[
+  {
+    "command": "git diff --check",
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "command": "plutil -lint Config/RUM-Info.plist",
+    "exit_code": 0,
+    "output": "Config/RUM-Info.plist: OK\n"
+  },
+  {
+    "command": "ruby -c Podfile",
+    "exit_code": 0,
+    "output": "Syntax OK\n"
+  },
+  {
+    "command": "sh -n scripts/build-rum.sh",
+    "exit_code": 0,
+    "output": ""
+  },
+  {
+    "command": "swiftc -frontend -parse Sources/AppDelegate.swift",
+    "exit_code": 1,
+    "output": "/Library/Developer/CommandLineTools/usr/include/swift/module.modulemap:13:8: error: redefinition of module 'SwiftBridging'\n11 | //===----------------------------------------------------------------------===//\n12 | \n13 | module SwiftBridging {\n   |        `- error: redefinition of module 'SwiftBridging'\n14 |     header \"bridging\"\n15 | \n\n/Library/Developer/CommandLineTools/usr/include/swift/bridging.modulemap:13:8: note: previously defined here\n11 | //===----------------------------------------------------------------------===//\n12 | \n13 | module SwiftBridging {\n   |        `- note: previously defined here\n14 |     header \"bridging\"\n15 | \n"
+  },
+  {
+    "command": "xcodebuild -project App.xcodeproj -list",
+    "exit_code": 1,
+    "output": "xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance\n"
+  },
+  {
+    "command": "pod install",
+    "exit_code": 127,
+    "output": "[Errno 2] No such file or directory: 'pod'"
+  },
+  {
+    "command": "sh scripts/build-rum.sh PhoneApp",
+    "exit_code": 1,
+    "output": "xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance\n"
+  },
+  {
+    "command": "sh scripts/build-rum.sh TVApp",
+    "exit_code": 1,
+    "output": "xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance\n"
+  }
+]

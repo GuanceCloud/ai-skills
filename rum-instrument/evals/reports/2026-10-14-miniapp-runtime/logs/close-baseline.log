@@ -1,0 +1,6 @@
+- initialize
+
+(node:68916) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `Electron --trace-deprecation ...` to show where the warning was created)
+✖ IDE may already started at port 20166, trying to connect
+

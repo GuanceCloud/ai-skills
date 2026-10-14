@@ -1,0 +1,336 @@
+{
+  "approval": {
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1,
+    "status": "approved"
+  },
+  "batches": [
+    {
+      "approval": {
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1,
+        "status": "approved"
+      },
+      "depends_on": [],
+      "id": "apple-core",
+      "target_ids": [
+        "apple:."
+      ]
+    }
+  ],
+  "handoff": [
+    "Restore complete Xcode project then pod install and scripts/build-rum.sh PhoneApp or TVApp"
+  ],
+  "planned_changes": [
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add per-target build configuration and core SDK"
+      ],
+      "file": ".gitignore",
+      "order": 1,
+      "purpose": "Wire per-application RUM configuration and single startup",
+      "risk": "Xcode fixture lacks complete project, configurations and scheme definitions",
+      "rollback": "Revert only integration changes",
+      "target_id": "apple:.",
+      "validation": [
+        "Swift parse",
+        "plutil -lint",
+        "Ruby syntax",
+        "shell syntax"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "add",
+        "compatibility": "Official 1.6.7 Podspec supports iOS/tvOS >=12; fixture deployment targets 17",
+        "official_sources": [
+          "https://github.com/GuanceCloud/datakit-ios/tree/1.6.7"
+        ],
+        "owner": "GuanceCloud",
+        "package": "GuanceSDK",
+        "verified_at": "2026-10-13",
+        "version": "1.6.7"
+      },
+      "edits": [
+        "Add per-target build configuration and core SDK"
+      ],
+      "file": "Podfile",
+      "order": 2,
+      "purpose": "Wire per-application RUM configuration and single startup",
+      "risk": "Xcode fixture lacks complete project, configurations and scheme definitions",
+      "rollback": "Revert only integration changes",
+      "target_id": "apple:.",
+      "validation": [
+        "Swift parse",
+        "plutil -lint",
+        "Ruby syntax",
+        "shell syntax"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add per-target build configuration and core SDK"
+      ],
+      "file": "Sources/AppDelegate.swift",
+      "order": 3,
+      "purpose": "Wire per-application RUM configuration and single startup",
+      "risk": "Xcode fixture lacks complete project, configurations and scheme definitions",
+      "rollback": "Revert only integration changes",
+      "target_id": "apple:.",
+      "validation": [
+        "Swift parse",
+        "plutil -lint",
+        "Ruby syntax",
+        "shell syntax"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add per-target build configuration and core SDK"
+      ],
+      "file": "Config/RUM-PhoneApp.xcconfig",
+      "order": 4,
+      "purpose": "Wire per-application RUM configuration and single startup",
+      "risk": "Xcode fixture lacks complete project, configurations and scheme definitions",
+      "rollback": "Revert only integration changes",
+      "target_id": "apple:.",
+      "validation": [
+        "Swift parse",
+        "plutil -lint",
+        "Ruby syntax",
+        "shell syntax"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add per-target build configuration and core SDK"
+      ],
+      "file": "Config/RUM-TVApp.xcconfig",
+      "order": 5,
+      "purpose": "Wire per-application RUM configuration and single startup",
+      "risk": "Xcode fixture lacks complete project, configurations and scheme definitions",
+      "rollback": "Revert only integration changes",
+      "target_id": "apple:.",
+      "validation": [
+        "Swift parse",
+        "plutil -lint",
+        "Ruby syntax",
+        "shell syntax"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add per-target build configuration and core SDK"
+      ],
+      "file": "Config/RUM-PhoneApp.local.xcconfig.example",
+      "order": 6,
+      "purpose": "Wire per-application RUM configuration and single startup",
+      "risk": "Xcode fixture lacks complete project, configurations and scheme definitions",
+      "rollback": "Revert only integration changes",
+      "target_id": "apple:.",
+      "validation": [
+        "Swift parse",
+        "plutil -lint",
+        "Ruby syntax",
+        "shell syntax"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add per-target build configuration and core SDK"
+      ],
+      "file": "Config/RUM-TVApp.local.xcconfig.example",
+      "order": 7,
+      "purpose": "Wire per-application RUM configuration and single startup",
+      "risk": "Xcode fixture lacks complete project, configurations and scheme definitions",
+      "rollback": "Revert only integration changes",
+      "target_id": "apple:.",
+      "validation": [
+        "Swift parse",
+        "plutil -lint",
+        "Ruby syntax",
+        "shell syntax"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add per-target build configuration and core SDK"
+      ],
+      "file": "Config/RUM-Info.plist",
+      "order": 8,
+      "purpose": "Wire per-application RUM configuration and single startup",
+      "risk": "Xcode fixture lacks complete project, configurations and scheme definitions",
+      "rollback": "Revert only integration changes",
+      "target_id": "apple:.",
+      "validation": [
+        "Swift parse",
+        "plutil -lint",
+        "Ruby syntax",
+        "shell syntax"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add per-target build configuration and core SDK"
+      ],
+      "file": "scripts/build-rum.sh",
+      "order": 9,
+      "purpose": "Wire per-application RUM configuration and single startup",
+      "risk": "Xcode fixture lacks complete project, configurations and scheme definitions",
+      "rollback": "Revert only integration changes",
+      "target_id": "apple:.",
+      "validation": [
+        "Swift parse",
+        "plutil -lint",
+        "Ruby syntax",
+        "shell syntax"
+      ]
+    }
+  ],
+  "repository": {
+    "commit": "dfd70973adbe9d27c55d33aedcb9ccbde8fdf97c",
+    "initial_status": [],
+    "root": "${EVAL_ROOT}/ios/project"
+  },
+  "request": {
+    "application_id_input": {
+      "kind": "map",
+      "references": {
+        "ios-phoneapp": {
+          "value": "eval_ios"
+        },
+        "tvos-tvapp": {
+          "value": "eval_tvos"
+        }
+      }
+    },
+    "intent": "implement",
+    "receiver": {
+      "endpoint": {
+        "value": "http://127.0.0.1:19529"
+      },
+      "mode": "datakit"
+    }
+  },
+  "risks": [
+    "Loopback receiver only accessible to simulator on host; devices need reachable receiver",
+    "Malformed baseline Xcode project blocks actual wiring verification"
+  ],
+  "schema_version": 3,
+  "targets": [
+    {
+      "application_id_slots": [
+        "ios-phoneapp",
+        "tvos-tvapp"
+      ],
+      "application_ids": {
+        "ios-phoneapp": {
+          "value": "eval_ios"
+        },
+        "tvos-tvapp": {
+          "value": "eval_tvos"
+        }
+      },
+      "application_types": {
+        "ios-phoneapp": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "ios",
+          "verification": "not_applicable"
+        },
+        "tvos-tvapp": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "ios",
+          "verification": "not_applicable"
+        }
+      },
+      "artifacts": {},
+      "blockers": [],
+      "confidence": "medium",
+      "disposition": "planned",
+      "evidence": [
+        "App.xcodeproj/project.pbxproj"
+      ],
+      "existing_instrumentation": {
+        "files": [],
+        "sdk": null,
+        "signals": [],
+        "status": "none",
+        "version": null
+      },
+      "existing_rum_markers": {},
+      "id": "apple:.",
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/ios/app-access/",
+        "https://github.com/GuanceCloud/datakit-ios/tree/1.6.7"
+      ],
+      "path": ".",
+      "platform": "apple",
+      "privacy": {
+        "custom_fields": "none",
+        "optional_signals": "disabled"
+      },
+      "profile": {
+        "env": {
+          "confidence": "medium",
+          "source": "target xcconfig RUM_ENV",
+          "value": null
+        },
+        "service": {
+          "confidence": "high",
+          "source": "Bundle.main.bundleIdentifier",
+          "value": null
+        },
+        "signals": {
+          "rum": true
+        },
+        "version": {
+          "confidence": "high",
+          "source": "CFBundleShortVersionString / SDK default",
+          "value": null
+        }
+      },
+      "receiver_mapping": {
+        "appId": "FTRumConfig(appid:) from per-target Info.plist RUM_APP_ID",
+        "datakitUrl": "FTSDKConfig(datakitUrl:) from Info.plist RUM_DATAKIT_URL"
+      },
+      "variants": [
+        "ios",
+        "tvos"
+      ]
+    }
+  ],
+  "validation": [
+    "Source syntax checks",
+    "Xcode build if available"
+  ]
+}

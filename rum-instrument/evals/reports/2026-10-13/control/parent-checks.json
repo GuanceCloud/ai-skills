@@ -1,0 +1,44 @@
+{
+  "web": {
+    "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+    "skill_scripts_references_match_snapshot": true,
+    "verified_files": 22,
+    "git_diff_check": 0
+  },
+  "miniapp": {
+    "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+    "skill_scripts_references_match_snapshot": true,
+    "verified_files": 22,
+    "git_diff_check": 0
+  },
+  "android": {
+    "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+    "skill_scripts_references_match_snapshot": true,
+    "verified_files": 22,
+    "git_diff_check": 0
+  },
+  "ios": {
+    "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+    "skill_scripts_references_match_snapshot": true,
+    "verified_files": 22,
+    "git_diff_check": 0
+  },
+  "react-native": {
+    "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+    "skill_scripts_references_match_snapshot": true,
+    "verified_files": 22,
+    "git_diff_check": 0
+  },
+  "flutter": {
+    "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+    "skill_scripts_references_match_snapshot": true,
+    "verified_files": 22,
+    "git_diff_check": 0
+  },
+  "reuse-existing": {
+    "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+    "skill_scripts_references_match_snapshot": true,
+    "verified_files": 22,
+    "git_diff_check": 0
+  }
+}

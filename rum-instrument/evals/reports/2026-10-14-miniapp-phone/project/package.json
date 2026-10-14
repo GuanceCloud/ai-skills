@@ -1,0 +1,8 @@
+{
+  "name": "rum-miniapp-acceptance",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@cloudcare/rum-miniapp": "2.2.20"
+  }
+}

@@ -1,0 +1,10 @@
+FTRUMConfig
+AssertionError [ERR_ASSERTION]: return identity must be preserved
++ actual - expected
+
++ undefined
+- {
+-   app: 'return-value'
+- }
+
+    at /private/tmp/rum-rn-fix-eval/verify.cjs:55:14

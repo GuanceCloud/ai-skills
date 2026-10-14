@@ -1,0 +1,24 @@
+[error] {
+  code: 10,
+  message: 'Error: 错误 Error: AppID 不合法,invalid appid [20261013 17:43:29] (code 10)Error: AppID 不合法,invalid appid [20261013 17:43:29]\n' +
+    '    at t.doParseAndCheckErrorCode (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/bd158e2d35d249528e3eeb03308bdcaf.js:2:3439)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n' +
+    '    at async t.request (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/bd158e2d35d249528e3eeb03308bdcaf.js:2:6446)\n' +
+    '    at async c.fetchAttr (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/78d4483b575f6374ffc6d665fcf460ac.js:2:3350)\n' +
+    '    at async i._run (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/1099b88d2be769bde97027b6e03a2e17.js:2:1850)\n' +
+    '    at async j.getAppIdAndAttr (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/c68470001b1a7a5a9050596872bd6802.js:2:5061)\n' +
+    '    at async /Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/246912f0313dcb15c910f3b8f6076728.js:2:2020\n' +
+    '    at async exports.getProjectInfo (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/246912f0313dcb15c910f3b8f6076728.js:2:1942)\n' +
+    '    at async exports.execV2WSAPI (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/1c52e22ebb880937c313e2cce3a5b7d2.js:2:977)\n' +
+    '    at async exports.handleWsApiMessage (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/0ac94e0dd9725677f53c22067280ca25.js:2:265)\n' +
+    '    at async c._clientMessageHandler (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/e662f33f90d7c54bd12f5b2a695fbb1d.js:2:3435)\n' +
+    '    at async c._handleClientMessage (/Applications/wechatwebdevtools.app/Contents/Resources/app.asar/js/bd0bd23655b22e066b1a71c99f9c5dc6.js:2:3030)'
+}
+- initialize
+
+(node:84588) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `Electron --trace-deprecation ...` to show where the warning was created)
+✔ IDE server has started, listening on http://127.0.0.1:20166
+- preparing
+- Fetching AppID () permissions
+✖ Fetching AppID () permissions

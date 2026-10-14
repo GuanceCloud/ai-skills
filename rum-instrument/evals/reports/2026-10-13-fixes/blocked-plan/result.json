@@ -1,0 +1,54 @@
+{
+  "installation": {
+    "schema_version": 1,
+    "name": "rum-instrument",
+    "version": "8e68e5828349590d1ae4695c10d588341222953c",
+    "archive_sha256": "f9401018aef594ddabd9cf91cced89f072b61c5346db4c75c599434739d1aedb",
+    "source": "http://127.0.0.1:18764/versions/8e68e5828349590d1ae4695c10d588341222953c/skills/rum-instrument.tar.gz",
+    "installed_at": "2026-10-13T06:08:02Z"
+  },
+  "installation_exit_code": 0,
+  "business_question_count": 0,
+  "connection_question_count": 0,
+  "plan_generation_attempts": 1,
+  "phase_plan_validation_attempts": 1,
+  "phase_implement_gate_attempts": 1,
+  "application_modified_after_baseline": false,
+  "control_plane_called": false,
+  "sdk_executed": false,
+  "first_plan_sha256": "7c5097955150af89b6913fe4dc70165ecffae63213dea00ec0d0424113a90ec9",
+  "final_plan_equals_first": true,
+  "commands": [
+    {
+      "phase": "plan",
+      "attempt": 1,
+      "command": [
+        "python3",
+        "/private/tmp/rum-blocked-plan-final/skills/rum-instrument/scripts/validate_contract.py",
+        "/private/tmp/rum-blocked-plan-final/project/.rum/plan.json",
+        "--phase",
+        "plan"
+      ],
+      "exit_code": 0,
+      "stdout": "valid rum plan: revision 1 (plan)\n",
+      "stderr": ""
+    },
+    {
+      "phase": "implement",
+      "attempt": 1,
+      "command": [
+        "python3",
+        "/private/tmp/rum-blocked-plan-final/skills/rum-instrument/scripts/validate_contract.py",
+        "/private/tmp/rum-blocked-plan-final/project/.rum/plan.json",
+        "--phase",
+        "implement",
+        "--repository",
+        "/private/tmp/rum-blocked-plan-final/project"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "error: batch miniapp requires resolved input or authorization\nerror: selected targets contain unresolved blockers\n"
+    }
+  ],
+  "repository_status_after": ""
+}

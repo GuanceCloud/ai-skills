@@ -1,0 +1,77 @@
+[
+  {
+    "command": [
+      "git",
+      "init"
+    ],
+    "exit_code": 0,
+    "stdout": "Initialized empty Git repository in /private/tmp/rum-web-fix-eval/project/.git/\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "add",
+      "."
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "-c",
+      "user.name=Forward Evaluator",
+      "-c",
+      "user.email=eval@example.invalid",
+      "commit",
+      "-m",
+      "Create isolated Web fixture"
+    ],
+    "exit_code": 0,
+    "stdout": "[master (root-commit) 9bb3cea] Create isolated Web fixture\n 6 files changed, 629 insertions(+)\n create mode 100644 .gitignore\n create mode 100644 index.html\n create mode 120000 node_modules\n create mode 100644 package-lock.json\n create mode 100644 package.json\n create mode 100644 src/main.js\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "status",
+      "--short"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit_code": 0,
+    "stdout": "9bb3cea55473ab294a2fa7d90ec092144f416b7c\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "python3",
+      "/private/tmp/rum-web-fix-eval/skills/rum-instrument/scripts/detect_rum_targets.py",
+      "/private/tmp/rum-web-fix-eval/project",
+      "--pretty"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"repository\": {\n    \"dirty_paths\": [],\n    \"git_commit\": \"9bb3cea55473ab294a2fa7d90ec092144f416b7c\",\n    \"root\": \"/private/tmp/rum-web-fix-eval/project\",\n    \"scan_scope\": \".\"\n  },\n  \"schema_version\": 1,\n  \"targets\": [\n    {\n      \"application_id_slots\": [\n        \"web\"\n      ],\n      \"confidence\": \"high\",\n      \"evidence\": [\n        \"index.html\",\n        \"package.json\",\n        \"src/main.js\"\n      ],\n      \"existing_rum_markers\": {\n        \"browser-rum-package\": [\n          \"package.json\"\n        ]\n      },\n      \"id\": \"web:.\",\n      \"path\": \".\",\n      \"platform\": \"web\",\n      \"variants\": [\n        \"browser\"\n      ]\n    }\n  ],\n  \"warnings\": []\n}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "--check",
+      "src/main.js"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

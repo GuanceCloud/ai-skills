@@ -1,0 +1,13 @@
+{
+  "url": "https://registry.npmjs.org/@cloudcare%2freact-native-mobile/latest",
+  "version": "0.4.2",
+  "peerDependencies": {
+    "react": ">=16.13.1",
+    "react-native": ">=0.63.4 <1.0"
+  },
+  "repository": {
+    "url": "git+https://github.com/GuanceCloud/datakit-react-native.git",
+    "type": "git"
+  },
+  "dist_integrity": "sha512-rvwUpCLsGPxAKIQT/VzakZitaMjohCARdhrbFGVEzwqJSEEscycyAI+QiXeHqJQxtaq61ruTkFadv+kUQlU7yg=="
+}

@@ -1,0 +1,31 @@
+[
+  {
+    "command": "python3 -B -m unittest discover -s rum-instrument/tests -q",
+    "tests": 170,
+    "exit_code": 0
+  },
+  {
+    "command": "python3 -B tests/test_installers.py",
+    "tests": 5,
+    "exit_code": 0
+  },
+  {
+    "command": "python3 -B tests/test_rum_instrument_portability.py",
+    "tests": 1,
+    "exit_code": 0
+  },
+  {
+    "command": "python3 -B tests/test_skill_registry.py",
+    "tests": 1,
+    "exit_code": 0
+  },
+  {
+    "command": "PYTHONPATH=/private/tmp/rum-skill-validation-deps python3 /Users/oneandonly/.codex/skills/.system/skill-creator/scripts/quick_validate.py rum-instrument",
+    "exit_code": 0,
+    "output": "Skill is valid!"
+  },
+  {
+    "command": "git diff --check",
+    "exit_code": 0
+  }
+]

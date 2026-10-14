@@ -1,0 +1,8 @@
+{"label": "site-only", "argv": ["python3", "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/resolve_rum_application.py", "--dataway-url", "http://testing-openway.dataflux.cn", "--site-only"], "exit_code": 0, "time": 1791879223.3903518}
+{"label": "plan-validation", "argv": ["python3", "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/validate_contract.py", ".rum/plan.json", "--phase", "plan"], "exit_code": 1, "time": 1791879319.9684532}
+{"label": "plan-validation-corrected", "argv": ["python3", "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/validate_contract.py", ".rum/plan.json", "--phase", "plan"], "exit_code": 0, "time": 1791879340.475026}
+{"label": "pending-implement-validation", "argv": ["python3", "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/validate_contract.py", ".rum/plan.json", "--phase", "implement", "--repository", "/private/tmp/rum-platform-acceptance/web-public-dataway"], "exit_code": 1, "time": 1791879340.534903}
+{"label": "prepare-ci", "argv": ["node", "/private/tmp/rum-platform-acceptance/npm-tools/node_modules/npm/bin/npm-cli.js", "ci", "--registry=https://registry.npmjs.org", "--no-audit", "--no-fund"], "exit_code": 0, "time": 1791879346.4657972}
+{"label": "prepare-build", "argv": ["node", "/private/tmp/rum-platform-acceptance/npm-tools/node_modules/npm/bin/npm-cli.js", "run", "build"], "exit_code": 2, "time": 1791879372.29943}
+{"label": "held-patch-check", "argv": ["git", "apply", "--check", "evidence/after-state-initializer.patch"], "exit_code": 0, "time": 1791879419.058182}
+{"label": "prepare-build-corrected", "argv": ["node", "/private/tmp/rum-platform-acceptance/npm-tools/node_modules/npm/bin/npm-cli.js", "run", "build"], "exit_code": 0, "time": 1791879434.006497}

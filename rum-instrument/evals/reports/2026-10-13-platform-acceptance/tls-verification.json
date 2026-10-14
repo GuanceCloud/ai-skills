@@ -1,0 +1,9 @@
+{
+  "command": "curl -q -I --max-time 15 https://testing-ft2x-ai-api.dataflux.cn",
+  "exit_code": 60,
+  "error": "SSL certificate problem: unable to get local issuer certificate",
+  "user_choice": "Keep TLS verification; user has no trusted CA",
+  "temporary_code_consumed": false,
+  "client_token_received": false,
+  "remote_telemetry_sent": false
+}

@@ -1,0 +1,42 @@
+cli
+
+Commands:
+  cli cloud            CloudBase commands
+  cli open             Open IDE / IDE project
+  cli login            re-login IDE
+  cli islogin          #islogin-desc
+  cli preview          preview
+  cli auto-preview     Auto preview
+  cli upload           Upload mini program
+  cli build-npm        build NPM
+  cli auto             Enable automation
+  cli auto-replay      Enable automation
+  cli agent            Agent commands
+  cli reset-fileutils  #reset-fileutils-desc
+  cli close            Close project
+  cli quit             Quit IDE
+  cli cache            clean cache
+  cli engine           engine
+  cli open-other       Open other project
+  cli build-ipa        generate ipa
+  cli build-apk        genreate apk
+
+Project options:
+  --project    project path
+  --appid      miniprogram appid or 3rd platform appid. Ignored when --project
+               is provided
+  --ext-appid  miniprogram appid to be developed by 3rd platform. Ignored when
+               --project is provided
+
+Other global options:
+  --port         Optional. IDE HTTP server port. If IDE hasn't been launched, it
+                 will be launched and start HTTP server at <port>. If IDE has
+                 launched with a HTTP server of different port, you must quit
+                 IDE before re-run the command.                         [number]
+  --token        Optional. CLI access token configured in IDE Security Settings.
+                 It can also be set with the WECHAT_DEVTOOLS_CLI_TOKEN
+                 environment variable.                                  [string]
+  --lang         Optional. 'en' or 'zh'. Defaults to 'en'.
+  --debug        Optional. Turn on debug mode
+  --disable-gpu  Disable GPU Acceleration when launching IDE           [boolean]
+  -h, --help     Show help                                             [boolean]

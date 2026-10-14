@@ -1,0 +1,91 @@
+[
+  {
+    "name": "A-baseline",
+    "requestCount": 4,
+    "events": 9,
+    "eventTypes": [
+      "view",
+      "resource",
+      "long_task",
+      "error"
+    ],
+    "behavior": {
+      "url": "http://127.0.0.1:65280/?page=2&sort=price",
+      "page": "2",
+      "initCount": 1
+    },
+    "containsProhibitedCanary": true,
+    "api": [
+      {
+        "run": "A-baseline",
+        "url": "/api/catalog?page=2&sort=price"
+      }
+    ]
+  },
+  {
+    "name": "A-hook",
+    "requestCount": 4,
+    "events": 8,
+    "eventTypes": [
+      "view",
+      "resource",
+      "error"
+    ],
+    "behavior": {
+      "url": "http://127.0.0.1:65280/?page=2&sort=price",
+      "page": "2",
+      "initCount": 1
+    },
+    "containsProhibitedCanary": true,
+    "api": [
+      {
+        "run": "A-hook",
+        "url": "/api/catalog?page=2&sort=price"
+      }
+    ]
+  },
+  {
+    "name": "A-reject",
+    "requestCount": 4,
+    "events": 8,
+    "eventTypes": [
+      "view",
+      "resource",
+      "error"
+    ],
+    "behavior": {
+      "url": "http://127.0.0.1:65280/?page=2&sort=price",
+      "page": "2",
+      "initCount": 1
+    },
+    "containsProhibitedCanary": true,
+    "api": [
+      {
+        "run": "A-reject",
+        "url": "/api/catalog?page=2&sort=price"
+      }
+    ]
+  },
+  {
+    "name": "B-hook",
+    "requestCount": 5,
+    "events": 9,
+    "eventTypes": [
+      "view",
+      "resource",
+      "error"
+    ],
+    "behavior": {
+      "url": "http://127.0.0.1:65280/?page=2&sort=price",
+      "page": "2",
+      "initCount": 1
+    },
+    "containsProhibitedCanary": true,
+    "api": [
+      {
+        "run": "B-hook",
+        "url": "/api/catalog?page=2&sort=price"
+      }
+    ]
+  }
+]

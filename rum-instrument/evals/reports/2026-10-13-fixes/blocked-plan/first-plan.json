@@ -1,0 +1,142 @@
+{
+  "schema_version": 3,
+  "repository": {
+    "root": "/private/tmp/rum-blocked-plan-final/project",
+    "commit": "893fb9b6c2a9b41602ad532176934e0453cb9df5",
+    "initial_status": []
+  },
+  "request": {
+    "intent": "implement",
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "eval_blocked_miniapp"
+      }
+    },
+    "receiver": {
+      "mode": "datakit",
+      "endpoint": {
+        "value": "https://collector.example.invalid"
+      },
+      "readiness": {
+        "status": "unknown",
+        "checks": {
+          "rum_collector": {
+            "status": "unknown",
+            "evidence": [],
+            "handoff": [
+              "当前目标因已知隐私兼容性失败阻塞；将来完成受支持修复并通过验证后再核验收集器和运行时可达性。"
+            ]
+          },
+          "network_reachability": {
+            "status": "unknown",
+            "evidence": [],
+            "handoff": [
+              "当前目标因已知隐私兼容性失败阻塞；将来完成受支持修复并通过验证后再核验收集器和运行时可达性。"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "targets": [
+    {
+      "id": "miniapp:.",
+      "path": ".",
+      "platform": "miniapp",
+      "variants": [
+        "native"
+      ],
+      "evidence": [
+        "app.js",
+        "app.json",
+        "project.config.json",
+        "../scenario-input.json：连接地址和 Application ID 已完整提供；隐私兼容性失败为本次测试已知前提"
+      ],
+      "application_id_slots": [
+        "miniapp"
+      ],
+      "application_ids": {
+        "miniapp": {
+          "value": "eval_blocked_miniapp"
+        }
+      },
+      "application_types": {
+        "miniapp": {
+          "value": "miniapp",
+          "source": "repository",
+          "confidence": "high",
+          "verification": "not_applicable",
+          "api_value": null
+        }
+      },
+      "existing_instrumentation": {
+        "status": "none",
+        "files": [],
+        "sdk": null,
+        "version": null,
+        "signals": []
+      },
+      "profile": {
+        "signals": {
+          "rum": true,
+          "logs": "preserve",
+          "tracing": "preserve",
+          "replay": false
+        }
+      },
+      "receiver_mapping": {},
+      "privacy": {
+        "status": "failed",
+        "evidence": [
+          "../scenario-input.json#provided_compatibility_evidence"
+        ],
+        "limitation": "当前选用 SDK 的自动路由采集保留未经处理的查询值，前置隐私验证失败，且没有已验证可用的受支持修复方案；禁止启用此目标的采集。",
+        "implementation_enabled": false
+      },
+      "artifacts": {},
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/miniapp/app-access/"
+      ],
+      "disposition": "blocked",
+      "blockers": [
+        "当前选用 SDK 的自动路由采集保留未经处理的查询值，前置隐私验证失败，且没有已验证可用的受支持修复方案；禁止启用此目标的采集。"
+      ]
+    }
+  ],
+  "planned_changes": [],
+  "validation": [
+    "已检查隔离小程序入口、清单与目标检测结果；本次仅验证计划和实施门禁，不执行SDK或上报。"
+  ],
+  "risks": [
+    "当前选用 SDK 的自动路由采集保留未经处理的查询值，前置隐私验证失败，且没有已验证可用的受支持修复方案；禁止启用此目标的采集。"
+  ],
+  "handoff": [
+    "现有连接信息齐全，无需补问连接字段或要求用户确认绕过问题。仅在受支持修复通过隐私兼容性验证后重新评估该目标；当前不接入、不调用控制面。"
+  ],
+  "approval": {
+    "status": "pending",
+    "basis": "explicit_implementation_request",
+    "blockers": [
+      "当前选用 SDK 的自动路由采集保留未经处理的查询值，前置隐私验证失败，且没有已验证可用的受支持修复方案；禁止启用此目标的采集。"
+    ],
+    "revision": 1
+  },
+  "batches": [
+    {
+      "id": "miniapp",
+      "target_ids": [
+        "miniapp:."
+      ],
+      "depends_on": [],
+      "approval": {
+        "status": "pending",
+        "basis": "explicit_implementation_request",
+        "blockers": [
+          "当前选用 SDK 的自动路由采集保留未经处理的查询值，前置隐私验证失败，且没有已验证可用的受支持修复方案；禁止启用此目标的采集。"
+        ],
+        "revision": 1
+      }
+    }
+  ]
+}

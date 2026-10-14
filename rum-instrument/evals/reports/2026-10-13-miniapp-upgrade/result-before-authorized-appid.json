@@ -1,0 +1,69 @@
+{
+  "status": "blocked_invalid_supplied_wechat_appid",
+  "source": "Latest repository Skill; upgraded official WeChat IDE",
+  "cli_syntax": "auto --project <path> --auto-port <port>",
+  "product_version": "2.02.2609231",
+  "plist_runtime_version": "36.6.0 (not treated as WeChat product version)",
+  "initial_failure": "ENOENT Default/.cli, exit255",
+  "initial_profile_directory_later_exists": true,
+  "ide_main_process_observed": true,
+  "baseline_retry_exit": 246,
+  "tty_retry_exit": 246,
+  "retry_failure": "IDE service port disabled; CLI exits without waiting for advertised y input",
+  "pure_page_baseline": "not_run",
+  "rum_runtime": "not_run",
+  "telemetry_sent": false,
+  "credentials_consumed": false,
+  "settings_changed_by_parent": false,
+  "product_version_source": "Subagent inspection of upgraded installation metadata; Tool.getInfo not reached",
+  "gui_attempts": [
+    "Application-path connection timed out",
+    "Bundle-ID connection interrupted before UI state became available"
+  ],
+  "settings_changed": false,
+  "receiver_or_automation_started": false,
+  "service_port_enabled_by_user": true,
+  "service_port_recheck": "passed",
+  "baseline_retry_after_enable": {
+    "command": [
+      "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+      "auto",
+      "--project",
+      "/private/tmp/rum-platform-acceptance/miniapp/project-baseline",
+      "--auto-port",
+      "19534"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 22.04,
+    "service_port_disabled": false,
+    "appid_error": true,
+    "baseline": "not_run",
+    "rum_runtime": "not_run",
+    "credentials_consumed": false,
+    "telemetry_sent": false
+  },
+  "current_blocker": "Official WeChat CLI rejected user-supplied wx_skill_001 with code 10: invalid appid. A platform-issued authorized WeChat AppID or runnable test project is still required.",
+  "previous_results": "result-before-service-enabled.json",
+  "platform_runtime_assertions": "not_run",
+  "sdk_signals": "not_run",
+  "privacy_payload_assertions": "not_run",
+  "idempotence_runtime": "not_run",
+  "test_ports": {
+    "19529": "not_listening",
+    "19532": "not_listening",
+    "19534": "not_listening"
+  },
+  "supplied_wechat_appid_validation": {
+    "wechat_appid": "wx_skill_001",
+    "exit_code": 0,
+    "elapsed_seconds": 4.98,
+    "appid_error": true,
+    "service_port_disabled": false,
+    "error_code": 10,
+    "error_message": "AppID 不合法,invalid appid",
+    "baseline": "not_run",
+    "rum_runtime": "not_run",
+    "telemetry_sent": false,
+    "credentials_consumed": false
+  }
+}

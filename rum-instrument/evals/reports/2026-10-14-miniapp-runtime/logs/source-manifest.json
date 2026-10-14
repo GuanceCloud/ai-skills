@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-14",
+  "skill_source": "repository working tree",
+  "sha256": {
+    "rum-instrument/SKILL.md": "5ffb274bfec8fd4ce9dca8393e95fa19680e787cae52b68edfdf411bd0189be2",
+    "rum-instrument/references/miniapp.md": "74c2a1f54710ed3a128e5021179417025af535e7ca2e47abe697b85d1ac281c7",
+    "rum-instrument/references/validation.md": "9ebb6ccf33cf4d7772e8123f63e601d8d518d892c6d0b072542b32407af8ec6a",
+    "rum-instrument/scripts/detect_rum_targets.py": "3bfb5cf7f7548a2838372fb7ddf34ce580cc9247090cb8e0204e89f31472b325",
+    "rum-instrument/scripts/validate_contract.py": "65ab89d95c7deb18af6a66115acca0a0453b7d74c360f1d4ebd93b9b90fe0372"
+  },
+  "baseline_original": "evals/reports/2026-10-13-live-continuation/miniapp/project-baseline",
+  "dependencies": {
+    "miniprogram-automator": "0.12.1",
+    "rum_sdk_not_run": "@cloudcare/rum-miniapp@2.2.20"
+  }
+}

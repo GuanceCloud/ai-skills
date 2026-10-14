@@ -1,0 +1,11 @@
+{
+  "independent_browser_repeat": true,
+  "privacy_passed": false,
+  "failed_canaries": [
+    "CANARY_QUERY",
+    "CANARY_HASH"
+  ],
+  "core_initialization_count": 1,
+  "expected_aggregate_exit": 1,
+  "scope": "real Browser SDK and Chrome; local mocked receiver"
+}

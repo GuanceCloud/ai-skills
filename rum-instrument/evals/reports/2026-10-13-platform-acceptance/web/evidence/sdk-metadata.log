@@ -1,0 +1,8 @@
+{
+  "version": "3.3.21",
+  "dist.integrity": "sha512-DBvtO+cvcFVbJlEHPrtuh09ArWAtvKC/YHA0l94fkUqWHytK53dQLtqL55Voj1l/ZTLNMn3n91KHXgBaK0cK3g==",
+  "dependencies": {
+    "@cloudcare/browser-core": "3.3.21",
+    "@cloudcare/browser-worker": "3.3.21"
+  }
+}

@@ -21,3 +21,11 @@ jobs:
           python-version: '3.12'
       - name: Test deterministic release and installers
         run: python tests/test_installers.py
+      - name: Test RUM host boundaries
+        run: python -B -m unittest discover -s rum-instrument/tests -p test_host_support.py -q
+      - name: Test RUM onboarding and portable Skill package
+        if: runner.os != 'Windows'
+        run: |
+          python -B -m unittest discover -s rum-instrument/tests -q
+          python -B -m unittest discover -s tests -p 'test_*rum*' -q
+          python -B -m unittest discover -s tests -p test_skill_registry.py -q

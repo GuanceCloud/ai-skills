@@ -1,0 +1,21 @@
+{
+  "kind": "VM wrapper test; SDK mocked",
+  "results": [
+    {
+      "name": "single init before App and consumed existing config",
+      "status": "passed"
+    },
+    {
+      "name": "missing SDK still starts App",
+      "status": "passed"
+    },
+    {
+      "name": "missing config still starts App",
+      "status": "passed"
+    },
+    {
+      "name": "failed init still starts App and permits retry",
+      "status": "passed"
+    }
+  ]
+}

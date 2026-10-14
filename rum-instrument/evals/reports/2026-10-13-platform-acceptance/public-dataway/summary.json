@@ -1,0 +1,15 @@
+{
+  "status": "blocked_certificate_trust",
+  "app_id": "new_skill_001",
+  "dataway": "http://testing-openway.dataflux.cn",
+  "tls_verification": "verified",
+  "code_consumed": false,
+  "token_obtained": false,
+  "external_telemetry": false,
+  "plan_validation": "passed",
+  "implement_validation": "expected blocked",
+  "strict_production_build": "passed",
+  "initializer_patch_applied": false,
+  "source_config_reader_prepared": true,
+  "skill_sha256": "6a1fdb1a23126b8045e4eafdde3529a2e1edbb9495cbe1a6ddd1329d2c53e6a1"
+}

@@ -1,0 +1,26 @@
+{
+  "description": "Isolated local RUM SDK acceptance project",
+  "miniprogramRoot": "./",
+  "compileType": "miniprogram",
+  "appid": "touristappid",
+  "projectname": "rum-miniapp-acceptance",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": false,
+    "minified": false,
+    "nodeModules": false
+  },
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "node_modules"
+      },
+      {
+        "type": "folder",
+        "value": ".rum"
+      }
+    ]
+  }
+}

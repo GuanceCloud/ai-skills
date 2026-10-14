@@ -1,0 +1,26 @@
+{
+  "same_request": true,
+  "reused_installed_skill": true,
+  "installer_runs": 0,
+  "business_questions": 0,
+  "routine_confirmations": 0,
+  "all_source_config_and_skill_hashes_unchanged": true,
+  "native_initialization": "single by static inspection only",
+  "web_initialization": "single under mock SDK test",
+  "hashes": {
+    "pubspec.yaml": "89b0851984c773c6b4aa8f9fe74e347c145bb7dc41a2309b8b4b85cd5248d553",
+    "lib/main.dart": "099b4f4327ac6a580ad59c271f86e5f40ec1ab3c9e12e3a5df8b55dbfccf542b",
+    "lib/rum.dart": "c8a041aef7d861223ba568d4017210b2c338dda574c7decb4a7722a73bd2862f",
+    "lib/rum_stub.dart": "1f317ac79740e21ecdb20c0e8022995512eb25efe2a4aa488b677c91759f1531",
+    "lib/rum_mobile.dart": "4514cc159bc64b1eb8981e78d62b583a33c250ee34fc651bb6f8bbf61ac074bf",
+    "config/rum.local.json": "bab375c87bebe169df8c0a23c517e012d39010b3a39cacc8ad3ebc362fedf814",
+    "config/rum.example.json": "0cde74f600a98fd2d48adf7b368e610b99394ce28532b689076c69d05d442764",
+    ".gitignore": "f05355f1305e1b29a7def0146e574d4c508acc7c69f22d0f2c058b6bab1fa6e9",
+    "web/index.html": "4433a0e2ef5a8eeb99f8d0c4762790d023a28dc356d642f2f1cc9eb7e94e3342",
+    "web/rum.js": "7cc0920d38d40cc69e29813c5e89f52dff4d076f4734bfd872f30bf302b943c7",
+    "web/rum-config.local.js": "a3969d55b2829ee9d83d002110f6d26a374a8db8bcaf7459be51660d2fcdd446",
+    "web/rum-config.example.js": "d0f20587bba3ddd052f221d402da7c85d0f3e3697cdd31fd50018262e4aa5fd2",
+    ".rum/plan.json": "2f8d0b29d29a9afc16881199b15afe07962e11079909cffb81ea2ba499ffd617",
+    "installed_skill": "bc2d1e052cfab06d1b5de083855e42f504bfaf6669781342b45b82e7981d3f32"
+  }
+}

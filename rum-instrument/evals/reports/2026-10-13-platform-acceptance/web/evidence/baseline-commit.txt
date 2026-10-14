@@ -1,0 +1,18 @@
+db9ef5a 建立未接入 RUM 的完整 Vue 验收基线
+ .gitignore                |    5 +
+ README.md                 |    5 +
+ index.html                |    1 +
+ package-lock.json         | 2254 +++++++++++++++++++++++++++++++++++++++++++++
+ package.json              |   23 +
+ public/mark.svg           |    1 +
+ public/sample.json        |    1 +
+ scripts/run.py            |   10 +
+ src/App.vue               |    2 +
+ src/env.d.ts              |    3 +
+ src/main.ts               |    5 +
+ src/pages/DetailsPage.vue |    5 +
+ src/pages/HomePage.vue    |    8 +
+ src/router.ts             |    4 +
+ tsconfig.json             |   28 +
+ vite.config.ts            |    4 +
+ 16 files changed, 2359 insertions(+)

@@ -1,0 +1,30 @@
+{
+  "verified_at": "2026-10-13",
+  "node_version": "v24.19.0",
+  "sources": [
+    {
+      "url": "https://vite.dev/guide/",
+      "finding": "Official Vite guide supplies Vue TS templates and Node requirement; exact Vite 7.1.9 npm engine metadata saved separately."
+    },
+    {
+      "url": "https://vuejs.org/guide/typescript/overview.html",
+      "finding": "Vite transpilation alone does not type-check. Official Vue recommends vue-tsc for SFC checks and strict TypeScript."
+    },
+    {
+      "url": "https://registry.npmjs.org/@vitejs/plugin-vue/6.0.1",
+      "finding": "Official plugin peers: vue ^3.2.25, vite ^5 || ^6 || ^7; Node ^20.19 || >=22.12."
+    },
+    {
+      "url": "https://registry.npmjs.org/vite/7.1.9",
+      "finding": "Node ^20.19 || >=22.12, satisfied by Node 24.19."
+    },
+    {
+      "url": "https://docs.guance.com/real-user-monitoring/web/app-access/",
+      "finding": "Official NPM datafluxRum init API; DataKit uses applicationId + datakitOrigin. Two receiver modes mutually exclusive."
+    },
+    {
+      "url": "https://registry.npmjs.org/@cloudcare/browser-rum/3.3.21",
+      "finding": "Exact version/integrity and core/worker 3.3.21 dependency verified with npm view."
+    }
+  ]
+}

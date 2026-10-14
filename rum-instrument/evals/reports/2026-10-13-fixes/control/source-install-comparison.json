@@ -1,0 +1,146 @@
+[
+  {
+    "file": "SKILL.md",
+    "sha256": "f246487c15b3c52c22f47166d6617e70045e157600f4c44ef122dcff7af1230d",
+    "installed_sha256": "f246487c15b3c52c22f47166d6617e70045e157600f4c44ef122dcff7af1230d",
+    "match": true
+  },
+  {
+    "file": "scripts/detect_rum_targets.py",
+    "sha256": "3bfb5cf7f7548a2838372fb7ddf34ce580cc9247090cb8e0204e89f31472b325",
+    "installed_sha256": "3bfb5cf7f7548a2838372fb7ddf34ce580cc9247090cb8e0204e89f31472b325",
+    "match": true
+  },
+  {
+    "file": "scripts/resolve_rum_application.py",
+    "sha256": "4876a4abbfaabb16128956068a866c9b5205f4b6e270f07020a0017a314e8f62",
+    "installed_sha256": "4876a4abbfaabb16128956068a866c9b5205f4b6e270f07020a0017a314e8f62",
+    "match": true
+  },
+  {
+    "file": "scripts/validate_contract.py",
+    "sha256": "cc0177b05220f72b5355379b3ba143d9e7e5fc12c29f925cef414ed2dca711bf",
+    "installed_sha256": "cc0177b05220f72b5355379b3ba143d9e7e5fc12c29f925cef414ed2dca711bf",
+    "match": true
+  },
+  {
+    "file": "references/android.md",
+    "sha256": "e8e46ff2c7d0f9728933101695132dd21d809d92f1da12243276bf0c564ce7b1",
+    "installed_sha256": "e8e46ff2c7d0f9728933101695132dd21d809d92f1da12243276bf0c564ce7b1",
+    "match": true
+  },
+  {
+    "file": "references/apple.md",
+    "sha256": "6e5e310931e72e690d3c58150df8441ec4c0bd44110f6bab92c6bcbeca6e39c4",
+    "installed_sha256": "6e5e310931e72e690d3c58150df8441ec4c0bd44110f6bab92c6bcbeca6e39c4",
+    "match": true
+  },
+  {
+    "file": "references/common.md",
+    "sha256": "f6c0cf6fd0793cab8c1abbc8ecfd903481d8fe631e0937baeedad4056354eec4",
+    "installed_sha256": "f6c0cf6fd0793cab8c1abbc8ecfd903481d8fe631e0937baeedad4056354eec4",
+    "match": true
+  },
+  {
+    "file": "references/contracts.md",
+    "sha256": "49e0380f6680d05925ee660b5826da18ae3cf9c25d01bc8c69dc16b33ab89fc7",
+    "installed_sha256": "49e0380f6680d05925ee660b5826da18ae3cf9c25d01bc8c69dc16b33ab89fc7",
+    "match": true
+  },
+  {
+    "file": "references/control-plane.md",
+    "sha256": "38458a18913fed16fc7e1843150e725d0ad03c9a0c86877e07eb7d5f109818a0",
+    "installed_sha256": "38458a18913fed16fc7e1843150e725d0ad03c9a0c86877e07eb7d5f109818a0",
+    "match": true
+  },
+  {
+    "file": "references/cpp.md",
+    "sha256": "12469746f181cd9070bf90bbb86c034e883a3bcd785f180312797c975e1e38a1",
+    "installed_sha256": "12469746f181cd9070bf90bbb86c034e883a3bcd785f180312797c975e1e38a1",
+    "match": true
+  },
+  {
+    "file": "references/execution.md",
+    "sha256": "dacabd961060f09b2358acabf21bceb88e0a793e93db21d3201f823ea7608082",
+    "installed_sha256": "dacabd961060f09b2358acabf21bceb88e0a793e93db21d3201f823ea7608082",
+    "match": true
+  },
+  {
+    "file": "references/flutter.md",
+    "sha256": "3f1c7dedb3a7a8f056f6dc4efb9d6ec1437b38037c2dee89dd3ff79f574da5df",
+    "installed_sha256": "3f1c7dedb3a7a8f056f6dc4efb9d6ec1437b38037c2dee89dd3ff79f574da5df",
+    "match": true
+  },
+  {
+    "file": "references/harmonyos.md",
+    "sha256": "4e0ca9a899ef7086dc4882fe0fc11e22364eb31586f77ed17dd8a34f5d57055b",
+    "installed_sha256": "4e0ca9a899ef7086dc4882fe0fc11e22364eb31586f77ed17dd8a34f5d57055b",
+    "match": true
+  },
+  {
+    "file": "references/macos.md",
+    "sha256": "9762041bebf672354f7e2a451a54df0b4f57643fb64d036f3bc160221a9a9cb9",
+    "installed_sha256": "9762041bebf672354f7e2a451a54df0b4f57643fb64d036f3bc160221a9a9cb9",
+    "match": true
+  },
+  {
+    "file": "references/miniapp.md",
+    "sha256": "74c2a1f54710ed3a128e5021179417025af535e7ca2e47abe697b85d1ac281c7",
+    "installed_sha256": "74c2a1f54710ed3a128e5021179417025af535e7ca2e47abe697b85d1ac281c7",
+    "match": true
+  },
+  {
+    "file": "references/official-sources.json",
+    "sha256": "9759390e740577cf753ffcf231bb0fbd04de9a27515bf35717bdb47930f42b9a",
+    "installed_sha256": "9759390e740577cf753ffcf231bb0fbd04de9a27515bf35717bdb47930f42b9a",
+    "match": true
+  },
+  {
+    "file": "references/privacy-security.md",
+    "sha256": "7eaecf9594e57035f1d0a4405a5981f7f08b9f7f4e106bd6fe41ae5591243ca0",
+    "installed_sha256": "7eaecf9594e57035f1d0a4405a5981f7f08b9f7f4e106bd6fe41ae5591243ca0",
+    "match": true
+  },
+  {
+    "file": "references/react-native.md",
+    "sha256": "b56ff37956a1ae872c18eb452ab783472c50afda2c156e7ace45ad06c856eec2",
+    "installed_sha256": "b56ff37956a1ae872c18eb452ab783472c50afda2c156e7ace45ad06c856eec2",
+    "match": true
+  },
+  {
+    "file": "references/uniapp.md",
+    "sha256": "cd446cfaa45c4e9dcdb727125dcf4bfcfc12a35ff4fbb736af43af46d5d39b22",
+    "installed_sha256": "cd446cfaa45c4e9dcdb727125dcf4bfcfc12a35ff4fbb736af43af46d5d39b22",
+    "match": true
+  },
+  {
+    "file": "references/unity.md",
+    "sha256": "8c76b44a1b015a2e605e7d49039f3bdf21177ecc58f422143e261a750849e54e",
+    "installed_sha256": "8c76b44a1b015a2e605e7d49039f3bdf21177ecc58f422143e261a750849e54e",
+    "match": true
+  },
+  {
+    "file": "references/validation.md",
+    "sha256": "322382bd2c01084c42b6b49a4d46148f1c7bd710c1a998be7ba463520607b11b",
+    "installed_sha256": "322382bd2c01084c42b6b49a4d46148f1c7bd710c1a998be7ba463520607b11b",
+    "match": true
+  },
+  {
+    "file": "references/web.md",
+    "sha256": "7011bf36d4066acea03c6a3c7e5343c36516bffa51c7c9547a5f63a5a26b3023",
+    "installed_sha256": "7011bf36d4066acea03c6a3c7e5343c36516bffa51c7c9547a5f63a5a26b3023",
+    "match": true
+  },
+  {
+    "file": "assets/datakit-plan.example.json",
+    "sha256": "85f86eb846d7185e3e376d994cc78281f4518b30b9d1927217b19335c017b147",
+    "installed_sha256": "85f86eb846d7185e3e376d994cc78281f4518b30b9d1927217b19335c017b147",
+    "match": true
+  },
+  {
+    "file": "assets/react-native-error-handler.cjs",
+    "sha256": "cbaab8137406aacfb765dd32a577a42f746cfa7d607757c5b5c217a9bb93d104",
+    "installed_sha256": "cbaab8137406aacfb765dd32a577a42f746cfa7d607757c5b5c217a9bb93d104",
+    "match": true
+  }
+]

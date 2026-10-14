@@ -1,0 +1,1 @@
+fetch('./rum.config.json').then(r => r.ok ? r.json() : {}).catch(() => ({})).then(config => { window.RUM_CONFIG = config; const script = document.createElement('script'); script.src = 'src/main.js'; document.body.appendChild(script); });

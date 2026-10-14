@@ -1,0 +1,30 @@
+{
+  "status": "pass",
+  "complete_project": true,
+  "baseline_commit": "db9ef5a8ab3de741bdb2ecc2cf948f022475c8cd",
+  "browser_checks_passed": 16,
+  "browser_checks_total": 16,
+  "payload_requests": 5,
+  "payload_bytes": 29114,
+  "events": {
+    "view": 6,
+    "resource": 10,
+    "error": 1
+  },
+  "remote_verified": false,
+  "official_versions": {
+    "vue": "3.5.22",
+    "vite": "7.1.9",
+    "typescript": "5.9.3",
+    "vue-tsc": "3.1.1",
+    "browser-rum": "3.3.21"
+  },
+  "strict": true,
+  "skipLibCheck": false,
+  "report": "/private/tmp/rum-platform-acceptance/web/evidence/report.md",
+  "limitations": [
+    "Local mock receiver only; no DataKit or remote ingestion verification",
+    "No complete Vue project TS 7 compatibility claim",
+    "Slow SDK import can miss earliest events after startup timeout"
+  ]
+}

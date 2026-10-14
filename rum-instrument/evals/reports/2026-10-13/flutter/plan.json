@@ -1,0 +1,419 @@
+{
+  "approval": {
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1,
+    "status": "approved"
+  },
+  "batches": [
+    {
+      "approval": {
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1,
+        "status": "approved"
+      },
+      "depends_on": [],
+      "id": "flutter-core",
+      "target_ids": [
+        "flutter:."
+      ]
+    }
+  ],
+  "handoff": [
+    "Run flutter pub get/analyze/build on complete project and supported toolchain",
+    "Launch with --dart-define-from-file=config/rum.local.json",
+    "Browser runtime config is separate and must be copied into web build",
+    "No collector or remote console verification"
+  ],
+  "planned_changes": [
+    {
+      "dependency_decision": {
+        "action": "add",
+        "compatibility": "Official pub.dev package Dart >=2.17 <4; Flutter >=1.12, Android SDK 1.7.3 ft-native 1.1.3, iOS SDK 1.6.5; app toolchain unavailable so resolution unverified",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/flutter/app-access/",
+          "https://pub.dev/packages/ft_mobile_agent_flutter"
+        ],
+        "owner": "GuanceCloud",
+        "package": "ft_mobile_agent_flutter",
+        "verified_at": "2026-10-13",
+        "version": "0.5.7"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": "pubspec.yaml",
+      "order": 1,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": "lib/main.dart",
+      "order": 2,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": "lib/rum.dart",
+      "order": 3,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": "lib/rum_stub.dart",
+      "order": 4,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": "lib/rum_mobile.dart",
+      "order": 5,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": "config/rum.example.json",
+      "order": 6,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": "config/rum.local.json",
+      "order": 7,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": ".gitignore",
+      "order": 8,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "add",
+        "compatibility": "Official current v3 CDN bytes contain 3.3.21; initialized only in browser before bootstrap",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/web/app-access/",
+          "https://static.guance.com/browser-sdk/v3/dataflux-rum.js"
+        ],
+        "owner": "GuanceCloud",
+        "package": "Browser RUM official v3 CDN",
+        "verified_at": "2026-10-13",
+        "version": "3.3.21"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": "web/index.html",
+      "order": 9,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": "web/rum.js",
+      "order": 10,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": "web/rum-config.example.js",
+      "order": 11,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Wire platform-specific receiver and independent IDs; preserve application startup"
+      ],
+      "file": "web/rum-config.local.js",
+      "order": 12,
+      "purpose": "Core RUM configuration and startup wiring",
+      "risk": "Incomplete platform skeleton and absent Flutter toolchain prevent real build validation",
+      "rollback": "Revert only this integration file change",
+      "target_id": "flutter:.",
+      "validation": [
+        "flutter analyze",
+        "node verify-web.cjs",
+        "python3 verify-static.py"
+      ]
+    }
+  ],
+  "repository": {
+    "commit": "c22e3d877403919d71db279ee5ea5466e5c833ef",
+    "initial_status": [],
+    "root": "${EVAL_ROOT}/flutter/project"
+  },
+  "request": {
+    "application_id_input": {
+      "kind": "map",
+      "references": {
+        "android": {
+          "value": "eval_flutter_android"
+        },
+        "ios": {
+          "value": "eval_flutter_ios"
+        },
+        "web": {
+          "value": "eval_flutter_web"
+        }
+      }
+    },
+    "intent": "implement",
+    "receiver": {
+      "endpoint": {
+        "value": "http://127.0.0.1:19529"
+      },
+      "mode": "datakit"
+    }
+  },
+  "risks": [
+    "No Flutter or Dart on PATH",
+    "Android Gradle and iOS pbxproj are incomplete skeletons",
+    "Loopback HTTP collector is local-test-only; real-device network access and transport security are unverified"
+  ],
+  "schema_version": 3,
+  "targets": [
+    {
+      "application_id_slots": [
+        "android",
+        "ios",
+        "web"
+      ],
+      "application_ids": {
+        "android": {
+          "value": "eval_flutter_android"
+        },
+        "ios": {
+          "value": "eval_flutter_ios"
+        },
+        "web": {
+          "value": "eval_flutter_web"
+        }
+      },
+      "application_types": {
+        "android": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "android",
+          "verification": "not_applicable"
+        },
+        "ios": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "ios",
+          "verification": "not_applicable"
+        },
+        "web": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "web",
+          "verification": "not_applicable"
+        }
+      },
+      "artifacts": {},
+      "blockers": [],
+      "disposition": "planned",
+      "evidence": [
+        "pubspec.yaml",
+        "lib/main.dart",
+        "web/index.html",
+        "android/app/build.gradle",
+        "ios/Runner.xcodeproj/project.pbxproj"
+      ],
+      "existing_instrumentation": {
+        "files": [],
+        "signals": [],
+        "status": "none"
+      },
+      "id": "flutter:.",
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/flutter/app-access/",
+        "https://docs.guance.com/real-user-monitoring/web/app-access/"
+      ],
+      "path": ".",
+      "platform": "flutter",
+      "privacy": {
+        "android_id": false,
+        "custom_context": false,
+        "native_crash": false,
+        "replay": false,
+        "trace": false
+      },
+      "profile": {
+        "env": {
+          "confidence": "high",
+          "source": "RUM_ENV build define / browser runtime config",
+          "value": null
+        },
+        "service": {
+          "confidence": "high",
+          "source": "pubspec.yaml name",
+          "value": "rum_eval_mobile"
+        },
+        "signals": {
+          "rum": true
+        },
+        "version": {
+          "confidence": "medium",
+          "source": "mobile native build version derived from pubspec; web runtime version config",
+          "value": null
+        }
+      },
+      "receiver_mapping": {
+        "mobile": "FTMobileFlutter.sdkConfig(datakitUrl), FTRUMManager.setConfig(androidAppId, iOSAppId)",
+        "web": "DATAFLUX_RUM.init(datakitOrigin, applicationId)"
+      },
+      "variants": [
+        "android",
+        "ios",
+        "web"
+      ]
+    }
+  ],
+  "validation": [
+    "Plan and pre-implementation validation",
+    "Flutter commands attempted and limitations recorded",
+    "Static official SDK API/config consumption inspection",
+    "Browser initialization smoke with mock SDK",
+    "Unchanged hashes on repeat request"
+  ]
+}

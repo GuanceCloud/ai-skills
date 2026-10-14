@@ -1,0 +1,34 @@
+[
+  {
+    "command": [
+      "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+      "--close",
+      "/private/tmp/rum-platform-acceptance/miniapp/project-baseline"
+    ],
+    "exit": 0
+  },
+  {
+    "command": [
+      "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+      "--close",
+      "/private/tmp/rum-platform-acceptance/miniapp/project-compatible"
+    ],
+    "exit": 0
+  },
+  {
+    "command": [
+      "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+      "--close",
+      "/private/tmp/rum-platform-acceptance/miniapp/project"
+    ],
+    "exit": 0
+  },
+  {
+    "command": [
+      "pkill",
+      "-f",
+      "^python3 /private/tmp/rum-platform-acceptance/miniapp/receiver.py$"
+    ],
+    "exit": 0
+  }
+]

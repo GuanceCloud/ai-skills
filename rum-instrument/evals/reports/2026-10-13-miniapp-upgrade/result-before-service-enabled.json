@@ -1,0 +1,25 @@
+{
+  "status": "blocked_service_port_disabled",
+  "source": "Latest repository Skill; upgraded official WeChat IDE",
+  "cli_syntax": "auto --project <path> --auto-port <port>",
+  "product_version": "2.02.2609231",
+  "plist_runtime_version": "36.6.0 (not treated as WeChat product version)",
+  "initial_failure": "ENOENT Default/.cli, exit255",
+  "initial_profile_directory_later_exists": true,
+  "ide_main_process_observed": true,
+  "baseline_retry_exit": 246,
+  "tty_retry_exit": 246,
+  "retry_failure": "IDE service port disabled; CLI exits without waiting for advertised y input",
+  "pure_page_baseline": "not_run",
+  "rum_runtime": "not_run",
+  "telemetry_sent": false,
+  "credentials_consumed": false,
+  "settings_changed_by_parent": false,
+  "product_version_source": "Subagent inspection of upgraded installation metadata; Tool.getInfo not reached",
+  "gui_attempts": [
+    "Application-path connection timed out",
+    "Bundle-ID connection interrupted before UI state became available"
+  ],
+  "settings_changed": false,
+  "receiver_or_automation_started": false
+}

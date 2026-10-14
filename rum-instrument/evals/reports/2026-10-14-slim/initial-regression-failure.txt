@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_testing_site_is_built_in_and_not_a_standard_prompt_field (test_skill_contract.SkillContractTests.test_testing_site_is_built_in_and_not_a_standard_prompt_field) (value='--insecure-test-tls')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/rum-instrument/tests/test_skill_contract.py", line 116, in test_testing_site_is_built_in_and_not_a_standard_prompt_field
+    self.assertIn(value, skill + control_plane + validator)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[Assertion output omitted: duplicated complete source; failure was reference location only.]
+
+----------------------------------------------------------------------
+Ran 181 tests in 9.469s
+
+FAILED (failures=1)

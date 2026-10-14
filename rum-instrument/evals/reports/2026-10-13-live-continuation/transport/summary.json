@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "all_12_cases_recorded": true,
+    "no_explicit_abort_or_cancel": true,
+    "empty_unread_reproduced_both_modes": true,
+    "sdk_reported_200_and_up": true,
+    "native_consumed_empty_succeeded": true
+  },
+  "ports_closed": {
+    "19641": true,
+    "19642": true
+  },
+  "remote_new_requests": 0,
+  "source_sdk_version": "3.3.21",
+  "explicit_sdk_abort_after_200": false,
+  "remote_response_body_length": "not established",
+  "remote_ingestion_verified": false
+}

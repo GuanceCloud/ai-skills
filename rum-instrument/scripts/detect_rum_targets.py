@@ -102,13 +102,13 @@ WEB_DEPENDENCIES = {
     "vue",
 }
 
-MINIAPP_DEPENDENCIES = {
-    "@cloudcare/rum-miniapp",
+MINIAPP_FRAMEWORK_DEPENDENCIES = {
     "@tarojs/taro",
     "@wepy/core",
     "mpvue",
     "wepy",
 }
+MINIAPP_DEPENDENCIES = MINIAPP_FRAMEWORK_DEPENDENCIES | {"@cloudcare/rum-miniapp"}
 
 JAVASCRIPT_DEPENDENCY_MARKERS = {
     "@cloudcare/browser-rum": "browser-rum-package",
@@ -677,10 +677,10 @@ def detect(root: Path, scope: Path | None = None) -> dict:
             add(
                 "miniapp",
                 target_root,
-                variants=["framework"],
+                variants=["framework"] if dependencies & MINIAPP_FRAMEWORK_DEPENDENCIES else ["native"],
                 evidence=[manifest, *miniapp_evidence],
                 app_id_slots=["miniapp"],
-                confidence="medium",
+                confidence="medium" if dependencies & MINIAPP_FRAMEWORK_DEPENDENCIES else "high",
             )
             continue
 
@@ -889,13 +889,17 @@ def detect(root: Path, scope: Path | None = None) -> dict:
         )
 
     # Remove native/build candidates owned by framework targets.
-    hybrid_roots = [candidate.root for candidate in candidates.values() if candidate.platform in HYBRID_PLATFORMS]
+    hybrid_targets = [candidate for candidate in candidates.values() if candidate.platform in HYBRID_PLATFORMS]
     filtered: list[Candidate] = []
     for candidate in candidates.values():
         owned = False
         if candidate.platform in {"android", "apple", "cpp", "web"}:
-            for hybrid_root in hybrid_roots:
-                if candidate.root != hybrid_root and is_within(candidate.root, hybrid_root):
+            for hybrid in hybrid_targets:
+                same_root_uniapp_web = (
+                    candidate.root == hybrid.root
+                    and hybrid.platform == "uniapp" and candidate.platform == "web"
+                )
+                if same_root_uniapp_web or (candidate.root != hybrid.root and is_within(candidate.root, hybrid.root)):
                     owned = True
                     break
         if not owned:

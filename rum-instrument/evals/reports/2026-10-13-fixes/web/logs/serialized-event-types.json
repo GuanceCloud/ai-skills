@@ -1,0 +1,9 @@
+{
+  "recognized_measurements": [
+    "error",
+    "long_task",
+    "resource",
+    "view"
+  ],
+  "note": "Parse measurement prefixes; original probe raw split also includes multiline stack fragments. Original result retained."
+}

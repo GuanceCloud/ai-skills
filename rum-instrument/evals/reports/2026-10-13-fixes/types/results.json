@@ -1,0 +1,50 @@
+{
+  "checked_at_utc": "2026-10-13T05:54:55.581297+00:00",
+  "node_version": "v24.19.0",
+  "results": [
+    {
+      "cwd": "/private/tmp/rum-sdk-types-retest/3.3.5",
+      "versions": {
+        "@cloudcare/browser-rum": "3.3.5",
+        "@cloudcare/browser-core": "3.3.4",
+        "@cloudcare/browser-worker": "3.3.4",
+        "typescript": "7.0.2"
+      },
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/private/tmp/rum-sdk-types-retest/3.3.5/node_modules/typescript/bin/tsc",
+        "--project",
+        "tsconfig.json",
+        "--pretty",
+        "false"
+      ],
+      "exit_code": 1,
+      "stdout": "node_modules/@cloudcare/browser-core/types/index.d.ts(2,16): error TS2304: Cannot find name 'ContextValue'.\nnode_modules/@cloudcare/browser-core/types/index.d.ts(121,33): error TS1254: A 'const' initializer in an ambient context must be a string or numeric literal or literal enum reference.\n",
+      "stderr": "",
+      "lockfile": "package-lock.json",
+      "lockfile_sha256": "553cb7d1f11558669f66dd80b2923b5c209cb71df31621c44b2e7f6ebdcad352"
+    },
+    {
+      "cwd": "/private/tmp/rum-sdk-types-retest/3.3.21",
+      "versions": {
+        "@cloudcare/browser-rum": "3.3.21",
+        "@cloudcare/browser-core": "3.3.21",
+        "@cloudcare/browser-worker": "3.3.21",
+        "typescript": "7.0.2"
+      },
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/private/tmp/rum-sdk-types-retest/3.3.21/node_modules/typescript/bin/tsc",
+        "--project",
+        "tsconfig.json",
+        "--pretty",
+        "false"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "lockfile": "package-lock.json",
+      "lockfile_sha256": "b980f4af3e658f5953084f3161278b59d2fffd29212f5e206bd812ee11b19a2a"
+    }
+  ]
+}

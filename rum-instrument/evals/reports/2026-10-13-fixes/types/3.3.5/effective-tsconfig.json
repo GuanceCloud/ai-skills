@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "es2020",
+            "dom",
+            "dom.iterable"
+        ],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "noEmit": true,
+        "skipLibCheck": false,
+        "strict": true,
+        "target": "es2020",
+        "types": [],
+        "useDefineForClassFields": false
+    },
+    "files": [
+        "./src.ts"
+    ],
+    "include": [
+        "src.ts"
+    ]
+}

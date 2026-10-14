@@ -1,0 +1,51 @@
+1: export type ContextValue = any
+2: export interface Context {
+3:   [x: string]: ContextValue
+4: }
+5: export interface User {
+6:   id?: string | undefined
+7:   email?: string | undefined
+8:   name?: string | undefined
+9:   [key: string]: unknown
+10: }
+11: export interface DeviceInfo {
+12:   os: string
+13:   osVersion: string
+14:   osVersionMajor: string
+15:   browser: string
+16:   browserVersion: string
+17:   browserVersionMajor: string
+18:   screenSize: string
+19:   networkType: string
+20:   device: string
+21:   timeZone: string
+22:   userAgent: string
+23: }
+24: export declare function getDeviceInfo(): DeviceInfo
+25: export declare function getDeviceInfoWithHighEntropyValues(
+26:   callback: (deviceInfo: DeviceInfo) => void
+27: ): void
+28: export declare const deviceInfo: DeviceInfo
+29: export declare function isRequest(input: unknown): input is Request
+30: export type SessionPersistence = 'cookie' | 'local-storage'
+110:    * Whether to store public data in localStorage, default is not to store
+111:    */
+112:   storeContextsToLocal?: boolean | undefined
+113:   /**
+114:    * Define the key for storing in localStorage. If not filled, it is automatically generated. This parameter is mainly to distinguish the problem of sharing store under different subpaths of the same domain.
+115:    */
+116:   storeContextsKey?: string | undefined
+117:   /**
+118:    * Send data as application/json, default is text
+119:    */
+120:   sendContentTypeByJson?: boolean | undefined
+121:   /**
+122:    * When cookies are not available, you can enable this option to store data in localStorage
+123:    */
+124:   allowFallbackToLocalStorage?: boolean | undefined
+125:   /**
+126:    * Which storage strategy to use for persisting sessions. Can be either 'cookie' or 'local-storage'.
+127:    *
+128:    * Important: If you are using the RUM and Logs Browser SDKs, this option must be configured with identical values
+129:    * @default "cookie"
+130:    */

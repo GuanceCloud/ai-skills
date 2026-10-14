@@ -1,0 +1,83 @@
+diff --git a/app/build.gradle b/app/build.gradle
+index 9b0cb77..a329035 100644
+--- a/app/build.gradle
++++ b/app/build.gradle
+@@ -1,8 +1,22 @@
+ plugins { id 'com.android.application' }
++def rum = new Properties()
++rootProject.file('rum.properties').withInputStream { rum.load(it) }
+ android {
+  namespace 'com.example.rumacceptance'
+  compileSdk 34
+  defaultConfig { applicationId 'com.example.rumacceptance'; minSdk 23; targetSdk 34; versionCode 1; versionName '1.0-acceptance' }
+  buildFeatures { buildConfig true }
++ defaultConfig {
++ buildConfigField 'String', 'RUM_APP_ID', '"' + rum.getProperty('RUM_APP_ID') + '"'
++ buildConfigField 'String', 'RUM_DATAKIT_URL', '"' + rum.getProperty('RUM_DATAKIT_URL') + '"'
++ buildConfigField 'String', 'RUM_ENV', '"' + rum.getProperty('RUM_ENV') + '"'
++ }
+  compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
+ }
++
++dependencies {
++ implementation 'com.cloudcare.ft.mobile.sdk.tracker.agent:ft-sdk:1.7.5'
++ implementation 'com.squareup.okhttp3:okhttp:4.12.0'
++ implementation 'com.google.code.gson:gson:2.10.1'
++ implementation 'androidx.annotation:annotation:1.7.1'
++}
+diff --git a/app/src/main/java/com/example/rumacceptance/App.java b/app/src/main/java/com/example/rumacceptance/App.java
+index fb09950..28d8c95 100644
+--- a/app/src/main/java/com/example/rumacceptance/App.java
++++ b/app/src/main/java/com/example/rumacceptance/App.java
+@@ -1,2 +1,17 @@
+ package com.example.rumacceptance;
+-public class App extends android.app.Application { @Override public void onCreate() { super.onCreate(); } }
++import com.ft.sdk.*;
++public class App extends android.app.Application {
++ public static int initializationCount = 0;
++ @Override public void onCreate() {
++  super.onCreate();
++  FTSdk.install(FTSDKConfig.builder(BuildConfig.RUM_DATAKIT_URL)
++    .setEnv(BuildConfig.RUM_ENV).setServiceName(BuildConfig.APPLICATION_ID)
++    .setEnableAccessAndroidID(false));
++  FTSdk.initRUMWithConfig(new FTRUMConfig().setRumAppId(BuildConfig.RUM_APP_ID)
++    .setEnableTraceUserView(false).setEnableTraceUserAction(false)
++    .setEnableTraceUserResource(true).setEnableTrackAppCrash(false)
++    .setEnableTraceWebView(false));
++  initializationCount++;
++  android.util.Log.i("RUMAcceptance", "SDK_INITIALIZED count=" + initializationCount + " appId=" + BuildConfig.RUM_APP_ID);
++ }
++}
+diff --git a/app/src/main/java/com/example/rumacceptance/MainActivity.java b/app/src/main/java/com/example/rumacceptance/MainActivity.java
+index b387203..215c10c 100644
+--- a/app/src/main/java/com/example/rumacceptance/MainActivity.java
++++ b/app/src/main/java/com/example/rumacceptance/MainActivity.java
+@@ -1,2 +1,27 @@
+ package com.example.rumacceptance;
+-public class MainActivity extends android.app.Activity { @Override public void onCreate(android.os.Bundle state) { super.onCreate(state); android.widget.TextView view = new android.widget.TextView(this); view.setText("RUM Acceptance"); setContentView(view); } }
++import com.ft.sdk.*;
++import okhttp3.*;
++public class MainActivity extends android.app.Activity {
++ @Override public void onCreate(android.os.Bundle state) {
++  super.onCreate(state);
++  android.widget.EditText input = new android.widget.EditText(this);
++  input.setText("INPUT_CANARY_ANDROID_ACCEPTANCE"); setContentView(input);
++  FTRUMGlobalManager.get().startView("AcceptanceHome");
++  FTRUMGlobalManager.get().addError("java.lang.IllegalStateException: synthetic acceptance error\n at com.example.rumacceptance.MainActivity.onCreate(MainActivity.java:12)", "SyntheticAcceptanceError", "java");
++  new Thread(() -> {
++   OkHttpClient client = new OkHttpClient.Builder()
++     .addInterceptor(new FTResourceInterceptor())
++     .eventListenerFactory(new FTResourceEventListener.FTFactory()).build();
++   Request req = new Request.Builder().url("http://127.0.0.1:19530/resource")
++     .header("Authorization", "Bearer HEADER_CANARY_ANDROID_ACCEPTANCE")
++     .post(RequestBody.create(MediaType.get("text/plain"), "BODY_CANARY_ANDROID_ACCEPTANCE")).build();
++   try (Response response = client.newCall(req).execute()) {
++    android.util.Log.i("RUMAcceptance", "RESOURCE_HTTP status=" + response.code() + " body=" + response.body().string());
++   } catch (Exception e) { android.util.Log.e("RUMAcceptance", "RESOURCE_FAILED", e); }
++   runOnUiThread(() -> new android.os.Handler().postDelayed(() -> {
++    FTRUMGlobalManager.get().stopView(); FTSdk.flushSyncData();
++    android.util.Log.i("RUMAcceptance", "SIGNALS_COMPLETED");
++   }, 2500));
++  }).start();
++ }
++}

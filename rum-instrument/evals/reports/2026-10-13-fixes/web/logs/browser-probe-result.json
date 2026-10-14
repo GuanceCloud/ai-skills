@@ -1,0 +1,49 @@
+{
+  "real_sdk": "3.3.21",
+  "real_browser": true,
+  "receiver": "Playwright mocked local captures, no remote ingestion",
+  "application_initialization_enabled": false,
+  "probe_initialization_only": true,
+  "captured_requests": 3,
+  "event_types_seen": [
+    "view",
+    "long_task",
+    "error",
+    "resource",
+    "action"
+  ],
+  "serialized_event_types": [
+    "view",
+    "long_task",
+    "error",
+    "  at eval @ :370:30\"",
+    "  at d @ http://127.0.0.1:19645/sdk.js:1:3522",
+    "  at Object.addError @ http://127.0.0.1:19645/sdk.js:1:3470",
+    "  at eval @ :370:30\" 1791871465959",
+    "resource"
+  ],
+  "privacy": {
+    "CANARY_INITIAL_QUERY": false,
+    "CANARY_INITIAL_HASH": false,
+    "CANARY_RESOURCE_QUERY": false,
+    "CANARY_HISTORY_QUERY": false,
+    "CANARY_HISTORY_HASH": true
+  },
+  "privacy_passed": false,
+  "behavior_preserved": true,
+  "state": {
+    "calls": 1,
+    "configuration": {
+      "applicationId": "eval_web_fixes",
+      "datakitOrigin": "http://127.0.0.1:19529",
+      "service": "eval-web-fixes",
+      "version": "1.0.0",
+      "env": "isolated-eval",
+      "sessionReplaySampleRate": 0,
+      "trackUserInteractions": true
+    },
+    "replay": false,
+    "counter": "2",
+    "url": "http://127.0.0.1:19645/next?q=CANARY_HISTORY_QUERY#CANARY_HISTORY_HASH"
+  }
+}

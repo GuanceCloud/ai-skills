@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+    "auto",
+    "--project",
+    "/private/tmp/rum-platform-acceptance/miniapp/project-baseline",
+    "--auto-port",
+    "19534"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 22.04,
+  "service_port_disabled": false,
+  "appid_error": true,
+  "baseline": "not_run",
+  "rum_runtime": "not_run",
+  "credentials_consumed": false,
+  "telemetry_sent": false
+}

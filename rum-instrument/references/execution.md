@@ -1,91 +1,39 @@
-# Repository execution and authorization
+# Execution and existing authorization
 
-## Safety baseline
+## Discover before asking
 
-Read repository-level and nested agent instructions before analysis. Record:
+Read applicable repository instructions, root/commit/branch, Git status, maintained manifests/entry points, effective configuration and documented checks. Preserve unrelated work; never stash, reset, clean or reformat it. Confirm every independently deployed application and wrapper ownership before mapping IDs. Missing input does not prevent useful analysis.
 
-- repository root, current commit, branch, and `git status --short`;
-- every uncommitted path and whether it overlaps a potential RUM edit;
-- manifests, lockfiles, runtime entry points, deployment configuration, and generated/vendor directories;
-- documented format, build/type-check, test, and smoke commands;
-- current RUM, Logs, Trace, Replay, Sourcemap, dSYM, mapping, and native-symbol behavior.
+Treat empty input as absent. Prefer explicit user information, previously confirmed context, effective project configuration and verified defaults. Keep missing-field questions together; use application names, not internal slots. Plan-only and audit requests never consume codes or edit application code.
 
-Never stash, reset, clean, overwrite, or reformat unrelated user work. An unrelated dirty worktree may be analyzed. A planned dirty file blocks ordinary explicit implementation. Revision Review may approve an exact pre-existing overlap only when `reviewed_overlaps` binds the file bytes reviewed by the user; any new dirty file or digest drift blocks implementation.
+## Ordinary implementation
 
-## Target ownership
+“接入”, “实施”, “修复”, “help me add RUM”, integrate, implement and repair authorize necessary core-RUM local changes. Create the internal plan and proceed without asking the user to approve routine phases or JSON artifacts. Do not ask for an approvalMode field.
 
-Define a target as an independently deployed application with its own RUM Application ID. A framework wrapper and its generated/native subprojects are normally one logical target with platform-specific Application ID slots:
+Use schema v3 batches. Every target belongs to exactly one batch; shared files, initialization and dependency changes must stay together. Record dependencies between batches; execute prerequisites first. A blocked batch does not prevent an independent authorized batch from completing. Do not silently skip unresolved targets in the final report.
 
-- React Native: Android and iOS;
-- Flutter: Android and iOS, plus a separate Web slot when Flutter Web is deployed;
-- UniApp Native: Android and iOS; route UniApp MiniApp output to the MiniApp adapter;
-- Unity: Android and iOS.
+A new SDK dependency, minimal config reader, ignore rule and credential-free example are ordinary core-RUM changes. Preserve valid SDK versions. A necessary compatible stable same-major minor/patch upgrade can proceed with `from_version`, `version`, `upgrade_kind: compatible_minor`, `necessity` and official compatibility evidence. Major/pre-release/0.x migrations, replacements and removals require specific user authorization. Existing authorization is sufficient; do not ask twice.
 
-Treat a nested native project as independent only when repository evidence shows a separate build, release, startup, or SDK initialization path.
+## Existing user work
 
-Trace every target to its canonical maintained startup source. Do not edit `dist`, `build`, `DerivedData`, `Pods`, `.gradle`, `node_modules`, `oh_modules`, `unpackage`, generated Xcode/Gradle output, vendored SDKs, or copied release artifacts.
+Inspect actual differences rather than blocking every dirty filename. For non-overlapping changes record the current file SHA-256 and an exact zero-context unified `dirty_patch`. The validator compares proposed hunks with HEAD-to-working-tree user changes and checks that the patch applies without modifying files. Apply only that checked patch. Any byte drift requires fresh analysis; ambiguous/binary/untracked/overlapping edits need a concrete user decision.
 
-## Plan-only behavior
+For a user-approved overlap retain Revision Review with the exact plan and `reviewed_overlaps` file digests. Never use a confirmation to override path, credential or integrity failures. Record each planned file's `before_sha256`; draft completion captures it for a new discovery. Before configuration preparation, record `prepared_sha256` from the intended result and validate repository state. This predeclared result allows subsequent checks to recognize the Agent's exact preparation without accepting arbitrary user edits. See [contracts.md](contracts.md) for these fields. Do not refresh the baseline or copy the current digest into a failed receipt. Revalidate before each batch; remove completed changes when marking their target instrumented.
 
-“规划” and “审查” do not authorize application-code edits. A planning run may create or update `.rum/plan.json` when the repository is writable, because that file is the requested planning artifact. If the user requested a purely read-only review, return the same contract in the response without writing it.
+## Specific authorization
 
-The plan must cover the entire in-scope repository before the first implementation edit. Record exact files and batches so authorization is auditable.
+Record user intent as non-secret `authorizations` receipts, each with an `evidence` description that identifies the actual request. Do not manufacture consent or authorization from a model's preferred approach.
 
-## Intent-aware authorization
+- Target receipts use `signal:<name>` and `artifact:<name>`. New Replay/Canvas Replay also require concrete consent, masking, exclusions and sampling conditions. Trace requires allowlist and request-compatibility conditions.
+- Planned-change `dependency` receipts cover specifically requested dependency migration/removal.
+- Plan receipts `testing_site`, `disabled_tls` and `external_sink` cover these exact exceptions. Disabled TLS requires a test-only condition and remains limited to the built-in testing site.
+- Missing decisions or actual type conflicts remain pending. Explain only the specific unresolved issue. Exact Revision Review remains available for decisions made after the initial request.
+- Remote mutations require the actual requested remote action. Repository implementation alone does not authorize application creation, deployment or upload. Prepare concrete reviewable changes before requesting missing authorization.
 
-Infer authorization from the user's verb; do not add an `approvalMode` Prompt variable:
+## Configuration and recovery
 
-- “规划”, “审查”, “plan”, “audit”, and read-only “validate” are plan-only. Write a pending plan with `basis: plan_only_request` and stop.
-- “实施”, “接入”, “修复”, “implement”, “integrate”, “repair”, and “规划并实施” explicitly authorize ordinary repository changes required for core RUM. Generate and validate the plan first, then use `status: approved` with `basis: explicit_implementation_request` and continue in the same run.
-- A later message that identifies or clearly approves the latest persisted revision uses `basis: revision_review`.
+Automatically create the smallest build/runtime wiring supported by the target, including ignored value files and credential-free examples. A missing pre-existing reader is not itself a blocker. Stop only the affected target when the platform, toolchain or external deployment boundary genuinely prevents a safe solution. Do not add a native dotenv dependency just to consume helper output.
 
-Before implementation, confirm:
+Perform non-secret configuration preparation and validate sink paths before reading a code. The plan-driven helper checkpoints each successful application, keeps server credentials only in memory, and safely resumes. Select the same complete batch set during helper execution and implementation validation. Existing v1 state requires the original v2 plan before migration; do not weaken validation or exchange another code to conceal a migration failure.
 
-- repository identity and commit;
-- initial Git status and every planned file;
-- target set and Application ID slots;
-- receiver mode and source references;
-- SDK/package decisions;
-- signals, privacy controls, and artifact behavior;
-- exact files and validation commands;
-- dirty-file overlap.
-
-For Public DataWay also confirm the official catalog match, non-secret AI API metadata, temporary-code source reference when already supplied, runtime Client Token variable, and ignored secret sink. Never inspect the sink's contents.
-
-Explicit implementation intent is not blanket approval. Stop with `status: pending`, `basis: explicit_implementation_request`, and concrete `approval.blockers` when the plan contains any of:
-
-- ambiguous or reused Application ID slots;
-- a user-defined application type that conflicts with AI API metadata;
-- an uncommitted file or hunk overlapping a planned edit;
-- SDK dependency upgrade, replacement, removal, or unverifiable provenance;
-- new Logs, Trace, Replay, WebView, native crash, ANR, freeze, UI-block, Remote Config, Canvas Replay, Sourcemap, symbol, or other optional scope;
-- the built-in testing site, disabled TLS verification, or another test-only exception;
-- no safe ignored runtime Client Token sink;
-- a remote mutation such as application creation, deployment, or artifact upload;
-- a material change to targets, files, receiver mode, signals, privacy behavior, or artifact handling after plan validation.
-
-Continue only after the user reviews the exact revised plan. Record that as `basis: revision_review`, add the canonical digest printed by `validate_contract.py --print-review-digest`, and record an exact digest for every approved dirty overlap. A plain “开始实现” may approve the latest displayed or persisted pending revision only when repository identity, revision, digest, and overlap set are unambiguous.
-
-Record optional capability and artifact decisions in the structured `existing_instrumentation.signals`, `profile.signals`, and `artifacts` fields defined by [contracts.md](contracts.md). The plan validator derives Review requirements from those fields; free-form risk prose is not an authorization control.
-
-## Baseline and batches
-
-Run documented commands before modification where practical. Existing failures are baseline evidence. Do not claim a later failure is pre-existing unless the same command and failure were recorded.
-
-Batch by independently deployable target while respecting shared initialization/configuration. For each batch record:
-
-- target and platform variants;
-- exact ordered edits;
-- dependency and version source;
-- receiver and Application ID source mappings;
-- privacy and signal changes;
-- validation commands and expected evidence;
-- rollback instructions.
-
-Rerunning the Skill must converge on one initializer and one canonical configuration path.
-
-Planning never consumes the temporary authorization code. Authorized Public DataWay implementation first validates the stable plan, then performs credential-free receiver checks before reading the code, resolves each application once, and persists the Client Token plus digest-bound non-secret execution state before application-code edits. Sync/mapping observations never cause polling or plan revision. Revalidate the stable plan together with the state; revise only when application metadata changes a material decision. A rerun preserves an existing safe runtime sink and matching state instead of exchanging another code. For DataKit, unknown collector or runtime reachability does not block local code changes; record it as a warning and handoff, and do not claim remote ingestion.
-
-## Remote actions
-
-Repository implementation does not authorize console changes, application creation, deployment, SDK artifact download from an unverified source, Sourcemap/symbol upload, or production traffic. Prepare commands or handoff steps, but execute a remote mutation only after explicit authorization for that action.
+DataKit has no credential flow. Unknown collector/runtime reachability permits local implementation and remains a handoff item. Local HTTP and debug logs never prove remote ingestion. Run appropriate checks for the affected targets and distinguish unavailable checks, baseline failures, newly introduced failures and remotely verified evidence.

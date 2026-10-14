@@ -21,3 +21,7 @@ Only add optional ext/native packages for capabilities in the approved plan. Avo
 Review permissions, custom tags/global context, request URL handling, WebView data, and native-crash fields. Use bounded business-prefixed tags only after approval.
 
 Run OHPM resolution plus repository build/test commands. Verify scoped dependency convergence, initialization count, correct product Application ID, receiver selection, HTTP behavior/trace allowlist, WebView ownership, optional native behavior, and absence of privacy canaries.
+
+## Automatic configuration wiring
+
+Use maintained product/build-profile configuration and documented SDK initialization inputs. Add the smallest ignored configuration source consumed by the selected product; validate its actual build path. Do not force browser environment APIs into Ability code.

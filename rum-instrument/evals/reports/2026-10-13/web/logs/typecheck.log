@@ -1,0 +1,2 @@
+project/node_modules/@cloudcare/browser-core/types/index.d.ts(2,16): error TS2304: Cannot find name 'ContextValue'.
+project/node_modules/@cloudcare/browser-core/types/index.d.ts(121,33): error TS1254: A 'const' initializer in an ambient context must be a string or numeric literal or literal enum reference.

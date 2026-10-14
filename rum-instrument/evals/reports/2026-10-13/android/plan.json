@@ -1,0 +1,264 @@
+{
+  "approval": {
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1,
+    "status": "approved"
+  },
+  "batches": [
+    {
+      "approval": {
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1,
+        "status": "approved"
+      },
+      "depends_on": [],
+      "id": "android-core",
+      "target_ids": [
+        "android:app"
+      ]
+    }
+  ],
+  "handoff": [
+    "Restore complete Android build and run adb reverse tcp:19529 tcp:19529 for local receiver"
+  ],
+  "planned_changes": [
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add minimal RUM integration; preserve existing lifecycle"
+      ],
+      "file": ".gitignore",
+      "order": 1,
+      "purpose": "Wire core RUM startup and build configuration",
+      "risk": "Missing Gradle root/toolchain prevents actual build verification",
+      "rollback": "Revert only this integration file change",
+      "target_id": "android:app",
+      "validation": [
+        "git diff --check",
+        "static configuration checks"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add minimal RUM integration; preserve existing lifecycle"
+      ],
+      "file": "rum.properties.example",
+      "order": 2,
+      "purpose": "Wire core RUM startup and build configuration",
+      "risk": "Missing Gradle root/toolchain prevents actual build verification",
+      "rollback": "Revert only this integration file change",
+      "target_id": "android:app",
+      "validation": [
+        "git diff --check",
+        "static configuration checks"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "add",
+        "compatibility": "Official stable release and source APIs verified; actual AGP compatibility blocked by absent root build",
+        "official_sources": [
+          "https://mvnrepo.guance.com/repository/maven-releases/com/cloudcare/ft/mobile/sdk/tracker/agent/ft-sdk/maven-metadata.xml"
+        ],
+        "owner": "GuanceCloud",
+        "package": "com.cloudcare.ft.mobile.sdk.tracker.agent:ft-sdk",
+        "verified_at": "2026-10-13",
+        "version": "1.7.5"
+      },
+      "edits": [
+        "Add minimal RUM integration; preserve existing lifecycle"
+      ],
+      "file": "app/build.gradle.kts",
+      "order": 3,
+      "purpose": "Wire core RUM startup and build configuration",
+      "risk": "Missing Gradle root/toolchain prevents actual build verification",
+      "rollback": "Revert only this integration file change",
+      "target_id": "android:app",
+      "validation": [
+        "git diff --check",
+        "static configuration checks"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add minimal RUM integration; preserve existing lifecycle"
+      ],
+      "file": "app/src/main/java/com/example/rum/App.kt",
+      "order": 4,
+      "purpose": "Wire core RUM startup and build configuration",
+      "risk": "Missing Gradle root/toolchain prevents actual build verification",
+      "rollback": "Revert only this integration file change",
+      "target_id": "android:app",
+      "validation": [
+        "git diff --check",
+        "static configuration checks"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add minimal RUM integration; preserve existing lifecycle"
+      ],
+      "file": "app/src/main/AndroidManifest.xml",
+      "order": 5,
+      "purpose": "Wire core RUM startup and build configuration",
+      "risk": "Missing Gradle root/toolchain prevents actual build verification",
+      "rollback": "Revert only this integration file change",
+      "target_id": "android:app",
+      "validation": [
+        "git diff --check",
+        "static configuration checks"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add minimal RUM integration; preserve existing lifecycle"
+      ],
+      "file": "app/src/debug/AndroidManifest.xml",
+      "order": 6,
+      "purpose": "Wire core RUM startup and build configuration",
+      "risk": "Missing Gradle root/toolchain prevents actual build verification",
+      "rollback": "Revert only this integration file change",
+      "target_id": "android:app",
+      "validation": [
+        "git diff --check",
+        "static configuration checks"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add minimal RUM integration; preserve existing lifecycle"
+      ],
+      "file": "app/src/debug/res/xml/rum_network_security.xml",
+      "order": 7,
+      "purpose": "Wire core RUM startup and build configuration",
+      "risk": "Missing Gradle root/toolchain prevents actual build verification",
+      "rollback": "Revert only this integration file change",
+      "target_id": "android:app",
+      "validation": [
+        "git diff --check",
+        "static configuration checks"
+      ]
+    }
+  ],
+  "repository": {
+    "commit": "aa072d09258974e79f8ef3c0e357d30bfa83356d",
+    "initial_status": [],
+    "root": "${EVAL_ROOT}/android/project"
+  },
+  "request": {
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "eval_android"
+      }
+    },
+    "intent": "implement",
+    "receiver": {
+      "endpoint": {
+        "value": "http://127.0.0.1:19529"
+      },
+      "mode": "datakit"
+    }
+  },
+  "risks": [
+    "Android loopback requires adb reverse; collector and ingestion unverified"
+  ],
+  "schema_version": 3,
+  "targets": [
+    {
+      "application_id_slots": [
+        "android"
+      ],
+      "application_ids": {
+        "android": {
+          "value": "eval_android"
+        }
+      },
+      "application_types": {
+        "android": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "android",
+          "verification": "not_applicable"
+        }
+      },
+      "artifacts": {},
+      "blockers": [],
+      "confidence": "high",
+      "disposition": "planned",
+      "evidence": [
+        "app/build.gradle.kts",
+        "app/src/main/AndroidManifest.xml"
+      ],
+      "existing_instrumentation": {
+        "files": [],
+        "sdk": null,
+        "signals": [],
+        "status": "none",
+        "version": null
+      },
+      "existing_rum_markers": {},
+      "id": "android:app",
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/android/app-access/"
+      ],
+      "path": "app",
+      "platform": "android",
+      "privacy": {
+        "custom_data": "none",
+        "optional_signals": "disabled"
+      },
+      "profile": {
+        "env": {
+          "confidence": "medium",
+          "source": "BuildConfig.RUM_ENV",
+          "value": null
+        },
+        "service": {
+          "confidence": "high",
+          "source": "android.namespace",
+          "value": "com.example.rum"
+        },
+        "signals": {
+          "rum": true
+        },
+        "version": {
+          "confidence": "medium",
+          "source": "Android package metadata read by SDK; no release version in fixture",
+          "value": null
+        }
+      },
+      "receiver_mapping": {
+        "appId": "FTRUMConfig.setRumAppId(BuildConfig.RUM_APP_ID)",
+        "datakitUrl": "FTSDKConfig.builder(BuildConfig.RUM_DATAKIT_URL)"
+      },
+      "variants": [
+        "android"
+      ]
+    }
+  ],
+  "validation": [
+    "Gradle build if available",
+    "single initializer and config checks"
+  ]
+}

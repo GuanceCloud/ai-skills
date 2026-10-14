@@ -1,0 +1,34 @@
+小程序平台验收复现（真实微信工具，禁止上传）
+
+最新结果：用户已开启IDE服务端口并登录。CLI成功打开隔离项目，官方automator真实WebSocket Tool.getInfo响应；实际页面空白，App.getCurrentPage超时。无RUM纯页面基线同样失败，因此尚不能执行真实SDK信号、幂等、隐私验证。
+
+工具：微信IDE 1.02.1911180，实际基础库SDKVersion 3.17.4。
+工程：project（RUM）；project-compatible（预先设libVersion2.11.1的新路径）；project-baseline（无RUM依赖和初始化）。
+三者位于 /private/tmp/rum-platform-acceptance/miniapp。
+官方SDK @cloudcare/rum-miniapp2.2.20；官方构建miniprogram-ci2.1.31；官方自动化miniprogram-automator0.12.1。
+
+已有通过证据：plan/implement契约校验、JSON/JS静态检查、官方wcc/wcsc编译、官方NPM打包（1个包，57个文件，零警告）。
+重新构建：
+python3 /private/tmp/rum-platform-acceptance/miniapp/validate.py
+/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /private/tmp/rum-platform-acceptance/miniapp/build-npm.cjs
+
+真实运行（沙盒外，仅localhost）：
+python3 /private/tmp/rum-platform-acceptance/miniapp/receiver.py
+/Applications/wechatwebdevtools.app/Contents/MacOS/cli --auto /private/tmp/rum-platform-acceptance/miniapp/project --auto-port 19532
+等待工具打开并监听后：
+DEBUG=automator:protocol /Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node /private/tmp/rum-platform-acceptance/miniapp/runtime-probe.cjs
+脚本45秒上限；协议日志证明Tool.getInfo成功，但App.getCurrentPage未返回，exit124。
+
+项目GUI真实错误：Uncaught SyntaxError: Unexpected token .；Uncaught ReferenceError: wx is not defined。基础库初始化失败是当前假设，旧工具与最新库的组合存在可见兼容性证据；不能断言RUM执行过。
+尝试仅project.config.json指定本机已安装2.11.1并重启，以及全新project-compatible路径，真实工具仍返回3.17.4，未修复。保留失败日志。
+无RUM对照：官方CLI --auto project-baseline --auto-port19534；运行runtime-probe-baseline.cjs（20秒上限），同样Tool.getInfo成功、当前页查询超时，exit124。
+
+接收器本次确实启动，但收到0条POST。未运行到输入canary、资源请求、交互或受控错误；这些检查必须报告not_run，不可用空数据通过隐私验证。
+
+清理完成：三个测试项目均通过官方CLI --close关闭，接收器停止；19529、19531、19532、19533、19534无监听。用户IDE端口56657仍监听，本次没有更改服务端口设置或登录账户，无上传/预览/远端请求。
+
+下一步需要能运行纯页面基线的兼容微信工具/基础库组合，再重新执行SDK事件和隐私验收。前序CUA超时、服务关闭与65536沙盒失败均保留在历史报告/日志，不覆盖。
+
+追加：官方UI项目基础库修复尝试
+父任务要求通过“详情/本地设置/调试基础库”检验项目级覆盖优先级。本次官方CLI --open project-baseline停在starting ide...，没有打开成功。CUA按包标识和应用路径均timeoutReached；应用库存明确微信开发者工具isRunning=false；只读进程检查只见两个本次CLI node进程。无法进入项目设置，所以UI选择2.11.1的假设尚未测试，不能声称UI切换也失败。
+已终止确认属于本轮的挂起CLI进程80052/80053。本轮没有启动接收器或自动化服务，没有修改任何项目UI、全局设置或用户项目。详细证据logs/ui-version-repair.json及cleanup.json；上一轮成功打开工具的记录继续保留。当前需要能正常运行的兼容工具环境，才能继续纯页面基线及SDK验收。

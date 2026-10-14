@@ -1,0 +1,19 @@
+{
+  "platform": "ios",
+  "mode": "missing-bridge",
+  "actual_sdk": "0.4.2",
+  "real_sdk_javascript": true,
+  "native_bridge_mocked": true,
+  "actual_native_platform_selection_executed": false,
+  "initial_results": [
+    false,
+    false,
+    false
+  ],
+  "calls": [],
+  "warnings": [
+    "RUM startup failed; application startup may continue."
+  ],
+  "original_error_handler_preserved": null,
+  "original_error_handler_calls": 0
+}

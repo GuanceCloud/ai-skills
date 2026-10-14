@@ -1,0 +1,21 @@
+{
+  "browser-rum": {
+    "identical": true,
+    "file_count": 631,
+    "declaration_files": {
+      "types/index.d.ts": "1ae53e02bed81ebde6cdfdaeefca77e820fcc81e6c9c1ed62b08b2e08b44a0b4"
+    }
+  },
+  "browser-core": {
+    "identical": true,
+    "file_count": 394,
+    "declaration_files": {
+      "types/index.d.ts": "896832f3a448767880b6cf0301f681543c5e010ee2663527e04d79645ee9f442"
+    }
+  },
+  "browser-worker": {
+    "identical": true,
+    "file_count": 10,
+    "declaration_files": {}
+  }
+}

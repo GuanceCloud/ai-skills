@@ -1,0 +1,35 @@
+{
+  "repository": {
+    "dirty_paths": [],
+    "git_commit": "ba813d19566e540dd33e880d81e4c04144096e62",
+    "root": "/private/tmp/rum-rn-fix-eval/project",
+    "scan_scope": "."
+  },
+  "schema_version": 1,
+  "targets": [
+    {
+      "application_id_slots": [
+        "android",
+        "ios"
+      ],
+      "confidence": "high",
+      "evidence": [
+        "index.js",
+        "package.json"
+      ],
+      "existing_rum_markers": {
+        "react-native-rum-package": [
+          "package.json"
+        ]
+      },
+      "id": "react-native:.",
+      "path": ".",
+      "platform": "react-native",
+      "variants": [
+        "android",
+        "ios"
+      ]
+    }
+  ],
+  "warnings": []
+}

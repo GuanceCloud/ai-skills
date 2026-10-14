@@ -17,31 +17,7 @@ Do not:
 
 If no exact catalog entry or documented alias matches, block Public DataWay credential resolution. Report the unmatched non-secret origin and the catalogs checked. Do not fall back to a guessed endpoint.
 
-## Built-in testing site
-
-The helper has exactly one testing mapping:
-
-- DataWay: `http://testing-openway.dataflux.cn`
-- AI API: `https://testing-ft2x-ai-api.dataflux.cn`
-
-Match the DataWay origin exactly. Do not accept another testing AI API, read operational configuration from `evals/`, fall back to an arbitrary file, or rewrite a hostname. Certificate validation remains enabled by default; `--insecure-test-tls` is scoped to this built-in site and remains an explicit test-only Review decision.
-
-Represent the testing site in the stable plan with:
-
-```json
-{
-  "status": "catalog_resolved",
-  "catalog": "builtin_testing",
-  "site_code": "testing",
-  "ai_api_endpoint": {
-    "value": "https://testing-ft2x-ai-api.dataflux.cn"
-  },
-  "test_only": true,
-  "tls_verification": "disabled_for_testing"
-}
-```
-
-Use `tls_verification: verified` when the test AI API certificate is trusted. Never carry the catalog override, disabled certificate verification, or a test DataWay into a production plan.
+For the built-in testing site only, read [testing-site.md](testing-site.md).
 
 ## Credential and application lookup
 
@@ -86,22 +62,24 @@ Resolve each independent Application ID slot in this order:
 
 Repository detection is the normal fallback for DataKit because DataKit has no control-plane input. If user and AI API values disagree, preserve the user choice in the pending plan, record both non-secret values, and block implementation until the mismatch is reviewed.
 
-Keep Public DataWay `control_plane.status: catalog_resolved` stable. After plan validation and implementation authorization, run the helper and persist its non-secret, digest-bound execution state. Network reachability, code consumption, lookup attempts, Token persistence, and optional sync/mapping observations never update the plan revision. Without a user type, select AI API metadata before repository inference. With a user type, keep it selected. Revise the plan only when the API type changes the selected adapter/edit set or conflicts with the user value; the latter requires Revision Review.
+Keep Public DataWay `control_plane.status: catalog_resolved` stable. After plan validation and implementation authorization, run the helper and persist its non-secret, per-slot identity-bound execution state. Network reachability, code consumption, lookup attempts, Token persistence, and optional sync/mapping observations never update the plan revision. Without a user type, select AI API metadata before repository inference. With a user type, keep it selected. Revise the plan only when the API type changes the selected adapter/edit set or conflicts with the user value; an unresolved user/API conflict requires a specific decision.
 
 ## Secret sinks
 
+Public DataWay credential storage requires macOS/Linux with POSIX mode `0600`. Native Windows is rejected before credential input; use WSL with a Linux filesystem or perform resolution on a supported host. Do not emulate this requirement with Windows read-only flags. Catalog-only discovery remains available. Before reading a code, the helper probes creation, replacement and permissions in each destination directory using credential-free temporary files, leaving existing configuration untouched. A later external disk/permission change can still cause a transactional write failure.
+
 Planning runs the helper in `--site-only` mode. It resolves the official catalog and non-secret AI API endpoint without reading a temporary authorization code, exchanging credentials, looking up an application, or receiving a Client Token.
 
-Approved implementation performs local destination checks and credential-free reachability checks before reading the authorization code. It then performs the credential/application lookup and must write the Client Token to a reviewed runtime/build configuration file plus a separate non-secret control-plane state file. The helper refuses an application lookup without both destinations and the canonical plan digest, so a one-time code cannot be consumed while discarding the Token or producing state for another plan. Select dotenv, JSON, properties, or xcconfig according to the target's existing configuration path. It is allowed only when:
+Approved implementation performs local destination checks and credential-free reachability checks before reading the authorization code. Both plan and legacy CLI modes use the same sink inspection to validate existing encoding, format and destination shape without writing values. It then performs the credential/application lookup and must write the Client Token to a reviewed runtime/build configuration file plus non-secret recoverable state. Prefer --plan with an authorized v3 plan; the legacy CLI still requires destinations and the canonical plan digest. Never consume a one-time code while discarding its result. Select dotenv, JSON, properties, or xcconfig per target using the [sink key semantics](contracts.md#receiver-configuration). Automatically add missing platform-native consumption wiring and ignore rules before resolution; do not force unrelated platforms into one file. It is allowed only when:
 
-- Git confirms an in-repository path is ignored; an external path additionally requires the explicit `--allow-external-secret-sink` Review decision;
+- Git confirms an in-repository path is ignored; declare it as repository-relative with scope `repository`. An external path must actually be outside the worktree and additionally requires the specific external-sink authorization (legacy CLI: `--allow-external-secret-sink`). The plan-driven helper checks declared versus actual scope before reading a code;
 - the helper receives and verifies the Git worktree root, preventing a subdirectory or unrelated path from bypassing the ignore check;
 - the file is a regular non-symlink; create it or atomically update only the selected keys while preserving unrelated entries;
 - the resulting file has mode `0600`;
-- the state destination is distinct from the secret sink, Git-ignored when it is inside the repository, and does not already exist;
+- the state destination is distinct from the secret sink, Git-ignored when it is inside the repository, and is created initially or atomically updated during verified --resume;
 - maintained source references only the selected runtime variable;
 - the Agent does not open, print, diff, stage, or otherwise inspect the file.
 
 The helper builds the safe result before writing, writes the secret sink first, then the state file, and restores the previous sink if state persistence fails. Its stdout and state file contain only a `runtime:<KEY>` reference, sink metadata, the plan digest, credential-free preflight evidence, and non-secret site/application observations.
 
-On a rerun, an existing reviewed secret sink plus matching non-secret state is convergence evidence. Preserve both and skip credential resolution; read only the state. A colliding state path, missing repository guard, unsafe Git-ignore state, symlinked sink, or unreviewed external sink fails before site resolution, network preflight, temporary-code input, or credential exchange.
+On a rerun use --plan with --resume. It validates identity, state and local integrity before skipping resolved slots. Successful applications survive later failures. It does not consume another code for ordinary code-plan changes. Migrate v1 state only with its original validated v2 plan. A colliding state/sink path, missing repository guard, unsafe Git-ignore state, symlink traversal or unapproved external sink fails before reading a code. Never manually rewrite state fingerprints. If unresolved applications require another exchange after a consumed code, request only a fresh code.

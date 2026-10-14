@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "errorType": "CONNECT_ERROR",
+  "message": "wait WechatIDE authorization timeout",
+  "source": "auth",
+  "tool": "simulator_open_page",
+  "clientName": "Codex",
+  "suggestions": "查看该工具完整参数, wechatide -c Codex simulator_open_page -h"
+}

@@ -1,0 +1,16 @@
+{
+  "timestamp_utc": "2026-10-13T06:05:09.427206+00:00",
+  "cwd": "/private/tmp/rum-sdk-types-retest/original-web-app",
+  "command": [
+    "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/usr/local/lib/node_modules/npm/bin/npm-cli.js",
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--registry=https://registry.npmjs.org"
+  ],
+  "exit_code": 0,
+  "stdout": "\nadded 26 packages in 3s\n",
+  "stderr": "(node:61652) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n"
+}

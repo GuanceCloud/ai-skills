@@ -1,0 +1,8 @@
+{
+  "applicationId": "synthetic-web-01",
+  "datakitOrigin": "http://127.0.0.1:19529",
+  "service": "synthetic-web-fixture",
+  "version": "1.0.0",
+  "env": "test",
+  "sessionSampleRate": 35
+}

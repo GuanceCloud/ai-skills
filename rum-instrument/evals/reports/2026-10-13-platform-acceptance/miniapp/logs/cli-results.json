@@ -1,0 +1,26 @@
+[
+  {
+    "command": [
+      "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+      "--build-npm",
+      "/private/tmp/rum-platform-acceptance/miniapp/project",
+      "--port",
+      "19531"
+    ],
+    "exit": 255,
+    "output": "Initializing...\nIDE service port disabled. To use CLI Call, open IDE -> Settings -> Security Settings, and set Service Port On.\nFor more details see: https://developers.weixin.qq.com/miniprogram/en/dev/devtools/cli.html\n工具的服务端口已关闭。要使用命令行调用工具，请打开工具 -> 设置 -> 安全设置，将服务端口开启。\n详细信息: https://developers.weixin.qq.com/miniprogram/dev/devtools/cli.html\n"
+  },
+  {
+    "command": [
+      "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+      "--auto",
+      "/private/tmp/rum-platform-acceptance/miniapp/project",
+      "--auto-port",
+      "19532",
+      "--port",
+      "19531"
+    ],
+    "exit": 255,
+    "output": "Initializing...\nIDE service port disabled. To use CLI Call, open IDE -> Settings -> Security Settings, and set Service Port On.\nFor more details see: https://developers.weixin.qq.com/miniprogram/en/dev/devtools/cli.html\n工具的服务端口已关闭。要使用命令行调用工具，请打开工具 -> 设置 -> 安全设置，将服务端口开启。\n详细信息: https://developers.weixin.qq.com/miniprogram/dev/devtools/cli.html\n"
+  }
+]

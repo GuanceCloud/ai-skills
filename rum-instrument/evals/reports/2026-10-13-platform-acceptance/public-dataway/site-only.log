@@ -1,0 +1,17 @@
+{
+  "credential_resolution": {
+    "api_key_persistence": "memory_only",
+    "application_lookup_path": "/api/v1/rum/app/get",
+    "exchange_path": "/api/v1/account/accesskey/exchange",
+    "status": "catalog_resolved"
+  },
+  "site": {
+    "ai_api": "https://testing-ft2x-ai-api.dataflux.cn",
+    "brand": "guance",
+    "catalog": "builtin_testing",
+    "catalog_kind": "testing",
+    "code": "testing",
+    "dataway_url": "http://testing-openway.dataflux.cn",
+    "tls_verification": "verified"
+  }
+}

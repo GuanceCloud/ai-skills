@@ -1,0 +1,20 @@
+{"label": "baseline-install", "argv": ["npm", "install", "--registry=https://registry.npmjs.org", "--no-audit", "--no-fund"], "exit_code": 0, "time": 1791878318.844822}
+{"label": "compatibility-metadata", "argv": ["npm", "view", "vite@7.1.9", "engines", "--json"], "exit_code": 0, "time": 1791878321.265237}
+{"label": "baseline-build", "argv": ["npm", "run", "build"], "exit_code": 0, "time": 1791878339.592364}
+{"label": "npm-tool-install", "argv": ["npm", "install", "--prefix", "/private/tmp/rum-platform-acceptance/npm-tools", "npm@11.6.2", "--registry=https://registry.npmjs.org", "--no-audit", "--no-fund"], "exit_code": 0, "time": 1791878342.7483578}
+{"label": "baseline-ci", "argv": ["node", "/private/tmp/rum-platform-acceptance/npm-tools/node_modules/npm/bin/npm-cli.js", "ci", "--registry=https://registry.npmjs.org", "--no-audit", "--no-fund"], "exit_code": 0, "time": 1791878369.7547798}
+{"label": "baseline-modern-build", "argv": ["node", "/private/tmp/rum-platform-acceptance/npm-tools/node_modules/npm/bin/npm-cli.js", "run", "build"], "exit_code": 0, "time": 1791878398.6309602}
+{"label": "detector", "argv": ["python3", "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/detect_rum_targets.py", "/private/tmp/rum-platform-acceptance/web", "--pretty"], "exit_code": 0, "time": 1791878408.603256}
+{"label": "sdk-metadata", "argv": ["node", "/private/tmp/rum-platform-acceptance/npm-tools/node_modules/npm/bin/npm-cli.js", "view", "@cloudcare/browser-rum@3.3.21", "version", "dist.integrity", "dependencies", "--json"], "exit_code": 0, "time": 1791878412.294973}
+{"label": "plan-validation", "argv": ["python3", "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/validate_contract.py", ".rum/plan.json", "--phase", "plan"], "exit_code": 1, "time": 1791878456.735091}
+{"label": "plan-validation-corrected", "argv": ["python3", "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/validate_contract.py", ".rum/plan.json", "--phase", "plan"], "exit_code": 0, "time": 1791878485.438706}
+{"label": "implement-validation", "argv": ["python3", "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/validate_contract.py", ".rum/plan.json", "--phase", "implement", "--repository", "/private/tmp/rum-platform-acceptance/web"], "exit_code": 0, "time": 1791878485.537854}
+{"label": "sdk-install", "argv": ["node", "/private/tmp/rum-platform-acceptance/npm-tools/node_modules/npm/bin/npm-cli.js", "install", "--save-exact", "@cloudcare/browser-rum@3.3.21", "--registry=https://registry.npmjs.org", "--no-audit", "--no-fund"], "exit_code": 0, "time": 1791878540.2771862}
+{"label": "compatibility-plugin", "argv": ["node", "/private/tmp/rum-platform-acceptance/npm-tools/node_modules/npm/bin/npm-cli.js", "view", "@vitejs/plugin-vue@6.0.1", "engines", "peerDependencies", "--json"], "exit_code": 0, "time": 1791878557.1839292}
+{"label": "integrated-ci", "argv": ["node", "/private/tmp/rum-platform-acceptance/npm-tools/node_modules/npm/bin/npm-cli.js", "ci", "--registry=https://registry.npmjs.org", "--no-audit", "--no-fund"], "exit_code": 0, "time": 1791878634.746335}
+{"label": "integrated-build", "argv": ["node", "/private/tmp/rum-platform-acceptance/npm-tools/node_modules/npm/bin/npm-cli.js", "run", "build"], "exit_code": 0, "time": 1791878652.810664}
+{"label": "browser-acceptance", "argv": ["node", "scripts/acceptance.mjs"], "exit_code": 0, "time": 1791878673.510179}
+{"label": "second-detector", "argv": ["python3", "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/detect_rum_targets.py", "/private/tmp/rum-platform-acceptance/web", "--pretty"], "exit_code": 0, "time": 1791878715.977032}
+{"label": "browser-acceptance-with-coverage", "argv": ["node", "scripts/acceptance.mjs"], "exit_code": 0, "time": 1791878724.237654}
+{"label": "effective-tsconfig", "argv": ["node", "node_modules/typescript/bin/tsc", "--showConfig"], "exit_code": 0, "time": 1791878787.012197}
+{"label": "browser-final", "argv": ["node", "scripts/acceptance.mjs"], "exit_code": 0, "time": 1791878838.804213}

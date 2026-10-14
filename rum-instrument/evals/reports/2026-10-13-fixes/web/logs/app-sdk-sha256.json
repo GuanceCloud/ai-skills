@@ -1,0 +1,8 @@
+{
+  "/private/tmp/rum-web-fix-eval/project/index.html": "51a56d08e1d4dd8cf435866e05ed5029598db3d05552514d59ec285da2ef8caa",
+  "/private/tmp/rum-web-fix-eval/project/src/main.js": "eb43bcb7790aaedd38b447f47a27b4d8c72ded1002c3c9286b48bdaf60d37db9",
+  "/private/tmp/rum-web-fix-eval/project/package.json": "fa31d7f4fa87f81f86a1dab927c9fdadd8115d56c0ff280008394f0542acd0aa",
+  "/private/tmp/rum-web-fix-eval/project/package-lock.json": "5bfb0421655f31f75c8abb11c328be937964457fdfd0ad3a9d64df1bd7aae587",
+  "/private/tmp/rum-sdk-types-retest/3.3.21/node_modules/@cloudcare/browser-rum/bundle/dataflux-rum.js": "67c7d58349e376864f3297e9e6d4a60453ede6ff0c6f6b1900a74c2a44d4d3b1",
+  "/private/tmp/rum-sdk-types-retest/3.3.21/node_modules/@cloudcare/browser-rum/esm/domain/assembly.js": "b5e842a9b41bc64c101c4004cf98aa98a8049abf83b568d0ee3406e0f4061811"
+}

@@ -1,0 +1,30 @@
+{
+  "plan_validation_exit": 0,
+  "implement_validation_exit": 0,
+  "build_01_exit": 1,
+  "build_02_exit": 0,
+  "build_03_wrapper_offline_rerun_exit": 0,
+  "payload_verification_exit": 0,
+  "git_diff_check_exit": 0,
+  "install_exit": 0,
+  "launches": [
+    {
+      "number": 1,
+      "pid": 4344,
+      "status": "ok",
+      "cold": true,
+      "total_ms": 970,
+      "capture": "failed_collector_chunked_deflate_support"
+    },
+    {
+      "number": 2,
+      "pid": 4495,
+      "status": "ok",
+      "cold": true,
+      "total_ms": 754,
+      "capture": "passed"
+    }
+  ],
+  "unit_test": "NO-SOURCE",
+  "remote_ingestion_verified": false
+}

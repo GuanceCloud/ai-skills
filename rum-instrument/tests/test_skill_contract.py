@@ -28,7 +28,7 @@ class SkillContractTests(unittest.TestCase):
         self.assertNotIn("aiApiEndpoint:", minimal_prompt)
         self.assertIn("prompt:provided", skill)
         self.assertIn(
-            "pass it to the helper through stdin after authorization",
+            "Pass it through process stdin after preflight",
             skill,
         )
         self.assertIn(
@@ -36,26 +36,6 @@ class SkillContractTests(unittest.TestCase):
             self.read("references/contracts.md"),
         )
 
-    def test_skill_uses_intent_aware_authorization(self):
-        skill = self.read("SKILL.md")
-        execution = self.read("references/execution.md")
-        contracts = self.read("references/contracts.md")
-
-        self.assertIn("Build and validate the plan", skill)
-        self.assertIn("continue in the same run", skill)
-        self.assertIn("Do not require a routine second approval", skill)
-        self.assertIn('"status": "pending"', contracts)
-        self.assertIn('"basis": "plan_only_request"', contracts)
-        self.assertIn("explicit_implementation_request", contracts)
-        self.assertIn('"revision": 1', contracts)
-        self.assertIn("Explicit implementation intent is not blanket approval", execution)
-        self.assertIn("basis: revision_review", execution)
-        self.assertIn("reviewed_plan_sha256", contracts)
-        self.assertIn("--print-review-digest", contracts)
-        self.assertIn("reviewed_overlaps", contracts)
-        self.assertIn('"existing_instrumentation"', contracts)
-        self.assertIn('"profile"', contracts)
-        self.assertIn("Any new optional capability is review scope", contracts)
 
     def test_all_official_rum_application_families_have_adapters(self):
         skill = self.read("SKILL.md")
@@ -125,6 +105,7 @@ class SkillContractTests(unittest.TestCase):
         skill = self.read("SKILL.md")
         control_plane = self.read("references/control-plane.md")
         validator = self.read("scripts/validate_contract.py")
+        testing_site = self.read("references/testing-site.md")
 
         for value in (
             "--insecure-test-tls",
@@ -133,7 +114,7 @@ class SkillContractTests(unittest.TestCase):
             "test_only",
         ):
             with self.subTest(value=value):
-                self.assertIn(value, skill + control_plane + validator)
+                self.assertIn(value, skill + control_plane + testing_site + validator)
         for removed in ("--test-site-catalog-file", "testing_override"):
             with self.subTest(removed=removed):
                 self.assertNotIn(removed, skill + control_plane + validator)

@@ -1,0 +1,26 @@
+{
+  "status": "failed",
+  "checks": [
+    {
+      "name": "app_lifecycle",
+      "status": "failed",
+      "error": "timeout waiting for automator response"
+    },
+    {
+      "name": "page_and_interaction",
+      "status": "failed",
+      "error": "Cannot destructure property 'rawPath' of 't.getPageMetaByWebviewId(...)' as it is null."
+    },
+    {
+      "name": "screenshot",
+      "status": "passed",
+      "evidence": "baseline.png"
+    }
+  ],
+  "runtime": {},
+  "system": {
+    "SDKVersion": "3.17.4",
+    "platform": "devtools",
+    "version": "8.0.5"
+  }
+}

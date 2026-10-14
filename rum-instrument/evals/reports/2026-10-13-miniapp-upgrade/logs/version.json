@@ -1,0 +1,7 @@
+{
+  "command": [
+    "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+    "--version"
+  ],
+  "exit": 0
+}

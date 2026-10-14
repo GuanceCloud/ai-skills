@@ -1,0 +1,11 @@
+[
+  {
+    "url": "http://testing-openway.dataflux.cn",
+    "status": 404,
+    "reachable": true
+  },
+  {
+    "url": "https://testing-ft2x-ai-api.dataflux.cn",
+    "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1032)>"
+  }
+]

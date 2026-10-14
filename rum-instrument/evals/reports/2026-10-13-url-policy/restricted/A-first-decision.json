@@ -1,0 +1,11 @@
+{
+  "scenario": "A",
+  "commit": "eb48369422ebec71b310440d6526738710b8eae7",
+  "first_plan_disposition": "blocked",
+  "first_implementation_gate": "pending technical remedy verification",
+  "new_initializer_in_application": false,
+  "business_question_count": 0,
+  "approval_question_count": 0,
+  "reason": "Explicit project requirement prohibits all query values in every RUM field; 3.3.21 beforeSend cannot modify view.url_query; remedy must be verified before initialization.",
+  "fixture_is_synthetic": true
+}

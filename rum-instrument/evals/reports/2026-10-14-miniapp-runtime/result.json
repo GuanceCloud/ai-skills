@@ -1,0 +1,22 @@
+{
+  "status": "blocked",
+  "blocker": "No-RUM baseline cannot create a page in the real WeChat simulator",
+  "date": "2026-10-14",
+  "ide_version": "2.02.2609231",
+  "baseline_libraries": [
+    "3.17.4",
+    "3.17.3"
+  ],
+  "baseline_page_and_interaction": "failed",
+  "stable_app_launch_count": 1,
+  "stable_page_stack": [],
+  "sdk_initialization": "not_run",
+  "view_resource_error_action": "not_run",
+  "idempotence": "not_run",
+  "payload_privacy": "not_run",
+  "remote_verification": false,
+  "receiver_started": false,
+  "authorization_code_consumed": false,
+  "uploads": false,
+  "source_changes": "evidence only"
+}

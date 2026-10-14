@@ -1,0 +1,504 @@
+{
+  "cases": [
+    {
+      "mode": "sdk",
+      "name": "empty",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "failed",
+          "error": "net::ERR_ABORTED"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": false,
+          "error": "response.text: Protocol error (Network.getResponseBody): No data found for resource with given identifier\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "sdk",
+      "name": "empty-length",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "failed",
+          "error": "net::ERR_ABORTED"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": false,
+          "error": "response.text: Protocol error (Network.getResponseBody): No data found for resource with given identifier\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "sdk",
+      "name": "json",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "finished"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": true,
+          "length": 11
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "sdk",
+      "name": "json-no-type",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "finished"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": true,
+          "length": 11
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "sdk",
+      "name": "delayed-body",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "finished"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": true,
+          "length": 11
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "sdk",
+      "name": "disconnect-after-headers",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "failed",
+          "error": "net::ERR_INCOMPLETE_CHUNKED_ENCODING"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": false,
+          "error": "response.text: Protocol error (Network.getResponseBody): No data found for resource with given identifier\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "native",
+      "name": "empty",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "failed",
+          "error": "net::ERR_ABORTED"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": false,
+          "error": "response.text: Protocol error (Network.getResponseBody): No data found for resource with given identifier\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "native",
+      "name": "empty-length",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "failed",
+          "error": "net::ERR_ABORTED"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": false,
+          "error": "response.text: Protocol error (Network.getResponseBody): No data found for resource with given identifier\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "native",
+      "name": "json",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "finished"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": true,
+          "length": 11
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "native",
+      "name": "json-no-type",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "finished"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": true,
+          "length": 11
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "native",
+      "name": "delayed-body",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "finished"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": true,
+          "length": 11
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "native",
+      "name": "disconnect-after-headers",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "failed",
+          "error": "net::ERR_INCOMPLETE_CHUNKED_ENCODING"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": false,
+          "error": "response.text: Protocol error (Network.getResponseBody): No data found for resource with given identifier\nResponse body is not available for a response that was navigated away from. Read response.body() before triggering any navigation."
+        }
+      ],
+      "cancellations": []
+    }
+  ],
+  "serverEvents": [
+    {
+      "path": "/empty",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/empty",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/empty-length",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/empty-length",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/json",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/json",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/json-no-type",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/json-no-type",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/delayed-body",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/delayed-body",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/disconnect-after-headers",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/disconnect-after-headers",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/empty",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/empty",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/empty-length",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/empty-length",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/json",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/json",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/json-no-type",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/json-no-type",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/delayed-body",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/delayed-body",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/disconnect-after-headers",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/disconnect-after-headers",
+      "method": "POST",
+      "receivedBytes": 24
+    }
+  ]
+}

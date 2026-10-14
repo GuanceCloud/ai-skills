@@ -1,0 +1,311 @@
+{
+  "approval": {
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1,
+    "status": "approved"
+  },
+  "batches": [
+    {
+      "approval": {
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1,
+        "status": "approved"
+      },
+      "depends_on": [],
+      "id": "web",
+      "target_ids": [
+        "web:."
+      ]
+    }
+  ],
+  "handoff": [
+    "Use actual DataKit RUM collector and console to confirm remote ingestion"
+  ],
+  "planned_changes": [
+    {
+      "dependency_decision": {
+        "action": "add",
+        "compatibility": "Official NPM browser integration; exact SDK 3.3.21 declares browser-core/worker 3.3.21; full strict Vue TS build will verify declarations",
+        "official_source": "https://docs.guance.com/real-user-monitoring/web/app-access/",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/web/app-access/",
+          "https://registry.npmjs.org/@cloudcare/browser-rum/3.3.21"
+        ],
+        "owner": "GuanceCloud @cloudcare",
+        "package": "@cloudcare/browser-rum",
+        "verified_at": "2026-10-13",
+        "version": "3.3.21"
+      },
+      "edits": [
+        "Add exact @cloudcare/browser-rum 3.3.21 dependency"
+      ],
+      "file": "package.json",
+      "order": 1,
+      "purpose": "Add exact @cloudcare/browser-rum 3.3.21 dependency",
+      "risk": "Preserve startup and requests",
+      "rollback": "Restore baseline commit file or remove newly added file",
+      "target_id": "web:.",
+      "validation": [
+        "npm ci",
+        "npm run build",
+        "production Chrome payload and failure tests"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Lock SDK using public npm"
+      ],
+      "file": "package-lock.json",
+      "order": 2,
+      "purpose": "Lock SDK using public npm",
+      "risk": "Preserve startup and requests",
+      "rollback": "Restore baseline commit file or remove newly added file",
+      "target_id": "web:.",
+      "validation": [
+        "npm ci",
+        "npm run build",
+        "production Chrome payload and failure tests"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Document non-secret Vite configuration"
+      ],
+      "file": ".env.example",
+      "order": 3,
+      "purpose": "Document non-secret Vite configuration",
+      "risk": "Preserve startup and requests",
+      "rollback": "Restore baseline commit file or remove newly added file",
+      "target_id": "web:.",
+      "validation": [
+        "npm ci",
+        "npm run build",
+        "production Chrome payload and failure tests"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Read supplied non-secret endpoint and application ID through Vite"
+      ],
+      "file": ".env.production",
+      "order": 4,
+      "purpose": "Read supplied non-secret endpoint and application ID through Vite",
+      "risk": "Preserve startup and requests",
+      "rollback": "Restore baseline commit file or remove newly added file",
+      "target_id": "web:.",
+      "validation": [
+        "npm ci",
+        "npm run build",
+        "production Chrome payload and failure tests"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Single promise initializer, dynamic SDK import, catch failure, official default sampling"
+      ],
+      "file": "src/rum.ts",
+      "order": 5,
+      "purpose": "Single promise initializer, dynamic SDK import, catch failure, official default sampling",
+      "risk": "Preserve startup and requests",
+      "rollback": "Restore baseline commit file or remove newly added file",
+      "target_id": "web:.",
+      "validation": [
+        "npm ci",
+        "npm run build",
+        "production Chrome payload and failure tests"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Await bounded SDK startup before Vue mount; preserve application error handler"
+      ],
+      "file": "src/main.ts",
+      "order": 6,
+      "purpose": "Await bounded SDK startup before Vue mount; preserve application error handler",
+      "risk": "Preserve startup and requests",
+      "rollback": "Restore baseline commit file or remove newly added file",
+      "target_id": "web:.",
+      "validation": [
+        "npm ci",
+        "npm run build",
+        "production Chrome payload and failure tests"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Document initialization and actual build/configuration usage"
+      ],
+      "file": "README.md",
+      "order": 7,
+      "purpose": "Document initialization and actual build/configuration usage",
+      "risk": "Preserve startup and requests",
+      "rollback": "Restore baseline commit file or remove newly added file",
+      "target_id": "web:.",
+      "validation": [
+        "npm ci",
+        "npm run build",
+        "production Chrome payload and failure tests"
+      ]
+    }
+  ],
+  "repository": {
+    "commit": "db9ef5a8ab3de741bdb2ecc2cf948f022475c8cd",
+    "initial_status": [],
+    "root": "/private/tmp/rum-platform-acceptance/web"
+  },
+  "request": {
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "eval_vue_acceptance"
+      }
+    },
+    "intent": "implement",
+    "receiver": {
+      "endpoint": {
+        "value": "http://127.0.0.1:19539"
+      },
+      "mode": "datakit",
+      "readiness": {
+        "checks": {
+          "network_reachability": {
+            "evidence": [],
+            "handoff": [
+              "Verify reachability from the application runtime."
+            ],
+            "status": "unknown"
+          },
+          "rum_collector": {
+            "evidence": [],
+            "handoff": [
+              "Verify collector configuration before claiming remote ingestion."
+            ],
+            "status": "unknown"
+          }
+        },
+        "status": "unknown"
+      }
+    }
+  },
+  "risks": [
+    "Local mock collector cannot prove DataKit configuration or remote ingestion",
+    "Dynamic import may miss early SDK load interval; startup waiting bounded to 1500ms"
+  ],
+  "schema_version": 3,
+  "targets": [
+    {
+      "application_id_slots": [
+        "web"
+      ],
+      "application_ids": {
+        "web": {
+          "value": "eval_vue_acceptance"
+        }
+      },
+      "application_types": {
+        "web": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "web",
+          "verification": "not_applicable"
+        }
+      },
+      "artifacts": {},
+      "blockers": [],
+      "disposition": "planned",
+      "evidence": [
+        "index.html",
+        "package.json",
+        "src/main.ts",
+        "src/router.ts"
+      ],
+      "existing_instrumentation": {
+        "files": [],
+        "sdk": null,
+        "signals": [],
+        "status": "none",
+        "version": null
+      },
+      "id": "web:.",
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/web/app-access/"
+      ],
+      "path": ".",
+      "platform": "web",
+      "privacy": {
+        "controls": [
+          "No Replay start, Trace, custom context, body capture or URL rewrite"
+        ],
+        "evidence": [
+          "Reviewed maintained router: static paths / and /details with harmless page=2; no credentials or personal data in URL",
+          "Local draft remains component state; no custom context/actions or body/header collection"
+        ],
+        "validation": [
+          "Verify local draft canary absent from nonempty actual exported payload; ordinary page=2 must remain allowed"
+        ]
+      },
+      "profile": {
+        "env": {
+          "confidence": "high",
+          "source": "Vite import.meta.env.MODE build mode",
+          "value": "production"
+        },
+        "sampling": {
+          "confidence": "high",
+          "source": "Browser SDK default session sample rate",
+          "value": "SDK default"
+        },
+        "service": {
+          "confidence": "high",
+          "source": "package.json#name via Vite define",
+          "value": "vue-rum-acceptance"
+        },
+        "signals": {
+          "logs": false,
+          "replay": false,
+          "rum": true,
+          "tracing": false
+        },
+        "version": {
+          "confidence": "high",
+          "source": "package.json#version via Vite define",
+          "value": "1.2.3"
+        }
+      },
+      "receiver_mapping": {
+        "applicationId": "VITE_RUM_APP_ID",
+        "datakitOrigin": "VITE_RUM_DATAKIT_URL"
+      },
+      "variants": [
+        "browser"
+      ]
+    }
+  ],
+  "validation": [
+    "Plan and implementation validators before code edits",
+    "Public npm clean install, strict vue-tsc incl SDK declarations, Vite production build",
+    "Real Chrome: receiver/config/version/env; one init; SPA; resource; error; no optional signals; local draft absent",
+    "Repeat integration source audit and dynamic repeated initializer call; SDK chunk aborted and stalled startup survives"
+  ]
+}

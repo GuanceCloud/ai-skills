@@ -1,0 +1,32 @@
+[
+  {
+    "command": "flutter pub get",
+    "exit_code": 127,
+    "log": "logs/pub-get.log"
+  },
+  {
+    "command": "flutter analyze",
+    "exit_code": 127,
+    "log": "logs/analyze.log"
+  },
+  {
+    "command": "flutter test",
+    "exit_code": 127,
+    "log": "logs/flutter-test.log"
+  },
+  {
+    "command": "flutter build web",
+    "exit_code": 127,
+    "log": "logs/build-web.log"
+  },
+  {
+    "command": "flutter build apk --dart-define-from-file=config/rum.local.json",
+    "exit_code": 127,
+    "log": "logs/build-apk.log"
+  },
+  {
+    "command": "flutter build ios --no-codesign --dart-define-from-file=config/rum.local.json",
+    "exit_code": 127,
+    "log": "logs/build-ios.log"
+  }
+]

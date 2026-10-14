@@ -1,0 +1,148 @@
+{
+  "approval": {
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1,
+    "status": "approved"
+  },
+  "batches": [
+    {
+      "approval": {
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1,
+        "status": "approved"
+      },
+      "depends_on": [],
+      "id": "miniapp-existing",
+      "target_ids": [
+        "miniapp:."
+      ]
+    }
+  ],
+  "handoff": [
+    "Use the full MiniApp project and WeChat developer tools to build npm dependencies and run device route/resource/error tests.",
+    "Verify RUM collector configuration and a reachable permitted receiver for the intended runtime."
+  ],
+  "planned_changes": [],
+  "repository": {
+    "commit": "ee2cc05eed961cf66dcbdd0d9675b9fa9918a905",
+    "initial_status": [],
+    "root": "${EVAL_ROOT}/reuse-existing/project"
+  },
+  "request": {
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "provenance": "existing:config/rum.local.js#applicationId",
+        "value": "eval_miniapp"
+      }
+    },
+    "intent": "implement",
+    "receiver": {
+      "endpoint": {
+        "provenance": "existing:config/rum.local.js#datakitOrigin",
+        "value": "http://127.0.0.1:19529"
+      },
+      "mode": "datakit"
+    }
+  },
+  "risks": [
+    "127.0.0.1 is device-local; real MiniApp reachability and production request-domain configuration are unverified."
+  ],
+  "schema_version": 3,
+  "targets": [
+    {
+      "application_id_slots": [
+        "miniapp"
+      ],
+      "application_ids": {
+        "miniapp": {
+          "provenance": "existing:config/rum.local.js#applicationId",
+          "value": "eval_miniapp"
+        }
+      },
+      "application_types": {
+        "miniapp": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "miniapp",
+          "verification": "not_applicable"
+        }
+      },
+      "artifacts": {},
+      "blockers": [],
+      "disposition": "existing",
+      "evidence": [
+        "app.js",
+        "app.json",
+        "project.config.json",
+        "rum.js",
+        "package.json"
+      ],
+      "existing_instrumentation": {
+        "files": [
+          "app.js",
+          "rum.js"
+        ],
+        "sdk": "@cloudcare/rum-miniapp",
+        "signals": [
+          "rum"
+        ],
+        "status": "existing",
+        "version": "2.2.20"
+      },
+      "id": "miniapp:.",
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/miniapp/app-access/"
+      ],
+      "path": ".",
+      "platform": "miniapp",
+      "privacy": {
+        "allowedTracingUrls": [],
+        "trackLaunchOptions": false,
+        "trackRequestErrorResponseBody": false,
+        "trackResourceQueryString": false
+      },
+      "profile": {
+        "env": {
+          "confidence": "high",
+          "source": "wx.getAccountInfoSync().miniProgram.envVersion",
+          "value": null
+        },
+        "sampling": {
+          "confidence": "high",
+          "source": "preserved SDK default",
+          "value": 100
+        },
+        "service": {
+          "confidence": "high",
+          "source": "rum.js",
+          "value": "miniapp"
+        },
+        "signals": {
+          "rum": true
+        },
+        "version": {
+          "confidence": "high",
+          "source": "wx.getAccountInfoSync().miniProgram.version",
+          "value": null
+        }
+      },
+      "receiver_mapping": {
+        "applicationId": "config.applicationId",
+        "datakitOrigin": "config.datakitOrigin"
+      },
+      "variants": [
+        "wechat"
+      ]
+    }
+  ],
+  "validation": [
+    "npm ci --ignore-scripts --no-audit --no-fund",
+    "node --check app.js",
+    "node --check rum.js",
+    "VM initializer smoke tests"
+  ]
+}

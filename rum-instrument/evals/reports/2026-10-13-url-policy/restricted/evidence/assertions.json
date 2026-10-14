@@ -1,0 +1,279 @@
+[
+  {
+    "run": "A-baseline",
+    "sdk_version_3_3_21": true,
+    "counts": {
+      "error": 1,
+      "long_task": 1,
+      "resource": 5,
+      "view": 2
+    },
+    "representative_events_present": true,
+    "single_init": true,
+    "navigation_preserved": true,
+    "request_preserved": true,
+    "prohibited_query_absent": false,
+    "prohibited_query_hits": [
+      {
+        "event": 0,
+        "measurement": "view",
+        "field": "tags.view_url"
+      },
+      {
+        "event": 0,
+        "measurement": "view",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 1,
+        "measurement": "resource",
+        "field": "tags.view_url"
+      },
+      {
+        "event": 1,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 2,
+        "measurement": "resource",
+        "field": "tags.view_url"
+      },
+      {
+        "event": 2,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 3,
+        "measurement": "resource",
+        "field": "tags.view_url"
+      },
+      {
+        "event": 3,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 3,
+        "measurement": "resource",
+        "field": "fields.resource_url"
+      },
+      {
+        "event": 3,
+        "measurement": "resource",
+        "field": "fields.resource_url_query"
+      },
+      {
+        "event": 4,
+        "measurement": "long_task",
+        "field": "tags.view_url"
+      },
+      {
+        "event": 4,
+        "measurement": "long_task",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 5,
+        "measurement": "resource",
+        "field": "tags.view_url"
+      },
+      {
+        "event": 5,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 6,
+        "measurement": "error",
+        "field": "tags.view_url"
+      },
+      {
+        "event": 6,
+        "measurement": "error",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 8,
+        "measurement": "view",
+        "field": "tags.view_url"
+      },
+      {
+        "event": 8,
+        "measurement": "view",
+        "field": "fields.view_url_query"
+      }
+    ],
+    "query_stripped_from_view_url": null,
+    "resource_query_values_retained": true,
+    "beforeSend_reject_warning": false
+  },
+  {
+    "run": "A-hook",
+    "sdk_version_3_3_21": true,
+    "counts": {
+      "error": 1,
+      "resource": 6,
+      "view": 1
+    },
+    "representative_events_present": true,
+    "single_init": true,
+    "navigation_preserved": true,
+    "request_preserved": true,
+    "prohibited_query_absent": false,
+    "prohibited_query_hits": [
+      {
+        "event": 0,
+        "measurement": "view",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 1,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 2,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 3,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 3,
+        "measurement": "resource",
+        "field": "fields.resource_url_query"
+      },
+      {
+        "event": 4,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 5,
+        "measurement": "error",
+        "field": "fields.view_url_query"
+      }
+    ],
+    "query_stripped_from_view_url": true,
+    "resource_query_values_retained": true,
+    "beforeSend_reject_warning": false
+  },
+  {
+    "run": "A-reject",
+    "sdk_version_3_3_21": true,
+    "counts": {
+      "error": 1,
+      "resource": 6,
+      "view": 1
+    },
+    "representative_events_present": true,
+    "single_init": true,
+    "navigation_preserved": true,
+    "request_preserved": true,
+    "prohibited_query_absent": false,
+    "prohibited_query_hits": [
+      {
+        "event": 0,
+        "measurement": "view",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 1,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 2,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 3,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 3,
+        "measurement": "resource",
+        "field": "fields.resource_url_query"
+      },
+      {
+        "event": 4,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 5,
+        "measurement": "error",
+        "field": "fields.view_url_query"
+      }
+    ],
+    "query_stripped_from_view_url": true,
+    "resource_query_values_retained": true,
+    "beforeSend_reject_warning": true
+  },
+  {
+    "run": "B-hook",
+    "sdk_version_3_3_21": true,
+    "counts": {
+      "error": 1,
+      "resource": 4,
+      "view": 4
+    },
+    "representative_events_present": true,
+    "single_init": true,
+    "navigation_preserved": true,
+    "request_preserved": true,
+    "prohibited_query_absent": false,
+    "prohibited_query_hits": [
+      {
+        "event": 0,
+        "measurement": "view",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 2,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 3,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 4,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 4,
+        "measurement": "resource",
+        "field": "fields.resource_url_query"
+      },
+      {
+        "event": 5,
+        "measurement": "resource",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 6,
+        "measurement": "error",
+        "field": "fields.view_url_query"
+      },
+      {
+        "event": 7,
+        "measurement": "view",
+        "field": "fields.view_url_query"
+      }
+    ],
+    "query_stripped_from_view_url": true,
+    "resource_query_values_retained": false,
+    "beforeSend_reject_warning": false
+  }
+]

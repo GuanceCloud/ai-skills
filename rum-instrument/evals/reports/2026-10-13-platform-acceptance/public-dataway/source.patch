@@ -1,0 +1,98 @@
+diff --git a/.env.example b/.env.example
+index a33957b..3ea4581 100644
+--- a/.env.example
++++ b/.env.example
+@@ -1,2 +1,4 @@
+-VITE_RUM_APP_ID=eval_vue_acceptance
+-VITE_RUM_DATAKIT_URL=http://127.0.0.1:19539
++# Test-only non-secret values. Actual token is written only by the helper to ignored .env.production.local.
++VITE_RUM_APP_ID=new_skill_001
++VITE_RUM_SITE=http://testing-openway.dataflux.cn
++VITE_RUM_CLIENT_TOKEN=
+diff --git a/.env.production b/.env.production
+index a33957b..f34c85a 100644
+--- a/.env.production
++++ b/.env.production
+@@ -1,2 +1,2 @@
+-VITE_RUM_APP_ID=eval_vue_acceptance
+-VITE_RUM_DATAKIT_URL=http://127.0.0.1:19539
++VITE_RUM_APP_ID=new_skill_001
++VITE_RUM_SITE=http://testing-openway.dataflux.cn
+diff --git a/README.md b/README.md
+index 55e8cd1..2fc832b 100644
+--- a/README.md
++++ b/README.md
+@@ -1,11 +1,13 @@
+-# Vue RUM 验收工程
++# 隔离 Vue Public DataWay 测试准备
+ 
+-Vue 3 + Vue Router + Vite + TypeScript，包含两个页面、资源请求与可触发错误。
++由已通过完整验收的 Vue 工程复制，保留真实 Browser SDK 3.3.21 和公开 lockfile。原工程不变。
+ 
+-运行 `npm ci`，`npm run build`，`npm run preview`。正式 build 同时执行 vue-tsc 严格类型检查（skipLibCheck: false）和 Vite production build。
++非秘密配置 `.env.production` 使用 `new_skill_001` 和用户选定测试 Public DataWay。Client Token 由 plan helper 写入 Git ignored、0600 的 `.env.production.local`，键 `VITE_RUM_CLIENT_TOKEN`；不可打印、提交或手动检查内容。Vite 会加载该框架原生文件，类型化读取器是 `src/rum-config.ts`。
+ 
+-基础 RUM 使用 `.env.production` 的非密钥 Vite 变量。更换接收端或 appId 后重新 `npm run build`；版本和服务读取 package.json，环境读取 Vite 构建 mode。默认 session 采样保持 SDK 默认；Replay 采样设为 0 且不启动 Replay，不配置 Trace/Logs。
++当前只是准备阶段。原 `src/rum.ts` 的 DataKit 初始化器未改动；旧 DataKit 环境键已移除，因此当前启动会跳过 RUM，不向外发送数据。Public DataWay 初始化改动保存在 `evidence/after-state-initializer.patch`，必须在可信 CA、凭据解析和 saved-state 校验通过后再应用。
+ 
+-初始化通过共享 Promise 只运行一次。通常先完成初始化再挂载路由；SDK 失败或超过 1500ms 时应用仍挂载。
++用户选择保留 TLS 校验，需要可信 CA PEM；不得增加 TLS 例外。此工程不用于生产部署。
+ 
+-本地验收：`python3 scripts/run.py acceptance node scripts/acceptance.mjs`。需安装 Playwright 并设置 `PLAYWRIGHT_MODULE`，默认复用本机测试工具；`CHROME_PATH` 可覆盖 Chrome 路径。测试启动 localhost 模拟接收器，不代表真实 DataKit 或远端入库。
++`npm ci --registry=https://registry.npmjs.org` 后 `npm run build` 会运行 strict Vue SFC/SDK 声明检查和 Vite production build。生成的 dist 被 Git 忽略；换码后构建产物包含客户端配置，不应打印或归档其中内容。
++
++复制的 `scripts/acceptance.mjs` 是原 DataKit localhost 验收脚本，当前阶段不运行；父代理继续 Public DataWay 验收时需调整为不输出 Token 的专用配置检查。
+diff --git a/scripts/preflight.py b/scripts/preflight.py
+new file mode 100644
+index 0000000..3f4dcca
+--- /dev/null
++++ b/scripts/preflight.py
+@@ -0,0 +1,24 @@
++"""Credential-free verified-TLS preflight. Never reads an authorization code or Token."""
++import importlib.util
++import json
++import os
++from pathlib import Path
++import ssl
++import sys
++
++skill = Path(os.environ.get('RUM_SKILL_DIR', '/Users/oneandonly/Workspace/ai-skills/rum-instrument'))
++spec = importlib.util.spec_from_file_location('rum_control_preflight', skill / 'scripts/resolve_rum_application.py')
++helper = importlib.util.module_from_spec(spec)
++sys.modules[spec.name] = helper
++spec.loader.exec_module(helper)
++# urllib uses Python's default trust settings, including SSL_CERT_FILE when supplied.
++# There is deliberately no unverified TLS context or insecure option.
++try:
++    trust = ssl.create_default_context()
++    assert trust.verify_mode == ssl.CERT_REQUIRED and trust.check_hostname
++    site = helper.resolve_site('http://testing-openway.dataflux.cn')
++    result = helper.preflight_site(site, ai_api_tls_context=trust)
++    print(json.dumps({'status': 'passed', 'tls_verification': 'verified', 'evidence': result}, sort_keys=True))
++except (helper.ResolutionError, ssl.SSLError, OSError) as error:
++    print(json.dumps({'status': 'blocked_preflight', 'tls_verification': 'verified', 'error': str(error)}, sort_keys=True))
++    raise SystemExit(1)
+diff --git a/src/rum-config.ts b/src/rum-config.ts
+new file mode 100644
+index 0000000..9a647b0
+--- /dev/null
++++ b/src/rum-config.ts
+@@ -0,0 +1,18 @@
++import type { RumSiteInitConfiguration } from '@cloudcare/browser-rum'
++
++// Vite loads the ignored .env.production.local at build time. Never log these values.
++export function readRumConfiguration(): RumSiteInitConfiguration | undefined {
++  const applicationId = import.meta.env.VITE_RUM_APP_ID
++  const site = import.meta.env.VITE_RUM_SITE
++  const clientToken = import.meta.env.VITE_RUM_CLIENT_TOKEN
++  if (!applicationId || !site || !clientToken) return undefined
++  return {
++    applicationId,
++    site,
++    clientToken,
++    service: __APP_SERVICE__,
++    version: __APP_VERSION__,
++    env: import.meta.env.MODE,
++    sessionReplaySampleRate: 0,
++  }
++}

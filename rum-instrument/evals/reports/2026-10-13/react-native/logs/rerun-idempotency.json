@@ -1,0 +1,16 @@
+{
+  "unchanged": true,
+  "hashes": {
+    "project/package.json": "e68bd7d620ddea429a03f6af7fd22761bcdaffc5eb5cb9b8a5cc578972fdc719",
+    "project/index.js": "e482df7cf6c4d3c78871966421b69b51f22593238c0f23bc625ae7608690497e",
+    "project/rum.js": "1b610aca84d6ddf985e8b58e7209793687f97c2d4cdab328268e8502bb44762b",
+    "project/rum-config.js": "ab0c4b8d55653291f1a3e803f6ddd7f61f5938db966526a8f599443576229ec5",
+    "project/.rum/plan.json": "a25507aedb2dd0ac33d85eedf73f3aa226b6007e9e1ebe763af5260b18fccac1",
+    "project/.gitignore": "4c52d14319c74c9225604383bd36aad879908dbe8b3eb3853b21c7cb9d4bfd6a",
+    "skills/rum-instrument/.skill-install.json": "47fa764d9b0299c40ef0ce31c8ad01be2d7f79d953a66b827578ba247857c67f",
+    "skills/rum-instrument/SKILL.md": "6de90a7d951a0e6344cb97d7a708394cebd9ccef8da0034c9bfd315e196c79e1"
+  },
+  "installed_skill_reused": true,
+  "installer_rerun": false,
+  "update_network_check": false
+}

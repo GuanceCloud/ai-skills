@@ -1,0 +1,10 @@
+[
+  {
+    "path": "/",
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "path": "/v1/ping",
+    "error": "<urlopen error timed out>"
+  }
+]

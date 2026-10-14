@@ -1,0 +1,27 @@
+{
+  "description": "Isolated local RUM SDK acceptance project",
+  "miniprogramRoot": "./",
+  "compileType": "miniprogram",
+  "appid": "<WECHAT_APPID>",
+  "projectname": "rum-phone-sdk",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": false,
+    "minified": false,
+    "nodeModules": false
+  },
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "node_modules"
+      },
+      {
+        "type": "folder",
+        "value": ".rum"
+      }
+    ]
+  },
+  "libVersion": "3.17.3"
+}

@@ -1,0 +1,8 @@
+{
+  "real_sdk_javascript": true,
+  "sdk": "0.4.2",
+  "native_bridge_mocked": true,
+  "original_error_handler_calls": 0,
+  "original_error_handler_preserved": false,
+  "passed": false
+}

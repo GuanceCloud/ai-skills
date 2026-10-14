@@ -31,6 +31,8 @@ Do not assume Browser Session Replay APIs or capabilities apply to MiniApp.
 
 ## Validation
 
+If the no-RUM simulator baseline fails, an authorized phone preview can validate the SDK without running the simulator. First verify page interaction without RUM, then test the instrumented preview. For an isolated LAN receiver, confirm phone-to-computer reachability before collecting signals. Desktop `urlCheck: false` alone does not establish phone access: `request:fail url not in domain list` means domain validation blocked the request. In a development preview, guide the user to enable phone debug mode and reopen the MiniApp, then retry the network check before the other steps. Keep this exception limited to the test preview; production still requires a valid HTTPS receiver and configured domain allowlist. A local capture proves SDK export, not backend ingestion.
+
 Build with the repository's MiniApp toolchain and verify:
 
 - initialization precedes `App()` and runs once;
@@ -39,3 +41,7 @@ Build with the repository's MiniApp toolchain and verify:
 - route/view, resource, error, and action collection works without changing requests;
 - disallowed domains receive no trace header;
 - privacy canaries do not appear in exported data.
+
+## Automatic configuration wiring
+
+Use existing build-time config generation or a maintained ignored configuration module imported by the startup entry. Keep value files out of Git and verify the MiniApp build includes required client configuration. Domain allowlisting is a separate remote action, not a prerequisite to local source edits.

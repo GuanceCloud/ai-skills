@@ -26,10 +26,14 @@ The official macOS guide initializes the SDK in `main.m` or `main.swift` before 
 
 ## Privacy and artifacts
 
-Review application privacy declarations and data-sanitization hooks. Do not collect input/control text, request bodies, raw URL queries, file paths, window titles containing user data, or broad user dictionaries.
+Review application privacy declarations and data-sanitization hooks. Keep input text, request bodies, file paths, window titles containing user data and broad user dictionaries out of custom collection. Apply the shared [data-minimization policy](privacy-security.md#data-minimization) to standard SDK fields: ordinary URL/query fields are allowed; demonstrated sensitive values and explicit project exclusions require supported filtering and payload verification.
 
 Generate dSYM files from the same archive/build and verify UUIDs before planning an upload. Keep upload credentials out of project files and do not upload without authorization.
 
 ## Validation
 
 Build/test the selected macOS scheme. Verify the `FTMacOSSDK` dependency, pre-`NSApplicationMain` single initialization, receiver exclusivity, Application ID selection, lifecycle views, network behavior, optional trace allowlist, matching dSYM identity, and privacy canaries.
+
+## Automatic configuration wiring
+
+Use the application's existing build settings or add an ignored xcconfig with a maintained build-setting/Info.plist reader. Verify the configuration is available before the documented main initialization point; do not introduce a native dotenv loader.

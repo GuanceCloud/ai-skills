@@ -1,0 +1,7 @@
+--------- beginning of main
+10-13 16:01:36.918  4344  4344 I RUMAcceptance: SDK_INITIALIZED count=1 appId=eval_android_acceptance
+10-13 16:01:37.232  4344  4389 I RUMAcceptance: RESOURCE_HTTP status=200 body=LOCAL_RESOURCE_OK
+10-13 16:01:39.931  4344  4344 I RUMAcceptance: SIGNALS_COMPLETED
+10-13 16:02:28.180  4495  4495 I RUMAcceptance: SDK_INITIALIZED count=1 appId=eval_android_acceptance
+10-13 16:02:28.258  4495  4530 I RUMAcceptance: RESOURCE_HTTP status=200 body=LOCAL_RESOURCE_OK
+10-13 16:02:31.078  4495  4495 I RUMAcceptance: SIGNALS_COMPLETED

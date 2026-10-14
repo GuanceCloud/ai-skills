@@ -1,0 +1,297 @@
+{
+  "agent_execution_errors": [
+    "zsh reserved status variable after successful installer",
+    "Wrong initial package path due to cwd; corrected before actual install",
+    "Array.at unsupported in local Node test harness; corrected"
+  ],
+  "case_directory": "${EVAL_ROOT}/miniapp",
+  "changed_files": [
+    "project/.gitignore",
+    "project/app.js",
+    "project/rum.js",
+    "project/config/rum.example.js",
+    "project/config/rum.local.js (ignored)",
+    "project/package.json",
+    "project/package-lock.json",
+    "project/.rum/plan.json (ignored internal plan)"
+  ],
+  "commands": [
+    {
+      "command": "curl -fsS http://127.0.0.1:18763/rum.md",
+      "exit_code": 7,
+      "log": "${EVAL_ROOT}/miniapp/logs/execution-errors.log",
+      "note": "sandbox blocked loopback"
+    },
+    {
+      "command": "curl -fsS http://127.0.0.1:18763/rum.md",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/rum.md",
+      "note": "elevated retry"
+    },
+    {
+      "command": "curl -fsS http://127.0.0.1:18763/install.sh -o install.sh",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/install.log",
+      "note": "downloaded local installer"
+    },
+    {
+      "command": "sh install.sh --base-url http://127.0.0.1:18763 --skill rum-instrument --agent codex --scope user --yes --dest ${EVAL_ROOT}/miniapp/skills",
+      "exit_code": null,
+      "log": "${EVAL_ROOT}/miniapp/logs/install.log",
+      "note": "successful installer log and receipt; subsequent wrapper failed with exit 1 due to read-only status variable, installer exit not separately captured"
+    },
+    {
+      "command": "cat skills/rum-instrument/SKILL.md",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/skill-rerun-read.md",
+      "note": "read installed skill first and during rerun"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/detect_rum_targets.py project --pretty",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/detect-first.json",
+      "note": "one native miniapp"
+    },
+    {
+      "command": "curl -fsS https://registry.npmjs.org/@cloudcare%2Frum-miniapp/latest -o logs/npm-latest.json",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/npm-latest.json",
+      "note": "official public SDK metadata"
+    },
+    {
+      "command": "python3 prepare_plan.py",
+      "exit_code": 0,
+      "log": null,
+      "note": "created schema v3 plan"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase plan",
+      "exit_code": 1,
+      "log": "${EVAL_ROOT}/miniapp/logs/plan-validation.log",
+      "note": "readiness schema missing status/checks"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase plan",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/plan-validation-fixed.log",
+      "note": "corrected structured readiness"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase implement --repository project",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/implement-validation.log",
+      "note": "before application edits"
+    },
+    {
+      "command": "npm install --ignore-scripts --no-audit --no-fund --cache ../npm-cache",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/npm-install.log",
+      "note": "first no-op because preceding package file write used wrong cwd path"
+    },
+    {
+      "command": "npm install --ignore-scripts --no-audit --no-fund --cache ../npm-cache",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/npm-install-fixed.log",
+      "note": "official 2.2.20 package actually added after corrected manifest"
+    },
+    {
+      "command": "node --check project/app.js && node --check project/rum.js && node --check project/config/rum.example.js && node --check project/config/rum.local.js",
+      "exit_code": 0,
+      "log": null,
+      "note": "syntax checks"
+    },
+    {
+      "command": "node verify.cjs",
+      "exit_code": 1,
+      "log": "${EVAL_ROOT}/miniapp/logs/verify-first.log",
+      "note": "test harness used unsupported Array.at"
+    },
+    {
+      "command": "node verify.cjs",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/verify-fixed.log",
+      "note": "mock SDK lifecycle and failures; real package API import"
+    },
+    {
+      "command": "node real-sdk-smoke.cjs",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/real-sdk-smoke.log",
+      "note": "real SDK on mock wx/App/Page, telemetry capture entirely local in memory"
+    },
+    {
+      "command": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli --help",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/wechat-cli-help.log",
+      "note": "runtime error ERR_SOCKET_BAD_PORT, no platform build"
+    },
+    {
+      "command": "curl -fsS http://127.0.0.1:18763/rum.md -o logs/rum-rerun.md",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/rum-rerun.md",
+      "note": "same request repeated"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/detect_rum_targets.py project --pretty",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/detect-rerun.json",
+      "note": "existing integration detected"
+    },
+    {
+      "command": "node verify.cjs",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/verify-rerun.log",
+      "note": "rerun checks"
+    },
+    {
+      "command": "node real-sdk-smoke.cjs",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/real-sdk-rerun.log",
+      "note": "rerun actual SDK mock-runtime smoke"
+    },
+    {
+      "command": "git -C project diff --check",
+      "exit_code": 0,
+      "log": null,
+      "note": "whitespace validation"
+    },
+    {
+      "command": "python3 inline rerun hashes comparison",
+      "exit_code": 0,
+      "log": "${EVAL_ROOT}/miniapp/logs/rerun-result.json",
+      "note": "all maintained files/runtime/plan/skill receipt unchanged"
+    }
+  ],
+  "defects": [
+    {
+      "category": "skill_documentation_gap",
+      "description": "contracts.md describes readiness fields in prose without status/checks nesting. First conforming-looking plan failed validator; inspecting bundled validator exposed required structure.",
+      "evidence": "logs/plan-validation.log",
+      "recovered": true,
+      "severity": "low"
+    },
+    {
+      "category": "detector_observation",
+      "description": "Adding only npm package.json changes MiniApp variants from native to framework+native and confidence high to medium; no actual framework was added. No duplicate app or blocking question resulted.",
+      "evidence": "logs/detect-first.json and logs/detect-rerun.json",
+      "recovered": true,
+      "severity": "low"
+    }
+  ],
+  "handoff": [
+    "Complete existing app skeleton and platform appid then open in functioning WeChat developer tools and Build npm",
+    "Current config/rum.local.js is generated locally and ignored; future clones copy config/rum.example.js and supply DataKit/AppID",
+    "For a real release, use an approved reachable receiver domain and configure its request allowlist with specific remote authorization; do not attempt to allowlist this loopback test URL",
+    "Validate actual device events and collector/console evidence before declaring remote ingestion complete"
+  ],
+  "install": {
+    "command": "sh install.sh --base-url http://127.0.0.1:18763 --skill rum-instrument --agent codex --scope user --yes --dest ${EVAL_ROOT}/miniapp/skills",
+    "exit_code_note": "successful installer log and receipt; subsequent wrapper failed with exit 1 due to read-only status variable, installer exit not separately captured",
+    "install_count": 1,
+    "installer_exit_code": null,
+    "outer_shell_exit_code": 1,
+    "read_references": [
+      "common.md",
+      "execution.md",
+      "miniapp.md",
+      "contracts.md",
+      "validation.md",
+      "privacy-security.md",
+      "official-sources.json#miniapp"
+    ],
+    "read_skill_paths": [
+      "${EVAL_ROOT}/miniapp/skills/rum-instrument/SKILL.md"
+    ],
+    "real_user_install_untouched": true,
+    "receipt": {
+      "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+      "installed_at": "2026-10-13T03:55:30Z",
+      "name": "rum-instrument",
+      "schema_version": 1,
+      "source": "http://127.0.0.1:18763/versions/ebaddc3a8c835cc3f046920b0595a782a34d6459/skills/rum-instrument.tar.gz",
+      "version": "ebaddc3a8c835cc3f046920b0595a782a34d6459"
+    },
+    "success": true
+  },
+  "limitations": [
+    "App skeleton lists pages/index/index but no page files exist; project appid is placeholder",
+    "Installed WeChat CLI --help throws ERR_SOCKET_BAD_PORT despite process exit 0; no true WeChat build executed",
+    "Loopback HTTP DataKit URL is host-test-only and unsuitable for production request domain allowlisting or direct phone reachability",
+    "Real SDK ran in mocked platform, so timings, platform API parity, real-device lifecycle, domain allowlist and remote ingestion remain unverified"
+  ],
+  "official_sources": [
+    "https://docs.guance.com/real-user-monitoring/miniapp/app-access/",
+    "https://registry.npmjs.org/@cloudcare%2Frum-miniapp/latest"
+  ],
+  "original_request": "请按 http://127.0.0.1:18763/rum.md 完成当前项目 RUM 接入。datakitUrl: http://127.0.0.1:19529 appId: eval_miniapp",
+  "project": "${EVAL_ROOT}/miniapp/project",
+  "questions": {
+    "business_question_count": 0,
+    "host_permission_escalations": 6,
+    "parent_infrastructure_messages": 1,
+    "questions": [],
+    "routine_confirmation_count": 0
+  },
+  "rerun": {
+    "business_questions": 0,
+    "hashes": {
+      ".gitignore": "380c55287f246f6a494d0bb6804104211ea216a8ce525c3258cce7ed8ba59310",
+      ".rum/plan.json": "6dc0924f6fb5c90dfbc058db735e40d60d2277d072d06d346968ac4638794de9",
+      "app.js": "c52ba5d7dc5f0b8e9d5703f66e625831eb78e75a3271be7ea74fa144b8499efd",
+      "config/rum.example.js": "3a86f8c1845e4f986a81730fa2d898d91693484147fe75994939071b7b02175a",
+      "config/rum.local.js": "7a18a764e476c186d8a80cad42e65c097c3dd15a88fd65b507e7a11adbad6431",
+      "installed_skill": "6276334cf95bfaf12404b74af6c98282c40a37f79228ce23c3fcafea99c8d506",
+      "package-lock.json": "ee4444a57ba71ac8d5a43648680ad22778cd4ba8247c460989af9b700040ef89",
+      "package.json": "b76101def396cc5af4237de512b788d07095e884cac4bb55b99792bfb17a6763",
+      "rum.js": "2a1cdad8daced913a72e82f027f2777b25a5275de231b2a6d53679abf50ae631"
+    },
+    "installer_runs": 0,
+    "reused_installed_skill": true,
+    "routine_confirmations": 0,
+    "same_request": true,
+    "single_initializer": true,
+    "source_and_config_unchanged": true
+  },
+  "scenario": "miniapp",
+  "sdk": {
+    "node_version": "v15.6.0",
+    "npm_version": "7.4.0",
+    "package": "@cloudcare/rum-miniapp",
+    "real_dependency_downloaded": true,
+    "version": "2.2.20"
+  },
+  "status": "local_integration_complete_platform_build_and_remote_ingestion_unverified",
+  "validation": {
+    "control_plane_contacted": false,
+    "deployment_or_upload": false,
+    "mock_sdk_tests": [
+      "initialization before App and once",
+      "SDK load failure preserves App startup",
+      "SDK init failure preserves App startup",
+      "missing config preserves App startup",
+      "DataKit receiver and Application ID mapping",
+      "env/version consumed from wx account info"
+    ],
+    "plan": true,
+    "platform_compilation": false,
+    "pre_implementation_contract": true,
+    "real_collector_contacted": false,
+    "real_sdk_download_and_commonjs_api": true,
+    "real_sdk_mock_runtime": {
+      "business_request_and_headers_unchanged": true,
+      "event_types": [
+        "action",
+        "error",
+        "resource",
+        "view"
+      ],
+      "init_count": 1,
+      "mocked": "wx APIs, App, Page, Component and network transport",
+      "passed": true,
+      "query_auth_body_canaries_absent": true,
+      "sdk": "actual npm 2.2.20",
+      "telemetry_requests_captured": 1
+    },
+    "remote_ingestion_verified": false,
+    "syntax": true
+  }
+}

@@ -53,6 +53,22 @@ class DetectRumTargetsTests(unittest.TestCase):
         self.assertIn("browser-rum-global", targets[0]["existing_rum_markers"])
         self.assertNotIn("do-not-emit-this-value", json.dumps(targets))
 
+    def test_adding_miniapp_sdk_does_not_invent_a_framework(self):
+        self.write('app.js', 'App({})')
+        self.write('app.json', '{"pages": []}')
+        self.write('project.config.json', '{"compileType": "miniprogram"}')
+        before = self.targets()[0]
+        self.write('package.json', json.dumps({'dependencies': {'@cloudcare/rum-miniapp': '2.2.20'}}))
+        after = self.targets()[0]
+        for key in ('id', 'platform', 'variants', 'confidence', 'application_id_slots'):
+            self.assertEqual(before[key], after[key], key)
+        self.assertIn('miniapp-rum-package', after['existing_rum_markers'])
+
+    def test_actual_miniapp_framework_dependency_keeps_framework_variant(self):
+        self.write('package.json', json.dumps({'dependencies': {'@tarojs/taro': '4.0.0', '@cloudcare/rum-miniapp': '2.2.20'}}))
+        self.write('src/app.ts', 'export default {}')
+        self.assertEqual(['framework'], self.targets()[0]['variants'])
+
     def test_detects_vanilla_web_without_package_manifest(self):
         self.write(
             "index.html",
@@ -221,6 +237,25 @@ class DetectRumTargetsTests(unittest.TestCase):
         self.assertEqual(1, len(targets))
         self.assertEqual("uniapp", targets[0]["platform"])
         self.assertEqual(["android", "ios", "web"], targets[0]["application_id_slots"])
+
+    def test_uniapp_root_html_belongs_to_the_wrapper(self):
+        self.write('manifest.json', '{"h5":{}}')
+        self.write('pages.json', '{"pages":[]}')
+        self.write('index.html', '<html><div id="app"></div></html>')
+        for with_package in (False, True):
+            if with_package:
+                self.write('package.json', json.dumps({'dependencies': {'@dcloudio/uni-app': '3.0.0', 'vue': '3.5.0'}}))
+            with self.subTest(with_package=with_package):
+                targets = self.targets()
+                self.assertEqual(['uniapp'], [t['platform'] for t in targets])
+                self.assertEqual(['web'], targets[0]['application_id_slots'])
+
+    def test_uniapp_ownership_preserves_a_sibling_web_application(self):
+        self.write('mobile/manifest.json', '{"h5":{}}')
+        self.write('mobile/pages.json', '{"pages":[]}')
+        self.write('mobile/index.html', '<html></html>')
+        self.write('admin/index.html', '<html></html>')
+        self.assertEqual(['web:admin', 'uniapp:mobile'], [t['id'] for t in self.targets()])
 
     def test_detects_native_desktop_and_miniapp_families(self):
         self.write("apps/mini/project.config.json", "{}\n")

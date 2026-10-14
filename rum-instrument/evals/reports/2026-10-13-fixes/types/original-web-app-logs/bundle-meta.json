@@ -1,0 +1,4766 @@
+{
+  "inputs": {
+    "node_modules/@cloudcare/browser-core/esm/helper/sdkMap.js": {
+      "bytes": 7568,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/display.js": {
+      "bytes": 765,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/monitor.js": {
+      "bytes": 1208,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "./display"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/catchUserErrors.js": {
+      "bytes": 306,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "./display"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/init.js": {
+      "bytes": 2129,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "./helper/monitor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/catchUserErrors.js",
+          "kind": "import-statement",
+          "original": "./helper/catchUserErrors"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/getZoneJsOriginalValue.js": {
+      "bytes": 1066,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/init.js",
+          "kind": "import-statement",
+          "original": "../init"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/timer.js": {
+      "bytes": 696,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/getZoneJsOriginalValue.js",
+          "kind": "import-statement",
+          "original": "./getZoneJsOriginalValue"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/init.js",
+          "kind": "import-statement",
+          "original": "../init"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "./monitor"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/navigationStart.js": {
+      "bytes": 589,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/tools.js": {
+      "bytes": 40830,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/sdkMap.js",
+          "kind": "import-statement",
+          "original": "./sdkMap"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "./display"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "./timer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/navigationStart.js",
+          "kind": "import-statement",
+          "original": "./navigationStart"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/boundedBuffer.js": {
+      "bytes": 595,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/valueHistory.js": {
+      "bytes": 3107,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "./timer"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/deviceInfo.js": {
+      "bytes": 20927,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "../helper/display"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "../helper/monitor"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/enums.js": {
+      "bytes": 2376,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/serialisation/jsonStringify.js": {
+      "bytes": 1883,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/tracekit/computeStackTrace.js": {
+      "bytes": 4280,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/tracekit/tracekit.js": {
+      "bytes": 3766,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/instrumentMethod.js",
+          "kind": "import-statement",
+          "original": "../helper/instrumentMethod"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/tracekit/computeStackTrace.js",
+          "kind": "import-statement",
+          "original": "./computeStackTrace"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/tracekit/index.js": {
+      "bytes": 150,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/tracekit/computeStackTrace.js",
+          "kind": "import-statement",
+          "original": "./computeStackTrace"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/tracekit/tracekit.js",
+          "kind": "import-statement",
+          "original": "./tracekit"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/byteUtils.js": {
+      "bytes": 980,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/sanitize.js": {
+      "bytes": 9216,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "./display"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/byteUtils.js",
+          "kind": "import-statement",
+          "original": "./byteUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/jsonStringify.js",
+          "kind": "import-statement",
+          "original": "./serialisation/jsonStringify"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js": {
+      "bytes": 5476,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/jsonStringify.js",
+          "kind": "import-statement",
+          "original": "../helper/serialisation/jsonStringify"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/tracekit/index.js",
+          "kind": "import-statement",
+          "original": "../tracekit"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "../helper/monitor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/sanitize.js",
+          "kind": "import-statement",
+          "original": "../helper/sanitize"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/instrumentMethod.js": {
+      "bytes": 6066,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "./timer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "./monitor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js",
+          "kind": "import-statement",
+          "original": "./errorTools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/error/trackRuntimeError.js": {
+      "bytes": 697,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js",
+          "kind": "import-statement",
+          "original": "../helper/errorTools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "../helper/enums"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/tracekit/index.js",
+          "kind": "import-statement",
+          "original": "../tracekit"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/observable.js": {
+      "bytes": 1432,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/console/consoleObservable.js": {
+      "bytes": 2730,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/tracekit/index.js",
+          "kind": "import-statement",
+          "original": "../tracekit"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js",
+          "kind": "import-statement",
+          "original": "../helper/errorTools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "../helper/observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/jsonStringify.js",
+          "kind": "import-statement",
+          "original": "../helper/serialisation/jsonStringify"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "../helper/display"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "../helper/monitor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "../helper/enums"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js",
+          "kind": "import-statement",
+          "original": "../helper/errorTools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/sanitize.js",
+          "kind": "import-statement",
+          "original": "../helper/sanitize"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js": {
+      "bytes": 3678,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/getZoneJsOriginalValue.js",
+          "kind": "import-statement",
+          "original": "../helper/getZoneJsOriginalValue"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "../helper/monitor"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/report/reportObservable.js": {
+      "bytes": 3377,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js",
+          "kind": "import-statement",
+          "original": "../helper/errorTools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "../helper/observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js",
+          "kind": "import-statement",
+          "original": "../browser/addEventListener"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "../helper/enums"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "../helper/monitor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js",
+          "kind": "import-statement",
+          "original": "../helper/errorTools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "../helper/enums"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/eventEmitter.js": {
+      "bytes": 697,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/lifeCycle.js": {
+      "bytes": 1711,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/limitModification.js": {
+      "bytes": 1611,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/sanitize.js",
+          "kind": "import-statement",
+          "original": "./sanitize"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/createEventRateLimiter.js": {
+      "bytes": 1013,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js",
+          "kind": "import-statement",
+          "original": "./errorTools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "./timer"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/urlPolyfill.js": {
+      "bytes": 1681,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/mobileUtil.js": {
+      "bytes": 2904,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/readBytesFromStream.js": {
+      "bytes": 2000,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "./monitor"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/requestIdleCallback.js": {
+      "bytes": 1260,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "./timer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "./monitor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/taskQueue.js": {
+      "bytes": 1739,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/requestIdleCallback.js",
+          "kind": "import-statement",
+          "original": "./requestIdleCallback"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/configuration/transportConfiguration.js": {
+      "bytes": 2268,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/browser/cookie.js": {
+      "bytes": 3430,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/session/sessionConstants.js": {
+      "bytes": 373,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/session/sessionState.js": {
+      "bytes": 2399,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionConstants.js",
+          "kind": "import-statement",
+          "original": "./sessionConstants"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/session/sessionInCookie.js": {
+      "bytes": 2335,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/cookie.js",
+          "kind": "import-statement",
+          "original": "../browser/cookie"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionConstants.js",
+          "kind": "import-statement",
+          "original": "./sessionConstants"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionState.js",
+          "kind": "import-statement",
+          "original": "./sessionState"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/session/sessionInLocalStorage.js": {
+      "bytes": 1313,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionState.js",
+          "kind": "import-statement",
+          "original": "./sessionState"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionConstants.js",
+          "kind": "import-statement",
+          "original": "./sessionConstants"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/connectivity.js": {
+      "bytes": 489,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/telemetry/types.js": {
+      "bytes": 203,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/telemetry/telemetry.js": {
+      "bytes": 4822,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "../helper/display"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js",
+          "kind": "import-statement",
+          "original": "../helper/errorTools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/boundedBuffer.js",
+          "kind": "import-statement",
+          "original": "../helper/boundedBuffer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/tracekit/index.js",
+          "kind": "import-statement",
+          "original": "../tracekit"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "../helper/observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/connectivity.js",
+          "kind": "import-statement",
+          "original": "../helper/connectivity"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "..//helper/monitor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/jsonStringify.js",
+          "kind": "import-statement",
+          "original": "../helper/serialisation/jsonStringify"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "../helper/enums"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/telemetry/types.js",
+          "kind": "import-statement",
+          "original": "./types"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/session/sessionStoreOperations.js": {
+      "bytes": 4652,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "../helper/timer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionState.js",
+          "kind": "import-statement",
+          "original": "./sessionState"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/telemetry/telemetry.js",
+          "kind": "import-statement",
+          "original": "../telemetry/telemetry"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/session/sessionStore.js": {
+      "bytes": 9723,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "../helper/timer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "../helper/observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "../helper/display"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionInCookie.js",
+          "kind": "import-statement",
+          "original": "./sessionInCookie"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionState.js",
+          "kind": "import-statement",
+          "original": "./sessionState"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionInLocalStorage.js",
+          "kind": "import-statement",
+          "original": "./sessionInLocalStorage"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionStoreOperations.js",
+          "kind": "import-statement",
+          "original": "./sessionStoreOperations"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionConstants.js",
+          "kind": "import-statement",
+          "original": "./sessionConstants"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/configuration/configuration.js": {
+      "bytes": 3952,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/catchUserErrors.js",
+          "kind": "import-statement",
+          "original": "../helper/catchUserErrors"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "../helper/display"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/byteUtils.js",
+          "kind": "import-statement",
+          "original": "../helper/byteUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/configuration/transportConfiguration.js",
+          "kind": "import-statement",
+          "original": "./transportConfiguration"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionStore.js",
+          "kind": "import-statement",
+          "original": "../session/sessionStore"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/configuration/remoteConfiguration.js": {
+      "bytes": 4421,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js",
+          "kind": "import-statement",
+          "original": "../browser/addEventListener"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "../helper/display"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/configuration/transportConfiguration.js",
+          "kind": "import-statement",
+          "original": "./transportConfiguration"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/browser/fetchObservable.js": {
+      "bytes": 4407,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/instrumentMethod.js",
+          "kind": "import-statement",
+          "original": "../helper/instrumentMethod"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "../helper/observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "../helper/monitor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/urlPolyfill.js",
+          "kind": "import-statement",
+          "original": "../helper/urlPolyfill"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/browser/xhrObservable.js": {
+      "bytes": 3602,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/instrumentMethod.js",
+          "kind": "import-statement",
+          "original": "../helper/instrumentMethod"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "../helper/observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/urlPolyfill.js",
+          "kind": "import-statement",
+          "original": "../helper/urlPolyfill"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js",
+          "kind": "import-statement",
+          "original": "../browser/addEventListener"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/browser/webSocketObservable.js": {
+      "bytes": 3271,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js",
+          "kind": "import-statement",
+          "original": "./addEventListener"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/instrumentMethod.js",
+          "kind": "import-statement",
+          "original": "../helper/instrumentMethod"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "../helper/observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/byteUtils.js",
+          "kind": "import-statement",
+          "original": "../helper/byteUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/browser/pageExitObservable.js": {
+      "bytes": 2773,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "../helper/observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "../helper/enums"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js",
+          "kind": "import-statement",
+          "original": "../browser/addEventListener"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "../helper/timer"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/browser/htmlDomUtils.js": {
+      "bytes": 1629,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/browser/runOnReadyState.js": {
+      "bytes": 594,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js",
+          "kind": "import-statement",
+          "original": "./addEventListener"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "../helper/enums"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/browser/scroll.js": {
+      "bytes": 656,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/dataMap.js": {
+      "bytes": 9595,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "./helper/enums"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/session/sessionManagement.js": {
+      "bytes": 4092,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "../helper/observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/valueHistory.js",
+          "kind": "import-statement",
+          "original": "../helper/valueHistory"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "../helper/enums"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js",
+          "kind": "import-statement",
+          "original": "../browser/addEventListener"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "../helper/timer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionConstants.js",
+          "kind": "import-statement",
+          "original": "./sessionConstants"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionStore.js",
+          "kind": "import-statement",
+          "original": "./sessionStore"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/transport/sendWithRetryStrategy.js": {
+      "bytes": 17145,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/sdkMap.js",
+          "kind": "import-statement",
+          "original": "../helper/sdkMap"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/byteUtils.js",
+          "kind": "import-statement",
+          "original": "../helper/byteUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js",
+          "kind": "import-statement",
+          "original": "../helper/errorTools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "../helper/timer"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/polyfills.js": {
+      "bytes": 557,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/transport/httpRequest.js": {
+      "bytes": 7579,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/transport/sendWithRetryStrategy.js",
+          "kind": "import-statement",
+          "original": "./sendWithRetryStrategy"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js",
+          "kind": "import-statement",
+          "original": "../browser/addEventListener"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "../helper/monitor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/polyfills.js",
+          "kind": "import-statement",
+          "original": "../helper/polyfills"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/telemetry/telemetry.js",
+          "kind": "import-statement",
+          "original": "../telemetry/telemetry"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/serialisation/rowData.js": {
+      "bytes": 1275,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/jsonStringify.js",
+          "kind": "import-statement",
+          "original": "./jsonStringify"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/transport/batch.js": {
+      "bytes": 17190,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "../helper/display"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/rowData.js",
+          "kind": "import-statement",
+          "original": "../helper/serialisation/rowData"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/dataMap.js",
+          "kind": "import-statement",
+          "original": "../dataMap"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "../helper/enums"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/byteUtils.js",
+          "kind": "import-statement",
+          "original": "../helper/byteUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/pageExitObservable.js",
+          "kind": "import-statement",
+          "original": "../browser/pageExitObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/jsonStringify.js",
+          "kind": "import-statement",
+          "original": "../helper/serialisation/jsonStringify"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/transport/flushController.js": {
+      "bytes": 5361,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "../helper/observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "../helper/timer"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/transport/startBatchWithReplica.js": {
+      "bytes": 1740,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/transport/batch.js",
+          "kind": "import-statement",
+          "original": "./batch"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/transport/httpRequest.js",
+          "kind": "import-statement",
+          "original": "./httpRequest"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/transport/flushController.js",
+          "kind": "import-statement",
+          "original": "./flushController"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/transport/eventBridge.js": {
+      "bytes": 2410,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/init.js",
+          "kind": "import-statement",
+          "original": "../init"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/transport/index.js": {
+      "bytes": 375,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/transport/httpRequest.js",
+          "kind": "import-statement",
+          "original": "./httpRequest"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/transport/batch.js",
+          "kind": "import-statement",
+          "original": "./batch"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/transport/startBatchWithReplica.js",
+          "kind": "import-statement",
+          "original": "./startBatchWithReplica"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/transport/flushController.js",
+          "kind": "import-statement",
+          "original": "./flushController"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/transport/eventBridge.js",
+          "kind": "import-statement",
+          "original": "./eventBridge"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/synthetics/syntheticsWorkerValues.js": {
+      "bytes": 988,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/cookie.js",
+          "kind": "import-statement",
+          "original": "../browser/cookie"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/serialisation/contextManager.js": {
+      "bytes": 3052,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/sanitize.js",
+          "kind": "import-statement",
+          "original": "../sanitize"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "../observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "../display"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/serialisation/const.js": {
+      "bytes": 403,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/serialisation/storedContextManager.js": {
+      "bytes": 1678,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "../enums"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js",
+          "kind": "import-statement",
+          "original": "../../browser/addEventListener"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/serialisation/customerDataTracker.js": {
+      "bytes": 4768,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/sdkMap.js",
+          "kind": "import-statement",
+          "original": "../sdkMap"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/byteUtils.js",
+          "kind": "import-statement",
+          "original": "../byteUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/jsonStringify.js",
+          "kind": "import-statement",
+          "original": "./jsonStringify"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "../display"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/encoder.js": {
+      "bytes": 1044,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/byteUtils.js",
+          "kind": "import-statement",
+          "original": "./byteUtils"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/user/user.js": {
+      "bytes": 763,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "../helper/display"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "../helper/tools"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/user/index.js": {
+      "bytes": 23,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/user/user.js",
+          "kind": "import-statement",
+          "original": "./user"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/helper/displayAlreadyInitializedError.js": {
+      "bytes": 282,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "./display"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-core/esm/index.js": {
+      "bytes": 2655,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/boundedBuffer.js",
+          "kind": "import-statement",
+          "original": "./helper/boundedBuffer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/valueHistory.js",
+          "kind": "import-statement",
+          "original": "./helper/valueHistory"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/deviceInfo.js",
+          "kind": "import-statement",
+          "original": "./helper/deviceInfo"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/enums.js",
+          "kind": "import-statement",
+          "original": "./helper/enums"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/instrumentMethod.js",
+          "kind": "import-statement",
+          "original": "./helper/instrumentMethod"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js",
+          "kind": "import-statement",
+          "original": "./helper/errorTools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/byteUtils.js",
+          "kind": "import-statement",
+          "original": "./helper/byteUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/error/trackRuntimeError.js",
+          "kind": "import-statement",
+          "original": "./error/trackRuntimeError"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/console/consoleObservable.js",
+          "kind": "import-statement",
+          "original": "./console/consoleObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/report/reportObservable.js",
+          "kind": "import-statement",
+          "original": "./report/reportObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/display.js",
+          "kind": "import-statement",
+          "original": "./helper/display"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/monitor.js",
+          "kind": "import-statement",
+          "original": "./helper/monitor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/sanitize.js",
+          "kind": "import-statement",
+          "original": "./helper/sanitize"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/eventEmitter.js",
+          "kind": "import-statement",
+          "original": "./helper/eventEmitter"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/lifeCycle.js",
+          "kind": "import-statement",
+          "original": "./helper/lifeCycle"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/limitModification.js",
+          "kind": "import-statement",
+          "original": "./helper/limitModification"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/createEventRateLimiter.js",
+          "kind": "import-statement",
+          "original": "./helper/createEventRateLimiter"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/observable.js",
+          "kind": "import-statement",
+          "original": "./helper/observable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/tools.js",
+          "kind": "import-statement",
+          "original": "./helper/tools"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/urlPolyfill.js",
+          "kind": "import-statement",
+          "original": "./helper/urlPolyfill"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/mobileUtil.js",
+          "kind": "import-statement",
+          "original": "./helper/mobileUtil"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/getZoneJsOriginalValue.js",
+          "kind": "import-statement",
+          "original": "./helper/getZoneJsOriginalValue"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/timer.js",
+          "kind": "import-statement",
+          "original": "./helper/timer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/readBytesFromStream.js",
+          "kind": "import-statement",
+          "original": "./helper/readBytesFromStream"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/requestIdleCallback.js",
+          "kind": "import-statement",
+          "original": "./helper/requestIdleCallback"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/taskQueue.js",
+          "kind": "import-statement",
+          "original": "./helper/taskQueue"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/tracekit/index.js",
+          "kind": "import-statement",
+          "original": "./tracekit"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/configuration/configuration.js",
+          "kind": "import-statement",
+          "original": "./configuration/configuration"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/configuration/transportConfiguration.js",
+          "kind": "import-statement",
+          "original": "./configuration/transportConfiguration"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/configuration/remoteConfiguration.js",
+          "kind": "import-statement",
+          "original": "./configuration/remoteConfiguration"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/cookie.js",
+          "kind": "import-statement",
+          "original": "./browser/cookie"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/fetchObservable.js",
+          "kind": "import-statement",
+          "original": "./browser/fetchObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/xhrObservable.js",
+          "kind": "import-statement",
+          "original": "./browser/xhrObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/webSocketObservable.js",
+          "kind": "import-statement",
+          "original": "./browser/webSocketObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/pageExitObservable.js",
+          "kind": "import-statement",
+          "original": "./browser/pageExitObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/htmlDomUtils.js",
+          "kind": "import-statement",
+          "original": "./browser/htmlDomUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js",
+          "kind": "import-statement",
+          "original": "./browser/addEventListener"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/runOnReadyState.js",
+          "kind": "import-statement",
+          "original": "./browser/runOnReadyState"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/browser/scroll.js",
+          "kind": "import-statement",
+          "original": "./browser/scroll"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/dataMap.js",
+          "kind": "import-statement",
+          "original": "./dataMap"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/init.js",
+          "kind": "import-statement",
+          "original": "./init"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionManagement.js",
+          "kind": "import-statement",
+          "original": "./session/sessionManagement"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionConstants.js",
+          "kind": "import-statement",
+          "original": "./session/sessionConstants"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/session/sessionStore.js",
+          "kind": "import-statement",
+          "original": "./session/sessionStore"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/transport/index.js",
+          "kind": "import-statement",
+          "original": "./transport"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/synthetics/syntheticsWorkerValues.js",
+          "kind": "import-statement",
+          "original": "./synthetics/syntheticsWorkerValues"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/contextManager.js",
+          "kind": "import-statement",
+          "original": "./helper/serialisation/contextManager"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/const.js",
+          "kind": "import-statement",
+          "original": "./helper/serialisation/const"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/jsonStringify.js",
+          "kind": "import-statement",
+          "original": "./helper/serialisation/jsonStringify"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/rowData.js",
+          "kind": "import-statement",
+          "original": "./helper/serialisation/rowData"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/storedContextManager.js",
+          "kind": "import-statement",
+          "original": "./helper/serialisation/storedContextManager"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/serialisation/customerDataTracker.js",
+          "kind": "import-statement",
+          "original": "./helper/serialisation/customerDataTracker"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/encoder.js",
+          "kind": "import-statement",
+          "original": "./helper/encoder"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/user/index.js",
+          "kind": "import-statement",
+          "original": "./user"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/polyfills.js",
+          "kind": "import-statement",
+          "original": "./helper/polyfills"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/telemetry/telemetry.js",
+          "kind": "import-statement",
+          "original": "./telemetry/telemetry"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/catchUserErrors.js",
+          "kind": "import-statement",
+          "original": "./helper/catchUserErrors"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/connectivity.js",
+          "kind": "import-statement",
+          "original": "./helper/connectivity"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/displayAlreadyInitializedError.js",
+          "kind": "import-statement",
+          "original": "./helper/displayAlreadyInitializedError"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/helper/sdkMap.js",
+          "kind": "import-statement",
+          "original": "./helper/sdkMap"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/initViewportObservable.js": {
+      "bytes": 1169,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/timeAnchor.js": {
+      "bytes": 1691,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/types/sessionReplayConstants.js": {
+      "bytes": 787,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/types/index.js": {
+      "bytes": 41,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/types/sessionReplayConstants.js",
+          "kind": "import-statement",
+          "original": "./sessionReplayConstants"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/constants.js": {
+      "bytes": 1048,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/privacy.js": {
+      "bytes": 10544,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/constants.js",
+          "kind": "import-statement",
+          "original": "../constants"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getActionNameFromElement.js": {
+      "bytes": 12468,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/privacy.js",
+          "kind": "import-statement",
+          "original": "../../privacy"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getSelectorsFromElement.js": {
+      "bytes": 9578,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getActionNameFromElement.js",
+          "kind": "import-statement",
+          "original": "./getActionNameFromElement"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/privacy.js": {
+      "bytes": 30,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/privacy.js",
+          "kind": "import-statement",
+          "original": "../../privacy"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serializationUtils.js": {
+      "bytes": 25082,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/constants.js",
+          "kind": "import-statement",
+          "original": "../../../constants"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/privacy.js",
+          "kind": "import-statement",
+          "original": "./privacy"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceUtils.js": {
+      "bytes": 8391,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serialize.js": {
+      "bytes": 30669,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getSelectorsFromElement.js",
+          "kind": "import-statement",
+          "original": "../../rumEventsCollection/actions/getSelectorsFromElement"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/constants.js",
+          "kind": "import-statement",
+          "original": "../../../constants"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/types/index.js",
+          "kind": "import-statement",
+          "original": "../../../types"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/privacy.js",
+          "kind": "import-statement",
+          "original": "./privacy"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serializationUtils.js",
+          "kind": "import-statement",
+          "original": "./serializationUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceUtils.js",
+          "kind": "import-statement",
+          "original": "../../rumEventsCollection/resource/resourceUtils"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/utils.js": {
+      "bytes": 1069,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/types/index.js",
+          "kind": "import-statement",
+          "original": "../../../types"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/domMutationObservable.js": {
+      "bytes": 2688,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationResourceBudget.js": {
+      "bytes": 5077,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationBatch.js": {
+      "bytes": 22063,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationResourceBudget.js",
+          "kind": "import-statement",
+          "original": "./mutationResourceBudget"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationObserver.js": {
+      "bytes": 99066,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/domMutationObservable.js",
+          "kind": "import-statement",
+          "original": "../../domMutationObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/constants.js",
+          "kind": "import-statement",
+          "original": "../../../constants"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/privacy.js",
+          "kind": "import-statement",
+          "original": "./privacy"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serializationUtils.js",
+          "kind": "import-statement",
+          "original": "./serializationUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serialize.js",
+          "kind": "import-statement",
+          "original": "./serialize"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationBatch.js",
+          "kind": "import-statement",
+          "original": "./mutationBatch"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationResourceBudget.js",
+          "kind": "import-statement",
+          "original": "./mutationResourceBudget"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/viewports.js": {
+      "bytes": 2552,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/observers.js": {
+      "bytes": 23396,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/initViewportObservable.js",
+          "kind": "import-statement",
+          "original": "../../initViewportObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/constants.js",
+          "kind": "import-statement",
+          "original": "../../../constants"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/types/index.js",
+          "kind": "import-statement",
+          "original": "../../../types"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/privacy.js",
+          "kind": "import-statement",
+          "original": "./privacy"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serializationUtils.js",
+          "kind": "import-statement",
+          "original": "./serializationUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/utils.js",
+          "kind": "import-statement",
+          "original": "./utils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationObserver.js",
+          "kind": "import-statement",
+          "original": "./mutationObserver"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/viewports.js",
+          "kind": "import-statement",
+          "original": "./viewports"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/elementsScrollPositions.js": {
+      "bytes": 870,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/shadowRootsController.js": {
+      "bytes": 34296,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationObserver.js",
+          "kind": "import-statement",
+          "original": "./mutationObserver"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/observers.js",
+          "kind": "import-statement",
+          "original": "./observers"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationResourceBudget.js",
+          "kind": "import-statement",
+          "original": "./mutationResourceBudget"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasSerializeArgs.js": {
+      "bytes": 3554,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasMutationRecord.js": {
+      "bytes": 830,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/types/index.js",
+          "kind": "import-statement",
+          "original": "../../../types"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/deflate/deflateWorker.js": {
+      "bytes": 23824,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasEncodeWorker.js": {
+      "bytes": 8760,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/deflate/deflateWorker.js",
+          "kind": "import-statement",
+          "original": "../../deflate/deflateWorker"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContext.js": {
+      "bytes": 1775,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasEncodeBridge.js": {
+      "bytes": 25296,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasEncodeWorker.js",
+          "kind": "import-statement",
+          "original": "./canvasEncodeWorker"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContext.js",
+          "kind": "import-statement",
+          "original": "./canvasContext"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasSerializeArgs.js",
+          "kind": "import-statement",
+          "original": "./canvasSerializeArgs"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasFrameSignature.js": {
+      "bytes": 3518,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContext.js",
+          "kind": "import-statement",
+          "original": "./canvasContext"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasObserver.js": {
+      "bytes": 18394,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serializationUtils.js",
+          "kind": "import-statement",
+          "original": "./serializationUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasSerializeArgs.js",
+          "kind": "import-statement",
+          "original": "./canvasSerializeArgs"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasMutationRecord.js",
+          "kind": "import-statement",
+          "original": "./canvasMutationRecord"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasEncodeBridge.js",
+          "kind": "import-statement",
+          "original": "./canvasEncodeBridge"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasFrameSignature.js",
+          "kind": "import-statement",
+          "original": "./canvasFrameSignature"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContext.js",
+          "kind": "import-statement",
+          "original": "./canvasContext"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasWebGLPluginHost.js": {
+      "bytes": 772,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContext.js",
+          "kind": "import-statement",
+          "original": "./canvasContext"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasCommandSerializeArgs.js": {
+      "bytes": 4471,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasCommandCapture.js": {
+      "bytes": 47846,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasCommandSerializeArgs.js",
+          "kind": "import-statement",
+          "original": "./canvasCommandSerializeArgs"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasMutationRecord.js",
+          "kind": "import-statement",
+          "original": "./canvasMutationRecord"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasCommandObserver.js": {
+      "bytes": 48873,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasCommandCapture.js",
+          "kind": "import-statement",
+          "original": "./canvasCommandCapture"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContext.js",
+          "kind": "import-statement",
+          "original": "./canvasContext"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContinuousScheduler.js": {
+      "bytes": 14206,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContext.js",
+          "kind": "import-statement",
+          "original": "./canvasContext"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/record.js": {
+      "bytes": 151501,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/initViewportObservable.js",
+          "kind": "import-statement",
+          "original": "../../initViewportObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/timeAnchor.js",
+          "kind": "import-statement",
+          "original": "../timeAnchor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/timeAnchor.js",
+          "kind": "import-statement",
+          "original": "../timeAnchor"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/types/index.js",
+          "kind": "import-statement",
+          "original": "../../../types"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/constants.js",
+          "kind": "import-statement",
+          "original": "../../../constants"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serialize.js",
+          "kind": "import-statement",
+          "original": "./serialize"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/observers.js",
+          "kind": "import-statement",
+          "original": "./observers"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/viewports.js",
+          "kind": "import-statement",
+          "original": "./viewports"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/utils.js",
+          "kind": "import-statement",
+          "original": "./utils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/elementsScrollPositions.js",
+          "kind": "import-statement",
+          "original": "./elementsScrollPositions"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/shadowRootsController.js",
+          "kind": "import-statement",
+          "original": "./shadowRootsController"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasObserver.js",
+          "kind": "import-statement",
+          "original": "./canvasObserver"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasEncodeBridge.js",
+          "kind": "import-statement",
+          "original": "./canvasEncodeBridge"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContext.js",
+          "kind": "import-statement",
+          "original": "./canvasContext"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasWebGLPluginHost.js",
+          "kind": "import-statement",
+          "original": "./canvasWebGLPluginHost"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasCommandObserver.js",
+          "kind": "import-statement",
+          "original": "./canvasCommandObserver"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serializationUtils.js",
+          "kind": "import-statement",
+          "original": "./serializationUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationObserver.js",
+          "kind": "import-statement",
+          "original": "./mutationObserver"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationResourceBudget.js",
+          "kind": "import-statement",
+          "original": "./mutationResourceBudget"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/privacy.js",
+          "kind": "import-statement",
+          "original": "./privacy"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContinuousScheduler.js",
+          "kind": "import-statement",
+          "original": "./canvasContinuousScheduler"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/index.js": {
+      "bytes": 241,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/record.js",
+          "kind": "import-statement",
+          "original": "./record"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serialize.js",
+          "kind": "import-statement",
+          "original": "./serialize"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/elementsScrollPositions.js",
+          "kind": "import-statement",
+          "original": "./elementsScrollPositions"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/startRecordBridge.js": {
+      "bytes": 601,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/buildReplayPayload.js": {
+      "bytes": 1289,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/replayStats.js": {
+      "bytes": 1598,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/segment.js": {
+      "bytes": 15630,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/types/index.js",
+          "kind": "import-statement",
+          "original": "../../../types"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/replayStats.js",
+          "kind": "import-statement",
+          "original": "../replayStats"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serialize.js",
+          "kind": "import-statement",
+          "original": "../record/serialize"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/segmentCollection.js": {
+      "bytes": 48324,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/types/index.js",
+          "kind": "import-statement",
+          "original": "../../../types"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/buildReplayPayload.js",
+          "kind": "import-statement",
+          "original": "./buildReplayPayload"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/segment.js",
+          "kind": "import-statement",
+          "original": "./segment"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/timeAnchor.js",
+          "kind": "import-statement",
+          "original": "../timeAnchor"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/index.js": {
+      "bytes": 176,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/segmentCollection.js",
+          "kind": "import-statement",
+          "original": "./segmentCollection"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/segmentCollection.js",
+          "kind": "import-statement",
+          "original": "./segmentCollection"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/startRecording.js": {
+      "bytes": 19383,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/index.js",
+          "kind": "import-statement",
+          "original": "../domain/replay/record"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/startRecordBridge.js",
+          "kind": "import-statement",
+          "original": "../domain/replay/startRecordBridge"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/index.js",
+          "kind": "import-statement",
+          "original": "../domain/replay/segmentCollection"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/types/index.js",
+          "kind": "import-statement",
+          "original": "../types"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/replayStats.js",
+          "kind": "import-statement",
+          "original": "../domain/replay/replayStats"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/rumRecorderApiStub.js": {
+      "bytes": 324,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/recorderApiStub.js": {
+      "bytes": 671,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/rumRecorderApiStub.js",
+          "kind": "import-statement",
+          "original": "./rumRecorderApiStub"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/encoderStreamId.js": {
+      "bytes": 122,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/deflate/deflateEncoder.js": {
+      "bytes": 22888,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/encoderStreamId.js",
+          "kind": "import-statement",
+          "original": "../encoderStreamId"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/deflate/index.js": {
+      "bytes": 238,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/deflate/deflateEncoder.js",
+          "kind": "import-statement",
+          "original": "./deflateEncoder"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/deflate/deflateWorker.js",
+          "kind": "import-statement",
+          "original": "./deflateWorker"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/recorderApi.js": {
+      "bytes": 14503,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/recorderApiStub.js",
+          "kind": "import-statement",
+          "original": "./recorderApiStub"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/replay/replayStats.js",
+          "kind": "import-statement",
+          "original": "../domain/replay/replayStats"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/deflate/index.js",
+          "kind": "import-statement",
+          "original": "../domain/deflate"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/deflate/deflateWorker.js",
+          "kind": "import-statement",
+          "original": "../domain/deflate/deflateWorker"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumSessionManager.js": {
+      "bytes": 10259,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/usr/index.js": {
+      "bytes": 1222,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/locationChangeObservable.js": {
+      "bytes": 2539,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/firstInputPolyfill.js": {
+      "bytes": 2918,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js": {
+      "bytes": 5288,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceUtils.js",
+          "kind": "import-statement",
+          "original": "./rumEventsCollection/resource/resourceUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/firstInputPolyfill.js",
+          "kind": "import-statement",
+          "original": "./firstInputPolyfill"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/longTask/longTaskCollection.js": {
+      "bytes": 1373,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../../performanceObservable"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/longTask/longAnimationFrameCollection.js": {
+      "bytes": 2485,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../../performanceObservable"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/trackEventCounts.js": {
+      "bytes": 1363,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/waitPageActivityEnd.js": {
+      "bytes": 5590,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../domain/performanceObservable"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/clickChain.js": {
+      "bytes": 2221,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/listenActionEvents.js": {
+      "bytes": 2047,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/computeFrustration.js": {
+      "bytes": 2682,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/interactionSelectorCache.js": {
+      "bytes": 905,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/trackClickActions.js": {
+      "bytes": 10525,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/trackEventCounts.js",
+          "kind": "import-statement",
+          "original": "../../trackEventCounts"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/waitPageActivityEnd.js",
+          "kind": "import-statement",
+          "original": "../../waitPageActivityEnd"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/clickChain.js",
+          "kind": "import-statement",
+          "original": "./clickChain"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getActionNameFromElement.js",
+          "kind": "import-statement",
+          "original": "./getActionNameFromElement"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getSelectorsFromElement.js",
+          "kind": "import-statement",
+          "original": "./getSelectorsFromElement"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/listenActionEvents.js",
+          "kind": "import-statement",
+          "original": "./listenActionEvents"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/computeFrustration.js",
+          "kind": "import-statement",
+          "original": "./computeFrustration"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/constants.js",
+          "kind": "import-statement",
+          "original": "../../../constants"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/privacy.js",
+          "kind": "import-statement",
+          "original": "../../privacy"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/interactionSelectorCache.js",
+          "kind": "import-statement",
+          "original": "./interactionSelectorCache"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/contexts/pageStateHistory.js": {
+      "bytes": 4105,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../performanceObservable"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/actionCollection.js": {
+      "bytes": 2764,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/trackClickActions.js",
+          "kind": "import-statement",
+          "original": "./trackClickActions"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/contexts/pageStateHistory.js",
+          "kind": "import-statement",
+          "original": "../../contexts/pageStateHistory"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/transport/startRumBatch.js": {
+      "bytes": 3296,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/encoderStreamId.js",
+          "kind": "import-statement",
+          "original": "../domain/encoderStreamId"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/transport/startRumEventBridge.js": {
+      "bytes": 428,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/assembly.js": {
+      "bytes": 8936,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/contexts/displayContext.js": {
+      "bytes": 491,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/initViewportObservable.js",
+          "kind": "import-statement",
+          "original": "../initViewportObservable"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/contexts/internalContext.js": {
+      "bytes": 1350,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/contexts/urlContexts.js": {
+      "bytes": 3166,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/contexts/viewContexts.js": {
+      "bytes": 1641,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/error/trackConsoleError.js": {
+      "bytes": 418,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/error/trackReportError.js": {
+      "bytes": 712,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/error/errorCollection.js": {
+      "bytes": 3484,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/error/trackConsoleError.js",
+          "kind": "import-statement",
+          "original": "./trackConsoleError"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/error/trackReportError.js",
+          "kind": "import-statement",
+          "original": "./trackReportError"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/contexts/pageStateHistory.js",
+          "kind": "import-statement",
+          "original": "../../contexts/pageStateHistory"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackFirstContentfulPaint.js": {
+      "bytes": 908,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../../performanceObservable"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackFirstInput.js": {
+      "bytes": 1823,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getSelectorsFromElement.js",
+          "kind": "import-statement",
+          "original": "../actions/getSelectorsFromElement"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../../performanceObservable"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/performanceUtils.js": {
+      "bytes": 1327,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "./performanceObservable"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackNavigationTimings.js": {
+      "bytes": 1936,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceUtils.js",
+          "kind": "import-statement",
+          "original": "../../performanceUtils"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackLargestContentfulPaint.js": {
+      "bytes": 2603,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getSelectorsFromElement.js",
+          "kind": "import-statement",
+          "original": "../actions/getSelectorsFromElement"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../../performanceObservable"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackFirstHidden.js": {
+      "bytes": 1657,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../../../domain/performanceObservable.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackInitialViewTimings.js": {
+      "bytes": 2007,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackFirstContentfulPaint.js",
+          "kind": "import-statement",
+          "original": "./trackFirstContentfulPaint"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackFirstInput.js",
+          "kind": "import-statement",
+          "original": "./trackFirstInput"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackNavigationTimings.js",
+          "kind": "import-statement",
+          "original": "./trackNavigationTimings"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackLargestContentfulPaint.js",
+          "kind": "import-statement",
+          "original": "./trackLargestContentfulPaint"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackFirstHidden.js",
+          "kind": "import-statement",
+          "original": "./trackFirstHidden"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackScrollMetrics.js": {
+      "bytes": 2904,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/initViewportObservable.js",
+          "kind": "import-statement",
+          "original": "../../initViewportObservable"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackLoadingTime.js": {
+      "bytes": 2047,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/waitPageActivityEnd.js",
+          "kind": "import-statement",
+          "original": "../../waitPageActivityEnd"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackFirstHidden.js",
+          "kind": "import-statement",
+          "original": "./trackFirstHidden"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackCumulativeLayoutShift.js": {
+      "bytes": 4090,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getSelectorsFromElement.js",
+          "kind": "import-statement",
+          "original": "../actions/getSelectorsFromElement"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../../performanceObservable"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/interactionCountPolyfill.js": {
+      "bytes": 1935,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackInteractionToNextPaint.js": {
+      "bytes": 6837,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getSelectorsFromElement.js",
+          "kind": "import-statement",
+          "original": "../actions/getSelectorsFromElement"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/interactionCountPolyfill.js",
+          "kind": "import-statement",
+          "original": "./interactionCountPolyfill"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../../performanceObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/interactionSelectorCache.js",
+          "kind": "import-statement",
+          "original": "../actions/interactionSelectorCache"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackCommonViewMetrics.js": {
+      "bytes": 2093,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackScrollMetrics.js",
+          "kind": "import-statement",
+          "original": "./trackScrollMetrics"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackLoadingTime.js",
+          "kind": "import-statement",
+          "original": "./trackLoadingTime"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackCumulativeLayoutShift.js",
+          "kind": "import-statement",
+          "original": "./trackCumulativeLayoutShift"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackInteractionToNextPaint.js",
+          "kind": "import-statement",
+          "original": "./trackInteractionToNextPaint"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackViewEventCounts.js": {
+      "bytes": 469,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/trackEventCounts.js",
+          "kind": "import-statement",
+          "original": "../../trackEventCounts"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackSoftNavigationMetrics.js": {
+      "bytes": 1028,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackViews.js": {
+      "bytes": 16963,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackInitialViewTimings.js",
+          "kind": "import-statement",
+          "original": "./trackInitialViewTimings"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackCommonViewMetrics.js",
+          "kind": "import-statement",
+          "original": "./trackCommonViewMetrics"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackViewEventCounts.js",
+          "kind": "import-statement",
+          "original": "./trackViewEventCounts"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackSoftNavigationMetrics.js",
+          "kind": "import-statement",
+          "original": "./trackSoftNavigationMetrics"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getSelectorsFromElement.js",
+          "kind": "import-statement",
+          "original": "../actions/getSelectorsFromElement"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/viewCollection.js": {
+      "bytes": 6812,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackViews.js",
+          "kind": "import-statement",
+          "original": "./trackViews"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/tracing/traceIdentifier.js": {
+      "bytes": 1817,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/tracing/ddtraceTracer.js": {
+      "bytes": 1270,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/traceIdentifier.js",
+          "kind": "import-statement",
+          "original": "./traceIdentifier"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/tracing/skywalkingTracer.js": {
+      "bytes": 3238,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/tracing/jaegerTracer.js": {
+      "bytes": 1460,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/traceIdentifier.js",
+          "kind": "import-statement",
+          "original": "./traceIdentifier"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/tracing/zipkinSingleTracer.js": {
+      "bytes": 1330,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/traceIdentifier.js",
+          "kind": "import-statement",
+          "original": "./traceIdentifier"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/tracing/zipkinMultiTracer.js": {
+      "bytes": 1415,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/traceIdentifier.js",
+          "kind": "import-statement",
+          "original": "./traceIdentifier"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/tracing/w3cTraceParentTracer.js": {
+      "bytes": 2333,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/traceIdentifier.js",
+          "kind": "import-statement",
+          "original": "./traceIdentifier"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/tracing/sampler.js": {
+      "bytes": 2441,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/tracing/tracer.js": {
+      "bytes": 5144,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/ddtraceTracer.js",
+          "kind": "import-statement",
+          "original": "./ddtraceTracer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/skywalkingTracer.js",
+          "kind": "import-statement",
+          "original": "./skywalkingTracer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/jaegerTracer.js",
+          "kind": "import-statement",
+          "original": "./jaegerTracer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/zipkinSingleTracer.js",
+          "kind": "import-statement",
+          "original": "./zipkinSingleTracer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/zipkinMultiTracer.js",
+          "kind": "import-statement",
+          "original": "./zipkinMultiTracer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/w3cTraceParentTracer.js",
+          "kind": "import-statement",
+          "original": "./w3cTraceParentTracer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/sampler.js",
+          "kind": "import-statement",
+          "original": "./sampler"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/requestCollection.js": {
+      "bytes": 4535,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceUtils.js",
+          "kind": "import-statement",
+          "original": "./rumEventsCollection/resource/resourceUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/tracer.js",
+          "kind": "import-statement",
+          "original": "./tracing/tracer"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/matchRequestResourceEntry.js": {
+      "bytes": 2637,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceUtils.js",
+          "kind": "import-statement",
+          "original": "./resourceUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/retrieveInitialDocumentResourceTiming.js": {
+      "bytes": 754,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../../performanceObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceUtils.js",
+          "kind": "import-statement",
+          "original": "./resourceUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceUtils.js",
+          "kind": "import-statement",
+          "original": "../../performanceUtils"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceCollection.js": {
+      "bytes": 11347,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/matchRequestResourceEntry.js",
+          "kind": "import-statement",
+          "original": "./matchRequestResourceEntry"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceUtils.js",
+          "kind": "import-statement",
+          "original": "./resourceUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/contexts/pageStateHistory.js",
+          "kind": "import-statement",
+          "original": "../../contexts/pageStateHistory"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../../performanceObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/retrieveInitialDocumentResourceTiming.js",
+          "kind": "import-statement",
+          "original": "./retrieveInitialDocumentResourceTiming"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/webSocketCollection.js": {
+      "bytes": 7505,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/rum.js": {
+      "bytes": 9080,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumSessionManager.js",
+          "kind": "import-statement",
+          "original": "../domain/rumSessionManager"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/usr/index.js",
+          "kind": "import-statement",
+          "original": "../domain/usr"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/domMutationObservable.js",
+          "kind": "import-statement",
+          "original": "../domain/domMutationObservable.js"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/locationChangeObservable.js",
+          "kind": "import-statement",
+          "original": "../domain/locationChangeObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/longTask/longTaskCollection.js",
+          "kind": "import-statement",
+          "original": "../domain/rumEventsCollection/longTask/longTaskCollection"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/longTask/longAnimationFrameCollection.js",
+          "kind": "import-statement",
+          "original": "../domain/rumEventsCollection/longTask/longAnimationFrameCollection"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js",
+          "kind": "import-statement",
+          "original": "../domain/performanceObservable"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/actionCollection.js",
+          "kind": "import-statement",
+          "original": "../domain/rumEventsCollection/actions/actionCollection"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/transport/startRumBatch.js",
+          "kind": "import-statement",
+          "original": "../transport/startRumBatch"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/transport/startRumEventBridge.js",
+          "kind": "import-statement",
+          "original": "../transport/startRumEventBridge"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/assembly.js",
+          "kind": "import-statement",
+          "original": "../domain/assembly"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/contexts/displayContext.js",
+          "kind": "import-statement",
+          "original": "../domain/contexts/displayContext.js"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/contexts/internalContext.js",
+          "kind": "import-statement",
+          "original": "../domain/contexts/internalContext"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/contexts/urlContexts.js",
+          "kind": "import-statement",
+          "original": "../domain/contexts/urlContexts"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/contexts/viewContexts.js",
+          "kind": "import-statement",
+          "original": "../domain/contexts/viewContexts"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/contexts/pageStateHistory.js",
+          "kind": "import-statement",
+          "original": "../domain/contexts/pageStateHistory"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/error/errorCollection.js",
+          "kind": "import-statement",
+          "original": "../domain/rumEventsCollection/error/errorCollection"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/viewCollection.js",
+          "kind": "import-statement",
+          "original": "../domain/rumEventsCollection/view/viewCollection"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/requestCollection.js",
+          "kind": "import-statement",
+          "original": "../domain/requestCollection"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceCollection.js",
+          "kind": "import-statement",
+          "original": "../domain/rumEventsCollection/resource/resourceCollection"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/webSocketCollection.js",
+          "kind": "import-statement",
+          "original": "../domain/rumEventsCollection/resource/webSocketCollection"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/contexts/commonContext.js": {
+      "bytes": 302,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/plugins.js": {
+      "bytes": 2080,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/buildEnv.js": {
+      "bytes": 115,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/visitorId/index.js": {
+      "bytes": 15596,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceUtils.js",
+          "kind": "import-statement",
+          "original": "../rumEventsCollection/resource/resourceUtils"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/traceIdentifier.js",
+          "kind": "import-statement",
+          "original": "../tracing/traceIdentifier"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/configuration.js": {
+      "bytes": 17670,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/buildEnv.js",
+          "kind": "import-statement",
+          "original": "../boot/buildEnv"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/tracing/tracer.js",
+          "kind": "import-statement",
+          "original": "../domain/tracing/tracer"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/plugins.js",
+          "kind": "import-statement",
+          "original": "./plugins"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/visitorId/index.js",
+          "kind": "import-statement",
+          "original": "./visitorId"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/perStartRum.js": {
+      "bytes": 11203,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/configuration.js",
+          "kind": "import-statement",
+          "original": "../domain/configuration"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/plugins.js",
+          "kind": "import-statement",
+          "original": "../domain/plugins"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceTrackerManager.js": {
+      "bytes": 7549,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/rumPublicApi.js": {
+      "bytes": 13131,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/contexts/commonContext.js",
+          "kind": "import-statement",
+          "original": "../domain/contexts/commonContext"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/plugins.js",
+          "kind": "import-statement",
+          "original": "../domain/plugins"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/perStartRum.js",
+          "kind": "import-statement",
+          "original": "./perStartRum"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceTrackerManager.js",
+          "kind": "import-statement",
+          "original": "../domain/rumEventsCollection/resource/resourceTrackerManager"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/visitorId/index.js",
+          "kind": "import-statement",
+          "original": "../domain/visitorId"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/disabledRumPublicApi.js": {
+      "bytes": 2098,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/rumEntryFactory.js": {
+      "bytes": 724,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/rum.js",
+          "kind": "import-statement",
+          "original": "./rum"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/rumPublicApi.js",
+          "kind": "import-statement",
+          "original": "./rumPublicApi"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/disabledRumPublicApi.js",
+          "kind": "import-statement",
+          "original": "./disabledRumPublicApi"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/sessionReplayPublicApi.js": {
+      "bytes": 1743,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/boot/rum.entry.js": {
+      "bytes": 587,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/startRecording.js",
+          "kind": "import-statement",
+          "original": "./startRecording"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/recorderApi.js",
+          "kind": "import-statement",
+          "original": "./recorderApi"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/domain/deflate/index.js",
+          "kind": "import-statement",
+          "original": "../domain/deflate"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/rumEntryFactory.js",
+          "kind": "import-statement",
+          "original": "./rumEntryFactory"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/sessionReplayPublicApi.js",
+          "kind": "import-statement",
+          "original": "./sessionReplayPublicApi"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@cloudcare/browser-rum/esm/index.js": {
+      "bytes": 158,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/boot/rum.entry.js",
+          "kind": "import-statement",
+          "original": "./boot/rum.entry"
+        },
+        {
+          "path": "node_modules/@cloudcare/browser-core/esm/index.js",
+          "kind": "import-statement",
+          "original": "@cloudcare/browser-core"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/rum.ts": {
+      "bytes": 1721,
+      "imports": [
+        {
+          "path": "node_modules/@cloudcare/browser-rum/esm/index.js",
+          "kind": "dynamic-import",
+          "original": "@cloudcare/browser-rum"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/main.ts": {
+      "bytes": 52,
+      "imports": [
+        {
+          "path": "src/rum.ts",
+          "kind": "import-statement",
+          "original": "./rum"
+        }
+      ],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "../original-web-app-build/main.js": {
+      "imports": [
+        {
+          "path": "../original-web-app-build/chunk-O2P7Z5QT.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [],
+      "entryPoint": "src/main.ts",
+      "inputs": {
+        "src/main.ts": {
+          "bytesInOutput": 17
+        }
+      },
+      "bytes": 83
+    },
+    "../original-web-app-build/rum.js": {
+      "imports": [
+        {
+          "path": "../original-web-app-build/chunk-O2P7Z5QT.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [
+        "startRum"
+      ],
+      "entryPoint": "src/rum.ts",
+      "inputs": {},
+      "bytes": 73
+    },
+    "../original-web-app-build/chunk-O2P7Z5QT.js": {
+      "imports": [
+        {
+          "path": "../original-web-app-build/esm-Y7PO6I7G.js",
+          "kind": "dynamic-import"
+        }
+      ],
+      "exports": [
+        "startRum"
+      ],
+      "inputs": {
+        "src/rum.ts": {
+          "bytesInOutput": 1242
+        }
+      },
+      "bytes": 1280
+    },
+    "../original-web-app-build/esm-Y7PO6I7G.js": {
+      "imports": [],
+      "exports": [
+        "TraceType",
+        "datafluxRum"
+      ],
+      "entryPoint": "node_modules/@cloudcare/browser-rum/esm/index.js",
+      "inputs": {
+        "node_modules/@cloudcare/browser-core/esm/helper/sdkMap.js": {
+          "bytesInOutput": 6828
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/display.js": {
+          "bytesInOutput": 669
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/monitor.js": {
+          "bytesInOutput": 844
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/catchUserErrors.js": {
+          "bytesInOutput": 218
+        },
+        "node_modules/@cloudcare/browser-core/esm/init.js": {
+          "bytesInOutput": 1651
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/getZoneJsOriginalValue.js": {
+          "bytesInOutput": 325
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/timer.js": {
+          "bytesInOutput": 490
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/navigationStart.js": {
+          "bytesInOutput": 539
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/tools.js": {
+          "bytesInOutput": 23068
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/boundedBuffer.js": {
+          "bytesInOutput": 491
+        },
+        "node_modules/@cloudcare/browser-core/esm/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/valueHistory.js": {
+          "bytesInOutput": 2606
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/deviceInfo.js": {
+          "bytesInOutput": 20787
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/enums.js": {
+          "bytesInOutput": 2259
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/serialisation/jsonStringify.js": {
+          "bytesInOutput": 1288
+        },
+        "node_modules/@cloudcare/browser-core/esm/tracekit/computeStackTrace.js": {
+          "bytesInOutput": 3904
+        },
+        "node_modules/@cloudcare/browser-core/esm/tracekit/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/@cloudcare/browser-core/esm/tracekit/tracekit.js": {
+          "bytesInOutput": 2029
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/byteUtils.js": {
+          "bytesInOutput": 763
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/sanitize.js": {
+          "bytesInOutput": 5416
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/errorTools.js": {
+          "bytesInOutput": 3197
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/instrumentMethod.js": {
+          "bytesInOutput": 5454
+        },
+        "node_modules/@cloudcare/browser-core/esm/error/trackRuntimeError.js": {
+          "bytesInOutput": 377
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/observable.js": {
+          "bytesInOutput": 1325
+        },
+        "node_modules/@cloudcare/browser-core/esm/console/consoleObservable.js": {
+          "bytesInOutput": 1857
+        },
+        "node_modules/@cloudcare/browser-core/esm/browser/addEventListener.js": {
+          "bytesInOutput": 1877
+        },
+        "node_modules/@cloudcare/browser-core/esm/report/reportObservable.js": {
+          "bytesInOutput": 2824
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/eventEmitter.js": {
+          "bytesInOutput": 608
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/lifeCycle.js": {
+          "bytesInOutput": 1620
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/limitModification.js": {
+          "bytesInOutput": 1303
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/createEventRateLimiter.js": {
+          "bytesInOutput": 825
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/urlPolyfill.js": {
+          "bytesInOutput": 1297
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/mobileUtil.js": {
+          "bytesInOutput": 2811
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/readBytesFromStream.js": {
+          "bytesInOutput": 1389
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/requestIdleCallback.js": {
+          "bytesInOutput": 684
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/taskQueue.js": {
+          "bytesInOutput": 916
+        },
+        "node_modules/@cloudcare/browser-core/esm/configuration/transportConfiguration.js": {
+          "bytesInOutput": 2080
+        },
+        "node_modules/@cloudcare/browser-core/esm/browser/cookie.js": {
+          "bytesInOutput": 2355
+        },
+        "node_modules/@cloudcare/browser-core/esm/session/sessionConstants.js": {
+          "bytesInOutput": 238
+        },
+        "node_modules/@cloudcare/browser-core/esm/session/sessionState.js": {
+          "bytesInOutput": 2095
+        },
+        "node_modules/@cloudcare/browser-core/esm/session/sessionInCookie.js": {
+          "bytesInOutput": 1893
+        },
+        "node_modules/@cloudcare/browser-core/esm/session/sessionInLocalStorage.js": {
+          "bytesInOutput": 1038
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/connectivity.js": {
+          "bytesInOutput": 445
+        },
+        "node_modules/@cloudcare/browser-core/esm/telemetry/types.js": {
+          "bytesInOutput": 156
+        },
+        "node_modules/@cloudcare/browser-core/esm/telemetry/telemetry.js": {
+          "bytesInOutput": 3437
+        },
+        "node_modules/@cloudcare/browser-core/esm/session/sessionStoreOperations.js": {
+          "bytesInOutput": 3509
+        },
+        "node_modules/@cloudcare/browser-core/esm/session/sessionStore.js": {
+          "bytesInOutput": 7564
+        },
+        "node_modules/@cloudcare/browser-core/esm/configuration/configuration.js": {
+          "bytesInOutput": 3246
+        },
+        "node_modules/@cloudcare/browser-core/esm/configuration/remoteConfiguration.js": {
+          "bytesInOutput": 3704
+        },
+        "node_modules/@cloudcare/browser-core/esm/browser/fetchObservable.js": {
+          "bytesInOutput": 2932
+        },
+        "node_modules/@cloudcare/browser-core/esm/browser/xhrObservable.js": {
+          "bytesInOutput": 2944
+        },
+        "node_modules/@cloudcare/browser-core/esm/browser/webSocketObservable.js": {
+          "bytesInOutput": 2640
+        },
+        "node_modules/@cloudcare/browser-core/esm/browser/pageExitObservable.js": {
+          "bytesInOutput": 1439
+        },
+        "node_modules/@cloudcare/browser-core/esm/browser/htmlDomUtils.js": {
+          "bytesInOutput": 862
+        },
+        "node_modules/@cloudcare/browser-core/esm/browser/runOnReadyState.js": {
+          "bytesInOutput": 404
+        },
+        "node_modules/@cloudcare/browser-core/esm/browser/scroll.js": {
+          "bytesInOutput": 602
+        },
+        "node_modules/@cloudcare/browser-core/esm/dataMap.js": {
+          "bytesInOutput": 9342
+        },
+        "node_modules/@cloudcare/browser-core/esm/session/sessionManagement.js": {
+          "bytesInOutput": 3325
+        },
+        "node_modules/@cloudcare/browser-core/esm/transport/sendWithRetryStrategy.js": {
+          "bytesInOutput": 14760
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/polyfills.js": {
+          "bytesInOutput": 488
+        },
+        "node_modules/@cloudcare/browser-core/esm/transport/httpRequest.js": {
+          "bytesInOutput": 6499
+        },
+        "node_modules/@cloudcare/browser-core/esm/transport/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/serialisation/rowData.js": {
+          "bytesInOutput": 1142
+        },
+        "node_modules/@cloudcare/browser-core/esm/transport/batch.js": {
+          "bytesInOutput": 15178
+        },
+        "node_modules/@cloudcare/browser-core/esm/transport/flushController.js": {
+          "bytesInOutput": 4197
+        },
+        "node_modules/@cloudcare/browser-core/esm/transport/startBatchWithReplica.js": {
+          "bytesInOutput": 1497
+        },
+        "node_modules/@cloudcare/browser-core/esm/transport/eventBridge.js": {
+          "bytesInOutput": 2246
+        },
+        "node_modules/@cloudcare/browser-core/esm/synthetics/syntheticsWorkerValues.js": {
+          "bytesInOutput": 219
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/serialisation/contextManager.js": {
+          "bytesInOutput": 2709
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/serialisation/const.js": {
+          "bytesInOutput": 136
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/serialisation/storedContextManager.js": {
+          "bytesInOutput": 1316
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/serialisation/customerDataTracker.js": {
+          "bytesInOutput": 3702
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/encoder.js": {
+          "bytesInOutput": 927
+        },
+        "node_modules/@cloudcare/browser-core/esm/user/user.js": {
+          "bytesInOutput": 393
+        },
+        "node_modules/@cloudcare/browser-core/esm/user/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/@cloudcare/browser-core/esm/helper/displayAlreadyInitializedError.js": {
+          "bytesInOutput": 180
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/initViewportObservable.js": {
+          "bytesInOutput": 898
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/timeAnchor.js": {
+          "bytesInOutput": 1086
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/record.js": {
+          "bytesInOutput": 121348
+        },
+        "node_modules/@cloudcare/browser-rum/esm/types/sessionReplayConstants.js": {
+          "bytesInOutput": 702
+        },
+        "node_modules/@cloudcare/browser-rum/esm/types/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/@cloudcare/browser-rum/esm/constants.js": {
+          "bytesInOutput": 721
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/privacy.js": {
+          "bytesInOutput": 7019
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getActionNameFromElement.js": {
+          "bytesInOutput": 9996
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/getSelectorsFromElement.js": {
+          "bytesInOutput": 6519
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/privacy.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serializationUtils.js": {
+          "bytesInOutput": 19094
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceUtils.js": {
+          "bytesInOutput": 6164
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/serialize.js": {
+          "bytesInOutput": 22741
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/utils.js": {
+          "bytesInOutput": 758
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/domMutationObservable.js": {
+          "bytesInOutput": 1191
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationResourceBudget.js": {
+          "bytesInOutput": 4478
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationBatch.js": {
+          "bytesInOutput": 20156
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/mutationObserver.js": {
+          "bytesInOutput": 87605
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/viewports.js": {
+          "bytesInOutput": 1289
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/observers.js": {
+          "bytesInOutput": 21232
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/elementsScrollPositions.js": {
+          "bytesInOutput": 668
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/shadowRootsController.js": {
+          "bytesInOutput": 29926
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasSerializeArgs.js": {
+          "bytesInOutput": 1060
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasMutationRecord.js": {
+          "bytesInOutput": 711
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/deflate/deflateWorker.js": {
+          "bytesInOutput": 22700
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasEncodeWorker.js": {
+          "bytesInOutput": 8399
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContext.js": {
+          "bytesInOutput": 1707
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasEncodeBridge.js": {
+          "bytesInOutput": 22534
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasFrameSignature.js": {
+          "bytesInOutput": 2194
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasObserver.js": {
+          "bytesInOutput": 16617
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasWebGLPluginHost.js": {
+          "bytesInOutput": 639
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasCommandSerializeArgs.js": {
+          "bytesInOutput": 4178
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasCommandCapture.js": {
+          "bytesInOutput": 44678
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasCommandObserver.js": {
+          "bytesInOutput": 46372
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/canvasContinuousScheduler.js": {
+          "bytesInOutput": 12998
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/record/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/startRecordBridge.js": {
+          "bytesInOutput": 241
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/buildReplayPayload.js": {
+          "bytesInOutput": 1190
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/replayStats.js": {
+          "bytesInOutput": 1355
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/segment.js": {
+          "bytesInOutput": 12700
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/segmentCollection.js": {
+          "bytesInOutput": 39906
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/replay/segmentCollection/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/startRecording.js": {
+          "bytesInOutput": 15038
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/rumRecorderApiStub.js": {
+          "bytesInOutput": 221
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/recorderApiStub.js": {
+          "bytesInOutput": 505
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/encoderStreamId.js": {
+          "bytesInOutput": 72
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/deflate/deflateEncoder.js": {
+          "bytesInOutput": 21255
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/deflate/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/recorderApi.js": {
+          "bytesInOutput": 12575
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumSessionManager.js": {
+          "bytesInOutput": 8731
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/usr/index.js": {
+          "bytesInOutput": 1063
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/locationChangeObservable.js": {
+          "bytesInOutput": 1929
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/firstInputPolyfill.js": {
+          "bytesInOutput": 1572
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/performanceObservable.js": {
+          "bytesInOutput": 3657
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/longTask/longTaskCollection.js": {
+          "bytesInOutput": 1067
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/longTask/longAnimationFrameCollection.js": {
+          "bytesInOutput": 2168
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/trackEventCounts.js": {
+          "bytesInOutput": 1214
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/waitPageActivityEnd.js": {
+          "bytesInOutput": 3656
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/clickChain.js": {
+          "bytesInOutput": 1978
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/listenActionEvents.js": {
+          "bytesInOutput": 1821
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/computeFrustration.js": {
+          "bytesInOutput": 2140
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/interactionSelectorCache.js": {
+          "bytesInOutput": 664
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/trackClickActions.js": {
+          "bytesInOutput": 8962
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/contexts/pageStateHistory.js": {
+          "bytesInOutput": 3457
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/actions/actionCollection.js": {
+          "bytesInOutput": 2327
+        },
+        "node_modules/@cloudcare/browser-rum/esm/transport/startRumBatch.js": {
+          "bytesInOutput": 2739
+        },
+        "node_modules/@cloudcare/browser-rum/esm/transport/startRumEventBridge.js": {
+          "bytesInOutput": 268
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/assembly.js": {
+          "bytesInOutput": 8138
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/contexts/displayContext.js": {
+          "bytesInOutput": 341
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/contexts/internalContext.js": {
+          "bytesInOutput": 1192
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/contexts/urlContexts.js": {
+          "bytesInOutput": 2609
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/contexts/viewContexts.js": {
+          "bytesInOutput": 1468
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/error/trackConsoleError.js": {
+          "bytesInOutput": 285
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/error/trackReportError.js": {
+          "bytesInOutput": 543
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/error/errorCollection.js": {
+          "bytesInOutput": 2996
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackFirstContentfulPaint.js": {
+          "bytesInOutput": 679
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackFirstInput.js": {
+          "bytesInOutput": 1223
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/performanceUtils.js": {
+          "bytesInOutput": 1091
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackNavigationTimings.js": {
+          "bytesInOutput": 1611
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackLargestContentfulPaint.js": {
+          "bytesInOutput": 1584
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackFirstHidden.js": {
+          "bytesInOutput": 1393
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackInitialViewTimings.js": {
+          "bytesInOutput": 1541
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackScrollMetrics.js": {
+          "bytesInOutput": 2490
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackLoadingTime.js": {
+          "bytesInOutput": 1809
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackCumulativeLayoutShift.js": {
+          "bytesInOutput": 2710
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/interactionCountPolyfill.js": {
+          "bytesInOutput": 935
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackInteractionToNextPaint.js": {
+          "bytesInOutput": 5768
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackCommonViewMetrics.js": {
+          "bytesInOutput": 1725
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackViewEventCounts.js": {
+          "bytesInOutput": 334
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackSoftNavigationMetrics.js": {
+          "bytesInOutput": 673
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/trackViews.js": {
+          "bytesInOutput": 14749
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/view/viewCollection.js": {
+          "bytesInOutput": 6450
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/tracing/traceIdentifier.js": {
+          "bytesInOutput": 1737
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/tracing/ddtraceTracer.js": {
+          "bytesInOutput": 1065
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/tracing/skywalkingTracer.js": {
+          "bytesInOutput": 1982
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/tracing/jaegerTracer.js": {
+          "bytesInOutput": 1164
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/tracing/zipkinSingleTracer.js": {
+          "bytesInOutput": 1034
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/tracing/zipkinMultiTracer.js": {
+          "bytesInOutput": 1176
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/tracing/w3cTraceParentTracer.js": {
+          "bytesInOutput": 1769
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/tracing/sampler.js": {
+          "bytesInOutput": 834
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/tracing/tracer.js": {
+          "bytesInOutput": 4358
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/requestCollection.js": {
+          "bytesInOutput": 4051
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/matchRequestResourceEntry.js": {
+          "bytesInOutput": 1877
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/retrieveInitialDocumentResourceTiming.js": {
+          "bytesInOutput": 422
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceCollection.js": {
+          "bytesInOutput": 10034
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/webSocketCollection.js": {
+          "bytesInOutput": 7184
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/rum.js": {
+          "bytesInOutput": 6667
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/contexts/commonContext.js": {
+          "bytesInOutput": 251
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/plugins.js": {
+          "bytesInOutput": 1914
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/buildEnv.js": {
+          "bytesInOutput": 72
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/visitorId/index.js": {
+          "bytesInOutput": 13639
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/configuration.js": {
+          "bytesInOutput": 15583
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/perStartRum.js": {
+          "bytesInOutput": 9237
+        },
+        "node_modules/@cloudcare/browser-rum/esm/domain/rumEventsCollection/resource/resourceTrackerManager.js": {
+          "bytesInOutput": 7348
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/rumPublicApi.js": {
+          "bytesInOutput": 12094
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/disabledRumPublicApi.js": {
+          "bytesInOutput": 1889
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/rumEntryFactory.js": {
+          "bytesInOutput": 424
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/sessionReplayPublicApi.js": {
+          "bytesInOutput": 1610
+        },
+        "node_modules/@cloudcare/browser-rum/esm/boot/rum.entry.js": {
+          "bytesInOutput": 243
+        },
+        "node_modules/@cloudcare/browser-rum/esm/index.js": {
+          "bytesInOutput": 0
+        }
+      },
+      "bytes": 1105998
+    }
+  }
+}

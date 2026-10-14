@@ -1,0 +1,282 @@
+{
+  "approval": {
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 1,
+    "status": "approved"
+  },
+  "batches": [
+    {
+      "approval": {
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 1,
+        "status": "approved"
+      },
+      "depends_on": [],
+      "id": "miniapp-core",
+      "target_ids": [
+        "miniapp:."
+      ]
+    }
+  ],
+  "handoff": [
+    "Enable WeChat IDE service port using its GUI before CLI automation",
+    "No preview or upload authorization; do not upload",
+    "touristappid is the official installed tool guest-mode identifier; real application is not provisioned"
+  ],
+  "planned_changes": [
+    {
+      "dependency_decision": {
+        "action": "add",
+        "compatibility": "Official CommonJS package supports native WeChat miniapp entrypoint",
+        "official_sources": [
+          "https://docs.guance.com/real-user-monitoring/miniapp/app-access/",
+          "https://registry.npmjs.org/@cloudcare%2Frum-miniapp/latest"
+        ],
+        "owner": "Cloudcare",
+        "package": "@cloudcare/rum-miniapp",
+        "verified_at": "2026-10-13",
+        "version": "2.2.20"
+      },
+      "edits": [
+        "Add pinned official RUM dependency"
+      ],
+      "file": "package.json",
+      "order": 1,
+      "purpose": "Add pinned official RUM dependency",
+      "risk": "Developer Tools runtime validation depends on enabled IDE service port",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "JSON and JavaScript static validation",
+        "Official miniprogram-ci local packNpmManually",
+        "Official wcc and wcsc compilation",
+        "IDE CLI automation when service port is enabled"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Lock SDK and transitive dependencies"
+      ],
+      "file": "package-lock.json",
+      "order": 2,
+      "purpose": "Lock SDK and transitive dependencies",
+      "risk": "Developer Tools runtime validation depends on enabled IDE service port",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "JSON and JavaScript static validation",
+        "Official miniprogram-ci local packNpmManually",
+        "Official wcc and wcsc compilation",
+        "IDE CLI automation when service port is enabled"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Initialize RUM before App"
+      ],
+      "file": "app.js",
+      "order": 3,
+      "purpose": "Initialize RUM before App",
+      "risk": "Developer Tools runtime validation depends on enabled IDE service port",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "JSON and JavaScript static validation",
+        "Official miniprogram-ci local packNpmManually",
+        "Official wcc and wcsc compilation",
+        "IDE CLI automation when service port is enabled"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Add guarded single initializer"
+      ],
+      "file": "rum.js",
+      "order": 4,
+      "purpose": "Add guarded single initializer",
+      "risk": "Developer Tools runtime validation depends on enabled IDE service port",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "JSON and JavaScript static validation",
+        "Official miniprogram-ci local packNpmManually",
+        "Official wcc and wcsc compilation",
+        "IDE CLI automation when service port is enabled"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Credential-free runtime config example"
+      ],
+      "file": "config/rum.example.js",
+      "order": 5,
+      "purpose": "Credential-free runtime config example",
+      "risk": "Developer Tools runtime validation depends on enabled IDE service port",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "JSON and JavaScript static validation",
+        "Official miniprogram-ci local packNpmManually",
+        "Official wcc and wcsc compilation",
+        "IDE CLI automation when service port is enabled"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Ignored DataKit runtime configuration"
+      ],
+      "file": "config/rum.local.js",
+      "order": 6,
+      "purpose": "Ignored DataKit runtime configuration",
+      "risk": "Developer Tools runtime validation depends on enabled IDE service port",
+      "rollback": "Revert only this integration change",
+      "target_id": "miniapp:.",
+      "validation": [
+        "JSON and JavaScript static validation",
+        "Official miniprogram-ci local packNpmManually",
+        "Official wcc and wcsc compilation",
+        "IDE CLI automation when service port is enabled"
+      ]
+    }
+  ],
+  "repository": {
+    "root": "/private/tmp/rum-platform-acceptance/miniapp/project",
+    "commit": "fa8856bde8764ea043965e29668bb059ca6aca5b",
+    "initial_status": []
+  },
+  "request": {
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "eval_miniapp"
+      }
+    },
+    "intent": "implement",
+    "receiver": {
+      "endpoint": {
+        "value": "http://127.0.0.1:19529"
+      },
+      "mode": "datakit",
+      "readiness": {
+        "checks": {
+          "network_reachability": {
+            "handoff": [
+              "Validate on complete MiniApp with actual runtime and collector"
+            ],
+            "status": "unknown"
+          },
+          "rum_collector": {
+            "handoff": [
+              "Validate on complete MiniApp with actual runtime and collector"
+            ],
+            "status": "unknown"
+          }
+        },
+        "status": "unknown"
+      }
+    }
+  },
+  "risks": [
+    "WeChat IDE service port disabled; do not alter global security settings",
+    "Local receiver is a simulator only; no remote ingestion or real-device domain proof"
+  ],
+  "schema_version": 3,
+  "targets": [
+    {
+      "application_id_slots": [
+        "miniapp"
+      ],
+      "application_ids": {
+        "miniapp": {
+          "value": "eval_miniapp"
+        }
+      },
+      "application_types": {
+        "miniapp": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "miniapp",
+          "verification": "not_applicable"
+        }
+      },
+      "artifacts": {},
+      "blockers": [],
+      "disposition": "planned",
+      "evidence": [
+        "app.js",
+        "app.json",
+        "project.config.json"
+      ],
+      "existing_instrumentation": {
+        "files": [],
+        "sdk": null,
+        "signals": [],
+        "status": "none",
+        "version": null
+      },
+      "id": "miniapp:.",
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/miniapp/app-access/"
+      ],
+      "path": ".",
+      "platform": "miniapp",
+      "privacy": {
+        "custom_fields": false,
+        "query_capture": false,
+        "replay": false,
+        "trace": false
+      },
+      "profile": {
+        "env": {
+          "confidence": "high",
+          "source": "wx.getAccountInfoSync().miniProgram.envVersion",
+          "value": null
+        },
+        "service": {
+          "confidence": "high",
+          "source": "target identity",
+          "value": "miniapp"
+        },
+        "signals": {
+          "rum": true
+        },
+        "version": {
+          "confidence": "high",
+          "source": "wx.getAccountInfoSync().miniProgram.version",
+          "value": null
+        }
+      },
+      "receiver_mapping": {
+        "applicationId": "config/rum.local.js#applicationId",
+        "datakitOrigin": "config/rum.local.js#datakitOrigin"
+      },
+      "variants": [
+        "native"
+      ]
+    }
+  ],
+  "validation": [
+    "Contract plan and implement validation",
+    "Official NPM packing",
+    "Official WXML/WXSS compilation",
+    "Runtime signals remain not-run until IDE can launch"
+  ]
+}

@@ -1,0 +1,30 @@
+cli auto
+
+Enable automation
+
+Options:
+  --auto-port      Automation port                                      [string]
+  --auto-account   Automation account                                   [string]
+  --trust-project  Trust Project                                       [boolean]
+  --test-ticket    Test ticket                                          [string]
+  --ticket         Login ticket                                         [string]
+
+Project options:
+  --project    project path
+  --appid      miniprogram appid or 3rd platform appid. Ignored when --project
+               is provided
+  --ext-appid  miniprogram appid to be developed by 3rd platform. Ignored when
+               --project is provided
+
+Other global options:
+  --port         Optional. IDE HTTP server port. If IDE hasn't been launched, it
+                 will be launched and start HTTP server at <port>. If IDE has
+                 launched with a HTTP server of different port, you must quit
+                 IDE before re-run the command.                         [number]
+  --token        Optional. CLI access token configured in IDE Security Settings.
+                 It can also be set with the WECHAT_DEVTOOLS_CLI_TOKEN
+                 environment variable.                                  [string]
+  --lang         Optional. 'en' or 'zh'. Defaults to 'en'.
+  --debug        Optional. Turn on debug mode
+  --disable-gpu  Disable GPU Acceleration when launching IDE           [boolean]
+  -h, --help     Show help                                             [boolean]

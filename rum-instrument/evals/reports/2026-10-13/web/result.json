@@ -1,0 +1,305 @@
+{
+  "scenario": "web_datakit_existing_rum",
+  "status": "partially_passed",
+  "original_request": "请按 http://127.0.0.1:18763/rum.md 完成当前项目 RUM 接入。datakitUrl: http://127.0.0.1:19529 appId: eval_web",
+  "case_directory": "${EVAL_ROOT}/web",
+  "questions": [],
+  "business_question_count": 0,
+  "routine_confirmation_count": 0,
+  "host_permission_requests": 6,
+  "host_permission_explanation": "Loopback, public dependency downloads and local headless Chrome require sandbox escalation; not business confirmations.",
+  "installation": {
+    "command": "curl -fsS http://127.0.0.1:18763/rum.md -o logs/entry.md && curl -fsS http://127.0.0.1:18763/install.sh -o install.sh && sh install.sh --base-url http://127.0.0.1:18763 --skill rum-instrument --agent codex --scope user --yes --dest ${EVAL_ROOT}/web/skills",
+    "metadata": {
+      "schema_version": 1,
+      "name": "rum-instrument",
+      "version": "ebaddc3a8c835cc3f046920b0595a782a34d6459",
+      "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+      "source": "http://127.0.0.1:18763/versions/ebaddc3a8c835cc3f046920b0595a782a34d6459/skills/rum-instrument.tar.gz",
+      "installed_at": "2026-10-13T03:55:23Z"
+    },
+    "real_install": true,
+    "isolated": true,
+    "global_skill_modified": false
+  },
+  "read_skill_paths": [
+    "${EVAL_ROOT}/web/skills/rum-instrument/SKILL.md",
+    "${EVAL_ROOT}/web/skills/rum-instrument/references/common.md",
+    "${EVAL_ROOT}/web/skills/rum-instrument/references/execution.md",
+    "${EVAL_ROOT}/web/skills/rum-instrument/references/contracts.md",
+    "${EVAL_ROOT}/web/skills/rum-instrument/references/web.md",
+    "${EVAL_ROOT}/web/skills/rum-instrument/references/validation.md",
+    "${EVAL_ROOT}/web/skills/rum-instrument/references/privacy-security.md",
+    "${EVAL_ROOT}/web/skills/rum-instrument/references/official-sources.json"
+  ],
+  "official_sources": [
+    "https://docs.guance.com/real-user-monitoring/web/app-access/",
+    "Installed @cloudcare/browser-rum@3.3.5 and @cloudcare/browser-core@3.3.4 package types/source"
+  ],
+  "changed_files": [
+    "project/.gitignore",
+    "project/index.html",
+    "project/src/main.ts",
+    "project/src/rum.ts",
+    "project/rum-config.example.js",
+    "project/rum-config.js (ignored local runtime)",
+    "project/.rum/plan.json (ignored internal plan)"
+  ],
+  "preserved": [
+    "SDK 3.3.5",
+    "Vue 3.5.0",
+    "package.json unchanged",
+    "Baseline .gitignore entries restored before final rerun"
+  ],
+  "commands": [
+    {
+      "command": "curl -fsS http://127.0.0.1:18763/rum.md",
+      "exit_code": 7,
+      "evidence": "sandbox loopback blocked; occurred twice before escalation"
+    },
+    {
+      "command": "curl -fsS http://127.0.0.1:18763/rum.md",
+      "exit_code": 0,
+      "evidence": "escalated; local test mirror"
+    },
+    {
+      "command": "curl -fsS http://127.0.0.1:18763/rum.md -o logs/entry.md && curl -fsS http://127.0.0.1:18763/install.sh -o install.sh && sh install.sh --base-url http://127.0.0.1:18763 --skill rum-instrument --agent codex --scope user --yes --dest ${EVAL_ROOT}/web/skills",
+      "exit_code": 0,
+      "evidence": "logs/install.log"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/detect_rum_targets.py project --pretty",
+      "exit_code": 0,
+      "evidence": "logs/detect-initial.json"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase plan",
+      "exit_code": 0,
+      "evidence": "logs/validate-plan.log"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase implement --repository project",
+      "exit_code": 0,
+      "evidence": "logs/validate-implement.log"
+    },
+    {
+      "command": "PATH=/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH npm install --ignore-scripts --package-lock=false --cache ../npm-cache",
+      "exit_code": 0,
+      "evidence": "cwd=project; logs/npm-install.log"
+    },
+    {
+      "command": "PATH=/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH npm install --prefix test-tools --cache npm-cache --ignore-scripts --package-lock=false --no-audit esbuild typescript playwright",
+      "exit_code": 0,
+      "evidence": "logs/npm-tools.log"
+    },
+    {
+      "command": "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node test-tools/node_modules/typescript/bin/tsc --noEmit --strict --target ES2020 --module ESNext --moduleResolution bundler --lib ES2020,DOM project/src/main.ts project/src/rum.ts",
+      "exit_code": 1,
+      "evidence": "logs/typecheck.log; SDK declaration errors"
+    },
+    {
+      "command": "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node test-tools/node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2020 --module ESNext --moduleResolution bundler --lib ES2020,DOM project/src/main.ts project/src/rum.ts",
+      "exit_code": 0,
+      "evidence": "logs/typecheck-skiplib.log; excludes third-party .d.ts checks"
+    },
+    {
+      "command": "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node test-tools/node_modules/esbuild/bin/esbuild project/src/main.ts project/src/rum.ts --bundle --format=esm --splitting --outdir=build --metafile=logs/bundle-meta.json",
+      "exit_code": 0,
+      "evidence": "logs/bundle.log"
+    },
+    {
+      "command": "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node smoke.cjs",
+      "exit_code": 0,
+      "evidence": "logs/browser-smoke.log; privacy results contain failures even though harness exits 0"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/detect_rum_targets.py project --pretty",
+      "exit_code": 0,
+      "evidence": "logs/detect-rerun.json; reused installed skill"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase plan",
+      "exit_code": 0,
+      "evidence": "logs/validate-rerun.log"
+    },
+    {
+      "command": "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node smoke.cjs",
+      "exit_code": 0,
+      "evidence": "logs/browser-rerun.log"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/detect_rum_targets.py project --pretty",
+      "exit_code": 0,
+      "evidence": "logs/detect-rerun-final.json; after restoring baseline ignore rules"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase plan",
+      "exit_code": 0,
+      "evidence": "logs/validate-rerun-final.log"
+    },
+    {
+      "command": "git -C project diff --check",
+      "exit_code": 0,
+      "evidence": "final diff whitespace check"
+    }
+  ],
+  "runtime": {
+    "node": "v24.19.0",
+    "npm": "7.4.0",
+    "sdk": "@cloudcare/browser-rum@3.3.5",
+    "browser": "actual installed Google Chrome launched headless with Playwright"
+  },
+  "verification": {
+    "real_dependency_install": true,
+    "full_strict_typecheck": false,
+    "source_typecheck_skipLibCheck": true,
+    "real_sdk_esbuild_bundle": true,
+    "original_project_build_available": false,
+    "original_project_build_reason": "No build scripts, TS config, app mount, or complete application scaffolding. Bundle proves maintained entry plus real SDK can be bundled, not a production Vue app build.",
+    "smoke": {
+      "sdk": "3.3.5",
+      "real_sdk": true,
+      "mock_receiver": true,
+      "initial": {
+        "calls": 1,
+        "config": {
+          "applicationId": "eval_web",
+          "datakitOrigin": "http://127.0.0.1:19529",
+          "service": "vue-existing-rum",
+          "env": "eval-local",
+          "version": "eval-release",
+          "sessionReplaySampleRate": 0,
+          "sessionReplayOnErrorSampleRate": 0
+        },
+        "recording": false
+      },
+      "browserErrors": [
+        "synthetic unhandled error"
+      ],
+      "privacy": {
+        "CANARY_INPUT": true,
+        "CANARY_COOKIE": true,
+        "CANARY_AUTH": true,
+        "CANARY_BODY": true,
+        "CANARY_QUERY": false,
+        "CANARY_HASH": false,
+        "CANARY_RESOURCE_QUERY": true
+      },
+      "request_behavior_preserved": true,
+      "capture_count": 1,
+      "capture_endpoints": [
+        "/v1/write/rum"
+      ],
+      "failure": {
+        "result": false,
+        "dom": true
+      },
+      "warnings": [
+        "Failed to load resource: net::ERR_FAILED",
+        "RUM failed to initialize; application startup can continue.",
+        "RUM failed to initialize; application startup can continue."
+      ]
+    },
+    "captured_event_line_counts": {
+      "resource": 7,
+      "error": 1,
+      "view": 2
+    },
+    "remote_ingestion_verified": false,
+    "unhandled_error_ingestion": "Not proved: browser observed synthetic unhandled error, but captured local payload contains only the handled error event."
+  },
+  "mock_real_boundary": {
+    "real": [
+      "HTTP mirror download and checksum-verified installer",
+      "Unmodified npm SDK dependencies",
+      "TypeScript compiler",
+      "esbuild bundle",
+      "Chrome browser runtime",
+      "SDK generated telemetry"
+    ],
+    "mock": [
+      "Local mirror distribution",
+      "Receiver routes fulfilled by Playwright; no DataKit process readiness proved",
+      "Synthetic events, deployment env/release and privacy canaries"
+    ],
+    "not_verified": [
+      "Real control plane/account",
+      "Real collector ingestion",
+      "Deployment",
+      "Complete Vue app behavior"
+    ]
+  },
+  "rerun": {
+    "same_request_repeated": true,
+    "skill_reused": true,
+    "installer_invocation_count_total": 1,
+    "upgrade_checks": 0,
+    "source_configuration_install_fingerprints_unchanged_on_final_rerun": true,
+    "single_initialization_count": 1,
+    "sdk_dependency_unchanged": true,
+    "evidence": [
+      "logs/browser-rerun.log",
+      "logs/rerun-idempotency.json",
+      "logs/detect-rerun-final.json"
+    ]
+  },
+  "defects": [
+    {
+      "id": "WEB-SDK-TYPES",
+      "classification": "existing upstream SDK declaration defect",
+      "detail": "Full strict TypeScript check fails in browser-core types: missing ContextValue and invalid ambient const initializer. skipLibCheck source check passed; no SDK files were edited.",
+      "evidence": "logs/typecheck.log"
+    },
+    {
+      "id": "WEB-PRIVACY-URL",
+      "classification": "real runtime privacy validation failure / Skill adapter guidance gap",
+      "detail": "Actual SDK payload includes CANARY_QUERY and CANARY_HASH after history.pushState. Default preserved SDK behavior does not meet the Skill privacy requirement to avoid raw URL query/fragment values. beforeSend only exposes specific mutable URL fields in this SDK and safe complete remediation was not proved. No false privacy pass claimed.",
+      "evidence": [
+        "logs/browser-smoke.json",
+        "logs/local-payloads.json"
+      ]
+    },
+    {
+      "id": "WEB-FIXTURE-INCOMPLETE",
+      "classification": "test fixture limitation",
+      "detail": "No repository build scripts or mounted Vue app; production build/real route app verification unavailable. Real SDK bundle and browser harness are bounded evidence."
+    },
+    {
+      "id": "WEB-HARNESS-EXIT",
+      "classification": "evaluation reporting caveat",
+      "detail": "Browser harness exited 0 after core assertions, while privacy checks are recorded booleans with failures. Overall result is partially_passed, not an all-pass verdict."
+    }
+  ],
+  "other_observations": [
+    "npm reported 2 high-severity vulnerabilities in preserved baseline dependencies; no unsolicited upgrade performed.",
+    "Initial sandbox loopback failures recovered with host permission.",
+    "No real control-plane requests, accounts, deployments or telemetry uploads."
+  ],
+  "logs": [
+    "logs/browser-rerun.log",
+    "logs/browser-smoke.json",
+    "logs/browser-smoke.log",
+    "logs/bundle-meta.json",
+    "logs/bundle.log",
+    "logs/commands.json",
+    "logs/detect-initial.json",
+    "logs/detect-rerun-final.json",
+    "logs/detect-rerun.json",
+    "logs/entry.md",
+    "logs/final-diff.patch",
+    "logs/install.log",
+    "logs/local-payloads.json",
+    "logs/npm-install.log",
+    "logs/npm-tools.log",
+    "logs/rerun-after.json",
+    "logs/rerun-before.json",
+    "logs/rerun-final-baseline.json",
+    "logs/rerun-idempotency.json",
+    "logs/typecheck-skiplib.log",
+    "logs/typecheck.log",
+    "logs/validate-implement.log",
+    "logs/validate-plan.log",
+    "logs/validate-rerun-final.log",
+    "logs/validate-rerun.log"
+  ]
+}

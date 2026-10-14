@@ -1,0 +1,78 @@
+{
+  "request": {
+    "intent": "implement",
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "REPLACE_WITH_CONFIRMED_APP_ID"
+      }
+    },
+    "receiver": {
+      "mode": "datakit",
+      "endpoint": {
+        "value": "http://127.0.0.1:9529"
+      }
+    },
+    "authorization_evidence": "User explicitly requested core RUM integration in this project."
+  },
+  "targets": [
+    {
+      "id": "miniapp:.",
+      "path": ".",
+      "platform": "miniapp",
+      "variants": [
+        "native"
+      ],
+      "evidence": [
+        "app.json",
+        "app.js"
+      ],
+      "application_id_slots": [
+        "miniapp"
+      ],
+      "application_ids": {
+        "miniapp": {
+          "value": "REPLACE_WITH_CONFIRMED_APP_ID"
+        }
+      },
+      "application_types": {
+        "miniapp": {
+          "value": "miniapp",
+          "source": "repository",
+          "confidence": "high",
+          "verification": "not_applicable",
+          "api_value": null
+        }
+      },
+      "existing_instrumentation": {
+        "status": "none",
+        "files": [],
+        "sdk": null,
+        "version": null,
+        "signals": []
+      },
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/miniapp/app-access/"
+      ]
+    }
+  ],
+  "planned_changes": [
+    {
+      "target_id": "miniapp:.",
+      "file": "app.js",
+      "order": 1,
+      "purpose": "Initialize the existing MiniApp SDK once",
+      "edits": [
+        "Add the initializer only after verifying receiver and SDK compatibility"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "Run the discovered application checks and capture actual SDK payload"
+      ],
+      "risk": "Initialization must preserve the application lifecycle",
+      "rollback": "Revert only the added initializer"
+    }
+  ]
+}

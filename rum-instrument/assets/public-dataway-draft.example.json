@@ -1,0 +1,102 @@
+{
+  "request": {
+    "intent": "implement",
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "REPLACE_WITH_CONFIRMED_APP_ID"
+      }
+    },
+    "receiver": {
+      "mode": "public_dataway",
+      "endpoint": {
+        "value": "https://cn3-openway.guance.com"
+      },
+      "control_plane": {
+        "status": "catalog_resolved",
+        "catalog": "https://urls.guance.com/",
+        "site_code": "cn3",
+        "ai_api_endpoint": {
+          "value": "https://cn3-ai-api.guance.com"
+        },
+        "exchange_path": "/api/v1/account/accesskey/exchange",
+        "application_lookup_path": "/api/v1/rum/app/get",
+        "api_key_persistence": "memory_only",
+        "tls_verification": "verified"
+      },
+      "client_tokens": {
+        "web": {
+          "source": "runtime:VITE_RUM_CLIENT_TOKEN",
+          "availability": "planned",
+          "sink": {
+            "path": ".env.local",
+            "format": "dotenv",
+            "scope": "repository",
+            "key": "VITE_RUM_CLIENT_TOKEN"
+          }
+        }
+      }
+    },
+    "authorization_evidence": "REPLACE_WITH_THE_ACTUAL_USER_IMPLEMENTATION_REQUEST"
+  },
+  "targets": [
+    {
+      "id": "web:.",
+      "path": ".",
+      "platform": "web",
+      "variants": [
+        "browser"
+      ],
+      "evidence": [
+        "package.json",
+        "src/rum.ts"
+      ],
+      "application_id_slots": [
+        "web"
+      ],
+      "application_ids": {
+        "web": {
+          "value": "REPLACE_WITH_CONFIRMED_APP_ID"
+        }
+      },
+      "application_types": {
+        "web": {
+          "value": "web",
+          "source": "repository",
+          "confidence": "high",
+          "verification": "pending",
+          "api_value": null
+        }
+      },
+      "existing_instrumentation": {
+        "status": "none",
+        "files": [],
+        "sdk": null,
+        "version": null,
+        "signals": []
+      },
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/web/app-access/"
+      ]
+    }
+  ],
+  "planned_changes": [
+    {
+      "target_id": "web:.",
+      "file": "src/rum.ts",
+      "order": 1,
+      "purpose": "Initialize the verified existing Browser RUM dependency once",
+      "edits": [
+        "Consume the configured receiver, Application ID and runtime Client Token key"
+      ],
+      "dependency_decision": {
+        "action": "none"
+      },
+      "validation": [
+        "Run existing build/type checks and verify representative SDK events"
+      ],
+      "risk": "Initialization must preserve the application lifecycle",
+      "rollback": "Revert only the added initializer"
+    }
+  ]
+}

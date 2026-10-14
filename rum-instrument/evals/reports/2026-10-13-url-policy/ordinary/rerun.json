@@ -1,0 +1,75 @@
+{
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "/private/tmp/rum-url-policy-eval/skills/rum-instrument/scripts/detect_rum_targets.py",
+        ".",
+        "--pretty"
+      ],
+      "exit": 0,
+      "stdout": "{\n  \"repository\": {\n    \"dirty_paths\": [\n      \"M index.html\",\n      \" M package.json\",\n      \"?? .gitignore\",\n      \"?? .rum/\",\n      \"?? README.md\",\n      \"?? rum-config.js\",\n      \"?? scripts/\",\n      \"?? src/bootstrap.js\",\n      \"?? src/rum.js\"\n    ],\n    \"git_commit\": \"9e38996a36c0a7964119a05da567b3da81eba6a3\",\n    \"root\": \"/private/tmp/rum-url-policy-eval/ordinary\",\n    \"scan_scope\": \".\"\n  },\n  \"schema_version\": 1,\n  \"targets\": [\n    {\n      \"application_id_slots\": [\n        \"web\"\n      ],\n      \"confidence\": \"high\",\n      \"evidence\": [\n        \"index.html\",\n        \"package.json\",\n        \"src/main.js\"\n      ],\n      \"existing_rum_markers\": {\n        \"browser-rum-package\": [\n          \"package.json\"\n        ],\n        \"javascript-rum-api\": [\n          \"src/rum.js\"\n        ]\n      },\n      \"id\": \"web:.\",\n      \"path\": \".\",\n      \"platform\": \"web\",\n      \"variants\": [\n        \"browser\"\n      ]\n    }\n  ],\n  \"warnings\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "/private/tmp/rum-url-policy-eval/skills/rum-instrument/scripts/validate_contract.py",
+        ".rum/plan.json",
+        "--phase",
+        "implement",
+        "--repository",
+        "/private/tmp/rum-url-policy-eval/ordinary"
+      ],
+      "exit": 0,
+      "stdout": "valid rum plan: revision 1 (implement)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "scripts/build.mjs"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "maintained_hashes_before": {
+    "package.json": "7127e4ccce3ffa5b0958393a009480fd9a04ca60ab4f960dc6d0db8e5fff6e15",
+    "index.html": "842502ad74ca4480b102c23f07816489ed345ddcd8f28122039a138d2a414d4f",
+    "src/bootstrap.js": "0866abca09ada07e1a1164a081bdcc2bd9f48b4a3a7208038e2e15767b960a11",
+    "src/main.js": "c0ef8ef6dfb449c7f8502d2da2079e31a93a188e482c4322e9d62574f8cf8b1c",
+    "src/rum.js": "0428f98642ec4b7bb8d949fbe338ceb7d4ac6b42af7bbf82631c126cdd769618",
+    "rum-config.js": "80ad14c7cc4303b78e3405ad688dabdd195c894da4ebbe96be250d490afeaf3a",
+    "scripts/build.mjs": "00ef63685eae6ccaf9bf3e0171ac5084e9072bf65f31181193167715155c69af",
+    ".gitignore": "131ae7917b18ca121defd625e6e7e418bc047d4eb4dda790767122d2fcf0ae16",
+    "README.md": "5d295d6cb651f42b22e8b7124bf2f5ca86120f95c4592560f7f87f7dddd0c159"
+  },
+  "maintained_hashes_after": {
+    "package.json": "7127e4ccce3ffa5b0958393a009480fd9a04ca60ab4f960dc6d0db8e5fff6e15",
+    "index.html": "842502ad74ca4480b102c23f07816489ed345ddcd8f28122039a138d2a414d4f",
+    "src/bootstrap.js": "0866abca09ada07e1a1164a081bdcc2bd9f48b4a3a7208038e2e15767b960a11",
+    "src/main.js": "c0ef8ef6dfb449c7f8502d2da2079e31a93a188e482c4322e9d62574f8cf8b1c",
+    "src/rum.js": "0428f98642ec4b7bb8d949fbe338ceb7d4ac6b42af7bbf82631c126cdd769618",
+    "rum-config.js": "80ad14c7cc4303b78e3405ad688dabdd195c894da4ebbe96be250d490afeaf3a",
+    "scripts/build.mjs": "00ef63685eae6ccaf9bf3e0171ac5084e9072bf65f31181193167715155c69af",
+    ".gitignore": "131ae7917b18ca121defd625e6e7e418bc047d4eb4dda790767122d2fcf0ae16",
+    "README.md": "5d295d6cb651f42b22e8b7124bf2f5ca86120f95c4592560f7f87f7dddd0c159"
+  },
+  "unchanged": true,
+  "initializer_count": 1,
+  "dependency_count": 1,
+  "decision": "Existing completed integration is reused; no second initializer or dependency added.",
+  "exit": 0
+}

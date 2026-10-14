@@ -1,0 +1,290 @@
+{
+  "approval": {
+    "basis": "explicit_implementation_request",
+    "blockers": [],
+    "revision": 2,
+    "status": "approved"
+  },
+  "authorizations": {
+    "testing_site": {
+      "conditions": {
+        "test_only": "Isolated test project only; not production deployment"
+      },
+      "evidence": "User selected testing-openway.dataflux.cn and new_skill_001, provided a temporary code, and then explicitly authorized test-only TLS bypass."
+    },
+    "disabled_tls": {
+      "evidence": "User explicitly requested bypassing trusted CA for this test continuation on 2026-10-13. Applies only to built-in testing AI API.",
+      "conditions": {
+        "test_only": "Isolated acceptance project, exact built-in testing site only; no production or global TLS changes."
+      }
+    }
+  },
+  "batches": [
+    {
+      "approval": {
+        "basis": "explicit_implementation_request",
+        "blockers": [],
+        "revision": 2,
+        "status": "approved"
+      },
+      "depends_on": [],
+      "id": "web",
+      "target_ids": [
+        "web:."
+      ]
+    }
+  ],
+  "handoff": [],
+  "planned_changes": [
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Prepare non-secret testing site and application ID; remove old DataKit variable"
+      ],
+      "file": ".env.production",
+      "order": 1,
+      "purpose": "Prepare non-secret testing site and application ID; remove old DataKit variable",
+      "risk": "No remote browser execution before configuration resolution; token-bearing build remains ignored",
+      "rollback": "Restore copied baseline only in this isolated worktree",
+      "target_id": "web:.",
+      "validation": [
+        "Full vue-tsc strict declaration check and Vite production build",
+        "After verified token persistence: implementation state validation, actual config consumption without printing credential values"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Document blank client Token key with ignored local sink"
+      ],
+      "file": ".env.example",
+      "order": 2,
+      "purpose": "Document blank client Token key with ignored local sink",
+      "risk": "No remote browser execution before configuration resolution; token-bearing build remains ignored",
+      "rollback": "Restore copied baseline only in this isolated worktree",
+      "target_id": "web:.",
+      "validation": [
+        "Full vue-tsc strict declaration check and Vite production build",
+        "After verified token persistence: implementation state validation, actual config consumption without printing credential values"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Prepare typed framework-native Vite config reader; consume Token only through import.meta.env"
+      ],
+      "file": "src/rum-config.ts",
+      "order": 3,
+      "purpose": "Prepare typed framework-native Vite config reader; consume Token only through import.meta.env",
+      "risk": "No remote browser execution before configuration resolution; token-bearing build remains ignored",
+      "rollback": "Restore copied baseline only in this isolated worktree",
+      "target_id": "web:.",
+      "validation": [
+        "Full vue-tsc strict declaration check and Vite production build",
+        "After verified token persistence: implementation state validation, actual config consumption without printing credential values"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "AFTER state validation replace DataKit init branch with typed Public DataWay config, preserving single initialization and failure handling"
+      ],
+      "file": "src/rum.ts",
+      "order": 4,
+      "purpose": "AFTER state validation replace DataKit init branch with typed Public DataWay config, preserving single initialization and failure handling",
+      "risk": "No remote browser execution before configuration resolution; token-bearing build remains ignored",
+      "rollback": "Restore copied baseline only in this isolated worktree",
+      "target_id": "web:.",
+      "validation": [
+        "Full vue-tsc strict declaration check and Vite production build",
+        "After verified token persistence: implementation state validation, actual config consumption without printing credential values"
+      ]
+    },
+    {
+      "dependency_decision": {
+        "action": "none"
+      },
+      "edits": [
+        "Explain test-only config, ignored sink and verified-TLS staged workflow"
+      ],
+      "file": "README.md",
+      "order": 5,
+      "purpose": "Explain test-only config, ignored sink and verified-TLS staged workflow",
+      "risk": "No remote browser execution before configuration resolution; token-bearing build remains ignored",
+      "rollback": "Restore copied baseline only in this isolated worktree",
+      "target_id": "web:.",
+      "validation": [
+        "Full vue-tsc strict declaration check and Vite production build",
+        "After verified token persistence: implementation state validation, actual config consumption without printing credential values"
+      ]
+    }
+  ],
+  "repository": {
+    "commit": "6153e26fab915d2a62c920d66abc9dcbf217dc92",
+    "initial_status": [],
+    "root": "/private/tmp/rum-platform-acceptance/web-public-dataway"
+  },
+  "request": {
+    "application_id_input": {
+      "kind": "scalar",
+      "reference": {
+        "value": "new_skill_001"
+      }
+    },
+    "intent": "implement",
+    "receiver": {
+      "client_tokens": {
+        "web": {
+          "availability": "planned",
+          "sink": {
+            "format": "dotenv",
+            "key": "VITE_RUM_CLIENT_TOKEN",
+            "path": ".env.production.local",
+            "scope": "repository"
+          },
+          "source": "runtime:VITE_RUM_CLIENT_TOKEN"
+        }
+      },
+      "control_plane": {
+        "ai_api_endpoint": {
+          "value": "https://testing-ft2x-ai-api.dataflux.cn"
+        },
+        "api_key_persistence": "memory_only",
+        "application_lookup_path": "/api/v1/rum/app/get",
+        "catalog": "builtin_testing",
+        "exchange_path": "/api/v1/account/accesskey/exchange",
+        "site_code": "testing",
+        "status": "catalog_resolved",
+        "temporary_authorization_code": {
+          "source": "prompt:provided"
+        },
+        "test_only": true,
+        "tls_verification": "disabled_for_testing"
+      },
+      "endpoint": {
+        "value": "http://testing-openway.dataflux.cn"
+      },
+      "mode": "public_dataway"
+    }
+  },
+  "risks": [
+    "User-authorized TLS verification disabled only for built-in testing AI API; HTTP testing DataWay is test-only.",
+    "Remote ingestion requires separate server-side evidence."
+  ],
+  "schema_version": 3,
+  "targets": [
+    {
+      "application_id_slots": [
+        "web"
+      ],
+      "application_ids": {
+        "web": {
+          "value": "new_skill_001"
+        }
+      },
+      "application_types": {
+        "web": {
+          "api_value": null,
+          "confidence": "high",
+          "source": "repository",
+          "value": "web",
+          "verification": "pending"
+        }
+      },
+      "artifacts": {},
+      "blockers": [],
+      "disposition": "planned",
+      "evidence": [
+        "index.html",
+        "package.json",
+        "src/main.ts",
+        "src/router.ts"
+      ],
+      "existing_instrumentation": {
+        "files": [
+          "src/rum.ts",
+          "src/main.ts",
+          ".env.production"
+        ],
+        "sdk": "@cloudcare/browser-rum",
+        "signals": [
+          "rum"
+        ],
+        "status": "existing",
+        "version": "3.3.21"
+      },
+      "id": "web:.",
+      "official_sources": [
+        "https://docs.guance.com/real-user-monitoring/web/app-access/"
+      ],
+      "path": ".",
+      "platform": "web",
+      "privacy": {
+        "controls": [
+          "No Replay start, Trace, custom context, body capture or URL rewrite"
+        ],
+        "evidence": [
+          "Reviewed maintained router: static paths / and /details with harmless page=2; no credentials or personal data in URL",
+          "Local draft remains component state; no custom context/actions or body/header collection"
+        ],
+        "validation": [
+          "Verify local draft canary absent from nonempty actual exported payload; ordinary page=2 must remain allowed"
+        ]
+      },
+      "profile": {
+        "env": {
+          "confidence": "high",
+          "source": "Vite import.meta.env.MODE build mode",
+          "value": "production"
+        },
+        "sampling": {
+          "confidence": "high",
+          "source": "Browser SDK default session sample rate",
+          "value": "SDK default"
+        },
+        "service": {
+          "confidence": "high",
+          "source": "package.json#name via Vite define",
+          "value": "vue-rum-acceptance"
+        },
+        "signals": {
+          "logs": false,
+          "replay": false,
+          "rum": true,
+          "tracing": false
+        },
+        "version": {
+          "confidence": "high",
+          "source": "package.json#version via Vite define",
+          "value": "1.2.3"
+        }
+      },
+      "receiver_mapping": {
+        "applicationId": "VITE_RUM_APP_ID",
+        "clientToken": {
+          "source": "runtime:VITE_RUM_CLIENT_TOKEN"
+        },
+        "site": "VITE_RUM_SITE"
+      },
+      "variants": [
+        "browser"
+      ]
+    }
+  ],
+  "validation": [
+    "Plan validation before credential resolution",
+    "Verify .env.production.local and .rum/control-plane-state.json are distinct ignored regular paths; helper uses 0600",
+    "No old code consumed; parent feeds fresh code only through stdin after scoped test-only preflight",
+    "Full strict Vue TypeScript and production build after local preparation",
+    "After credential resolution validate state before applying held initializer patch",
+    "Actual remote runtime test only when parent executes authorized continuation"
+  ]
+}

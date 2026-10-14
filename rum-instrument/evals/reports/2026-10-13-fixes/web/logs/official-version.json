@@ -1,0 +1,22 @@
+{
+  "source": "https://registry.npmjs.org/@cloudcare%2fbrowser-rum/latest",
+  "latest": "3.3.21",
+  "dist": {
+    "shasum": "b796f98549ce67b2c28378fa950e0bd641a4d8af",
+    "tarball": "https://registry.npmjs.org/@cloudcare/browser-rum/-/browser-rum-3.3.21.tgz",
+    "fileCount": 631,
+    "integrity": "sha512-DBvtO+cvcFVbJlEHPrtuh09ArWAtvKC/YHA0l94fkUqWHytK53dQLtqL55Voj1l/ZTLNMn3n91KHXgBaK0cK3g==",
+    "signatures": [
+      {
+        "sig": "MEUCIDN2SBGZb8aza9uLGV59K1lcbZ98sD1mphDY00KgyIY9AiEAuW4sRGN+lyu7SiGI3XQifNcPj1RU5gMQs0rmP/VTIJI=",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      },
+      {
+        "sig": "MEYCIQDkI/LBFzxfBmCG+Ocw61+tI3XPJDxb6uCoAcC93xSQgwIhAOxeAscsoWBaDvGZTLJ82y/ax0W+8cxvRfh+JhhQtvrL",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      }
+    ],
+    "unpackedSize": 5573156
+  },
+  "access_guide": "https://docs.guance.com/real-user-monitoring/web/app-access/"
+}

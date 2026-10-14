@@ -1,0 +1,41 @@
+{
+  "package_dependencies": {
+    "@cloudcare/browser-rum": "3.3.21",
+    "vue": "3.5.0"
+  },
+  "lock_root_dependencies": {
+    "@cloudcare/browser-rum": "3.3.21",
+    "vue": "3.5.0"
+  },
+  "root_dependencies_match": true,
+  "packages": {
+    "@cloudcare/browser-rum": {
+      "locked": "3.3.21",
+      "actual": "3.3.21",
+      "match": true
+    },
+    "@cloudcare/browser-core": {
+      "locked": "3.3.21",
+      "actual": "3.3.21",
+      "match": true
+    },
+    "@cloudcare/browser-worker": {
+      "locked": "3.3.21",
+      "actual": "3.3.21",
+      "match": true
+    },
+    "vue": {
+      "locked": "3.5.0",
+      "actual": "3.5.0",
+      "match": true
+    }
+  },
+  "independent_npm_ci_performed": true,
+  "lock_generation_command": "node /usr/local/lib/node_modules/npm/bin/npm-cli.js install --prefix /private/tmp/rum-sdk-types-retest/original-web-app --package-lock-only --offline --ignore-scripts --no-audit --no-fund",
+  "lock_generation_exit_code": 0,
+  "package.json_sha256": "e00df85be1bad2f18996b694790906e60a75ddcf48b8b1b869ff93f900d7bbe6",
+  "package-lock.json_sha256": "fc022f8457440aec44b5836b33f1b4d173debda3db326e2c92e394aac940c618",
+  "independent_npm_ci_exit_code": 0,
+  "package.json_unchanged_after_ci": true,
+  "package-lock.json_unchanged_after_ci": true
+}

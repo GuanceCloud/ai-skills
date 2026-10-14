@@ -1,257 +1,86 @@
-# Plan, state, and inventory contracts
+# Current plan contract: v3
 
-Write UTF-8 JSON with stable key ordering and no comments. Never include authorization-code, API Key, Client Token, cookie, header, body, or captured telemetry values.
+Plans are internal non-secret JSON. Use the same contract for simple and complex onboarding; ordinary users never author it. This page is complete for new v3 plans. Read [contracts-legacy.md](contracts-legacy.md) only for existing v2 plans or v1 state migration.
 
-## `.rum/plan.json`
+## Complete a draft
 
-Use schema version 2:
-
-```json
-{
-  "schema_version": 2,
-  "repository": {
-    "root": ".",
-    "commit": "<git commit>",
-    "initial_status": []
-  },
-  "request": {
-    "intent": "plan",
-    "application_id_input": {
-      "kind": "scalar",
-      "reference": {"value": "web_app"}
-    },
-    "receiver": {
-      "mode": "public_dataway",
-      "endpoint": {"value": "https://receiver.example"},
-      "client_tokens": {
-        "web": {
-          "source": "runtime:RUM_CLIENT_TOKEN",
-          "availability": "planned",
-          "sink": {
-            "path": ".rum/client-token.env",
-            "format": "dotenv",
-            "scope": "repository",
-            "key": "RUM_CLIENT_TOKEN"
-          }
-        }
-      },
-      "control_plane": {
-        "status": "catalog_resolved",
-        "catalog": "<helper catalog identifier>",
-        "site_code": "<site code>",
-        "ai_api_endpoint": {"value": "https://control.example"},
-        "exchange_path": "/api/v1/account/accesskey/exchange",
-        "application_lookup_path": "/api/v1/rum/app/get",
-        "api_key_persistence": "memory_only",
-        "tls_verification": "verified"
-      }
-    }
-  },
-  "targets": [],
-  "planned_changes": [],
-  "validation": [],
-  "risks": [],
-  "handoff": [],
-  "approval": {
-    "status": "pending",
-    "basis": "plan_only_request",
-    "blockers": [],
-    "revision": 1
-  }
-}
-```
-
-### Receiver
-
-- Set `mode` to `public_dataway` or `datakit`.
-- For Public DataWay, copy non-secret site metadata from helper `--site-only` output. Keep `control_plane.status` stable as `catalog_resolved`; put runtime execution status only in the separate state file.
-- Give each active slot one `client_tokens` entry with an `env:`, `runtime:`, or `existing:` source and an exact non-secret `sink` descriptor. Use `availability: planned` for a new sink and `existing` for a reviewed current sink. All slots share one sink path/format/scope, while each keeps its own key.
-- For DataKit, omit `client_tokens`, `control_plane`, temporary-code, API Key, and Client Token fields.
-- DataKit `readiness` is optional. When present, record `rum_collector` and `network_reachability` as `unknown`, `blocked`, or `verified`, with evidence for verified checks and handoff for other states. Unknown readiness does not block local implementation; it keeps remote verification false.
-- For the built-in test site, record `catalog: builtin_testing`, `site_code: testing`, `test_only: true`, and the helper-provided endpoint. Treat disabled TLS verification as test-only review scope.
-
-Do not accept `clientToken` or `aiApiEndpoint` as standard Prompt input. Record a supplied one-time code only as `{"source":"prompt:provided"}`.
-
-### Application IDs and targets
-
-Record whether input was scalar or target-keyed:
-
-```json
-{"kind": "scalar", "reference": {"value": "web_app"}}
-```
-
-```json
-{
-  "kind": "map",
-  "references": {
-    "android": {"source": "template:ANDROID_APP_ID"},
-    "ios": {"source": "template:IOS_APP_ID"}
-  }
-}
-```
-
-A scalar is valid only when one independent slot remains. During Public DataWay implementation, every active slot must contain a concrete `value` so execution state can be bound to the exact Application ID consumed by the helper.
-
-Each target contains:
-
-```json
-{
-  "id": "web:.",
-  "path": ".",
-  "platform": "web",
-  "variants": ["browser"],
-  "evidence": ["package.json", "src/main.ts"],
-  "application_id_slots": ["web"],
-  "application_ids": {"web": {"value": "web_app"}},
-  "application_types": {
-    "web": {
-      "value": "web",
-      "source": "repository",
-      "confidence": "high",
-      "verification": "pending",
-      "api_value": null
-    }
-  },
-  "existing_instrumentation": {
-    "status": "none",
-    "files": [],
-    "sdk": null,
-    "version": null,
-    "signals": []
-  },
-  "profile": {
-    "signals": {
-      "rum": true,
-      "logs": "preserve",
-      "tracing": "preserve",
-      "replay": false
-    }
-  },
-  "receiver_mapping": {},
-  "privacy": {},
-  "artifacts": {},
-  "official_sources": ["references/official-sources.json#web"],
-  "disposition": "planned",
-  "blockers": []
-}
-```
-
-Use repository-wide unique slot names. Every confirmed slot has one unique Application ID and one type. Allowed types are `web`, `miniapp`, `android`, `ios`, `custom`, `reactnative`, and `harmonyos`; sources are `user`, `ai_api`, or `repository`.
-
-Keep `rum` enabled for planned targets. Optional signals are `logs`, `tracing`, `replay`, `webview`, `native_crash`, `anr`, `freeze`, `ui_block`, `remote_config`, and `canvas_replay`. Add only existing or explicitly requested optional signals. Any new optional capability is review scope.
-
-### Planned changes and authorization
-
-Give each planned target one or more exact repository-relative maintained files:
-
-```json
-{
-  "target_id": "web:.",
-  "file": "src/rum.ts",
-  "order": 1,
-  "purpose": "Initialize browser RUM once",
-  "edits": ["Add the core initializer"],
-  "dependency_decision": {
-    "action": "preserve",
-    "package": "<package>",
-    "owner": "<owner>",
-    "version": "<locked version>",
-    "official_sources": ["references/official-sources.json#web"],
-    "compatibility": "<evidence>",
-    "verified_at": "YYYY-MM-DD"
-  },
-  "validation": ["npm test"],
-  "risk": "<specific risk>",
-  "rollback": "<specific rollback>"
-}
-```
-
-Never plan generated, dependency, `.git`, `.rum`, or Agent configuration paths.
-
-Use:
-
-- `pending` + `plan_only_request` for planning/audit;
-- `approved` + `explicit_implementation_request` for ordinary explicit implementation;
-- `pending` + concrete blockers when material review is required;
-- `approved` + `revision_review` after the exact revised plan is approved.
-
-For Revision Review, add `reviewed_plan_sha256` and `reviewed_overlaps`. Include overlaps only for planned files already dirty in `repository.initial_status`; hash their exact reviewed bytes. New changes created by the authorized implementation are expected and do not invalidate the plan. Increment the revision only for material target, receiver, SDK, signal, privacy, artifact, or edit-set changes.
-
-Generate the canonical digest after finalizing the plan:
+Start from the matching compact draft: [Public DataWay / Web](../assets/public-dataway-draft.example.json) or [DataKit / MiniApp](../assets/plan-draft.example.json). Replace example facts with repository/user evidence and create the destination directory. The Public DataWay example shows one site's metadata and Vite key naming; replace both from actual site discovery and application configuration. Its dependency action `none` assumes no dependency edit; supply the required dependency evidence when adding/upgrading a package. Then:
 
 ```bash
-python3 <skill-dir>/scripts/validate_contract.py .rum/plan.json --print-review-digest
+python3 <skill-dir>/scripts/validate_contract.py .rum/draft.json --complete-draft .rum/plan.json --repository <root>
 ```
 
-## `.rum/control-plane-state.json`
+This creates a new file only after full plan validation; it never overwrites an existing plan, consumes credentials or authorizes implementation by itself. It captures Git root/HEAD/status if `repository` is absent, supplies empty bookkeeping fields, preserves optional signals, and creates one batch for one target. A supplied discovery baseline is preserved. Use normal validation when updating an existing plan; do not regenerate its baseline after applying changes.
 
-Use this Git-ignored, non-secret state only for Public DataWay:
+New drafts without `repository` also capture each planned file's `before_sha256` (`sha256:<digest>` or `missing`). A manually supplied discovery baseline must include these per-change digests from that discovery. Re-completion never refreshes them. Older plans without digests conservatively reject newly dirty planned files.
+
+Provide `request.intent` and, for implementation/repair, `request.authorization_evidence`: a faithful non-secret account of the user's request. This is not a new user confirmation. Ready batches receive ordinary implementation authorization; audit/plan/validate remain pending. Supplied approvals are never upgraded. Missing IDs, receiver, target evidence, existing instrumentation and dependency compatibility are never invented. Multi-target drafts must declare all batches and dependencies; the existing validator checks shared edits and selection closure.
+
+## Facts supplied by the Agent
+
+| Field | Required content |
+|---|---|
+| `repository` | Optional in a new draft; otherwise `{root, commit, initial_status}` from original discovery |
+| `request.intent` | `implement`, `repair`, `plan`, `audit` or `validate` |
+| `request.application_id_input` | Preserve original scalar/map provenance; never infer it from an arbitrary selected subset |
+| `request.receiver` | Mode, endpoint reference, and Public DataWay metadata/Token destinations when applicable |
+| `targets` | Complete confirmed deployment targets, existing instrumentation and application mapping |
+| `planned_changes` | Exact maintained files, edit purpose, dependency decision and verification |
+| `batches` | Required for multiple targets; each target appears once, shared files/configuration belong together |
+
+References use **either** `{"value":"non-secret literal"}` **or** `{"source":"existing:path#key"}`, never both. Other supported sources: `env:NAME`, `runtime:NAME`, `template:NAME` where allowed. A provided temporary code is only `{"source":"prompt:provided"}`; no credential value belongs in a plan.
+
+Application input:
 
 ```json
-{
-  "schema_version": 1,
-  "kind": "rum_control_plane_state",
-  "plan_digest": "sha256:<canonical digest>",
-  "site": {
-    "code": "<site>",
-    "catalog": "<catalog>",
-    "dataway_url": "https://receiver.example",
-    "ai_api": "https://control.example",
-    "tls_verification": "verified"
-  },
-  "network_preflight": {
-    "status": "passed",
-    "dataway": {"status": "reachable", "http_status": 404},
-    "ai_api": {"status": "reachable", "http_status": 401}
-  },
-  "credential_resolution": {
-    "status": "resolved",
-    "exchange_path": "/api/v1/account/accesskey/exchange",
-    "application_lookup_path": "/api/v1/rum/app/get",
-    "api_key_persistence": "memory_only"
-  },
-  "applications": {
-    "web": {
-      "app_id": "web_app",
-      "api_app_type": "web",
-      "selected_app_type": "web",
-      "selected_app_type_source": "ai_api",
-      "type_mismatch": false,
-      "token_expired": false,
-      "client_token_available": true,
-      "network_attempts": 1,
-      "observations": {}
-    }
-  },
-  "client_tokens": {
-    "web": {
-      "source": "runtime:RUM_CLIENT_TOKEN",
-      "availability": "persisted"
-    }
-  },
-  "secret_sink": {
-    "path": "/absolute/repository/.env.local",
-    "format": "dotenv",
-    "scope": "repository",
-    "keys": {"web": "RUM_CLIENT_TOKEN"}
-  }
-}
+{"kind":"scalar","reference":{"value":"application-id"}}
 ```
 
-Require exact plan digest, site, slot, concrete Application ID, application type, Token reference, sink key, sink format, and sink path matches. Require `token_expired: false` and `client_token_available: true`. Treat mapping/sync observations as non-gating metadata.
+For multiple IDs use `{"kind":"map","references":{"storefront":{"value":"id-1"},"admin":{"value":"id-2"}}}`. Preserve missing mappings as blocked targets. A scalar cannot resolve multiple independent slots. Slots are unique across the repository.
 
-For implementation validation, require the sink and state to be distinct regular non-symlink files. Require in-repository files to be Git-ignored and the sink to have mode `0600`. Require Revision Review for an external sink.
+Each target supplies `id`, `path`, `platform`, `variants`, repository `evidence`, `application_id_slots`, `application_ids`, `application_types`, `existing_instrumentation`, and `official_sources`. The compact draft shows the structure. Type descriptors contain `value`, `source` (user/ai_api/repository), `confidence`, `verification`, and `api_value`. DataKit uses `not_applicable`; Public DataWay starts `pending` and becomes matched/mismatched from helper results. Resolve type in user → API → repository order; actual conflicts remain blocked. See [common.md](common.md) for platform mapping or ambiguous inputs.
 
-## Optional `.rum/instrumentation.json`
+Target `disposition` is planned/existing/instrumented/skipped/blocked/failed. A blocked target requires concrete `blockers`; missing-ID reasons must name the missing slot. The completer defaults new targets to planned, never to completed. Existing/instrumented targets need no new changes. The `profile.signals` default preserves optional capabilities; explicit additions still require authorization. `receiver_mapping`, `privacy`, `artifacts`, global `validation`, `risks`, and `handoff` can be empty when inapplicable.
 
-Generate only when requested or when the repository already maintains a machine-readable inventory. Use schema version 1 and record:
+Each change requires `target_id`, `file`, `order`, `purpose`, `edits`, `dependency_decision`, `validation`, `risk`, and `rollback`. Paths are relative maintained source, not generated/dependency/Git/Agent configuration. A dependency decision with action `none` needs no package metadata; `add`, `preserve` or `upgrade` require package, owner, version, compatibility, official_sources and verified_at. Do not hide a dependency edit behind `none`. Necessary stable same-major upgrades also need from_version, upgrade_kind=compatible_minor and necessity. Major/pre-release/0.x changes or replacement/removal require specific authorization.
 
-- `generated_from_plan_revision`;
-- repository root/commit;
-- receiver mode and non-secret references;
-- every target once as `existing`, `instrumented`, `skipped`, `blocked`, or `failed`;
-- local validation evidence and blockers;
-- artifact decisions and handoff;
-- `remote_verification.verified: false` unless external evidence is supplied.
+For non-secret configuration preparation before credential resolution, compute `prepared_sha256` from the exact intended result **before editing**, alongside `before_sha256`. Include both in the authorized plan and run `validate_contract.py .rum/plan.json --phase prepare --repository <root>` before applying that preparation. This credential-free phase checks implementation authorization and repository integrity; it authorizes only the declared non-secret preparation, not SDK initialization before Token resolution. Subsequent helper/implementation checks accept only the original baseline or this exact prepared result; later changes fail. Never populate the result digest by reading an already changed file to bypass a failure. All changes to the same file use the same digests. Existing dirty input still needs a checked `dirty_patch` or exact overlap review before preparation. Mark completed targets as instrumented and remove their completed changes before continuing other batches; do not refresh the original baseline.
 
-Never copy credentials or captured telemetry into the inventory. Generate `docs/rum-instrumentation.md` only when durable documentation is requested or already customary.
+## Receiver configuration
+
+DataKit: `{"mode":"datakit","endpoint":{"value":"http://receiver:9529"}}`; no control plane or Token fields. Optional readiness uses `readiness.checks.rum_collector` and `readiness.checks.network_reachability`, each with status/evidence/handoff. Unknown readiness permits local work. A complete example remains available in [datakit-plan.example.json](../assets/datakit-plan.example.json).
+
+Public DataWay: use `mode: public_dataway`, the exact endpoint, and `control_plane` metadata returned by helper `--site-only`: status=catalog_resolved, catalog, site_code, ai_api_endpoint reference, exchange_path, application_lookup_path, api_key_persistence=memory_only, tls_verification=verified. Keep resolution state outside this stable metadata.
+
+Planning may retain an endpoint source reference. Before v3 implementation or helper `--plan` execution, the Agent resolves that non-secret source and records `endpoint: {"value":"<confirmed origin>"}`. Do not ask the user to repeat an address already available in effective configuration. An unresolved reference produces a validation error before network/code access. DataKit runtime references remain supported.
+
+Declare each active slot's `client_tokens` descriptor:
+
+```json
+{"web":{"source":"runtime:RUM_CLIENT_TOKEN","availability":"planned","sink":{"path":".env.local","format":"dotenv","scope":"repository","key":"RUM_CLIENT_TOKEN"}}}
+```
+
+Use existing/planned availability as discovered. Each slot may have a different dotenv/JSON/properties/xcconfig destination. Shared files require one batch, one format/scope and distinct keys. Paths must pass ignore, regular-file and symlink checks; application code must actually consume the selected key. See [control-plane.md](control-plane.md) for helper execution. The built-in testing site and any TLS exception require [testing-site.md](testing-site.md), never ordinary production defaults.
+
+For JSON sinks, `key: "rum.clientToken"` and `source: "runtime:rum.clientToken"` mean the nested object path `config.rum.clientToken`; a key without dots stays top-level. Empty path components, parent/child destination collisions, literal dotted-key ambiguity, and traversing non-objects are rejected before credentials. Arrays and literal dots in JSON property names are not supported destinations; use an unambiguous supported key and matching application wiring. Properties-file dots remain literal key characters.
+
+## Batches and authorization
+
+A batch contains `id`, `target_ids`, `depends_on` (batch IDs), and `approval`. Ordinary ready implementation uses `{"status":"approved","basis":"explicit_implementation_request","blockers":[],"revision":1}`. Plan/audit use pending + plan_only_request. Blocked/failed targets require pending batches with concrete blockers, not another routine user approval. The root approval summarizes remaining blockers; ready independent batches may continue. All approvals use one revision.
+
+`--targets` selects target IDs, never batch IDs. Include every unfinished member of each selected batch and its unfinished prerequisites. Existing/instrumented/skipped members may be listed but are excluded from execution and credential resolution; skipped members do not satisfy prerequisites. Shared edits, initialization or configuration cannot be split across batches. Without selection, all unfinished targets are checked. Existing configuration and checkpoints are preserved, including integrity checks on shared sinks. Full-plan provenance/path checks always run, even for a selected subset.
+
+For dirty-file changes, actual overlap, specific optional-signal/dependency authorization or external sinks, read [execution.md](execution.md). It defines exact checked patches and Revision Review receipts. Receipts use `{"evidence":"actual user request","conditions":{}}`. Target keys are `signal:<name>`/`artifact:<name>`, change key is `dependency`, plan keys are `testing_site`/`disabled_tls`/`external_sink`. New Replay requires consent/masking/exclusions/sampling conditions; Trace requires allowlist/request_compatibility. Never invent these decisions or treat a failed integrity check as user-overridable.
+
+## Validation, state and recovery
+
+```bash
+python3 <skill-dir>/scripts/validate_contract.py .rum/plan.json --phase plan
+python3 <skill-dir>/scripts/validate_contract.py .rum/plan.json --phase implement --repository <root> --execution-state .rum/control-plane-state.json
+```
+
+Omit execution state for DataKit. Use the same target selection in the resolver and implementation validator. Plan completion or plan validation does not replace repository/credential checks at implementation time.
+
+Public DataWay state v2 is helper-owned: one checkpoint per slot, bound to repository, site/receiver, app ID, runtime source and sink path/format/scope/key. Code-plan changes alone do not require another exchange; changing credential identity does. The helper verifies sink integrity and original metadata internally. Never author or repair state fingerprints manually. Add `--resume` when state exists; preserve successful slots after a later failure. Request only a new code if unresolved slots cannot resume. Legacy v1 state must first pass its original v2 plan binding before migration; failure cannot silently relax checks or consume a new credential.
+
+Generate `.rum/instrumentation.json` only when requested/already maintained; details are in [validation.md](validation.md). Keep `remote_verification.verified: false` unless external ingestion evidence is available. Local build, runtime HTTP receipt and backend verification are distinct results.

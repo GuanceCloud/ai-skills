@@ -1,0 +1,118 @@
+[
+  {
+    "path": "SKILL.md",
+    "sha256": "2455b101893f05b8283d2447c4031e585a487dedfaee5a72af967c4927d569ca"
+  },
+  {
+    "path": "references/web-compatibility.md",
+    "sha256": "820e0413c1cc70369121580b0f40e2a227b147e88ab31766fe7832f6ae6a23e7"
+  },
+  {
+    "path": "references/react-native.md",
+    "sha256": "b56ff37956a1ae872c18eb452ab783472c50afda2c156e7ace45ad06c856eec2"
+  },
+  {
+    "path": "references/contracts.md",
+    "sha256": "3a19e7bc07fae07d5223b26de01ce2e375d4c97bccf01e11f0eada48933fbf7e"
+  },
+  {
+    "path": "references/privacy-security.md",
+    "sha256": "08cacd772d0a04f928baf088e3dbe8f759a472fe9d040ca0cf4f2d82bf47b63b"
+  },
+  {
+    "path": "references/common.md",
+    "sha256": "f6c0cf6fd0793cab8c1abbc8ecfd903481d8fe631e0937baeedad4056354eec4"
+  },
+  {
+    "path": "references/android.md",
+    "sha256": "e8e46ff2c7d0f9728933101695132dd21d809d92f1da12243276bf0c564ce7b1"
+  },
+  {
+    "path": "references/miniapp.md",
+    "sha256": "74c2a1f54710ed3a128e5021179417025af535e7ca2e47abe697b85d1ac281c7"
+  },
+  {
+    "path": "references/harmonyos.md",
+    "sha256": "4e0ca9a899ef7086dc4882fe0fc11e22364eb31586f77ed17dd8a34f5d57055b"
+  },
+  {
+    "path": "references/apple.md",
+    "sha256": "6e5e310931e72e690d3c58150df8441ec4c0bd44110f6bab92c6bcbeca6e39c4"
+  },
+  {
+    "path": "references/validation.md",
+    "sha256": "9ebb6ccf33cf4d7772e8123f63e601d8d518d892c6d0b072542b32407af8ec6a"
+  },
+  {
+    "path": "references/control-plane.md",
+    "sha256": "c4b89b60af196d28f4dd07e390d54ea08d1efc2e80cb07a31b9fdbde8a254373"
+  },
+  {
+    "path": "references/contracts-legacy.md",
+    "sha256": "ecdabe7e3ace7d0f168b7f71dc5fba5ba2549f9eb5f950c418701a1e54e96a0a"
+  },
+  {
+    "path": "references/official-sources.json",
+    "sha256": "9759390e740577cf753ffcf231bb0fbd04de9a27515bf35717bdb47930f42b9a"
+  },
+  {
+    "path": "references/testing-site.md",
+    "sha256": "e36840216f89b1810c49652ce2aa3e98b2728c51e7197ce0685551d731753f9a"
+  },
+  {
+    "path": "references/execution.md",
+    "sha256": "dacabd961060f09b2358acabf21bceb88e0a793e93db21d3201f823ea7608082"
+  },
+  {
+    "path": "references/macos.md",
+    "sha256": "9762041bebf672354f7e2a451a54df0b4f57643fb64d036f3bc160221a9a9cb9"
+  },
+  {
+    "path": "references/flutter.md",
+    "sha256": "3f1c7dedb3a7a8f056f6dc4efb9d6ec1437b38037c2dee89dd3ff79f574da5df"
+  },
+  {
+    "path": "references/web.md",
+    "sha256": "29ad5b3594324665b05acdfba6e274aeb4b4a56ebff9521b25440b81cab9adfd"
+  },
+  {
+    "path": "references/unity.md",
+    "sha256": "8c76b44a1b015a2e605e7d49039f3bdf21177ecc58f422143e261a750849e54e"
+  },
+  {
+    "path": "references/uniapp.md",
+    "sha256": "cd446cfaa45c4e9dcdb727125dcf4bfcfc12a35ff4fbb736af43af46d5d39b22"
+  },
+  {
+    "path": "references/cpp.md",
+    "sha256": "12469746f181cd9070bf90bbb86c034e883a3bcd785f180312797c975e1e38a1"
+  },
+  {
+    "path": "agents/openai.yaml",
+    "sha256": "26f7ffc5ecac350efc2d5d1f7d9292528da15930544110eca462601a3a85d08d"
+  },
+  {
+    "path": "scripts/detect_rum_targets.py",
+    "sha256": "3bfb5cf7f7548a2838372fb7ddf34ce580cc9247090cb8e0204e89f31472b325"
+  },
+  {
+    "path": "scripts/validate_contract.py",
+    "sha256": "acc3253bf7c89899b144244cac1ed960e91fb82d59617f85013fec1ff3756675"
+  },
+  {
+    "path": "scripts/resolve_rum_application.py",
+    "sha256": "4876a4abbfaabb16128956068a866c9b5205f4b6e270f07020a0017a314e8f62"
+  },
+  {
+    "path": "assets/react-native-error-handler.cjs",
+    "sha256": "cbaab8137406aacfb765dd32a577a42f746cfa7d607757c5b5c217a9bb93d104"
+  },
+  {
+    "path": "assets/datakit-plan.example.json",
+    "sha256": "85f86eb846d7185e3e376d994cc78281f4518b30b9d1927217b19335c017b147"
+  },
+  {
+    "path": "assets/plan-draft.example.json",
+    "sha256": "44da6f7d2450b3e1463ac8cad239e83bd8493e0be28f6ecac6184c7c8fe47b8a"
+  }
+]

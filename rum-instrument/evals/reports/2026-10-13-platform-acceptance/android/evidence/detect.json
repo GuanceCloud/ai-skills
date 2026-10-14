@@ -1,0 +1,29 @@
+{
+  "repository": {
+    "dirty_paths": [],
+    "git_commit": "f9cca8d903c832a82a731b1ca14988cc96233ef8",
+    "root": "/private/tmp/rum-platform-acceptance/android/project",
+    "scan_scope": "."
+  },
+  "schema_version": 1,
+  "targets": [
+    {
+      "application_id_slots": [
+        "android"
+      ],
+      "confidence": "high",
+      "evidence": [
+        "app/build.gradle",
+        "app/src/main/AndroidManifest.xml"
+      ],
+      "existing_rum_markers": {},
+      "id": "android:app",
+      "path": "app",
+      "platform": "android",
+      "variants": [
+        "android"
+      ]
+    }
+  ],
+  "warnings": []
+}

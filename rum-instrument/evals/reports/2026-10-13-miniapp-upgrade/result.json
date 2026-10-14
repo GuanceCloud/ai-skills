@@ -1,0 +1,98 @@
+{
+  "status": "blocked_baseline_page_runtime",
+  "source": "Latest repository Skill; upgraded official WeChat IDE",
+  "cli_syntax": "auto --project <path> --auto-port <port>",
+  "product_version": "2.02.2609231",
+  "plist_runtime_version": "36.6.0 (not treated as WeChat product version)",
+  "initial_failure": "ENOENT Default/.cli, exit255",
+  "initial_profile_directory_later_exists": true,
+  "ide_main_process_observed": true,
+  "baseline_retry_exit": 246,
+  "tty_retry_exit": 246,
+  "retry_failure": "IDE service port disabled; CLI exits without waiting for advertised y input",
+  "pure_page_baseline": "failed_page_not_created",
+  "rum_runtime": "not_run",
+  "telemetry_sent": false,
+  "credentials_consumed": false,
+  "settings_changed_by_parent": false,
+  "product_version_source": "Subagent inspection of upgraded installation metadata; Tool.getInfo not reached",
+  "gui_attempts": [
+    "Application-path connection timed out",
+    "Bundle-ID connection interrupted before UI state became available"
+  ],
+  "settings_changed": false,
+  "receiver_or_automation_started": {
+    "receiver": false,
+    "automation": true
+  },
+  "service_port_enabled_by_user": true,
+  "service_port_recheck": "passed",
+  "baseline_retry_after_enable": {
+    "command": [
+      "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+      "auto",
+      "--project",
+      "/private/tmp/rum-platform-acceptance/miniapp/project-baseline",
+      "--auto-port",
+      "19534"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 22.04,
+    "service_port_disabled": false,
+    "appid_error": true,
+    "baseline": "not_run",
+    "rum_runtime": "not_run",
+    "credentials_consumed": false,
+    "telemetry_sent": false
+  },
+  "current_blocker": "Authorized WeChat AppID accepted and automation connected. No-RUM baseline App.onLaunch ran once, but page stack is empty and currentPage/reLaunch fail with null page metadata. Explicit project open later timed out at IDE port. SDK runtime not run.",
+  "previous_results": "result-before-service-enabled.json",
+  "platform_runtime_assertions": "not_run",
+  "sdk_signals": "not_run",
+  "privacy_payload_assertions": "not_run",
+  "idempotence_runtime": "not_run",
+  "test_ports": {
+    "19529": false,
+    "19532": false,
+    "19534": true,
+    "20166": true
+  },
+  "supplied_wechat_appid_validation": {
+    "wechat_appid": "wx_skill_001",
+    "exit_code": 0,
+    "elapsed_seconds": 4.98,
+    "appid_error": true,
+    "service_port_disabled": false,
+    "error_code": 10,
+    "error_message": "AppID 不合法,invalid appid",
+    "baseline": "not_run",
+    "rum_runtime": "not_run",
+    "telemetry_sent": false,
+    "credentials_consumed": false
+  },
+  "wechat_appid": "wxe79bd3db4b83a4b7",
+  "wechat_appid_validation": "passed",
+  "authorized_appid_diagnostics": {
+    "wechat_appid_validation": "passed",
+    "official_auto_command": "passed_after_trust_project",
+    "baseline_app_launch_count": 1,
+    "actual_base_library": "3.17.4",
+    "page_stack": [],
+    "page_error": "Cannot destructure property 'rawPath' of 't.getPageMetaByWebviewId(...)' as it is null.",
+    "rum_sdk_runtime": "not_run",
+    "remote_telemetry_sent": false,
+    "credentials_consumed": false,
+    "gui_diagnostic": "CUA getApp returned Running application not found after prolonged wait; no GUI changes performed",
+    "diagnostic_cli": "check_wechatide_status succeeded (loginExpired false, versionRelation equal, cliTokenRequired false); get_simulator_console and simulator_open_page separately timed out during client authorization",
+    "explicit_open": {
+      "exit_code": 255,
+      "error": "wait IDE port timeout"
+    },
+    "first_auto_launch": "Timed out after 55s; early connection probe failed before port readiness",
+    "gui_elapsed_seconds": 801.841,
+    "baseline_status": "failed_page_not_created",
+    "rum_status": "not_run",
+    "source_skill_sha256": "6a1fdb1a23126b8045e4eafdde3529a2e1edbb9495cbe1a6ddd1329d2c53e6a1"
+  },
+  "cleanup": "logs/authorized-appid/cleanup.json"
+}

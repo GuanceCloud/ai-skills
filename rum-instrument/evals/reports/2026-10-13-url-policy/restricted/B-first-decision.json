@@ -1,0 +1,11 @@
+{
+  "scenario": "B",
+  "commit": "7b93e14625ef42df7a88c42ea40233a672327367",
+  "first_plan_disposition": "blocked",
+  "first_implementation_gate": "pending technical remedy verification",
+  "new_initializer_in_application": false,
+  "business_question_count": 0,
+  "approval_question_count": 0,
+  "reason": "Maintained /auth/callback flow reads access_token into in-memory authentication state without clearing URL; standard view.url_query would capture credential material; supported remedy must be verified before initialization.",
+  "fixture_is_synthetic": true
+}

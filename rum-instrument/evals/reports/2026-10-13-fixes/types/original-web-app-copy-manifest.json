@@ -1,0 +1,50 @@
+[
+  {
+    "path": ".gitignore",
+    "original_sha256": "b8d3de88275b6998142ba6969a9ebe159125afd517ed019e12316122fe9c5f09",
+    "copied_sha256": "b8d3de88275b6998142ba6969a9ebe159125afd517ed019e12316122fe9c5f09",
+    "identical": true
+  },
+  {
+    "path": ".rum/plan.json",
+    "original_sha256": "78f1759df0f55e69d7a35fe8212e956359e98eb04e2e944b4bb94d3bdb751ce4",
+    "copied_sha256": "78f1759df0f55e69d7a35fe8212e956359e98eb04e2e944b4bb94d3bdb751ce4",
+    "identical": true
+  },
+  {
+    "path": "index.html",
+    "original_sha256": "e616fc53b78ae1427f674ae7e4be598ce28b181dfe7c3e67adaf193ac7c663b2",
+    "copied_sha256": "e616fc53b78ae1427f674ae7e4be598ce28b181dfe7c3e67adaf193ac7c663b2",
+    "identical": true
+  },
+  {
+    "path": "package.json",
+    "original_sha256": "56eba958ad655de265d863c52a1b2f6ac509212719c1b309e333e85de73202bd",
+    "copied_sha256": "e00df85be1bad2f18996b694790906e60a75ddcf48b8b1b869ff93f900d7bbe6",
+    "identical": false
+  },
+  {
+    "path": "rum-config.example.js",
+    "original_sha256": "a0bc2fcb30f6d4f861e7c98d7a37d1abab24960b5248661099eb66ad0b86ace7",
+    "copied_sha256": "a0bc2fcb30f6d4f861e7c98d7a37d1abab24960b5248661099eb66ad0b86ace7",
+    "identical": true
+  },
+  {
+    "path": "rum-config.js",
+    "original_sha256": "a0bc2fcb30f6d4f861e7c98d7a37d1abab24960b5248661099eb66ad0b86ace7",
+    "copied_sha256": "a0bc2fcb30f6d4f861e7c98d7a37d1abab24960b5248661099eb66ad0b86ace7",
+    "identical": true
+  },
+  {
+    "path": "src/main.ts",
+    "original_sha256": "56feec6dc2320a055b3fb9326ced424cdc897eb5346038c36f83ff2596f5d20f",
+    "copied_sha256": "56feec6dc2320a055b3fb9326ced424cdc897eb5346038c36f83ff2596f5d20f",
+    "identical": true
+  },
+  {
+    "path": "src/rum.ts",
+    "original_sha256": "c18ddc67499bcaefaba7580ecc551465b17b03e1302ff7e828cff8b66111d191",
+    "copied_sha256": "c18ddc67499bcaefaba7580ecc551465b17b03e1302ff7e828cff8b66111d191",
+    "identical": true
+  }
+]

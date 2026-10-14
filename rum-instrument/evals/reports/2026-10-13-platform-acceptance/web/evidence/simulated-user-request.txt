@@ -1,0 +1,3 @@
+请使用最新 rum-instrument 完成当前 Vue 项目的基础 RUM 接入。
+datakitUrl: http://127.0.0.1:19539
+appId: eval_vue_acceptance

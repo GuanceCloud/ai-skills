@@ -1,0 +1,2 @@
+error: request.receiver.readiness.status must be blocked, unknown, or verified
+error: request.receiver.readiness.checks must be an object

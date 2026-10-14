@@ -1,0 +1,1 @@
+const vm=require('vm');const context={document:{getElementById:()=>({})},fetch:url=>fetch(url)};context.window=context;vm.createContext(context);vm.runInContext("window.appStarted = (window.appStarted || 0) + 1;\ndocument.getElementById('app').textContent = 'Fixture application ready';\nwindow.appRequest = fetch('/api/health').then(response => response.json());\n",context);

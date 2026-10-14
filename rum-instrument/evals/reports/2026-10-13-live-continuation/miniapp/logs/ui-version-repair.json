@@ -1,0 +1,41 @@
+{
+  "purpose": "Check official project Details / Local Settings / Debug base library UI for an override of project.config libVersion",
+  "project": "project-baseline",
+  "result": "blocked_before_project_settings",
+  "cli": {
+    "command": [
+      "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+      "--open",
+      "/private/tmp/rum-platform-acceptance/miniapp/project-baseline"
+    ],
+    "observed": "starting ide...; no completion; own hung CLI processes terminated",
+    "evidence": "logs/cli-open-baseline-ui-repair.log",
+    "exit_after_cleanup": 143
+  },
+  "cua": [
+    {
+      "method": "getApp(bundle ID)",
+      "result": "Computer Use server error -10005: timeoutReached"
+    },
+    {
+      "method": "getApp(application path)",
+      "result": "Computer Use server error -10005: timeoutReached"
+    },
+    {
+      "method": "listApps",
+      "result": "com.tencent.webplusdevtools isRunning=false"
+    },
+    {
+      "method": "computer.launch_app",
+      "result": "API unavailable: launch_app is not a function; no action occurred"
+    }
+  ],
+  "independent_process_observation": "Only two CLI node processes existed; no WeChat developer-tool main process was observed",
+  "settings_opened": false,
+  "project_ui_settings_changed": false,
+  "global_settings_changed": false,
+  "user_projects_changed": false,
+  "base_library_override_hypothesis": "Not tested through UI; project-file overrides from previous round did not alter actual SDKVersion. Do not claim a UI selection was attempted or failed.",
+  "cleanup": "Terminated verified own CLI PIDs80052/80053; no receiver or new automation service was started",
+  "next_step": "Need a running compatible developer-tool environment; then inspect project-specific debug library selection and validate a pure baseline before RUM"
+}

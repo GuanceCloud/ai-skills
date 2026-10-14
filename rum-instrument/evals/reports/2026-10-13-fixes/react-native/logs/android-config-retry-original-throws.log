@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/private/tmp/rum-rn-fix-eval/verify.cjs",
+    "android",
+    "config-retry",
+    "original-throws"
+  ],
+  "exit": 0,
+  "stdout": "FTRUMConfig\nFTRUMConfig\n{\"pass\":true,\"platform\":\"android\",\"mode\":\"config-retry\",\"originalThrows\":true,\"originalHandlerCalls\":1,\"reportCalls\":1}\n",
+  "stderr": ""
+}

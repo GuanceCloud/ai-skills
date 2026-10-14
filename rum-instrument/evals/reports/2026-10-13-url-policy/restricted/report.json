@@ -1,0 +1,145 @@
+{
+  "status": "completed_forward_test",
+  "scope": "Two independent synthetic git fixtures; latest runtime skill; actual SDK 3.3.21 and Chrome 155",
+  "skill_path": "/private/tmp/rum-url-policy-eval/skills/rum-instrument/SKILL.md",
+  "official_source": "https://docs.guance.com/real-user-monitoring/web/app-access/",
+  "scenarios": {
+    "A": {
+      "scenario": "A",
+      "commit": "eb48369422ebec71b310440d6526738710b8eae7",
+      "first_plan_disposition": "blocked",
+      "first_implementation_gate": "pending technical remedy verification",
+      "new_initializer_in_application": false,
+      "business_question_count": 0,
+      "approval_question_count": 0,
+      "reason": "Explicit project requirement prohibits all query values in every RUM field; 3.3.21 beforeSend cannot modify view.url_query; remedy must be verified before initialization.",
+      "fixture_is_synthetic": true,
+      "final_disposition": "blocked",
+      "plan_gate_passed": true,
+      "implementation_gate_passed": false,
+      "question_count": 0,
+      "question_reasons": [],
+      "final_evidence": "fields.view_url_query retains prohibited synthetic query value after view.url is scrubbed; return false cannot discard view events",
+      "required_next_step": "Use a verified officially supported filtering remedy or an independently scoped authentication/URL architecture fix before initialization. No user confirmation can waive this failure."
+    },
+    "B": {
+      "scenario": "B",
+      "commit": "7b93e14625ef42df7a88c42ea40233a672327367",
+      "first_plan_disposition": "blocked",
+      "first_implementation_gate": "pending technical remedy verification",
+      "new_initializer_in_application": false,
+      "business_question_count": 0,
+      "approval_question_count": 0,
+      "reason": "Maintained /auth/callback flow reads access_token into in-memory authentication state without clearing URL; standard view.url_query would capture credential material; supported remedy must be verified before initialization.",
+      "fixture_is_synthetic": true,
+      "final_disposition": "blocked",
+      "plan_gate_passed": true,
+      "implementation_gate_passed": false,
+      "question_count": 0,
+      "question_reasons": [],
+      "final_evidence": "fields.view_url_query retains prohibited synthetic query value after view.url is scrubbed; return false cannot discard view events",
+      "required_next_step": "Use a verified officially supported filtering remedy or an independently scoped authentication/URL architecture fix before initialization. No user confirmation can waive this failure."
+    }
+  },
+  "real_sdk_probe_event_counts": [
+    {
+      "name": "A-baseline",
+      "requestCount": 4,
+      "events": 9,
+      "eventTypes": [
+        "view",
+        "resource",
+        "long_task",
+        "error"
+      ],
+      "behavior": {
+        "url": "http://127.0.0.1:65280/?page=2&sort=price",
+        "page": "2",
+        "initCount": 1
+      },
+      "containsProhibitedCanary": true,
+      "api": [
+        {
+          "run": "A-baseline",
+          "url": "/api/catalog?page=2&sort=price"
+        }
+      ]
+    },
+    {
+      "name": "A-hook",
+      "requestCount": 4,
+      "events": 8,
+      "eventTypes": [
+        "view",
+        "resource",
+        "error"
+      ],
+      "behavior": {
+        "url": "http://127.0.0.1:65280/?page=2&sort=price",
+        "page": "2",
+        "initCount": 1
+      },
+      "containsProhibitedCanary": true,
+      "api": [
+        {
+          "run": "A-hook",
+          "url": "/api/catalog?page=2&sort=price"
+        }
+      ]
+    },
+    {
+      "name": "A-reject",
+      "requestCount": 4,
+      "events": 8,
+      "eventTypes": [
+        "view",
+        "resource",
+        "error"
+      ],
+      "behavior": {
+        "url": "http://127.0.0.1:65280/?page=2&sort=price",
+        "page": "2",
+        "initCount": 1
+      },
+      "containsProhibitedCanary": true,
+      "api": [
+        {
+          "run": "A-reject",
+          "url": "/api/catalog?page=2&sort=price"
+        }
+      ]
+    },
+    {
+      "name": "B-hook",
+      "requestCount": 5,
+      "events": 9,
+      "eventTypes": [
+        "view",
+        "resource",
+        "error"
+      ],
+      "behavior": {
+        "url": "http://127.0.0.1:65280/?page=2&sort=price",
+        "page": "2",
+        "initCount": 1
+      },
+      "containsProhibitedCanary": true,
+      "api": [
+        {
+          "run": "B-hook",
+          "url": "/api/catalog?page=2&sort=price"
+        }
+      ]
+    }
+  ],
+  "privacy_assertion_exit_code": 1,
+  "blocker_evidence_assertion_exit_code": 0,
+  "remote_ingestion_verified": false,
+  "limitations": [
+    "Only SDK 3.3.21 was tested. This is no proof that every future official SDK or remedy fails.",
+    "B browser probe isolates the URL-field behavior and serves the original catalog main.js; actual B authorization callback is assessed from maintained source and a separate synthetic function invocation.",
+    "Local HTTP payload receipt proves export only, not real DataKit/control-plane ingestion.",
+    "Probe initializer is test-only outside both application repositories. Application runtime sources remain unchanged.",
+    "The synthetic page and API origins are localhost; there is no real credential, production traffic, or remote mutation."
+  ]
+}

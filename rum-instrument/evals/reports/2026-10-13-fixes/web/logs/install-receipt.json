@@ -1,0 +1,7 @@
+{
+  "command": "sh /Users/oneandonly/Workspace/ai-skills/install.sh --base-url http://127.0.0.1:18764 --skill rum-instrument --agent codex --scope user --dest /private/tmp/rum-web-fix-eval/skills --yes",
+  "exit_code": 0,
+  "stdout": "Installed successfully into /private/tmp/rum-web-fix-eval/skills",
+  "stderr": "tar: Failed to set default locale (twice)",
+  "sandbox": "require_escalated"
+}

@@ -1,0 +1,13 @@
+{
+  "source": "/private/tmp/rum-platform-acceptance/web",
+  "source_baseline": "db9ef5a8ab3de741bdb2ecc2cf948f022475c8cd",
+  "copy_excluded": [
+    ".git",
+    "node_modules",
+    "dist",
+    ".rum",
+    "evidence",
+    ".env*.local"
+  ],
+  "skill_sha256": "6a1fdb1a23126b8045e4eafdde3529a2e1edbb9495cbe1a6ddd1329d2c53e6a1"
+}

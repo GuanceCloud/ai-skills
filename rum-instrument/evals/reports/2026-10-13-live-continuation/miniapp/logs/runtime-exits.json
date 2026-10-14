@@ -1,0 +1,11 @@
+{
+  "cli-auto-user-enabled": 0,
+  "runtime-probe-first": "terminated after unbounded App.getCurrentPage hang",
+  "runtime-probe-retry": 124,
+  "cli-auto-lib2111": 255,
+  "runtime-probe-lib2111": 1,
+  "runtime-probe-lib2111-retry": 1,
+  "runtime-probe-lib2111-ready": 124,
+  "runtime-probe-compatible": 124,
+  "runtime-probe-baseline": 124
+}

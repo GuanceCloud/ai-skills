@@ -1,0 +1,38 @@
+[
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "--check",
+      "/private/tmp/rum-rn-fix-eval/project/index.js"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "--check",
+      "/private/tmp/rum-rn-fix-eval/project/rum.js"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "--check",
+      "/private/tmp/rum-rn-fix-eval/project/rum-error-handler.cjs"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "--check",
+      "/private/tmp/rum-rn-fix-eval/project/rum-error-payload.js"
+    ],
+    "exit": 0,
+    "output": ""
+  }
+]

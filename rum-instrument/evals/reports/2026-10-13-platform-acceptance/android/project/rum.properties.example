@@ -1,0 +1,3 @@
+RUM_APP_ID=eval_android_acceptance
+RUM_DATAKIT_URL=http://127.0.0.1:19529
+RUM_ENV=acceptance

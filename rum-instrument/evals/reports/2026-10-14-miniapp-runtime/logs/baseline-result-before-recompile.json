@@ -1,0 +1,21 @@
+{
+  "status": "timeout",
+  "checks": [
+    {
+      "name": "app_lifecycle",
+      "status": "failed",
+      "error": "timeout waiting for automator response"
+    },
+    {
+      "name": "page_and_interaction",
+      "status": "failed",
+      "error": "timeout waiting for automator response"
+    },
+    {
+      "name": "screenshot",
+      "status": "failed",
+      "error": "timeout waiting for automator response"
+    }
+  ],
+  "runtime": {}
+}

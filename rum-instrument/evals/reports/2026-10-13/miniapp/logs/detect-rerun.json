@@ -1,0 +1,46 @@
+{
+  "repository": {
+    "dirty_paths": [
+      "M .gitignore",
+      " M app.js",
+      "?? config/",
+      "?? package-lock.json",
+      "?? package.json",
+      "?? rum.js"
+    ],
+    "git_commit": "21bf6128a7c0afec8693c502b16587679fea658b",
+    "root": "${EVAL_ROOT}/miniapp/project",
+    "scan_scope": "."
+  },
+  "schema_version": 1,
+  "targets": [
+    {
+      "application_id_slots": [
+        "miniapp"
+      ],
+      "confidence": "medium",
+      "evidence": [
+        "app.js",
+        "app.json",
+        "package.json",
+        "project.config.json"
+      ],
+      "existing_rum_markers": {
+        "javascript-rum-api": [
+          "rum.js"
+        ],
+        "miniapp-rum-package": [
+          "package.json"
+        ]
+      },
+      "id": "miniapp:.",
+      "path": ".",
+      "platform": "miniapp",
+      "variants": [
+        "framework",
+        "native"
+      ]
+    }
+  ],
+  "warnings": []
+}

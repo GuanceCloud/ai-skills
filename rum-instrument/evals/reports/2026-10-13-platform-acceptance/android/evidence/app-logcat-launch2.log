@@ -1,0 +1,34 @@
+--------- beginning of main
+10-13 16:02:27.947  4495  4495 I e.rumacceptance: Late-enabling -Xcheck:jni
+10-13 16:02:27.973  4495  4495 I e.rumacceptance: Using CollectorTypeCC GC.
+10-13 16:02:28.020  4495  4495 D CompatibilityChangeReporter: Compat change id reported: 171979766; UID 10193; state: ENABLED
+10-13 16:02:28.028  4495  4495 D CompatibilityChangeReporter: Compat change id reported: 242716250; UID 10193; state: ENABLED
+10-13 16:02:28.051  4495  4495 W ziparchive: Unable to open '/data/app/~~jvhiQ3hVWyoINXFbINH1Pw==/com.example.rumacceptance-2jmhfmQVkkhrvV3Ixa8Tgg==/base.dm': No such file or directory
+10-13 16:02:28.051  4495  4495 W ziparchive: Unable to open '/data/app/~~jvhiQ3hVWyoINXFbINH1Pw==/com.example.rumacceptance-2jmhfmQVkkhrvV3Ixa8Tgg==/base.dm': No such file or directory
+10-13 16:02:28.091  4495  4495 D nativeloader: Configuring clns-6 for other apk /data/app/~~jvhiQ3hVWyoINXFbINH1Pw==/com.example.rumacceptance-2jmhfmQVkkhrvV3Ixa8Tgg==/base.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~jvhiQ3hVWyoINXFbINH1Pw==/com.example.rumacceptance-2jmhfmQVkkhrvV3Ixa8Tgg==/lib/arm64, permitted_path=/data:/mnt/expand:/data/user/0/com.example.rumacceptance
+10-13 16:02:28.107  4495  4495 V GraphicsEnvironment: Currently set values for:
+10-13 16:02:28.107  4495  4495 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-13 16:02:28.107  4495  4495 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-13 16:02:28.107  4495  4495 V GraphicsEnvironment: ANGLE GameManagerService for com.example.rumacceptance: false
+10-13 16:02:28.107  4495  4495 V GraphicsEnvironment: com.example.rumacceptance is not listed in per-application setting
+10-13 16:02:28.107  4495  4495 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-13 16:02:28.112  4495  4495 W e.rumacceptance: Accessing hidden method Landroid/app/ActivityThread;->currentActivityThread()Landroid/app/ActivityThread; (unsupported, reflection, allowed)
+10-13 16:02:28.112  4495  4495 W e.rumacceptance: Accessing hidden method Landroid/app/ActivityThread;->getApplication()Landroid/app/Application; (unsupported, reflection, allowed)
+10-13 16:02:28.180  4495  4495 I RUMAcceptance: SDK_INITIALIZED count=1 appId=eval_android_acceptance
+10-13 16:02:28.208  4495  4526 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+10-13 16:02:28.220  4495  4526 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+10-13 16:02:28.221  4495  4518 D TrafficStats: tagSocket(77) with statsTag=0xffffffff, statsUid=-1
+10-13 16:02:28.222  4495  4495 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10193; state: ENABLED
+10-13 16:02:28.223  4495  4526 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+10-13 16:02:28.253  4495  4530 D TrafficStats: tagSocket(87) with statsTag=0xffffffff, statsUid=-1
+10-13 16:02:28.254  4495  4495 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10193; state: DISABLED
+10-13 16:02:28.255  4495  4495 W OpenGLRenderer: Unknown dataspace 0
+10-13 16:02:28.258  4495  4530 I RUMAcceptance: RESOURCE_HTTP status=200 body=LOCAL_RESOURCE_OK
+10-13 16:02:28.352  4495  4495 D AutofillManager: notifyViewEnteredForFillDialog:1073741824
+10-13 16:02:28.375  4495  4524 W OpenGLRenderer: Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+10-13 16:02:28.375  4495  4524 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-13 16:02:28.455  4495  4524 I Gralloc4: mapper 4.x is not supported
+10-13 16:02:28.472  4495  4524 E OpenGLRenderer: Unable to match the desired swap behavior.
+10-13 16:02:31.078  4495  4495 I RUMAcceptance: SIGNALS_COMPLETED
+10-13 16:02:38.139  4495  4521 D CompatibilityChangeReporter: Compat change id reported: 247079863; UID 10193; state: ENABLED
+10-13 16:02:38.150  4495  4521 D TrafficStats: tagSocket(77) with statsTag=0xffffffff, statsUid=-1

@@ -1,0 +1,20 @@
+{
+  "terminated_stalled_test_cli": [
+    85670
+  ],
+  "receiver_started": false,
+  "test_automation_endpoint_preserved_for_diagnosis": true,
+  "ide_quit_or_restart": false,
+  "settings_modified": false,
+  "ports": {
+    "19529": false,
+    "19532": false,
+    "19534": true,
+    "20166": true
+  },
+  "open_cli_87554": {
+    "exit_code": 255,
+    "message": "wait IDE port timeout",
+    "termination_attempt": "Process had already exited; kill returned no such process"
+  }
+}

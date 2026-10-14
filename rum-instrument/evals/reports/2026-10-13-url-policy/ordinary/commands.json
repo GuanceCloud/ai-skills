@@ -1,0 +1,40 @@
+[
+  {
+    "command": "git init; git add .; git -c user.name=Eval -c user.email=eval@example.invalid commit -m Fixture baseline",
+    "exit": 0,
+    "purpose": "Isolated fixture baseline only; no main repository commit"
+  },
+  {
+    "command": "python3 <skill>/scripts/detect_rum_targets.py . --pretty",
+    "exit": 0
+  },
+  {
+    "command": "python3 <skill>/scripts/validate_contract.py .rum/plan.json --phase plan",
+    "exit": 0,
+    "details": "first-plan-validation.json"
+  },
+  {
+    "command": "python3 <skill>/scripts/validate_contract.py .rum/plan.json --phase implement --repository /private/tmp/rum-url-policy-eval/ordinary",
+    "exit": 0,
+    "details": "implement-validation.json"
+  },
+  {
+    "command": "<modern-node> scripts/build.mjs",
+    "exit": 0
+  },
+  {
+    "command": "<modern-node> evidence/smoke.mjs (first run)",
+    "exit": 1,
+    "details": "smoke-results-first.json"
+  },
+  {
+    "command": "<modern-node> evidence/smoke.mjs (corrected test selector)",
+    "exit": 0,
+    "details": "smoke-results.json"
+  },
+  {
+    "command": "repeat discovery, implementation contract, build, git diff --check",
+    "exit": 0,
+    "details": "rerun.json"
+  }
+]

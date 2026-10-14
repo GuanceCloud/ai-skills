@@ -1,0 +1,21 @@
+{
+  "application_checks_passed": 10,
+  "application_checks_total": 10,
+  "original_harness_exit": 1,
+  "original_failed_assertion": "receiver_http_success also required zero Playwright requestfailed events",
+  "receiver_http_2xx": 4,
+  "receiver_responses": 4,
+  "requestfailed_after_2xx": 4,
+  "response_body_completion": "unverified; Playwright reports ERR_ABORTED",
+  "local_empty_body_reproduction": true,
+  "remote_ingestion_verified": true,
+  "events_sent": {
+    "view": 4,
+    "resource": 7,
+    "error": 1
+  },
+  "assessment": "HTTP 200 and response-body completion remain separate observations. The user subsequently confirmed backend RUM data exists; no Agent backend query or event-count reconciliation was performed.",
+  "remote_ingestion_verification_method": "user_manual_verification",
+  "remote_ingestion_evidence": "manual-ingestion-confirmation.json",
+  "per_event_type_counts_reconciled": false
+}

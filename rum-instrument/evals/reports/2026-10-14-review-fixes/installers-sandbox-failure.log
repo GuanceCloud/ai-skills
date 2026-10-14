@@ -1,0 +1,39 @@
+E..E..
+======================================================================
+ERROR: test_kimi_qoder_and_zcode_destinations (__main__.InstallerTests.test_kimi_qoder_and_zcode_destinations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/tests/test_installers.py", line 227, in test_kimi_qoder_and_zcode_destinations
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+  File "/Users/oneandonly/miniconda3/lib/python3.13/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/Users/oneandonly/miniconda3/lib/python3.13/http/server.py", line 140, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/oneandonly/miniconda3/lib/python3.13/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 1] Operation not permitted
+
+======================================================================
+ERROR: test_reproducible_archives_and_safe_upgrade (__main__.InstallerTests.test_reproducible_archives_and_safe_upgrade)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/oneandonly/Workspace/ai-skills/tests/test_installers.py", line 165, in test_reproducible_archives_and_safe_upgrade
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+  File "/Users/oneandonly/miniconda3/lib/python3.13/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/Users/oneandonly/miniconda3/lib/python3.13/http/server.py", line 140, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/oneandonly/miniconda3/lib/python3.13/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 1] Operation not permitted
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.018s
+
+FAILED (errors=2)

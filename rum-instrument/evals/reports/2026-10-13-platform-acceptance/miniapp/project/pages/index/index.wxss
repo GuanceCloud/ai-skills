@@ -1,0 +1,1 @@
+.page { padding: 48rpx; } .title { display: block; font-size: 40rpx; font-weight: bold; margin-bottom: 24rpx; } .status { display: block; margin-bottom: 24rpx; } button, input { margin-top: 24rpx; } input { background: white; padding: 20rpx; }

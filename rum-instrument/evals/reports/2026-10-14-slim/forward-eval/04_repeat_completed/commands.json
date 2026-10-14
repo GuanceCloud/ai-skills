@@ -1,0 +1,103 @@
+[
+  {
+    "command": [
+      "git",
+      "status",
+      "--short"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": " M rum.config.json\n M src/main.js\n",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "git",
+      "diff"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "diff --git a/rum.config.json b/rum.config.json\nindex 0967ef4..afa15c8 100644\n--- a/rum.config.json\n+++ b/rum.config.json\n@@ -1 +1,8 @@\n-{}\n+{\n+  \"applicationId\": \"synthetic-web-01\",\n+  \"datakitOrigin\": \"http://127.0.0.1:19529\",\n+  \"service\": \"synthetic-web-fixture\",\n+  \"version\": \"1.0.0\",\n+  \"env\": \"test\",\n+  \"sessionSampleRate\": 35\n+}\ndiff --git a/src/main.js b/src/main.js\nindex 6cbbdcb..a7be768 100644\n--- a/src/main.js\n+++ b/src/main.js\n@@ -1,3 +1,12 @@\n+// RUM evaluation fixture: window.DATAFLUX_RUM is a controlled test double.\n+if (!window.__rumInitialized && window.RUM_CONFIG?.applicationId && window.RUM_CONFIG?.datakitOrigin) {\n+  try {\n+    window.DATAFLUX_RUM.init(window.RUM_CONFIG);\n+    window.__rumInitialized = true;\n+  } catch (error) {\n+    console.warn('RUM initialization unavailable');\n+  }\n+}\n window.appStarted = (window.appStarted || 0) + 1;\n document.getElementById('app').textContent = 'Fixture application ready';\n window.appRequest = fetch('/api/health').then(response => response.json());\n",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/detect_rum_targets.py",
+      "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+      "--pretty"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "{\n  \"repository\": {\n    \"dirty_paths\": [\n      \"M rum.config.json\",\n      \" M src/main.js\"\n    ],\n    \"git_commit\": \"cb3357260dda11b9425a9b12dc3fa9481fd0a581\",\n    \"root\": \"/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture\",\n    \"scan_scope\": \".\"\n  },\n  \"schema_version\": 1,\n  \"targets\": [\n    {\n      \"application_id_slots\": [\n        \"web\"\n      ],\n      \"confidence\": \"high\",\n      \"evidence\": [\n        \"index.html\"\n      ],\n      \"existing_rum_markers\": {\n        \"browser-rum-global\": [\n          \"src/main.js\",\n          \"test-support/rum-sdk-double.js\"\n        ]\n      },\n      \"id\": \"web:.\",\n      \"path\": \".\",\n      \"platform\": \"web\",\n      \"variants\": [\n        \"browser\"\n      ]\n    }\n  ],\n  \"warnings\": []\n}\n",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/validate_contract.py",
+      ".rum/plan.json",
+      "--phase",
+      "plan"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "valid rum plan: revision 1 (plan)\n",
+    "stderr": "warning: DataKit readiness is not recorded; local implementation may proceed, but remote ingestion remains unverified\n",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "python3",
+      "/Users/oneandonly/Workspace/ai-skills/rum-instrument/scripts/validate_contract.py",
+      ".rum/plan.json",
+      "--phase",
+      "implement",
+      "--repository",
+      "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "valid rum plan: revision 1 (implement)\n",
+    "stderr": "warning: DataKit readiness is not recorded; local implementation may proceed, but remote ingestion remains unverified\n",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "npm",
+      "run",
+      "check"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "\n> rum-behavior-fixture@1.0.0 check\n> node --check src/main.js\n\n",
+    "stderr": "",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "npm",
+      "test"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 1,
+    "stdout": "\n> rum-behavior-fixture@1.0.0 test\n> node tests/smoke.cjs\n\n",
+    "stderr": "Error: listen EPERM: operation not permitted 127.0.0.1:19529\n    at Server.setupListenHandle [as _listen2] (node:net:1295:21)\n    at listenInCluster (node:net:1360:12)\n    at doListen (node:net:1498:7)\n    at processTicksAndRejections (node:internal/process/task_queues:82:21) {\n  code: 'EPERM',\n  errno: -1,\n  syscall: 'listen',\n  address: '127.0.0.1',\n  port: 19529\n}\nnpm ERR! code 1\nnpm ERR! path /private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture\nnpm ERR! command failed\nnpm ERR! command sh -c node tests/smoke.cjs\n",
+    "expected_exit": 0
+  },
+  {
+    "command": [
+      "node",
+      "/private/tmp/rum-slim-forward-eval-20261014/node16-compatible-smoke.cjs"
+    ],
+    "cwd": "/private/tmp/rum-slim-forward-eval-20261014/01_complete_datakit/fixture",
+    "exit_code": 0,
+    "stdout": "{\"mode\":\"controlled-SDK-and-local-HTTP-receiver\",\"initializers\":1,\"startup_preserved\":true,\"request_preserved\":true,\"sdk_failure_startup_preserved\":true,\"configuration\":{\"applicationId\":\"synthetic-web-01\",\"datakitOrigin\":\"http://127.0.0.1:19529\",\"service\":\"synthetic-web-fixture\",\"version\":\"1.0.0\",\"env\":\"test\",\"sessionSampleRate\":35},\"events\":[{\"type\":\"view\",\"applicationId\":\"synthetic-web-01\",\"service\":\"synthetic-web-fixture\",\"version\":\"1.0.0\",\"env\":\"test\"},{\"type\":\"resource\",\"applicationId\":\"synthetic-web-01\",\"service\":\"synthetic-web-fixture\",\"version\":\"1.0.0\",\"env\":\"test\"},{\"type\":\"error\",\"applicationId\":\"synthetic-web-01\",\"service\":\"synthetic-web-fixture\",\"version\":\"1.0.0\",\"env\":\"test\"}],\"real_sdk_verified\":false,\"backend_ingestion_verified\":false}\n",
+    "stderr": "",
+    "sandbox": "tool-authorized localhost listener",
+    "expected_exit": 0
+  }
+]

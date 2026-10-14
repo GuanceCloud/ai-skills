@@ -1,0 +1,96 @@
+{
+  "cases": [
+    {
+      "mode": "native-read",
+      "name": "empty",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        },
+        {
+          "jsBodyReadable": true,
+          "length": 0
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "finished"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": true,
+          "length": 0
+        }
+      ],
+      "cancellations": []
+    },
+    {
+      "mode": "native-read",
+      "name": "json",
+      "events": [
+        {
+          "status": 200,
+          "type": "cors"
+        },
+        {
+          "jsBodyReadable": true,
+          "length": 11
+        }
+      ],
+      "state": {
+        "transportStatus": 0,
+        "pending": 0,
+        "ongoing": 0
+      },
+      "eventsFromPlaywright": [
+        {
+          "event": "response",
+          "status": 200
+        },
+        {
+          "event": "finished"
+        }
+      ],
+      "bodyReads": [
+        {
+          "readable": true,
+          "length": 11
+        }
+      ],
+      "cancellations": []
+    }
+  ],
+  "serverEvents": [
+    {
+      "path": "/empty",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/empty",
+      "method": "POST",
+      "receivedBytes": 24
+    },
+    {
+      "path": "/json",
+      "method": "OPTIONS",
+      "receivedBytes": 0
+    },
+    {
+      "path": "/json",
+      "method": "POST",
+      "receivedBytes": 24
+    }
+  ]
+}

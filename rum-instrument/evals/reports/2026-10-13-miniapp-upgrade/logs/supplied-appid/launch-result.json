@@ -1,0 +1,13 @@
+{
+  "wechat_appid": "wx_skill_001",
+  "exit_code": 0,
+  "elapsed_seconds": 4.98,
+  "appid_error": true,
+  "service_port_disabled": false,
+  "error_code": 10,
+  "error_message": "AppID 不合法,invalid appid",
+  "baseline": "not_run",
+  "rum_runtime": "not_run",
+  "telemetry_sent": false,
+  "credentials_consumed": false
+}

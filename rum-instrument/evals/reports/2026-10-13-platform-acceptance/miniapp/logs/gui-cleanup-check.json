@@ -1,0 +1,90 @@
+{
+  "wechat_process": {
+    "command": [
+      "pgrep",
+      "-fl",
+      "wechatwebdevtools|wechatdevtools"
+    ],
+    "exit": 0,
+    "processes": [
+      {
+        "pid": "75341",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/MacOS/wechatdevtools"
+      },
+      {
+        "pid": "75343",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/nwjs"
+      },
+      {
+        "pid": "75345",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/nwjs"
+      },
+      {
+        "pid": "75346",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools"
+      },
+      {
+        "pid": "75347",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools"
+      },
+      {
+        "pid": "75349",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools"
+      },
+      {
+        "pid": "75365",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools"
+      },
+      {
+        "pid": "75366",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools"
+      },
+      {
+        "pid": "75375",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools"
+      },
+      {
+        "pid": "75377",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools"
+      },
+      {
+        "pid": "75378",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools"
+      },
+      {
+        "pid": "75379",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools"
+      },
+      {
+        "pid": "75383",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools"
+      },
+      {
+        "pid": "75393",
+        "executable": "/Applications/wechatwebdevtools.app/Contents/Versions/74.0.3729.169/wechatwebdevtools"
+      }
+    ],
+    "note": "Arguments omitted to avoid retaining incidental local IPC tokens; process presence does not prove usable UI."
+  },
+  "local_receiver_process": {
+    "command": [
+      "pgrep",
+      "-fl",
+      "/private/tmp/rum-platform-acceptance/miniapp/receiver.py"
+    ],
+    "exit": 1,
+    "output": ""
+  },
+  "test_listeners": {
+    "command": [
+      "lsof",
+      "-nP",
+      "-iTCP:19529",
+      "-iTCP:19531",
+      "-iTCP:19532",
+      "-sTCP:LISTEN"
+    ],
+    "exit": 1,
+    "output": ""
+  }
+}

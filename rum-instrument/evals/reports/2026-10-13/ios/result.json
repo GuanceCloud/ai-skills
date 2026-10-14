@@ -1,0 +1,162 @@
+{
+  "case": "ios",
+  "status": "partial_source_integration",
+  "business_questions": 1,
+  "business_confirmations": 0,
+  "questions": [
+    {
+      "original_request": "请按 http://127.0.0.1:18763/rum.md 完成当前项目 RUM 接入。datakitUrl: http://127.0.0.1:19529 appId: eval_ios",
+      "question": "项目包含 PhoneApp 和 TVApp。建议本次仅给 PhoneApp 接入 eval_ios；请确认是否仅接入 PhoneApp，或若两者都接入，请同时给出 TVApp 的 App ID。",
+      "answer": "两个应用都接入。PhoneApp 使用 eval_ios，TVApp 使用 eval_tvos，接收地址都沿用已给的 DataKit。"
+    }
+  ],
+  "installation": {
+    "command": "sh install.sh --base-url http://127.0.0.1:18763 --skill rum-instrument --agent codex --scope user --yes --dest ${EVAL_ROOT}/ios/skills",
+    "exit_code": 0,
+    "schema_version": 1,
+    "name": "rum-instrument",
+    "version": "ebaddc3a8c835cc3f046920b0595a782a34d6459",
+    "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+    "source": "http://127.0.0.1:18763/versions/ebaddc3a8c835cc3f046920b0595a782a34d6459/skills/rum-instrument.tar.gz",
+    "installed_at": "2026-10-13T04:18:50Z"
+  },
+  "skill_read": "${EVAL_ROOT}/ios/skills/rum-instrument/SKILL.md",
+  "references_read": [
+    "common.md",
+    "execution.md",
+    "contracts.md",
+    "apple.md",
+    "validation.md",
+    "official-sources.json"
+  ],
+  "modified_files": [
+    ".gitignore",
+    "Podfile",
+    "Config/RUM-Info.plist",
+    "Config/RUM-PhoneApp.local.xcconfig",
+    "Config/RUM-PhoneApp.xcconfig",
+    "Config/RUM-TVApp.local.xcconfig",
+    "Config/RUM-TVApp.local.xcconfig.example",
+    "Config/RUM-PhoneApp.local.xcconfig.example",
+    "Config/RUM-TVApp.xcconfig",
+    "scripts/build-rum.sh",
+    "Sources/AppDelegate.swift"
+  ],
+  "sdk": {
+    "package": "GuanceSDK",
+    "version": "1.6.7",
+    "source": "Official public tagged archive downloaded; Podspec, SDK headers, examples and privacy manifest inspected",
+    "compatibility": "iOS/tvOS >=12.0; fixture declares 17.0"
+  },
+  "validation": [
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": "plutil -lint Config/RUM-Info.plist",
+      "exit_code": 0,
+      "output": "Config/RUM-Info.plist: OK\n"
+    },
+    {
+      "command": "ruby -c Podfile",
+      "exit_code": 0,
+      "output": "Syntax OK\n"
+    },
+    {
+      "command": "sh -n scripts/build-rum.sh",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": "swiftc -frontend -parse Sources/AppDelegate.swift",
+      "exit_code": 1,
+      "output": "/Library/Developer/CommandLineTools/usr/include/swift/module.modulemap:13:8: error: redefinition of module 'SwiftBridging'\n11 | //===----------------------------------------------------------------------===//\n12 | \n13 | module SwiftBridging {\n   |        `- error: redefinition of module 'SwiftBridging'\n14 |     header \"bridging\"\n15 | \n\n/Library/Developer/CommandLineTools/usr/include/swift/bridging.modulemap:13:8: note: previously defined here\n11 | //===----------------------------------------------------------------------===//\n12 | \n13 | module SwiftBridging {\n   |        `- note: previously defined here\n14 |     header \"bridging\"\n15 | \n"
+    },
+    {
+      "command": "xcodebuild -project App.xcodeproj -list",
+      "exit_code": 1,
+      "output": "xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance\n"
+    },
+    {
+      "command": "pod install",
+      "exit_code": 127,
+      "output": "[Errno 2] No such file or directory: 'pod'"
+    },
+    {
+      "command": "sh scripts/build-rum.sh PhoneApp",
+      "exit_code": 1,
+      "output": "xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance\n"
+    },
+    {
+      "command": "sh scripts/build-rum.sh TVApp",
+      "exit_code": 1,
+      "output": "xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance\n"
+    },
+    {
+      "command": "validate_contract.py --phase plan",
+      "exit_code": 0
+    },
+    {
+      "command": "validate_contract.py --phase implement --repository project",
+      "exit_code": 0
+    },
+    {
+      "command": "Python static source/header/config checks",
+      "exit_code": 0
+    },
+    {
+      "command": "swiftc -frontend -parse baseline-AppDelegate.swift (git HEAD original)",
+      "exit_code": 1,
+      "output": "/Library/Developer/CommandLineTools/usr/include/swift/module.modulemap:13:8: error: redefinition of module 'SwiftBridging'\n11 | //===----------------------------------------------------------------------===//\n12 | \n13 | module SwiftBridging {\n   |        `- error: redefinition of module 'SwiftBridging'\n14 |     header \"bridging\"\n15 | \n\n/Library/Developer/CommandLineTools/usr/include/swift/bridging.modulemap:13:8: note: previously defined here\n11 | //===----------------------------------------------------------------------===//\n12 | \n13 | module SwiftBridging {\n   |        `- note: previously defined here\n14 |     header \"bridging\"\n15 | \n"
+    }
+  ],
+  "mock_real_boundary": {
+    "real": [
+      "Independent local HTTP Skill install",
+      "official tagged SDK source download",
+      "Git fixture edits",
+      "plutil, ruby and sh syntax checks"
+    ],
+    "mock": [
+      "minimal invalid Xcode fixture"
+    ],
+    "not_executed": [
+      "CocoaPods dependency resolution/install",
+      "Xcode build or actual build-setting resolution",
+      "Swift successful typecheck",
+      "SDK runtime smoke",
+      "payload capture",
+      "remote ingestion",
+      "control-plane",
+      "deployment"
+    ]
+  },
+  "rerun": {
+    "same_request": true,
+    "reinstalled": false,
+    "business_questions": 0,
+    "business_confirmations": 0,
+    "retained_mapping": {
+      "PhoneApp": "eval_ios",
+      "TVApp": "eval_tvos"
+    },
+    "file_hashes_unchanged": true,
+    "duplicate_initializers": false
+  },
+  "defects": [],
+  "limitations": [
+    "Original pbxproj contains only loose target fragments; lacks project/configuration/source membership/schemes; not replaced with fabricated full application",
+    "No full Xcode; only CommandLineTools",
+    "No CocoaPods executable",
+    "Swift parse failed on preexisting duplicate SwiftBridging toolchain modules",
+    "Per-target xcconfig path is wired via build script but cannot be resolved by Xcode here",
+    "Shared AppDelegate implementation exists but target membership and entry point cannot be proven from fixture",
+    "Activity/view RUM only; action and resource collection remain off because no business views or network boundaries exist to validate privacy",
+    "No SDK runtime or remote ingestion verified",
+    "Simulator-local HTTP ATS behavior and receiver reachability need real platform verification; no global arbitrary-load exception added"
+  ],
+  "remote_ingestion_verified": false,
+  "baseline_swift_failure_matches": true
+}

@@ -18,10 +18,14 @@ Avoid duplicate URLSession/WebView instrumentation when a framework wrapper or n
 
 ## Privacy and artifacts
 
-Review platform privacy manifests/permissions and official data-sanitization hooks. Do not collect input/control text, request bodies, raw URL queries, or broad user dictionaries.
+Review platform privacy manifests/permissions and official data-sanitization hooks. Keep input text, request bodies and broad user dictionaries out of custom collection. Apply the shared [data-minimization policy](privacy-security.md#data-minimization) to standard SDK fields: ordinary URL/query fields are allowed; demonstrated sensitive values and explicit project exclusions require supported filtering and payload verification.
 
 Generate dSYM from the same archive/build and verify UUIDs before planning upload. Keep upload credentials out of scripts/project files and do not upload without authorization.
 
 ## Validation
 
 Build/test the selected scheme and platform. Verify initialization count, Application ID per target/configuration, lifecycle views, URLSession behavior, trace allowlist, WebView ownership, crash/error symbol identity, extension behavior, and privacy canaries.
+
+## Automatic configuration wiring
+
+Prefer existing xcconfig/build settings. If absent, add an optional include of an ignored local xcconfig and a maintained build-setting/Info.plist consumption path. Preserve schemes and configurations; verify the selected scheme resolves the keys without printing their values.

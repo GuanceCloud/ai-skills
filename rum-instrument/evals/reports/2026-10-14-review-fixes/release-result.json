@@ -1,0 +1,57 @@
+{
+  "snapshot_version": "27b4b7b52fbb81fa2459c7a34a298caa1ae6a68e",
+  "stats": {
+    "filtered": {
+      "archive_bytes": 82068,
+      "files": 32,
+      "uncompressed_bytes": 332182
+    },
+    "unfiltered": {
+      "archive_bytes": 1151692,
+      "files": 731,
+      "uncompressed_bytes": 4914179
+    }
+  },
+  "install_passed": true,
+  "runtime_files_matched": 29,
+  "commands": [
+    {
+      "script": "validate_contract.py",
+      "arguments": [
+        "/private/tmp/rum-slim-release-hpeyoik2/app/.rum/draft.json",
+        "--complete-draft",
+        "/private/tmp/rum-slim-release-hpeyoik2/app/.rum/plan.json",
+        "--repository",
+        "/private/tmp/rum-slim-release-hpeyoik2/app"
+      ],
+      "exit_code": 0
+    },
+    {
+      "script": "validate_contract.py",
+      "arguments": [
+        "/private/tmp/rum-slim-release-hpeyoik2/app/.rum/plan.json",
+        "--phase",
+        "implement",
+        "--repository",
+        "/private/tmp/rum-slim-release-hpeyoik2/app"
+      ],
+      "exit_code": 0
+    },
+    {
+      "script": "detect_rum_targets.py",
+      "arguments": [
+        "/private/tmp/rum-slim-release-hpeyoik2/app",
+        "--pretty"
+      ],
+      "exit_code": 0
+    },
+    {
+      "script": "resolve_rum_application.py",
+      "arguments": [
+        "--help"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "scope": "isolated snapshot/install; no live credentials or public release"
+}

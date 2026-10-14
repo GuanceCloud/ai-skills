@@ -1,0 +1,8 @@
+{
+  "status": "blocked",
+  "evidence": "用户反馈：已完成，网络失败：request:fail url not in domain list",
+  "receiver_rum_batches": 0,
+  "receiver_phone_health_requests": 0,
+  "cause": "WeChat request domain validation rejected request before receiver",
+  "next_step": "Enable debug mode for this isolated preview on phone and reopen; retry network before other test steps"
+}

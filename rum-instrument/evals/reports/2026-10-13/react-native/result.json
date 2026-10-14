@@ -1,0 +1,524 @@
+{
+  "scenario": "react_native_datakit_two_app_ids",
+  "status": "partially_implemented_validation_failed",
+  "original_request": "请按 http://127.0.0.1:18763/rum.md 完成当前项目 RUM 接入。datakitUrl: http://127.0.0.1:19529；Android appId: eval_rn_android；iOS appId: eval_rn_ios。",
+  "case_directory": "${EVAL_ROOT}/react-native",
+  "business_question_count": 0,
+  "routine_confirmation_count": 0,
+  "questions": [],
+  "host_permission_request_count": 6,
+  "installation": {
+    "command": "curl -fsS http://127.0.0.1:18763/rum.md -o logs/entry.md && curl -fsS http://127.0.0.1:18763/install.sh -o install.sh && sh install.sh --base-url http://127.0.0.1:18763 --skill rum-instrument --agent codex --scope user --yes --dest ${EVAL_ROOT}/react-native/skills",
+    "metadata": {
+      "schema_version": 1,
+      "name": "rum-instrument",
+      "version": "ebaddc3a8c835cc3f046920b0595a782a34d6459",
+      "archive_sha256": "10b90e3892689ffb47602a5f10e789c05a1e66b6549ee824794f866b7b11b29b",
+      "source": "http://127.0.0.1:18763/versions/ebaddc3a8c835cc3f046920b0595a782a34d6459/skills/rum-instrument.tar.gz",
+      "installed_at": "2026-10-13T04:22:48Z"
+    },
+    "actual_download_install": true,
+    "isolated": true,
+    "global_install_modified": false
+  },
+  "read_skill_paths": [
+    "${EVAL_ROOT}/react-native/skills/rum-instrument/SKILL.md",
+    "${EVAL_ROOT}/react-native/skills/rum-instrument/references/common.md",
+    "${EVAL_ROOT}/react-native/skills/rum-instrument/references/execution.md",
+    "${EVAL_ROOT}/react-native/skills/rum-instrument/references/contracts.md",
+    "${EVAL_ROOT}/react-native/skills/rum-instrument/references/react-native.md",
+    "${EVAL_ROOT}/react-native/skills/rum-instrument/references/validation.md",
+    "${EVAL_ROOT}/react-native/skills/rum-instrument/references/privacy-security.md",
+    "${EVAL_ROOT}/react-native/skills/rum-instrument/references/official-sources.json"
+  ],
+  "official_sources": [
+    "https://docs.guance.com/real-user-monitoring/react-native/app-access/",
+    "https://docs.guance.com/real-user-monitoring/react-native/quick-start/",
+    "https://github.com/GuanceCloud/datakit-react-native",
+    "https://registry.npmjs.org/@cloudcare%2freact-native-mobile/latest"
+  ],
+  "sdk": {
+    "package": "@cloudcare/react-native-mobile",
+    "version": "0.4.2",
+    "actual_npm_installed": true,
+    "archive_sha512_verified": true,
+    "react_native_preserved": "0.80.0",
+    "peer_range": ">=0.63.4 <1.0",
+    "native_dependencies": {
+      "android_ft_sdk": "1.7.2",
+      "android_ft_native": "1.1.2",
+      "ios_ft_mobile_sdk": "1.6.5"
+    },
+    "new_architecture": "SDK contains conditional native source/codegen support; no actual build proved compatibility"
+  },
+  "changed_files": [
+    "project/package.json",
+    "project/index.js",
+    "project/rum.js",
+    "project/rum-config.js",
+    "project/.rum/plan.json (ignored)"
+  ],
+  "commands": [
+    {
+      "command": "curl -fsS http://127.0.0.1:18763/rum.md -o logs/entry.md && curl -fsS http://127.0.0.1:18763/install.sh -o install.sh && sh install.sh --base-url http://127.0.0.1:18763 --skill rum-instrument --agent codex --scope user --yes --dest ${EVAL_ROOT}/react-native/skills",
+      "exit_code": 0,
+      "log": "logs/install.log"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/detect_rum_targets.py project --pretty",
+      "exit_code": 0,
+      "log": "logs/detect-initial.json"
+    },
+    {
+      "command": "curl -fsS --max-time 30 https://registry.npmjs.org/@cloudcare%2freact-native-mobile/latest -o logs/sdk-registry.json",
+      "exit_code": 0
+    },
+    {
+      "command": "curl -fsS --max-time 30 https://registry.npmjs.org/@cloudcare/react-native-mobile/-/react-native-mobile-0.4.2.tgz -o sdk/package.tgz && tar -xzf sdk/package.tgz -C sdk && curl -fsS --max-time 30 https://docs.guance.com/real-user-monitoring/react-native/app-access/ -o logs/official-guide.html",
+      "exit_code": 0
+    },
+    {
+      "command": "xcodebuild -version",
+      "exit_code": 1,
+      "log": "logs/xcode.log"
+    },
+    {
+      "command": "java -version",
+      "exit_code": 0,
+      "log": "logs/java.log"
+    },
+    {
+      "command": "command -v gradle; command -v pod",
+      "individual_exit_codes": [
+        1,
+        1
+      ],
+      "detail": "Both unavailable"
+    },
+    {
+      "command": "curl -fsS --max-time 30 https://raw.githubusercontent.com/GuanceCloud/datakit-react-native/0.4.2/example/android/build.gradle -o logs/official-android-root.gradle",
+      "exit_code": 35,
+      "detail": "Connection reset; no build/plugin implementation invented"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase plan",
+      "exit_code": 0,
+      "log": "logs/validate-plan.log"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase implement --repository project",
+      "exit_code": 0,
+      "log": "logs/validate-implement.log"
+    },
+    {
+      "command": "Python inline source writer attempted Path(project) while cwd already project",
+      "exit_code": 1,
+      "detail": "FileNotFoundError before any writes; corrected cwd in next command; no test result concealed"
+    },
+    {
+      "command": "PATH=/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH npm install --ignore-scripts --package-lock=false --no-audit --cache ../npm-cache --fetch-timeout=30000 --fetch-retries=1",
+      "cwd": "project",
+      "exit_code": 0,
+      "log": "logs/npm-install.log",
+      "detail": "Baseline dependency install before corrected source writer"
+    },
+    {
+      "command": "PATH=/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH npm install --ignore-scripts --package-lock=false --no-audit --cache ../npm-cache --fetch-timeout=30000 --fetch-retries=1",
+      "cwd": "project",
+      "exit_code": 0,
+      "log": "logs/npm-sdk-install.log",
+      "detail": "Incremental actual SDK dependency install"
+    },
+    {
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "--check",
+        "project/index.js"
+      ],
+      "exit_code": 0,
+      "log": "logs/syntax-index.log"
+    },
+    {
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "--check",
+        "project/rum.js"
+      ],
+      "exit_code": 0,
+      "log": "logs/syntax-rum.log"
+    },
+    {
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "--check",
+        "project/rum-config.js"
+      ],
+      "exit_code": 0,
+      "log": "logs/syntax-config.log"
+    },
+    {
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "smoke.cjs",
+        "android",
+        "normal"
+      ],
+      "exit_code": 0,
+      "log": "logs/smoke-android-normal.log"
+    },
+    {
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "smoke.cjs",
+        "ios",
+        "normal"
+      ],
+      "exit_code": 0,
+      "log": "logs/smoke-ios-normal.log"
+    },
+    {
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "smoke.cjs",
+        "android",
+        "partial-failure"
+      ],
+      "exit_code": 0,
+      "log": "logs/smoke-android-partial-failure.log"
+    },
+    {
+      "command": [
+        "/Users/oneandonly/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "smoke.cjs",
+        "ios",
+        "missing-bridge"
+      ],
+      "exit_code": 0,
+      "log": "logs/smoke-ios-missing-bridge.log"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/detect_rum_targets.py project --pretty",
+      "exit_code": 0,
+      "log": "logs/detect-rerun.json"
+    },
+    {
+      "command": "python3 skills/rum-instrument/scripts/validate_contract.py project/.rum/plan.json --phase plan",
+      "exit_code": 0,
+      "log": "logs/validate-rerun.log"
+    },
+    {
+      "command": "python3 validate.py",
+      "exit_code": 0,
+      "log": "logs/verification-rerun.log",
+      "detail": "Second execution; individual command results recorded"
+    },
+    {
+      "command": "git -C project diff --check",
+      "exit_code": 0
+    }
+  ],
+  "verification": {
+    "syntax": true,
+    "real_sdk_javascript_execution": true,
+    "native_bridge_doubles": true,
+    "single_initialization": true,
+    "double_app_id_forwarding": true,
+    "native_id_selection_source_review": true,
+    "native_id_selection_execution": false,
+    "load_failure_contained": true,
+    "partial_initialization_retry_preserves_base": true,
+    "existing_global_error_handler_preserved": false,
+    "native_android_build": false,
+    "native_ios_build": false,
+    "privacy_payload_verified": false,
+    "remote_ingestion_verified": false,
+    "smoke": {
+      "smoke-ios-missing-bridge": {
+        "platform": "ios",
+        "mode": "missing-bridge",
+        "actual_sdk": "0.4.2",
+        "real_sdk_javascript": true,
+        "native_bridge_mocked": true,
+        "actual_native_platform_selection_executed": false,
+        "initial_results": [
+          false,
+          false,
+          false
+        ],
+        "calls": [],
+        "warnings": [
+          "RUM startup failed; application startup may continue."
+        ],
+        "original_error_handler_preserved": null,
+        "original_error_handler_calls": 0
+      },
+      "smoke-android-normal": {
+        "platform": "android",
+        "mode": "normal",
+        "actual_sdk": "0.4.2",
+        "real_sdk_javascript": true,
+        "native_bridge_mocked": true,
+        "actual_native_platform_selection_executed": false,
+        "initial_results": [
+          true,
+          true,
+          true
+        ],
+        "calls": [
+          {
+            "method": "sdkConfig",
+            "config": {
+              "datakitUrl": "http://127.0.0.1:19529",
+              "service": "react-native-rum-app",
+              "remoteConfiguration": false
+            }
+          },
+          {
+            "method": "setConfig",
+            "config": {
+              "androidAppId": "eval_rn_android",
+              "iOSAppId": "eval_rn_ios",
+              "enableAutoTrackUserAction": true,
+              "enableAutoTrackError": true,
+              "enableNativeUserResource": true,
+              "enableNativeUserAction": false,
+              "enableNativeUserView": false,
+              "enableTraceWebView": false,
+              "enableTrackNativeCrash": false,
+              "enableTrackNativeAppANR": false,
+              "enableTrackNativeFreeze": false
+            }
+          },
+          {
+            "method": "addError",
+            "args": [
+              "Error: Synthetic JS error\n    at ${EVAL_ROOT}/react-native/smoke.cjs:44:25",
+              "Synthetic JS error",
+              {
+                "sdk_bridge_info": "{\"react_native\":\"0.4.2\"}"
+              }
+            ]
+          }
+        ],
+        "warnings": [],
+        "original_error_handler_preserved": false,
+        "original_error_handler_calls": 0
+      },
+      "smoke-ios-normal": {
+        "platform": "ios",
+        "mode": "normal",
+        "actual_sdk": "0.4.2",
+        "real_sdk_javascript": true,
+        "native_bridge_mocked": true,
+        "actual_native_platform_selection_executed": false,
+        "initial_results": [
+          true,
+          true,
+          true
+        ],
+        "calls": [
+          {
+            "method": "sdkConfig",
+            "config": {
+              "datakitUrl": "http://127.0.0.1:19529",
+              "service": "react-native-rum-app",
+              "remoteConfiguration": false
+            }
+          },
+          {
+            "method": "setConfig",
+            "config": {
+              "androidAppId": "eval_rn_android",
+              "iOSAppId": "eval_rn_ios",
+              "enableAutoTrackUserAction": true,
+              "enableAutoTrackError": true,
+              "enableNativeUserResource": true,
+              "enableNativeUserAction": false,
+              "enableNativeUserView": false,
+              "enableTraceWebView": false,
+              "enableTrackNativeCrash": false,
+              "enableTrackNativeAppANR": false,
+              "enableTrackNativeFreeze": false
+            }
+          },
+          {
+            "method": "addError",
+            "args": [
+              "Error: Synthetic JS error\n    at ${EVAL_ROOT}/react-native/smoke.cjs:44:25",
+              "Synthetic JS error",
+              {
+                "sdk_bridge_info": "{\"react_native\":\"0.4.2\"}"
+              }
+            ]
+          }
+        ],
+        "warnings": [],
+        "original_error_handler_preserved": false,
+        "original_error_handler_calls": 0
+      },
+      "smoke-android-partial-failure": {
+        "platform": "android",
+        "mode": "partial-failure",
+        "actual_sdk": "0.4.2",
+        "real_sdk_javascript": true,
+        "native_bridge_mocked": true,
+        "actual_native_platform_selection_executed": false,
+        "initial_results": [
+          false,
+          false,
+          false
+        ],
+        "calls": [
+          {
+            "method": "sdkConfig",
+            "config": {
+              "datakitUrl": "http://127.0.0.1:19529",
+              "service": "react-native-rum-app",
+              "remoteConfiguration": false
+            }
+          },
+          {
+            "method": "setConfig",
+            "config": {
+              "androidAppId": "eval_rn_android",
+              "iOSAppId": "eval_rn_ios",
+              "enableAutoTrackUserAction": true,
+              "enableAutoTrackError": true,
+              "enableNativeUserResource": true,
+              "enableNativeUserAction": false,
+              "enableNativeUserView": false,
+              "enableTraceWebView": false,
+              "enableTrackNativeCrash": false,
+              "enableTrackNativeAppANR": false,
+              "enableTrackNativeFreeze": false
+            }
+          },
+          {
+            "method": "setConfig",
+            "config": {
+              "androidAppId": "eval_rn_android",
+              "iOSAppId": "eval_rn_ios",
+              "enableAutoTrackUserAction": true,
+              "enableAutoTrackError": true,
+              "enableNativeUserResource": true,
+              "enableNativeUserAction": false,
+              "enableNativeUserView": false,
+              "enableTraceWebView": false,
+              "enableTrackNativeCrash": false,
+              "enableTrackNativeAppANR": false,
+              "enableTrackNativeFreeze": false
+            }
+          }
+        ],
+        "warnings": [
+          "RUM startup failed; application startup may continue."
+        ],
+        "original_error_handler_preserved": null,
+        "original_error_handler_calls": 0
+      }
+    }
+  },
+  "mock_real_boundary": {
+    "real": [
+      "Checksum-verified isolated Skill install",
+      "npm-installed SDK 0.4.2 JavaScript wrapping logic",
+      "Real React package and SDK action/error wrapping",
+      "Node executes project source",
+      "Native Java/Objective-C source review maps independent IDs"
+    ],
+    "mock": [
+      "React Native TurboModuleRegistry and native bridge methods",
+      "Android/iOS platform labels in JS harness",
+      "Synthetic global ErrorUtils runtime"
+    ],
+    "not_executed": [
+      "Android/iOS native runtime",
+      "Metro/native production build",
+      "ft-plugin instrumentation",
+      "Actual navigation/view/resource capture",
+      "Real telemetry payload",
+      "Control plane/account/deployment"
+    ]
+  },
+  "rerun": {
+    "same_request_repeated": true,
+    "skill_install_reused": true,
+    "installer_total_invocations": 1,
+    "network_update_checks": 0,
+    "source_config_skill_fingerprints_unchanged": true,
+    "source_initializers_added": 0,
+    "per_run_sdkConfig_count": 1,
+    "per_run_setConfig_count": 1,
+    "evidence": "logs/rerun-idempotency.json"
+  },
+  "defects": [
+    {
+      "id": "RN-SDK-ERROR-HANDLER",
+      "classification": "Published SDK JavaScript regression observed through native bridge double",
+      "detail": "0.4.2 FTRumErrorTracking.startTracking stores ErrorUtils.getGlobalHandler function rather than calling it to obtain the current handler. After onGlobalError awaits addError, it calls this getter with error arguments; original app error handler runs 0 times instead of 1. Verified in android/ios labeled harnesses, while native runtime remains mocked.",
+      "source": "sdk/package/src/rum/FTRumErrorTracking.tsx",
+      "evidence": [
+        "logs/smoke-android-normal.json",
+        "logs/smoke-ios-normal.json"
+      ],
+      "impact": "Enabling documented automatic JS error capture does not preserve existing error-handler behavior; this onboarding is not fully validated."
+    },
+    {
+      "id": "RN-INCOMPLETE-NATIVE-FIXTURE",
+      "classification": "Fixture/toolchain limitation",
+      "detail": "No root settings.gradle/build.gradle/gradlew, Podfile, App component/AppRegistry or real pbxproj. xcodebuild points to CommandLineTools, Gradle and CocoaPods absent, JDK 8 only. Native autolinking, Android ft-plugin, platform-native config injection and production builds cannot be completed/proved within this skeleton without inventing a full app."
+    },
+    {
+      "id": "RN-VIEW-RESOURCE-HANDOFF",
+      "classification": "Partial integration boundary",
+      "detail": "JS core initializer exists but actual navigation view lifecycle is absent; native view auto-tracking intentionally disabled to avoid duplicate React Native views. Android resource/launch collection needs ft-plugin once native project exists. No actual View/Resource payload proof."
+    },
+    {
+      "id": "RN-LOOPBACK-DEVICE",
+      "classification": "Runtime reachability limitation",
+      "detail": "User endpoint is localhost. Actual device/emulator routing, Android cleartext rules and iOS transport requirements cannot be proved with this skeleton; endpoint preserved without guessing substitute addresses."
+    }
+  ],
+  "notes": [
+    "Logs/Trace/Replay/remote-config/WebView/native crash/ANR/freeze not enabled.",
+    "SDK sampling defaults preserved; release version expected from real native build, absent here.",
+    "No temporary authorization code, Client Token or control-plane helper used for DataKit.",
+    "SDK npm lifecycle scripts intentionally skipped during isolated validation; no vendored code edited.",
+    "Smoke commands exit 0 for core assertions but separately record error-handler preservation=false; overall result is not pass."
+  ],
+  "logs": [
+    "logs/commands.json",
+    "logs/detect-initial.json",
+    "logs/detect-rerun.json",
+    "logs/entry.md",
+    "logs/final-diff.patch",
+    "logs/install.log",
+    "logs/java.log",
+    "logs/npm-install.log",
+    "logs/npm-sdk-install.log",
+    "logs/official-guide.html",
+    "logs/official-guide.txt",
+    "logs/parent-smoke-android.log",
+    "logs/parent-verification.json",
+    "logs/rerun-before.json",
+    "logs/rerun-idempotency.json",
+    "logs/sdk-registry.json",
+    "logs/smoke-android-normal.json",
+    "logs/smoke-android-normal.log",
+    "logs/smoke-android-partial-failure.json",
+    "logs/smoke-android-partial-failure.log",
+    "logs/smoke-ios-missing-bridge.json",
+    "logs/smoke-ios-missing-bridge.log",
+    "logs/smoke-ios-normal.json",
+    "logs/smoke-ios-normal.log",
+    "logs/syntax-config.log",
+    "logs/syntax-index.log",
+    "logs/syntax-rum.log",
+    "logs/validate-implement.log",
+    "logs/validate-plan.log",
+    "logs/validate-rerun.log",
+    "logs/verification-commands.json",
+    "logs/verification-rerun.log",
+    "logs/xcode.log"
+  ]
+}

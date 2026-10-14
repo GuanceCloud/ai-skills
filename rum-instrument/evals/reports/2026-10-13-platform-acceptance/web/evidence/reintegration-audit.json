@@ -1,0 +1,28 @@
+{
+  "checks": {
+    "one_sdk_dependency": true,
+    "one_init_call": true,
+    "single_shared_promise": true,
+    "one_startup_reference": true,
+    "no_cdn_initializer": true,
+    "repeat_run_preserves_valid_existing_integration": true
+  },
+  "before": {
+    "package.json": "e57dbe128db9c7e80a36aca0e8774e4ba21052f639234f9c8e6aa2fada7714ff",
+    "package-lock.json": "9de26cd08961d291e7339f95f1a8637dc1794fd17cf140179bf378da169229f2",
+    "src/main.ts": "5d629b1b459f7b3d35ad28dd8b202c4169c288747bfadf7ad953b5c5b5088fad",
+    "src/rum.ts": "7b5e3c5b8abcedd796cc5d9934e254041114fd7fd1eccf5f767b6b8970058dad",
+    ".env.production": "e21f3cc73d1ee4c964e45d56cde5fa734b1185afebd23390b2cdc09762d260cc",
+    ".env.example": "e21f3cc73d1ee4c964e45d56cde5fa734b1185afebd23390b2cdc09762d260cc"
+  },
+  "after": {
+    "package.json": "e57dbe128db9c7e80a36aca0e8774e4ba21052f639234f9c8e6aa2fada7714ff",
+    "package-lock.json": "9de26cd08961d291e7339f95f1a8637dc1794fd17cf140179bf378da169229f2",
+    "src/main.ts": "5d629b1b459f7b3d35ad28dd8b202c4169c288747bfadf7ad953b5c5b5088fad",
+    "src/rum.ts": "7b5e3c5b8abcedd796cc5d9934e254041114fd7fd1eccf5f767b6b8970058dad",
+    ".env.production": "e21f3cc73d1ee4c964e45d56cde5fa734b1185afebd23390b2cdc09762d260cc",
+    ".env.example": "e21f3cc73d1ee4c964e45d56cde5fa734b1185afebd23390b2cdc09762d260cc"
+  },
+  "unchanged": true,
+  "decision": "Second discovery found existing working SDK/package/init/config; no edits required. Real runtime repeat calls tested separately."
+}

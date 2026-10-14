@@ -1,0 +1,75 @@
+Install destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/home/.kimi-code/skills
+Skills: demo-skill
+tar: Failed to set default locale
+tar: Failed to set default locale
+Installed successfully into /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/home/.kimi-code/skills
+Uninstall destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/home/.kimi-code/skills
+Skills: demo-skill
+Uninstalled successfully: demo-skill
+Install destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/.kimi-code/skills
+Skills: demo-skill
+tar: Failed to set default locale
+tar: Failed to set default locale
+Installed successfully into /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/.kimi-code/skills
+Uninstall destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/.kimi-code/skills
+Skills: demo-skill
+Uninstalled successfully: demo-skill
+Install destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/home/.qoder/skills
+Skills: demo-skill
+tar: Failed to set default locale
+tar: Failed to set default locale
+Installed successfully into /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/home/.qoder/skills
+Uninstall destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/home/.qoder/skills
+Skills: demo-skill
+Uninstalled successfully: demo-skill
+Install destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/.qoder/skills
+Skills: demo-skill
+tar: Failed to set default locale
+tar: Failed to set default locale
+Installed successfully into /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/.qoder/skills
+Uninstall destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/.qoder/skills
+Skills: demo-skill
+Uninstalled successfully: demo-skill
+Install destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/home/.zcode/skills
+Skills: demo-skill
+tar: Failed to set default locale
+tar: Failed to set default locale
+Installed successfully into /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/home/.zcode/skills
+Uninstall destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/home/.zcode/skills
+Skills: demo-skill
+Uninstalled successfully: demo-skill
+Install destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/.zcode/skills
+Skills: demo-skill
+tar: Failed to set default locale
+tar: Failed to set default locale
+Installed successfully into /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/.zcode/skills
+Uninstall destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmp1bm8ydf5/.zcode/skills
+Skills: demo-skill
+Uninstalled successfully: demo-skill
+...Install destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmpqpfr7fhk/installed
+Skills: demo-skill
+tar: Failed to set default locale
+tar: Failed to set default locale
+Installed successfully into /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmpqpfr7fhk/installed
+Already up to date: demo-skill@1111111111111111111111111111111111111111
+All selected skills are already up to date.
+Already up to date: demo-skill@1111111111111111111111111111111111111111
+All selected skills are already up to date.
+Install destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmpqpfr7fhk/installed
+Skills: demo-skill
+tar: Failed to set default locale
+tar: Failed to set default locale
+Installed successfully into /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmpqpfr7fhk/installed
+Install destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmpqpfr7fhk/installed
+Skills: demo-skill
+tar: Failed to set default locale
+tar: Failed to set default locale
+Installed successfully into /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmpqpfr7fhk/installed
+Uninstall destination: /var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/tmpqpfr7fhk/installed
+Skills: demo-skill
+Uninstalled successfully: demo-skill
+...
+----------------------------------------------------------------------
+Ran 6 tests in 2.577s
+
+OK

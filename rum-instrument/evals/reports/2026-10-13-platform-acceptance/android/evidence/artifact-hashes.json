@@ -1,0 +1,17 @@
+{
+  "apk": {
+    "path": "/private/tmp/rum-platform-acceptance/android/project/app/build/outputs/apk/debug/app-debug.apk",
+    "sha256": "e4f9f583a7db1272b2beaaa0a1f9eb70eacb1ca383aaa1d9f6c349939dda1314",
+    "bytes": 1786291
+  },
+  "sdk_aar": {
+    "path": "/Users/oneandonly/.gradle/caches/modules-2/files-2.1/com.cloudcare.ft.mobile.sdk.tracker.agent/ft-sdk/1.7.5/7467109afd7d7f7c98cb102355c3980f935c452e/ft-sdk-1.7.5.aar",
+    "sha256": "9a15ed97e6ca9c0b0b5934964540a73ab58535b399a27cbe90af3204c959de3f",
+    "bytes": 738817
+  },
+  "sdk_source_jar": {
+    "path": "/var/folders/8x/2_sfyjt11tb3y7_n0m9l53lc0000gn/T/rum-full-eval-fsgyxvww/android/sdk-sources.jar",
+    "sha256": "394e2c432035cf31b81ae57c0d956bdc39cbae294e038a962fd8b0fe3e297f5b",
+    "bytes": 348205
+  }
+}

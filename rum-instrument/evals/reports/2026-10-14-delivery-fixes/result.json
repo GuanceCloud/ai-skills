@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-14",
+  "status": "passed",
+  "fixed_findings": [
+    "nested_json_sink_path",
+    "legacy_sink_preflight",
+    "uniapp_h5_ownership"
+  ],
+  "new_test_methods": 9,
+  "checks": {
+    "rum": 234,
+    "installers": 6,
+    "release_archive_smoke": 1,
+    "skill_registry": 1,
+    "total": 242,
+    "skill_format": "passed",
+    "git_diff_check": "passed"
+  },
+  "real_credentials_used": false,
+  "remote_ingestion_tested": false,
+  "installed_skill_updated": false,
+  "git_commit_push": false,
+  "source_sha256": {
+    "rum-instrument/SKILL.md": "f44b93557842bfbd231ea41d39e2bfc6ce2fcd8230ca5c4683bda5a7991b1b02",
+    "rum-instrument/scripts/resolve_rum_application.py": "fb6f9adf2bd80eca5f430632cad7b72f132440b817b6198613c2ce98131477b2",
+    "rum-instrument/scripts/detect_rum_targets.py": "96e964c8bdcc1a31d22268f8e74898a84e7abaf677f23b8f38c2b330216f8b2c",
+    "rum-instrument/tests/test_review_regressions.py": "84d47efbebfb8ff3cb6adbbf8b9faece152ae8311fe94fb3e8c6e08e25a659f0",
+    "rum-instrument/tests/test_detect_rum_targets.py": "984a78704acd7fd3dcff0a3536b423b259cc623cf9fd03cffb7c25a3a79a15de",
+    "rum-instrument/references/contracts.md": "3d43380cfa0312f39fd60ef91829fcb11bc2dfbb43d5c3e8d348cbba555a7936",
+    "rum-instrument/references/control-plane.md": "ded1d8b49f887d1218f15b63b3ff9cca58c97c061a94712d22c50753cb09ea46",
+    "rum-instrument/references/android.md": "e2bd38b0cc3fca270a702d4a934dbff4c4094775b64dbac7f5e8ad7177dd24fe",
+    "rum-instrument/references/apple.md": "7a2f1960ae07aa16ff9c11e5c02cbf1179d8d551067edb717ddc8104bd7ee5e5",
+    "rum-instrument/references/macos.md": "7a6ba71619bb3e12803a66ba8a37009df4d2c29cf5b2d1d8b111a11e4cfca4f0",
+    "rum.md": "981d7b69f9779f29c3b97147d90930b6bbfaa64bb616ac3266d31d11b65541e1",
+    "README.md": "fab81127189e5c88fe8b53e9dc11b75182371c289c2a49f60e7e42378c7ceeda"
+  }
+}

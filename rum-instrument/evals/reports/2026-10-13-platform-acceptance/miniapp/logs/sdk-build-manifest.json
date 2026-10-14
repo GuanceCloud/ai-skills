@@ -1,0 +1,287 @@
+[
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/index.js",
+    "size": 248,
+    "sha256": "d3fdd4d13c51cae69c2e5aa6392e1e815f618e18170103b431fcf9f0efefba0c"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/observable.js",
+    "size": 1828,
+    "sha256": "277fa4f5030283e173b717a3e273b656ad6fc669a1dbad31972cd8b6c05dbdd9"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/errorCollection.js",
+    "size": 5901,
+    "sha256": "27923bb5663327200467728c4df39a2f1533a22dbd64b0dc1ee9c6c96ca40ebe"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/platformApiProxy.js",
+    "size": 2146,
+    "sha256": "ef1698da6dadb07f438be277a67bb4960630653d6f993d4425834f9d03438408"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/errorFilter.js",
+    "size": 1122,
+    "sha256": "8d4586c8c15aba67042fbf3b8d71a1c5d31fd5ae0f260469eeffbe928cd50d9e"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/boundedBuffer.js",
+    "size": 635,
+    "sha256": "43d4a46d4c9c05e25f440392932434fb5fd66f0a493880c3297143b866c0b601"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/sessionManagement.js",
+    "size": 11891,
+    "sha256": "1eb88e1ff0b694436770a07ed01a7a095b6ff622331cdc06d0e36129f57d1fa8"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/user.js",
+    "size": 945,
+    "sha256": "c858ceccdb8ea1a857fc3fb432f918252fd2abc2f6cdb929149d5e88b51ec038"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/configuration.js",
+    "size": 6403,
+    "sha256": "617a570d332c36282c07f91b8b683de1fe9a904f8490d1734a6df2558746428a"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/transport.js",
+    "size": 9671,
+    "sha256": "48ffdf25314253c75c9e864f69d6bb2f34bd6e7870e6d868eaf79dbc528f1188"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/miniaTouch.js",
+    "size": 10304,
+    "sha256": "cd6a8dd69f93588b4beed457011e7f3b53276d9adef64bfb5e153644323184c1"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/errorTools.js",
+    "size": 1566,
+    "sha256": "9b1b8464218e376a7d931577e338c45d18ca55a08eb3ad8b57a33682e0f8bb05"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/sdk.js",
+    "size": 3720,
+    "sha256": "5640a4c1e79ea3289fabd713df53f6f50a6c1448947017a358317030ce2ecb90"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/contextManager.js",
+    "size": 2966,
+    "sha256": "026c79d6c7e021c5a60254d5a70c16cf59341c53190cdbc165782a16e6882e44"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/remoteConfiguration.js",
+    "size": 7050,
+    "sha256": "120057894b1195358d3d077b78c02fd22152cd094aa4fd91c3c88df894d97314"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/dataMap.js",
+    "size": 6063,
+    "sha256": "f4d6d64be03d25663e0c6c3246fae80b9b6f6af8d655768c505d9de9cf3abaa7"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/downloadProxy.js",
+    "size": 4607,
+    "sha256": "192f8e4aa0206c9ab49dd244287592625c32ed45b718bd6e5dd395887af06949"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/xhrProxy.js",
+    "size": 5039,
+    "sha256": "5fb98371f5e039871213a9aa68facb11295a25148abbfd7d53d3f41325c7debd"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/baseInfo.js",
+    "size": 8327,
+    "sha256": "5d3c1e94805d552e9533ef00a6b250f800acd4d97b329ca62f21f192da428a52"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/heavyCustomerDataWarning.js",
+    "size": 1152,
+    "sha256": "e119335e0a538a31c3e60626ccd7ed47acce2efb9d984a48a083a994bffc078c"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/core/lifeCycle.js",
+    "size": 3158,
+    "sha256": "3803194424fd9a21d5f2106cdc3f9c1d2d8250e4137a0509e370bfebf164c161"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/boot/rum.entry.js",
+    "size": 8458,
+    "sha256": "ecca8140e2a16848e50166efbc0466d8a32678a1ad7d55161c8d06b451a623d0"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/boot/buildEnv.js",
+    "size": 201,
+    "sha256": "7fbe531b861b04b7fdb1937e3faea03934870801ca76d20319f55977214960af"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/boot/rum.js",
+    "size": 4258,
+    "sha256": "4e9f0186f9496091df3285c8bc481a1ed6cd7f6f5752b3c2df1b8cba1003e70d"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/trackPageActiveites.js",
+    "size": 5478,
+    "sha256": "55cf37803005a1059011a144375681dc891a87d4e6b1424a962818e10b06b3a4"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/parentContexts.js",
+    "size": 4213,
+    "sha256": "1f0d024347439e096f3c8649764e5ba903c362d20f2164036f694587e15318e8"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/internalContext.js",
+    "size": 917,
+    "sha256": "7629dc32e53b9f98be5d384ff41bf397b1788ef20bc84cfd9bd12c5384432d3c"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/trackEventCounts.js",
+    "size": 1177,
+    "sha256": "fb79fbfc75353cdb8e92e66f2322517ed0255fc161087c7707ecb44ec1452eff"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/assembly.js",
+    "size": 3919,
+    "sha256": "0958df092bcc1cf35ede25154e698a0848a9e4bebfc059806f8afde76a2ae7a0"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/performanceCollection.js",
+    "size": 4739,
+    "sha256": "00578ccb8b99cccc718f3ad9f39f8eb89ec8bc6b262d378dc0f49f7125d4d19b"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/requestCollection.js",
+    "size": 3006,
+    "sha256": "323f7ba192dc6d2211a292d07892a8d8691544d1c48f1b3909a258a53f38ad62"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/setDataCollection.js",
+    "size": 4842,
+    "sha256": "e05dd4ecb26df1ae71d4e3afc5d89f946c66c4b459a89cd307f022baf62f165d"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/helper/caatchUserErrors.js",
+    "size": 341,
+    "sha256": "f773cf27e2e6ebff006cb3e9667fd1276de03d89c50006a37b1e03879bae6d31"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/helper/jsonStringify.js",
+    "size": 2529,
+    "sha256": "2ec4a7f2c000f5c3e3951822c06fecbc0edd7b17984ba77dd0030116d4e3e84b"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/helper/byteUtils.js",
+    "size": 988,
+    "sha256": "3ae84c95e07de4867ce4399ef3f513eb560bf0f7a09963e5f0642ee06f6214e4"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/helper/enums.js",
+    "size": 2526,
+    "sha256": "84dfb68b75b3904f5ba2634bfcc57e6083b3a9a7e3a4643b10f33dd7e511c78e"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/helper/utils.js",
+    "size": 24191,
+    "sha256": "bf1f2197faafec040710d4d118338e1b182daf632797c53a19ad6115948c707b"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/helper/limitModification.js",
+    "size": 1811,
+    "sha256": "6cb6a8eca008b3e63e2fa673d2328d345a32f2870d3b0dafe103ea165a7799c6"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/helper/tracekit.js",
+    "size": 28459,
+    "sha256": "7d665ba78004490e6b29ced22478ace6a9f35db2f80ac7ae44db881c7d9032a6"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/helper/commonContext.js",
+    "size": 372,
+    "sha256": "eff029414fd709b9ea0cdab2a6995efe007c73df0a3c15e3e2bbf0e1dadf6aee"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/tracing/zipkinMultiTracer.js",
+    "size": 1622,
+    "sha256": "2a9f02befccdaed5bcfef91b24de96a597a4308473c16f9bfa4c712dce67ab1a"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/tracing/jaegerTracer.js",
+    "size": 1748,
+    "sha256": "5badb420642b40c93c54dba61742d11624ede2557b017b418ea1c4cd6e8e5cd8"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/tracing/skywalkingTracer.js",
+    "size": 2569,
+    "sha256": "b9c5e3b06110c5638cf5eb5c913c7a52b6dbc211ef0a0f0e00f5011bb049a5ab"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/tracing/ddtraceTracer.js",
+    "size": 1527,
+    "sha256": "a5c93077f5ac3d57deceef9097399a5a44d370bbd5c6df4ca958215aadecbad2"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/tracing/tracer.js",
+    "size": 5216,
+    "sha256": "02ff54709bc9f9bedf86a08f152d6719126ed085892a42567fc52eabb5cf1219"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/tracing/zipkinSingleTracer.js",
+    "size": 1527,
+    "sha256": "ceef04ff1b12cd71e789ae19b83fd30fe5c6767db46feed8bae0ee4b6dc3cad0"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/tracing/w3cTraceParentTracer.js",
+    "size": 1570,
+    "sha256": "3a066897db4cc547b9672fd71127d091d2292c36ed8246d0ac942bc3e6ef6045"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/page/index.js",
+    "size": 24618,
+    "sha256": "a24e86a2131219d510ffdb69c3f7b595036d72be98e4fb16a9da56bb0d366b4f"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/page/viewCollection.js",
+    "size": 3006,
+    "sha256": "e03e560793a061d6551035f1a8c0adecc121b92c509c707360f1715f6d5b1659"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/transport/batch.js",
+    "size": 1483,
+    "sha256": "b80491f171a0a18562322286a832f7f4faae35528bc0c9f4a0aefd68ff0b3738"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/app/index.js",
+    "size": 4503,
+    "sha256": "adbd6858f0a2a4b5201516d134b108bd7aa149ec889e5924d3ccaa545faf8174"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/app/appCollection.js",
+    "size": 1033,
+    "sha256": "2027e963ea6c0f74b30e90a5df72e893e59ebf505855ebe42a39bbc4868bbc81"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/action/trackActions.js",
+    "size": 8163,
+    "sha256": "3b6f93ab18ee0c070d58e6c6e112ace868b78a6e1c17785cdb406a5b0e711653"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/action/actionCollection.js",
+    "size": 2221,
+    "sha256": "9a3aeb3c9770fb8ff205bc64d3dcb2acde1291e340370b8a2aaac2af45410652"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/resource/resourceCollection.js",
+    "size": 2518,
+    "sha256": "56b6072c9629f1f13a323126433b8e85d63e4c2818a1cf12f201a7ca884d4aa1"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/resource/resourceUtils.js",
+    "size": 11621,
+    "sha256": "ee1b28c0fea938d55130a66aa7d627fc4f318a640710ab88edc7a209dc5c8d22"
+  },
+  {
+    "path": "miniprogram_npm/@cloudcare/rum-miniapp/rumEventsCollection/error/errorCollection.js",
+    "size": 3196,
+    "sha256": "4adb6cc3f0e36d1a817fbffe37998e543b137550d683fb039859b2d6624c531d"
+  }
+]

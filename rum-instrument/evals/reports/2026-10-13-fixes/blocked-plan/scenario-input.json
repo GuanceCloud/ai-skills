@@ -1,0 +1,16 @@
+{
+  "kind": "synthetic_forward_test_input",
+  "request": "请完成当前小程序 RUM 接入。datakitUrl: https://collector.example.invalid appId: eval_blocked_miniapp",
+  "provided_compatibility_evidence": {
+    "status": "failed",
+    "selected_sdk": "@cloudcare/rum-miniapp",
+    "scope": "当前已选SDK；具体版本不属于本次计划行为测试输入",
+    "finding": "前置验证已确认当前选用 SDK 会在自动采集的路由信息中保留未经处理的查询值，且没有已验证可用的受支持配置或修复方案。",
+    "evidence_provenance": "测试任务给定已验证且无法修复的隐私兼容性问题；本次不重新执行SDK测试，不推断真实发布版本存在此缺陷。"
+  },
+  "constraints": [
+    "只生成计划，不改应用",
+    "不调用控制面",
+    "不询问更多连接信息"
+  ]
+}

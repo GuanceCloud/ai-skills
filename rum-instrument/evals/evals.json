@@ -130,7 +130,7 @@
     {
       "id": 8,
       "prompt": "使用 $rum-instrument 规划并实施这个 Vue Web 仓库的 RUM 接入。\n\ndatawayUrl: {{DATAWAY_URL}}\nappId: {{APP_ID}}\ntemporaryAuthCode: eval-only-one-time-code",
-      "expected_output": "先生成并验证 schema v2 计划；普通核心 RUM 变更以 explicit_implementation_request 预授权并在同一轮继续实施和验证。",
+      "expected_output": "先生成并验证 schema v3 计划；普通核心 RUM 变更以 explicit_implementation_request 预授权并在同一轮继续实施和验证。",
       "files": [
         "evals/files/vue-existing/package.json",
         "evals/files/vue-existing/src/main.ts",
@@ -143,7 +143,7 @@
         "helper 在读取授权码前完成 DataWay、AI API 和输出路径的无凭据预检",
         "通过 stdin 调用 helper，授权码只交换一次，每个 Application ID 只执行一次成功查询；仅瞬态网络失败可以重试",
         "只以 token_expired=false 且 client_token 非空判断 Token 可用，sync/mapping 字段不触发轮询或阻塞",
-        "Client Token 只写入已忽略且经过安全检查的运行时/构建配置 sink，并同时写入绑定计划摘要的非敏感 execution state",
+        "Client Token 只写入已忽略且经过安全检查的运行时/构建配置 sink，并同时写入按应用身份绑定的可恢复 execution state",
         "application lookup 不把瞬态状态写回计划；control_plane.status、Token availability 和 plan revision 保持稳定",
         "识别既有初始化并收敛，不添加重复 SDK 或初始化器",
         "完成本地验证；只有用户要求或仓库已有同类清单时才生成 .rum/instrumentation.json，不把本地请求误报为远程上报成功"
@@ -152,35 +152,32 @@
     {
       "id": 9,
       "prompt": "使用 $rum-instrument 规划并实施当前 Vue Web 仓库在隔离测试环境的 RUM 接入。允许仅本次测试跳过证书验证。\n\ndatawayUrl: http://testing-openway.dataflux.cn\nappId: testing_web_manage\ntemporaryAuthCode: eval-only-one-time-code",
-      "expected_output": "显式实施意图仍不能预授权内置测试站点和 TLS 例外；生成 pending 计划，记录 explicit_implementation_request basis 与具体 blockers，并在任何凭据交换或应用代码编辑前停止。",
+      "expected_output": "记录用户对隔离测试站点和本次 TLS 例外的具体授权及条件，完成安全检查后继续；不重复请求同一授权。",
       "files": [
         "evals/files/vue-existing/package.json",
         "evals/files/vue-existing/src/main.ts"
       ],
       "expectations": [
-        "计划使用 schema v2，approval.status=pending、basis=explicit_implementation_request",
-        "approval.blockers 明确列出 builtin testing site 和 disabled TLS verification",
-        "不因 Prompt 中出现实施动词而绕过风险 Review",
-        "停止前不消费临时授权码、不调用 /api/v1/rum/app/get、不修改应用代码",
-        "Review 后只接受带 reviewed_plan_sha256 的 revision_review，并继续隔离测试例外，禁止进入生产配置"
+        "schema v3 的 testing_site 与 disabled_tls receipts 引用本次明确用户授权，后者包含 test_only 条件",
+        "仍限制为内置测试站点，不能将例外推广到生产或其他站点",
+        "信息齐全且安全检查通过时不再要求常规 revision 二次确认",
+        "只在配置或网络预检通过后消费授权码，不能用确认绕过安全检查"
       ]
     },
     {
       "id": 10,
       "prompt": "使用 $rum-instrument 规划并实施这个 Vue Web 仓库的 RUM 接入，并新增 Session Replay。\n\ndatawayUrl: {{DATAWAY_URL}}\nappId: {{APP_ID}}\ntemporaryAuthCode: eval-only-one-time-code",
-      "expected_output": "识别仓库没有既有 Replay，把新增 Replay 记录为结构化可选能力和强制 Review 条件；输出 pending 计划并在消费授权码或修改代码前停止。",
+      "expected_output": "记录用户已请求 Replay，只集中补问缺失的同意、遮罩、排除范围和采样决策，不重复问是否要开启 Replay。",
       "files": [
         "evals/files/vue-existing/package.json",
         "evals/files/vue-existing/src/main.ts",
         "evals/files/vue-existing/src/rum.ts"
       ],
       "expectations": [
-        "existing_instrumentation.signals 不包含 replay，而 profile.signals.replay 记录为启用",
-        "approval.status=pending、basis=explicit_implementation_request，blockers 明确包含 new optional signal replay",
-        "plan-phase validator 不允许把该计划标记为 explicit_implementation_request 的 approved 状态",
-        "停止前不消费临时授权码、不获取 Client Token、不添加 Replay 依赖或修改初始化器",
-        "只有用户 Review 对应 revision 后才使用 basis=revision_review 继续实施",
-        "Replay 实施范围必须包含同意机制、遮罩/排除范围和采样验证"
+        "保留用户明确请求新增 Replay 的授权证据",
+        "缺少 consent/masking/exclusions/sampling 时标记具体 blocker 并集中询问",
+        "条件未齐备时不启动 Replay",
+        "用户补齐条件后继续，不再要求仅为新增可选能力而进行的 revision 审批"
       ]
     },
     {
@@ -261,7 +258,7 @@
         "applicationType 为 reactnative，并保留 Android/iOS 独立 Application ID 与 Client Token 槽位",
         "需要真实 JS 入口和原生平台证据，不能只凭 react-native 依赖判断",
         "原生子工程由 React Native 目标拥有，不生成重复独立目标",
-        "新增 native_crash、ANR 或 Replay 必须单独 Review"
+        "新增可选能力需具体用户授权；Replay 条件不齐时只补问缺失决策"
       ]
     },
     {
@@ -293,6 +290,239 @@
         "只规划一个可收敛的 SDK 生命周期和退出 flush",
         "DataKit RUM collector 与网络可达性未验证时保留警告和交接项"
       ]
+    },
+    {
+      "id": 18,
+      "prompt": "帮我给这个项目接入 RUM。",
+      "expected_output": "先识别项目和已有配置；一次性询问无法推断的连接信息，不先发平台/环境/采样问卷。",
+      "files": [
+        "evals/files/vue-existing/package.json",
+        "evals/files/vue-existing/src/main.ts",
+        "evals/files/vue-existing/src/rum.ts"
+      ],
+      "expectations": [
+        "先识别项目和已有配置；一次性询问无法推断的连接信息，不先发平台/环境/采样问卷。",
+        "不泄露授权码、API Key 或 Client Token",
+        "本地验证与远程入库状态分开报告"
+      ],
+      "interaction_budget": {
+        "initial_missing_information_rounds": 1,
+        "routine_approval_questions": 0,
+        "repeated_answer_requests": 0
+      }
+    },
+    {
+      "id": 19,
+      "prompt": "请接入 RUM。datawayUrl: 空；appId: web_demo。项目已有接收地址配置。",
+      "expected_output": "恢复有效接收地址；仅在没有可复用凭据时请求授权码。",
+      "files": [
+        "evals/files/vue-existing/package.json",
+        "evals/files/vue-existing/src/main.ts",
+        "evals/files/vue-existing/src/rum.ts"
+      ],
+      "expectations": [
+        "恢复有效接收地址；仅在没有可复用凭据时请求授权码。",
+        "不泄露授权码、API Key 或 Client Token",
+        "本地验证与远程入库状态分开报告"
+      ],
+      "interaction_budget": {
+        "initial_missing_information_rounds": 1,
+        "routine_approval_questions": 0,
+        "repeated_answer_requests": 0
+      }
+    },
+    {
+      "id": 20,
+      "prompt": "请完成 RUM 接入。datakitUrl: http://127.0.0.1:9529；appId: web_demo。",
+      "expected_output": "完成本地接入和适用验证，不要求授权码或联网就绪确认。",
+      "files": [
+        "evals/files/vue-existing/package.json",
+        "evals/files/vue-existing/src/main.ts",
+        "evals/files/vue-existing/src/rum.ts"
+      ],
+      "expectations": [
+        "完成本地接入和适用验证，不要求授权码或联网就绪确认。",
+        "不泄露授权码、API Key 或 Client Token",
+        "本地验证与远程入库状态分开报告"
+      ],
+      "interaction_budget": {
+        "initial_missing_information_rounds": 0,
+        "routine_approval_questions": 0,
+        "repeated_answer_requests": 0
+      }
+    },
+    {
+      "id": 21,
+      "prompt": "继续上次接入，验证命令改了，之前已经成功获取配置。",
+      "expected_output": "复用身份和完整性检查通过的配置，不因为计划摘要变化要求新授权码。",
+      "files": [
+        "evals/files/vue-existing/package.json",
+        "evals/files/vue-existing/src/main.ts",
+        "evals/files/vue-existing/src/rum.ts"
+      ],
+      "expectations": [
+        "复用身份和完整性检查通过的配置，不因为计划摘要变化要求新授权码。",
+        "不泄露授权码、API Key 或 Client Token",
+        "本地验证与远程入库状态分开报告"
+      ],
+      "interaction_budget": {
+        "initial_missing_information_rounds": 0,
+        "routine_approval_questions": 0,
+        "repeated_answer_requests": 0
+      }
+    },
+    {
+      "id": 22,
+      "prompt": "给当前 monorepo 接入 RUM，先完成已配置 ID 的应用，其余应用稍后补充。",
+      "expected_output": "构建完整目标清单，完成独立就绪批次，剩余目标单独报告。",
+      "files": [
+        "evals/files/monorepo/apps/admin/package.json",
+        "evals/files/monorepo/apps/admin/src/main.ts",
+        "evals/files/monorepo/apps/storefront/package.json",
+        "evals/files/monorepo/apps/storefront/src/main.tsx"
+      ],
+      "expectations": [
+        "构建完整目标清单，完成独立就绪批次，剩余目标单独报告。",
+        "不泄露授权码、API Key 或 Client Token",
+        "本地验证与远程入库状态分开报告"
+      ],
+      "interaction_budget": {
+        "initial_missing_information_rounds": 1,
+        "routine_approval_questions": 0,
+        "repeated_answer_requests": 0
+      }
+    },
+    {
+      "id": 23,
+      "prompt": "帮我接入 RUM，src/main.ts 中有我未提交的界面修改，请保留。",
+      "expected_output": "分析真实 diff，独立的接入追加使用已校验补丁；实际重叠才询问。",
+      "files": [
+        "evals/files/vue-existing/package.json",
+        "evals/files/vue-existing/src/main.ts",
+        "evals/files/vue-existing/src/rum.ts"
+      ],
+      "expectations": [
+        "分析真实 diff，独立的接入追加使用已校验补丁；实际重叠才询问。",
+        "不泄露授权码、API Key 或 Client Token",
+        "本地验证与远程入库状态分开报告"
+      ],
+      "interaction_budget": {
+        "initial_missing_information_rounds": 0,
+        "routine_approval_questions": 0,
+        "repeated_answer_requests": 0
+      }
+    },
+    {
+      "id": 24,
+      "prompt": "为这个 Android 项目接入 RUM，目前没有本地 Token 配置读取方式。",
+      "expected_output": "自动补齐忽略文件和 Gradle 配置接线，不把缺少 reader 直接交给用户。",
+      "files": [
+        "evals/files/android-app/app/build.gradle.kts",
+        "evals/files/android-app/app/src/main/AndroidManifest.xml",
+        "evals/files/android-app/app/src/main/java/com/example/rum/App.kt"
+      ],
+      "expectations": [
+        "自动补齐忽略文件和 Gradle 配置接线，不把缺少 reader 直接交给用户。",
+        "不泄露授权码、API Key 或 Client Token",
+        "本地验证与远程入库状态分开报告"
+      ],
+      "interaction_budget": {
+        "initial_missing_information_rounds": 1,
+        "routine_approval_questions": 0,
+        "repeated_answer_requests": 0
+      }
+    },
+    {
+      "id": 25,
+      "prompt": "继续接入，上次第二个应用查询失败，第一个已保存。",
+      "expected_output": "复用第一个应用；仅对未解析部分在需要时补充新授权码。",
+      "files": [
+        "evals/files/monorepo/apps/admin/package.json",
+        "evals/files/monorepo/apps/admin/src/main.ts",
+        "evals/files/monorepo/apps/storefront/package.json",
+        "evals/files/monorepo/apps/storefront/src/main.tsx"
+      ],
+      "expectations": [
+        "复用第一个应用；仅对未解析部分在需要时补充新授权码。",
+        "不泄露授权码、API Key 或 Client Token",
+        "本地验证与远程入库状态分开报告"
+      ],
+      "interaction_budget": {
+        "initial_missing_information_rounds": 1,
+        "routine_approval_questions": 0,
+        "repeated_answer_requests": 0
+      }
+    },
+    {
+      "id": 26,
+      "prompt": "请使用 rum-instrument 完成当前商品目录 Web 项目的基础 RUM 接入。datakitUrl: http://127.0.0.1:19529，appId: eval_catalog。",
+      "expected_output": "按官方SDK标准行为完成基础接入，普通分页/排序参数不触发额外隐私问卷或阻塞。",
+      "files": [
+        "evals/files/web-url-policy/package.json",
+        "evals/files/web-url-policy/index.html",
+        "evals/files/web-url-policy/src/main.js"
+      ],
+      "expectations": [
+        "先分析项目；参数齐全零补问、零常规确认",
+        "保留普通SDK URL/query字段，不引入全局清洗或修改第三方SDK",
+        "验证单次初始化、非空事件和应用行为；远程入库单独报告"
+      ],
+      "interaction_budget": {
+        "initial_missing_information_rounds": 0,
+        "routine_approval_questions": 0,
+        "repeated_answer_requests": 0
+      }
+    },
+    {
+      "id": 27,
+      "prompt": "请接入当前 Web 项目的 RUM。datakitUrl: http://127.0.0.1:19529，appId: eval_catalog。项目明确要求所有 URL 查询参数值不得进入任何 RUM 字段。",
+      "expected_output": "验证真实SDK的字段过滤能力；无法满足明确要求时记录具体阻塞，不伪称脱敏成功。",
+      "files": [
+        "evals/files/web-url-policy/package.json",
+        "evals/files/web-url-policy/index.html",
+        "evals/files/web-url-policy/src/main.js"
+      ],
+      "expectations": [
+        "检查派生view_url_query/resource_url_query，不只检查view.url",
+        "存在过滤限制时阻止受影响的新初始化，不要求用户重复确认放行",
+        "保留原始失败证据，不禁用全部采集来伪造过滤通过"
+      ],
+      "interaction_budget": {
+        "initial_missing_information_rounds": 0,
+        "routine_approval_questions": 0,
+        "repeated_answer_requests": 0
+      }
+    },
+    {
+      "id": 28,
+      "prompt": "请使用 rum-instrument 完成当前 Web 项目的基础 RUM 接入。datakitUrl: http://127.0.0.1:19529，appId: eval_auth。",
+      "expected_output": "发现授权回调把 access_token 保留在 URL 中；检查真实 SDK 字段能力，只有可证明有效且不改变认证行为的保护通过后才能启用相关采集。",
+      "files": [
+        "evals/files/web-sensitive-url/index.html",
+        "evals/files/web-sensitive-url/package.json",
+        "evals/files/web-sensitive-url/src/auth-callback.js",
+        "evals/files/web-sensitive-url/src/main.js"
+      ],
+      "expectations": [
+        "基于维护态认证代码判断具体凭据风险，不把普通参数与认证令牌混为一谈",
+        "无法满足保护要求时只阻塞受影响范围，不询问用户是否愿意暴露令牌",
+        "不在Agent输出或报告中打印真实凭据；仅使用合成测试值",
+        "不会因为普通接入允许默认字段就忽略已发现的敏感数据路径"
+      ],
+      "interaction_budget": {
+        "initial_missing_information_rounds": 0,
+        "routine_approval_questions": 0,
+        "repeated_answer_requests": 0
+      }
     }
+  ],
+  "interaction_metrics": [
+    "business_question_rounds",
+    "routine_approval_questions",
+    "requested_user_fields",
+    "repeated_answer_requests",
+    "local_completion",
+    "recovery_result",
+    "remote_verification_evidence"
   ]
 }
