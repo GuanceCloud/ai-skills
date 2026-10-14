@@ -5,7 +5,9 @@ description: "Install, implement, repair, and validate RUM in Web, MiniApp, nati
 
 # RUM Instrumentation
 
-Complete ordinary core RUM from one request: discover, fill missing essentials, prepare, resolve configuration, implement, verify. Reuse a usable installed Skill; the distribution's `rum.md` handles first installation without routine update checks.
+Complete ordinary core RUM from one request: discover, fill missing essentials, prepare, resolve configuration, implement, verify.
+
+At the start of each new onboarding task, follow the distribution's `rum.md` to check the latest published version and automatically install/upgrade an unmodified managed copy; no routine confirmation. Use the entry URL supplied by the user, otherwise derive the distribution root from `.skill-install.json`'s archive source (strip `versions/<SHA>/skills/<archive>`) and read its stable `rum.md`. For an unmanaged copy without a known distribution, preserve it, report that latest cannot be verified, and ask for its distribution entry only if needed; never guess a source or replace it without resolving local ownership. Respect explicit source-checkout, offline and version-pinned requests. A previous install receipt alone does not pin future tasks. Reuse only after matching-version integrity checks; preserve local edits. If the index is unreachable, a known usable local version may continue with “latest unverified”; integrity failures are not offline fallback. Reload updated instructions and required resources, record the actual version/check result, and keep that version fixed through this task and its resumes. If the entrypoint already checked this task, do not check again.
 
 ## Boundaries
 

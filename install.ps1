@@ -96,6 +96,25 @@ try {
     [IO.Directory]::CreateDirectory($destRoot) | Out-Null
     $destRoot = [IO.Path]::GetFullPath($destRoot)
 
+    function Test-LocalModification([string]$Installed) {
+        $checksumFile = Join-Path $Installed '.skill-files.sha256'
+        $listFile = Join-Path $Installed '.skill-files.list'
+        if (-not (Test-Path $checksumFile) -or -not (Test-Path $listFile)) { return $true }
+        foreach ($line in [IO.File]::ReadAllLines($checksumFile)) {
+            if ($line -notmatch '^([0-9a-f]{64})  (.+)$') { return $true }
+            $path = Join-Path $Installed $Matches[2]
+            if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { return $true }
+            if ((Get-Sha256Hex $path) -ne $Matches[1]) { return $true }
+        }
+        $excluded = @('.skill-install.json','.skill-files.sha256','.skill-files.list','.skill-setup.tsv')
+        $current = @(Get-ChildItem -LiteralPath $Installed -File -Recurse | ForEach-Object {
+            $relative = $_.FullName.Substring($Installed.Length).TrimStart('\','/').Replace('\','/')
+            if ($excluded -notcontains $relative -and $relative -notmatch '(^|/)__pycache__(/|$)|\.py[co]$') { $relative }
+        } | Sort-Object)
+        $expected = @([IO.File]::ReadAllLines($listFile) | Sort-Object)
+        return @(Compare-Object $expected $current).Count -ne 0
+    }
+
     $pendingSkills = New-Object System.Collections.Generic.List[string]
     foreach ($name in $Skill) {
         if (-not $entries.ContainsKey($name)) { Fail "skill is not published: $name" }
@@ -106,6 +125,9 @@ try {
             $installedVersion = $null
             try { $installedVersion = (Get-Content (Join-Path $installed '.skill-install.json') -Raw | ConvertFrom-Json).version } catch {}
             if (-not $Force -and $installedVersion -eq $entry.Version) {
+                if (Test-LocalModification $installed) {
+                    Fail "$name has local modifications; preserving it without claiming it is up to date"
+                }
                 Write-Host "Already up to date: $name@$($entry.Version)"
                 continue
             }
@@ -125,25 +147,6 @@ try {
     if (-not $Yes -and -not $autoApproved) {
         if (-not [Environment]::UserInteractive) { Fail 'confirmation requires an interactive terminal; pass -Yes' }
         if ((Read-Host 'Continue? [y/N]') -notmatch '^(y|yes)$') { Fail 'cancelled' }
-    }
-
-    function Test-LocalModification([string]$Installed) {
-        $checksumFile = Join-Path $Installed '.skill-files.sha256'
-        $listFile = Join-Path $Installed '.skill-files.list'
-        if (-not (Test-Path $checksumFile) -or -not (Test-Path $listFile)) { return $true }
-        foreach ($line in [IO.File]::ReadAllLines($checksumFile)) {
-            if ($line -notmatch '^([0-9a-f]{64})  (.+)$') { return $true }
-            $path = Join-Path $Installed $Matches[2]
-            if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { return $true }
-            if ((Get-Sha256Hex $path) -ne $Matches[1]) { return $true }
-        }
-        $excluded = @('.skill-install.json','.skill-files.sha256','.skill-files.list','.skill-setup.tsv')
-        $current = @(Get-ChildItem -LiteralPath $Installed -File -Recurse | ForEach-Object {
-            $relative = $_.FullName.Substring($Installed.Length).TrimStart('\','/').Replace('\','/')
-            if ($excluded -notcontains $relative) { $relative }
-        } | Sort-Object)
-        $expected = @([IO.File]::ReadAllLines($listFile) | Sort-Object)
-        return @(Compare-Object $expected $current).Count -ne 0
     }
 
     Add-Type -AssemblyName System.IO.Compression.FileSystem

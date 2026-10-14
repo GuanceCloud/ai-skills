@@ -177,7 +177,7 @@ is_modified() {
     [ -f "$installed/$relative" ] || return 0
     [ "$(hash_file "$installed/$relative")" = "$expected" ] || return 0
   done < "$installed/.skill-files.sha256"
-  (cd "$installed" && find . -type f ! -name .skill-install.json ! -name .skill-files.sha256 ! -name .skill-files.list ! -name .skill-setup.tsv | sed 's#^./##' | LC_ALL=C sort) > "$TMP_ROOT/current-files"
+  (cd "$installed" && find . -type d -name __pycache__ -prune -o -type f ! -name '*.pyc' ! -name '*.pyo' ! -name .skill-install.json ! -name .skill-files.sha256 ! -name .skill-files.list ! -name .skill-setup.tsv -print | sed 's#^./##' | LC_ALL=C sort) > "$TMP_ROOT/current-files"
   cmp -s "$installed/.skill-files.list" "$TMP_ROOT/current-files" || return 0
   return 1
 }
@@ -200,6 +200,9 @@ while IFS="$tab" read -r skill version tar_path tar_hash zip_path zip_hash; do
   if [ -d "$installed" ]; then
     installed_version=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$installed/.skill-install.json" 2>/dev/null | head -n 1 || true)
     if [ "$FORCE" -ne 1 ] && [ "$installed_version" = "$version" ]; then
+      if is_modified "$installed"; then
+        die "$skill has local modifications; preserving it without claiming it is up to date"
+      fi
       printf 'Already up to date: %s@%s\n' "$skill" "$version"
       continue
     fi

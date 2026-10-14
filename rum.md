@@ -2,14 +2,21 @@
 
 供执行当前用户接入请求的 Agent 阅读。默认完成基础 RUM 的安装、代码接入和必要验证；只要求规划或审查时保持相应范围。
 
-## 安装或复用
+## 安装与更新
 
-1. 从当前会话实际可用的 Skill 中找到 `rum-instrument`，读取它的 `SKILL.md`。可用即复用，不例行联网检查更新；不要只凭磁盘上存在同名目录判定已加载。
-2. 未安装时，根据自身运行环境确定 agent：Codex=`codex`、Claude Code=`claude`、OpenCode=`opencode`、Pi=`pi`、Gemini CLI=`gemini`、GitHub Copilot=`copilot`、Cursor=`cursor`、Amp=`amp`，其他明确使用通用 Agents 目录的宿主=`agents`。不要根据项目依赖猜 Agent。确实无法识别时才询问安装位置。
-3. 以本入口 URL 所在目录为分发根目录，不切换到另一品牌或镜像。稳定入口使用该目录的安装器；若入口位于 `versions/<40 位提交 SHA>/rum.md`，使用同目录安装器、上溯到分发根目录作为 base URL，并传入该 SHA 的版本参数。
-4. macOS/Linux 下载该目录的 `install.sh`，使用 `sh` 执行，参数为 `--base-url <分发根目录> --skill rum-instrument --agent <自身类型> --scope user --yes`。Windows 使用同目录 `install.ps1`，对应参数为 `-BaseUrl <分发根目录> -Skill rum-instrument -Agent <自身类型> -Scope user -Yes`。版本固定时追加 `--version <SHA>` / `-Version <SHA>`。参数由 Agent 填写，不要求用户拼装命令。
-5. 仅在用户要求更新或现有版本缺少本次任务必需能力时使用 `--upgrade` / `-Upgrade`。禁止自动 `--force` 覆盖本地修改。沿用安装器的校验和目录保护，不绕过宿主权限。
-6. 安装成功后读取返回的实际安装目录中的 Skill，并在当前会话继续执行。若宿主确实不允许当前会话读取新 Skill，只说明必要的重新加载步骤，不声称已经完成接入。
+每次新接入在修改应用或消费授权码前检查最新已发布版本：未安装则安装，有新版则自动升级，同版本校验后复用，无需常规确认。同一任务及续跑固定版本；遵循用户指定的源码、离线或版本要求。
+
+从入口所在目录获取安装器，自动识别 Agent 并填写参数（标识见安装器帮助）：
+
+| 系统 | 安装器 | 参数 |
+|---|---|---|
+| macOS/Linux | `sh install.sh` | `--base-url <分发根目录> --skill rum-instrument --agent <自身类型> --scope user --yes` |
+| Windows | `install.ps1` | `-BaseUrl <分发根目录> -Skill rum-instrument -Agent <自身类型> -Scope user -Yes` |
+
+- **已有安装**：确认实际生效目录及 `.skill-install.json`，追加 `--upgrade --dest <Skill 父目录>`（Windows：`-Upgrade -Dest`）。保留本地修改和未受管理副本，仅为处理此类冲突询问，禁止自动强制覆盖。
+- **分发与固定版本**：沿用入口的分发源。若入口为 `versions/<SHA>/rum.md`，使用同目录安装器、上溯的分发根目录及 `--version <SHA>`（Windows：`-Version`）；固定版本也须校验文件完整性。
+- **检查失败**：网络或索引不可用时，可复用已知可用版本并注明“未确认是否最新”；无可用副本或校验失败则说明阻塞。
+- **继续执行**：重读实际安装目录的 Skill 及所需资源，继续接入并在结果中注明版本。宿主无法加载时只说明必要的重新加载步骤。
 
 ## 连续接入
 

@@ -173,16 +173,30 @@ class InstallerTests(unittest.TestCase):
             metadata = json.loads((installed / ".skill-install.json").read_text(encoding="utf-8"))
             self.assertEqual(metadata["version"], VERSION_ONE)
             upgrade_args = ('-Upgrade',) if os.name == 'nt' else ('--upgrade',)
+            receipt_before = (installed / '.skill-install.json').read_bytes()
             QuietHandler.requests = []
             subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), check=True)
+            self.assertIn('/skills-index.tsv', QuietHandler.requests)
             self.assertFalse(any(path.endswith(('.tar.gz', '.zip')) for path in QuietHandler.requests))
+            self.assertEqual(receipt_before, (installed / '.skill-install.json').read_bytes())
 
             (installed / "payload.txt").write_text("local change at latest version\n", encoding="utf-8")
             QuietHandler.requests = []
-            subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), check=True)
+            failed = subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), capture_output=True, text=True)
+            self.assertNotEqual(0, failed.returncode)
+            self.assertIn('local modifications', failed.stdout + failed.stderr)
+            self.assertNotIn('Already up to date:', failed.stdout)
             self.assertEqual((installed / "payload.txt").read_text(encoding="utf-8"), "local change at latest version\n")
             self.assertFalse(any(path.endswith(('.tar.gz', '.zip')) for path in QuietHandler.requests))
             (installed / "payload.txt").write_text("one\n", encoding="utf-8")
+
+            # Running Python helpers can generate caches; they are excluded from
+            # release archives and must not make the next check look user-modified.
+            cache = installed / 'scripts' / '__pycache__'
+            cache.mkdir(parents=True)
+            (cache / 'helper.cpython-313.pyc').write_bytes(b'generated cache')
+            subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), check=True)
+            self.assertEqual(receipt_before, (installed / '.skill-install.json').read_bytes())
 
             (self.repo / "demo-skill" / "payload.txt").write_text("two\n", encoding="utf-8")
             self.build(release_one, VERSION_TWO)
@@ -194,6 +208,8 @@ class InstallerTests(unittest.TestCase):
             self.build(release_one, VERSION_THREE)
             failed = subprocess.run(self.without_yes(self.command(base, dest, *upgrade_args)), capture_output=True)
             self.assertNotEqual(failed.returncode, 0)
+            self.assertEqual('locally changed\n', (installed / 'payload.txt').read_text())
+            self.assertEqual(VERSION_TWO, json.loads((installed / '.skill-install.json').read_text())['version'])
             force_args = ('-Force',) if os.name == 'nt' else ('--force',)
             subprocess.run(self.without_yes(self.command(base, dest, *force_args)), check=True)
             self.assertEqual((installed / "payload.txt").read_text(encoding="utf-8"), "three\n")
@@ -205,6 +221,46 @@ class InstallerTests(unittest.TestCase):
             subprocess.run(self.uninstall_command(dest, *uninstall_force), check=True)
             self.assertFalse(installed.exists())
             self.assertFalse((self.root / '.ai-skills' / 'backups').exists())
+        finally:
+            server.shutdown()
+            thread.join()
+            server.server_close()
+
+    def test_pinned_version_and_failed_index_check_preserve_installation(self):
+        old_release = self.root / 'old-release'
+        self.build(old_release, VERSION_ONE)
+        (self.repo / 'demo-skill/payload.txt').write_text('two\n')
+        release = self.root / 'release'
+        self.build(release, VERSION_TWO)
+        shutil.copytree(old_release / 'versions' / VERSION_ONE, release / 'versions' / VERSION_ONE)
+        server = http.server.ThreadingHTTPServer(('127.0.0.1', 0),
+            functools.partial(QuietHandler, directory=str(release)))
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            base = f'http://127.0.0.1:{server.server_port}'
+            dest = self.root / 'installed'
+            pin = ('-Version', VERSION_ONE) if os.name == 'nt' else ('--version', VERSION_ONE)
+            upgrade = ('-Upgrade',) if os.name == 'nt' else ('--upgrade',)
+            subprocess.run(self.command(base, dest, *pin), check=True)
+            installed = dest / 'demo-skill'
+            before = {str(p.relative_to(installed)): p.read_bytes() for p in installed.rglob('*') if p.is_file()}
+            QuietHandler.requests = []
+            subprocess.run(self.without_yes(self.command(base, dest, *upgrade, *pin)), check=True)
+            self.assertEqual([f'/versions/{VERSION_ONE}/skills-index.tsv'], QuietHandler.requests)
+            self.assertEqual(before, {str(p.relative_to(installed)): p.read_bytes() for p in installed.rglob('*') if p.is_file()})
+
+            # An unavailable index is not evidence that the installed copy is latest.
+            (release / 'skills-index.tsv').rename(release / 'index-offline.tsv')
+            failed = subprocess.run(self.without_yes(self.command(base, dest, *upgrade)), capture_output=True, text=True)
+            self.assertNotEqual(0, failed.returncode)
+            self.assertNotIn('Already up to date:', failed.stdout)
+            self.assertEqual(before, {str(p.relative_to(installed)): p.read_bytes() for p in installed.rglob('*') if p.is_file()})
+            (release / 'index-offline.tsv').rename(release / 'skills-index.tsv')
+
+            subprocess.run(self.without_yes(self.command(base, dest, *upgrade)), check=True)
+            self.assertEqual(VERSION_TWO, json.loads((installed / '.skill-install.json').read_text())['version'])
+            self.assertEqual('two\n', (installed / 'payload.txt').read_text())
         finally:
             server.shutdown()
             thread.join()
