@@ -36,22 +36,24 @@ Published full syntax reference:
 
 ```bash
 # Build the DQL from an AST
-./bin/dqlcheckheck --in ast -f /tmp/q.json --out build
+./bin/dqlcheck --in ast -f /tmp/q.json --out build
 
 # Both at once, as JSON; the `build` field is the deliverable DQL
-./bin/dqlcheckheck --in ast -f /tmp/q.json --out build --format json --pretty
+./bin/dqlcheck --in ast -f /tmp/q.json --out build --format json --pretty
 
 # Normalise an existing query into an AST (for repair)
-./bin/dqlcheckheck --in dql -q '<DQL>' --out ast --with-binder=false > /tmp/q.json
+./bin/dqlcheck --in dql -q '<DQL>' --out ast --with-binder=false > /tmp/q.json
 
 # Round-trip check: build the AST, then read the built DQL back
-./bin/dqlcheckheck --in ast -f /tmp/q.json --out build | ./bin/dqlcheckheck --in dql --stdin --out build
+./bin/dqlcheck --in ast -f /tmp/q.json --out build | ./bin/dqlcheck --in dql --stdin --out build
 ```
 
-`--out` takes `build` (the DQL text) or `ast` (AST JSON), and defaults to `build`. Every mode decodes,
-builds and binds, so a successful build is the validation.
+`--out` accepts `check` (validate only), `build` (emit DQL text), or `ast` (emit canonical AST JSON).
+It defaults to `build` for `--in ast`, and to `check` for `--in dql` (in text mode, a successful `check`
+produces no output; pass `--out build` to obtain the compiled DQL string). All modes perform decoding,
+AST building, and binding, making a successful build a complete end-to-end validation.
 
-Exit codes: `0` success, `1` decode or parse error, `2` parameter error, `3` bind or runtime error.
+Exit codes: `0` success, `1` decode or parse error, `2` parameter error, `3` bind, validation, or runtime error.
 
 Error categories print with a **space** in text output (`decode error: …`) and appear as the `code`
 field with an **underscore** in `--format json` (`"code": "decode_error"`). All messages quoted below
@@ -73,7 +75,7 @@ query validation would reject.
 `--in ast` rejects any key that is not part of that node's schema, and names the JSON pointer:
 
 ```
-$ ./bin/dqlcheckheck --in ast -f q.json --out build
+$ ./bin/dqlcheck --in ast -f q.json --out build
 decode error: dql: at /slimt: unknown field "slimt" on Expr
 ```
 
@@ -708,7 +710,7 @@ Each message below was reproduced with the command shown after the table.
 | decode | `dql: at /projections/0: unknown expression type "IdentExprr"` | `type` is misspelled or is not a valid node |
 | decode | `jsontext: unexpected EOF after offset 1 (line 1, col 2, offset 1)` | Malformed JSON text; this one does carry a position |
 | parse | `expression is missing closing ), got "[1h]" (line 1, col 22, offset 21)` | Malformed DQL text, only reachable via `--in dql`. Carries line/column/caret; there is no AST to edit — rebuild from `recipes.md` |
-| parameter | `invalid --out "check", expect build\|ast` | `--out` is not `build` or `ast` |
+| parameter | `invalid --out "bogus", expect check\|ast\|build` | `--out` is not `check`, `build` or `ast` |
 | parameter | `must provide exactly one query source: --query/-q, --file/-f, or --stdin` | No input, or more than one input |
 | runtime | `no index is specified in select expression` | `indices` is empty or absent |
 | bind | `bind DQL select: time window is required` | `window` is missing or `null` |
@@ -721,7 +723,7 @@ Each message below was reproduced with the command shown after the table.
 Start from the skeleton in *SelectExpr* and apply the change named in the last column, then run:
 
 ```bash
-./bin/dqlcheckheck --in ast -f q.json --out build
+./bin/dqlcheck --in ast -f q.json --out build
 ```
 
 | Change to the skeleton | Output |
@@ -743,20 +745,20 @@ Start from the skeleton in *SelectExpr* and apply the change named in the last c
 The remaining rows need a different input mode or a bad flag:
 
 ```bash
-$ ./bin/dqlcheckheck --in dql -q 'L::`nginx`:(count(*)[1h]' --out build
+$ ./bin/dqlcheck --in dql -q 'L::`nginx`:(count(*)[1h]' --out build
 parse error: expression is missing closing ), got "[1h]" (line 1, col 22, offset 21)
 L::`nginx`:(count(*)[1h]
                      ^
 
-$ ./bin/dqlcheckheck --in dql -q 'L::`nginx`:(count(*)){`error_type` = exists(`f`)}[1h]' --out build
+$ ./bin/dqlcheck --in dql -q 'L::`nginx`:(count(*)){`error_type` = exists(`f`)}[1h]' --out build
 bind error: function "exists" does not accept any arguments
 
-$ ./bin/dqlcheckheck --in dql -q 'M::`cpu`:(*)[1h]' --out build
+$ ./bin/dqlcheck --in dql -q 'M::`cpu`:(*)[1h]' --out build
 bind error: metric queries do not support wildcard fields; specify metric field names explicitly
 
-$ ./bin/dqlcheckheck --in ast -f q.json --out check
-parameter error: invalid --out "check", expect build|ast
+$ ./bin/dqlcheck --in ast -f q.json --out bogus
+parameter error: invalid --out "bogus", expect check|ast|build
 
-$ ./bin/dqlcheckheck --in ast --out build
+$ ./bin/dqlcheck --in ast --out build
 parameter error: must provide exactly one query source: --query/-q, --file/-f, or --stdin
 ```

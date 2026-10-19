@@ -21,8 +21,10 @@ Pick the shape from what the user is asking for.
 M::cpu:(avg(usage_user)) [1h::5m] BY host
 ```
 
-`step` (`::5m`) is what makes it a time series: one point per 5 minutes per group. Omit it and the
-whole range collapses to a single point per group. `BY` names the tags to group on.
+`step` (`::5m`) defines the rollup granularity (one point per 5 minutes per group). If omitted, the entire
+window collapses to a single point per group — unless the query request specifies `interval` or `max_point`
+to derive the step dynamically. Do not rely on request-level inference: always declare `step` explicitly in
+the DQL query. `BY` names the grouping tags.
 
 ### 2. Raw points — for troubleshooting
 
@@ -110,5 +112,10 @@ algorithm arguments.
   (`metric_numeric_only_filter`).
 - **Grouping, ordering and paging do not reduce the read either** — the string conditions decide the
   cost. See `performance.md`.
+- **Metric queries are never sampled.** Metric queries operate with strict row limits. An oversized
+  time range or broad filter will fail explicitly with `TooManyRows` ("the query is too broad or the
+  time range is too long, resulting in too many rows") rather than silently returning approximated
+  aggregates. The response's `sample` field remains `1.0`. Sampling behavior (detailed in
+  `performance.md` → *Sampling*) applies strictly to log-type namespaces.
 - **The field must be numeric** for an aggregate. Confirm the type with `show_field_key(from=['cpu'])`
   before aggregating (`references/metadata-discovery.md`).

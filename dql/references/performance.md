@@ -2,9 +2,9 @@
 
 > Version bound: see `SKILL.md`.
 
-**Most of the rules below are enforced by the build.** `./bin/dqlcheckheck` prints a `warning:` line, on
-stderr, for every shape it can decide from the query alone — the codes are listed in `SKILL.md` under
-*Warnings*. This file is what you read to understand a warning, and what you work through for the part
+**Most of the rules below are enforced by the build.** `./bin/dqlcheck` prints a `warning:` line, on
+stderr, for every shape it can decide from the query alone — the codes are in *Warning Reference*
+below. This file is what you read to understand a warning, and what you work through for the part
 the build cannot see: anything that depends on the data model (field names, field types, array-typed
 fields) or on what the user actually asked for.
 
@@ -24,6 +24,14 @@ below gives the form to prefer and what the other form costs.
 1. **Set an explicit time range.** A query without one is rejected —
    `bind error: bind DQL select: time window is required`. A range far wider than the question is the
    single largest cost in any query; narrow it to what the question needs.
+   For historical queries, specify absolute start and end timestamps in the DQL time window (AST
+   `window.from` and `window.to`; `TimeExpr.time` in Unix milliseconds, see `recipes.md` →
+   `metric-absolute-window`). Do not rely on request-level `time_range` parameters to anchor relative
+   clauses such as `[5m]` or `[1d]`: relative windows always resolve against the server's current wall-clock
+   time, querying recent data instead of historical periods. Keep the request's `time_range` aligned with
+   the absolute DQL boundaries. While the server supports omitting the start boundary (`[::1m]`) to inherit
+   the request time range, `dqlcheck` strictly rejects this syntax; every delivered query must declare its
+   window explicitly.
 2. **Keep every condition in the column-vs-constant shape.** `{host = 'web-01'}` reads only the
    matching rows. Comparing two columns cannot be applied as the data is read, so the query reads the
    whole time range and compares afterwards. DQL text always treats the right-hand side of a
@@ -110,6 +118,15 @@ below gives the form to prefer and what the other form costs.
     to prune entire data blocks without reading their records. Always prefer filtering on these
     dimensions over filtering solely on non-clustered free-text fields.
 
+15. **On log-type namespaces, sampled results are approximations.** When a query would scan more rows
+    than server scan limits allow, the engine reads a representative *sample* and computes
+    aggregates as approximations. The query succeeds without error, and the DQL syntax does not reveal
+    it. Check the response metadata: a `sample` value in `(0, 1)` or `datasource: "sampling"` indicates
+    that sampling occurred, and `sampling_required: true` indicates that unsampled execution is disallowed.
+    Consequently, high-volume scans are not only slower but **less precise**: inspect `sample` before
+    reporting values as exact counts. Metric queries (`M::`) do not use sampling: broad queries fail with
+    `TooManyRows` rather than returning sampled estimates. See *Sampling*.
+
 ## Cheap everywhere
 
 Cheap for log queries on scalar fields; the notes after the table list the exceptions, and
@@ -177,54 +194,89 @@ workspace you are querying, treat the right column as expensive and prefer the l
 
 ## Silent failures
 
-The rules above are about cost — breaking them is slow but correct. The two below are different: they
+The rules above are about cost — breaking them is slow but correct. The rows below are different: they
 produce **wrong or empty results with no error**, so nothing catches them and the output looks
-plausible.
+plausible. All three can be addressed by rewriting the query: using `IN` instead of array equality,
+confirming exact-match field semantics, or narrowing time windows and filtering by indexed dimensions to
+avoid sampling (and disclosing the estimate if a wide range is necessary).
 
 | Form | What silently happens | Safe form |
 | --- | --- | --- |
 | `{host = ['a','b']}` on a scalar field | On some workspaces the condition is dropped and never applied, so you get an empty result | `{host IN ['a','b']}` |
 | `{field = 'value'}` on a tokenized log field | Matches **by token**, not by whole value, so it can return rows whose value is not equal to the literal | Confirm the field is matched by whole value, or filter on a different field |
+| A high-volume scan over a log-type namespace | The scan is **sampled**, so aggregate results come back as approximations rather than exact figures | Narrow the time range, add selective dimension filters (e.g. `service`, `host`), or verify `sample` in the response — see *Sampling* |
+
+## Sampling
+
+Queries against log-type namespaces (`L`, `T`, `O`, `N`, `R`, `E` — all namespaces except `M`) that scan
+large volumes of data exceeding server scan limits are evaluated against a representative **sample**:
+the engine reads a fraction of the matched records and computes estimated aggregate values. Sampling
+serves as a safeguard against timeouts and excessive memory usage rather than a query failure, and its
+occurrence is reflected only in response metadata. **Metric queries (`M::`) do not use sampling**: they
+enforce strict row limits and reject oversized queries with `TooManyRows` rather than returning approximations.
+
+- **Detection.** The response envelope contains a `sample` ratio (default `1.0`); values in `(0, 1)` or
+  `datasource: "sampling"` indicate that results were sampled server-side. `sampling_required: true`
+  signifies that the scan is too extensive to allow unsampled execution.
+- **Accuracy impact.** All aggregates evaluated over a sampled scan are statistical estimates rather than
+  exact figures.
+- **How to avoid sampling.** Because DQL syntax contains no clause to disable sampling directly, queries
+  can be rewritten to keep the scan volume within server limits:
+  - Constrain the time window to the minimum interval necessary.
+  - Filter early using selective indexed or clustered dimensions (`service`, `source`, `host`, `status`, etc.).
+  - Use keyset/cursor pagination (`{ time < <last_timestamp> }`) instead of deep `OFFSET`. Cursor-based scans
+    avoid scanning broad ranges of records.
+- **Delivery requirement.** Whenever query bounds and data volume make sampling likely, clearly state in delivery
+  notes that returned figures are estimates, citing the response `sample` field as verification.
 
 ## Warning Reference
 
-`dqlcheck` reports non-fatal cost and semantics warnings on stderr (`"warnings"` array in JSON mode):
+`dqlcheck` reports non-fatal cost and semantics warnings on stderr (`"warnings"` array in JSON mode).
+Every entry carries a `severity` of `critical` or `warning`, and text mode prints the critical ones with
+the prefix `critical warning:`:
 
 | Warning Code | Meaning & Guidance |
 | --- | --- |
-| `eq_array` | `=` / `!=` against array literal silently returns empty on some backends; use `IN` / `NOT IN` |
-| `column_vs_column` | Comparison between two columns scans full range; compare column vs literal constant |
-| `aggregate_arithmetic` | Arithmetic across aggregates (e.g. `sum(a)/count(b)`); runs in compute layer |
+| `eq_array` | CRITICAL: `=` / `!=` against an array literal silently returns empty on some backends; use `IN` / `NOT IN` |
+| `column_vs_column` | CRITICAL: comparison between two columns scans the full range; compare a column against a literal |
+| `aggregate_arithmetic` | Arithmetic across aggregates (e.g. `sum(a)/count(b)`); runs in the compute layer |
 | `having_on_column` | `HAVING` on a bare non-aggregate column; move it to `wheres` |
-| `case_in_condition` | `CASE` expression used inside `WHERE` condition |
-| `wrapped_field_condition` | Function wrapped around field in filter outside the pushdown set |
-| `expensive_aggregate` | Aggregate function that forces whole time range scan |
-| `group_by_expression` | Grouping on expression instead of bare column |
-| `group_by_high_cardinality` | Grouping dimension looks like unique ID (trace_id, message); check cardinality |
-| `metric_numeric_only_filter` | Metric filter has only numeric thresholds without tag conditions to prune read |
+| `case_in_condition` | `CASE` expression used inside a `WHERE` condition |
+| `wrapped_field_condition` | Function wrapped around a field in a filter, outside the pushdown set |
+| `expensive_aggregate` | Aggregate function that forces a whole-range scan |
+| `group_by_expression` | Grouping on an expression instead of a bare column |
+| `group_by_high_cardinality` | Grouping dimension looks like a unique ID (trace_id, message); check the cardinality |
+| `metric_numeric_only_filter` | CRITICAL: metric filter has only numeric thresholds and no tag condition to prune the read |
 | `or_loses_cheap_side` | `OR` condition where one side is expensive, defeating pushdown of both |
-| `unbounded_result` | Missing `LIMIT` on detail query or `SLIMIT` on grouped query |
-| `shift_double_read` | `SHIFT` reads both target and base windows |
+| `unbounded_result` | CRITICAL when a detail query has no `LIMIT` (whole result in memory, risk of OOM); a grouped query without `SLIMIT` is a plain warning (every group returns) |
+| `sliding_window` | `range` differs from `step`, so the whole time range is read and aggregated afterwards; write `[<from>::<step>]` unless a sliding window is what you need |
+| `shift_double_read` | `SHIFT` reads both the target and the base window |
 | `subquery_extra_read` | Subquery executes as an extra read |
-| `order_by_non_time` | `ORDER BY` on non-time column forces memory sort; prefer time ordering |
+| `order_by_non_time` | `ORDER BY` on a non-time column forces an in-memory sort; prefer time ordering |
 | `deep_offset_paging` | Large `OFFSET` scans and discards rows; use cursor pagination (`time < last_time`) |
 | `step_exceeds_window` | CRITICAL: aggregation `step` > window duration; produces zero points |
 | `explosive_point_count` | CRITICAL: window generates > 10,000 points per series; risks driver OOM |
 | `inverted_time_window` | CRITICAL: `from` duration is smaller than `to` duration (time window backward) |
 | `non_positive_limit` | CRITICAL: `LIMIT` or `SLIMIT` is <= 0 |
-| `string_nil_comparison` | CRITICAL: comparing with literal string `"nil"` rather than `= nil` |
+| `string_nil_comparison` | CRITICAL: comparing with the literal string `"nil"` rather than `= nil` |
 | `leading_wildcard` | Leading wildcard pattern in regex or search prevents index filtering |
 | `match_with_regex_syntax` | `match()` contains regex syntax; `match()` is strictly literal substring |
-| `regex_for_literal` | Regex without metacharacters matches single value; use `=` or `IN` |
+| `regex_for_literal` | Regex without metacharacters matches a single value; use `=` or `IN` |
 | `regex_for_alternation` | Regex `a\|b\|c` over literals; use `IN ['a', 'b', 'c']` |
+
+Warnings are deduplicated on `(code, message)`; duplicate violations of the same pattern collapse into a
+single entry referencing the first occurrence. Output is sorted by warning code and capped at 20 entries.
+An empty tail does not imply the absence of further issues.
 
 ## Checklist before delivering
 
-Every warning the build printed is either fixed or explained in the delivery notes. The items below
-are the ones it cannot decide, so they are still yours:
+Ensure every warning emitted by `dqlcheck` is either resolved or documented in delivery notes. Verify the
+following criteria that the static compiler cannot infer:
 
-- [ ] Time range present **and** the one the question needs, rather than merely present?
-- [ ] Field names and types confirmed with the user, not guessed?
-- [ ] Any condition on an **array-typed** field checked against the array rules above?
-- [ ] No silent-failure shape the build cannot see (the tokenized-field row)?
-- [ ] No `*` in a metric query?
+- [ ] Time range is explicitly specified and matches the user's intended historical window?
+- [ ] Field names and data types are verified against the schema, not assumed?
+- [ ] Filters on **array-typed** fields comply with array operator rules (`IN` / `NOT IN` instead of `=`)?
+- [ ] No silent-failure patterns are present (tokenized field equality or unnoticed sampling)?
+- [ ] No wildcard field projections (`*`) in metric queries (`M::`)?
+- [ ] On log-type namespaces where the query may scan large volumes of data, does the delivery note explain
+      that results may be sampled and direct the caller to inspect `sample` in the response?

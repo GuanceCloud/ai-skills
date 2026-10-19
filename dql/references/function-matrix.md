@@ -29,6 +29,10 @@ in the AST — `expensive_aggregate` for the always-expensive set below, `wrappe
 function wrapped around a field in a condition — but it never measures anything, so a query with no
 warning is not a query that is cheap. The full cost rules are in `references/performance.md`.
 
+Sampling is orthogonal to execution cost on log-type namespaces: even a `cheap` aggregate will return an
+estimate if the scan volume triggers sampling. Metric queries are never sampled (they are rejected with `TooManyRows`
+when exceeding limits). See `references/performance.md` → *Sampling*.
+
 > Version bound: see `SKILL.md`.
 
 **Choosing, in three steps:**

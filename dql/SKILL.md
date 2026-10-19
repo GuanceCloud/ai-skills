@@ -9,7 +9,7 @@ Generate, repair, explain, and review Guance DQL.
 
 ## Core principles
 
-1. **Build via AST.** Author queries as AST JSON and compile via `./bin/dqlcheckheck --in ast`. Compiler handles quoting, escaping, backticks, operator precedence, and time-window grammar.
+1. **Build via AST.** Author queries as AST JSON and compile via `./bin/dqlcheck --in ast`. Compiler handles quoting, escaping, backticks, operator precedence, and time-window grammar.
 2. **Strict schema validation.** Decoding enforces node schemas strictly; unknown fields fail immediately (`decode error: dql: at /slimt: unknown field "slimt" on Expr`).
 3. **Explicit data model.** `dqlcheck` validates query syntax, not schema existence. Always verify measurement names, field names, and tag keys before writing queries.
 4. **Performance by design.** Syntax validity does not guarantee query efficiency. Adhere to the cost rules in `references/performance.md`.
@@ -23,7 +23,7 @@ Generate, repair, explain, and review Guance DQL.
 | Metric queries (`M::`), rollups, and Counter rates | `references/metrics.md` |
 | Standard runnable AST recipes | `references/recipes.md` |
 | AST node schema, error table, and JSON keys | `references/ast-schema.md` |
-| Performance patterns, index optimization, and warnings | `references/performance.md` |
+| Performance patterns, sampling, index optimization, and warnings | `references/performance.md` |
 | Aggregate, time-series, and transformation functions | `references/function-matrix.md` |
 
 Official full references published from GuanceDB:
@@ -36,7 +36,7 @@ Official full references published from GuanceDB:
 > that as the expiry date of this skill's accuracy.
 >
 > `dqlcheck` is versioned separately, from the download URL — its version tells you nothing about the
-> server. Check which one you have with `./bin/dqlcheckheck --version`, and whether it supports the AST flow
+> server. Check which one you have with `./bin/dqlcheck --version`, and whether it supports the AST flow
 > with the probe in *Capability check*. There is no way to query the server version from this skill.
 > **If the user reports behaviour that contradicts a rule here, believe the user**, and record the
 > discrepancy in your delivery notes instead of insisting on the rule.
@@ -46,7 +46,7 @@ Official full references published from GuanceDB:
 The AST flow needs a `dqlcheck` that supports `--in ast`.
 
 ```bash
-./bin/dqlcheckheck --help 2>&1 | grep -q -- '--in' && echo AST_OK || echo AST_UNSUPPORTED
+./bin/dqlcheck --help 2>&1 | grep -q -- '--in' && echo AST_OK || echo AST_UNSUPPORTED
 ```
 
 **This check downloads a binary (~14 MB) into `bin/.cache/` the first time it runs. It is not
@@ -55,11 +55,11 @@ side-effect-free, and `rm -rf bin/.cache` deletes it.**
 `bin/dqlcheck` downloads whatever build is published for the version the wrapper resolves. In order:
 
 1. **Ask whether a build is available** and point the wrapper at it:
-   `DQLC_CACHE_DIR=<dir> ./bin/dqlcheckheck …` — the wrapper expects `<dir>/<os>-<arch>/dqlcheck` plus a matching
-   `.version` file. `DQLC_VERSION` pins a version. This is the reliable path when the published
-   artifact is older than this skill.
+   `DQLCHECK_CACHE_DIR=<dir> ./bin/dqlcheck …` — the wrapper expects `<dir>/<os>-<arch>/dqlcheck` plus a
+   matching `.version` file. `DQLCHECK_VERSION` pins a version. This is the
+   reliable path when the published artifact is older than this skill.
 2. If the download fails or `AST_UNSUPPORTED` comes back, the published artifact predates the AST
-   flow. Confirm what you have with `./bin/dqlcheckheck --version` before concluding anything.
+   flow. Confirm what you have with `./bin/dqlcheck --version` before concluding anything.
 3. **Otherwise use Degraded mode** and say so in the delivery. Do not stall waiting for a build, and do
    not hand-write DQL while claiming the AST guarantee.
 
@@ -103,7 +103,7 @@ Write it to a temporary file, for example `/tmp/dql-query.json`.
 One invocation both validates and yields the deliverable text:
 
 ```bash
-./bin/dqlcheckheck --in ast --file /tmp/dql-query.json --out build --format json --pretty
+./bin/dqlcheck --in ast --file /tmp/dql-query.json --out build --format json --pretty
 # -> {"ok":true,"out":"build","build":"M::`cpu`:(avg(`usage_user`))[1h0m0s::5m0s] BY (`host`) SLIMIT 10"}
 ```
 
@@ -146,12 +146,16 @@ by hand against `references/performance.md`:
 - Is the time range the one the question needs, or merely present?
 - Does the query hit either **silent failure** at the end of that file? They return wrong or empty
   results with no error at all, and the array one is the only one the build can warn about.
+- Does the query scan a large volume of data that may trigger **sampling**? On log-type namespaces, high-volume
+  scans return estimates indicated by `sample < 1.0` in the response envelope — see *Sampling* in that file and
+  disclose this in delivery notes. (Metric queries are never sampled; over-large queries are rejected instead.)
 
 ### 4. Deliver
 
 Deliver the **built DQL text** (the `build` field), the validation result, and a statement of what will
 be cheap and what will read more than it needs to. If you had to guess a source name, field name or
-field type, say so. Do not deliver the AST alone.
+field type, say so. On a log-type namespace where data scan volume may trigger sampling, state clearly that
+the figures are estimates and cite the response's `sample` field as the verification. Do not deliver the AST alone.
 
 ## Hard rules
 
@@ -163,7 +167,7 @@ field type, say so. Do not deliver the AST alone.
 - **MUST NOT** introduce a pattern listed in the **silent failures** table of
   `references/performance.md`, unless the user explicitly asked for that semantics — and then state the
   cost in the delivery notes.
-- **When `--in ast` is available** (see Capability check): generate DQL with `./bin/dqlcheckheck --in ast` and
+- **When `--in ast` is available** (see Capability check): generate DQL with `./bin/dqlcheck --in ast` and
   deliver the output of `--out build`. This is the required path; Degraded mode is the exception.
 - **The mandatory AST / `dqlcheck` flow applies to delivered data queries (`SelectExpr`).** Show queries
   are ephemeral metadata probes normally written directly as plain text (or built via `ShowExpr` AST when requested).
@@ -175,9 +179,9 @@ field type, say so. Do not deliver the AST alone.
   keeps the repair from introducing new syntax errors.
 
   ```bash
-  ./bin/dqlcheckheck --in dql -q '<original query>' --out ast --with-binder=false > /tmp/dql-query.json
+  ./bin/dqlcheck --in dql -q '<original query>' --out ast --with-binder=false > /tmp/dql-query.json
   # edit the AST in /tmp/dql-query.json
-  ./bin/dqlcheckheck --in ast --file /tmp/dql-query.json --out build --format json
+  ./bin/dqlcheck --in ast --file /tmp/dql-query.json --out build --format json
   ```
 
   `--with-binder=false` is required here: the query you are repairing is usually semantically invalid
@@ -188,7 +192,7 @@ field type, say so. Do not deliver the AST alone.
   edit — rebuild it from `references/recipes.md` instead.
 - **Explain / review mode**: explain semantics, cost and risks; do not produce a final DQL that has not
   been built. Review against `references/performance.md` and cite each finding.
-- **Degraded mode** (no AST-capable `dqlcheck`): build hand-written DQL with `./bin/dqlcheckheck -q '<DQL>' --out
+- **Degraded mode** (no AST-capable `dqlcheck`): build hand-written DQL with `./bin/dqlcheck -q '<DQL>' --out
   build` and iterate on the reported errors. When delivering, **must** state that the AST flow was
   unavailable, that the DQL was not built from an AST, and that its syntax guarantee is weaker than the
   normal flow.

@@ -1,12 +1,12 @@
 # DQL Recipes
 
-Curated AST recipes for common DQL query patterns. All examples validate via `./bin/dqlcheckheck --in ast` with
+Curated AST recipes for common DQL query patterns. All examples validate via `./bin/dqlcheck --in ast` with
 exact output shown in the `Builds` section. Replace placeholder sources, fields, and windows with real workspace values.
 
 Compile recipes via:
 
 ```bash
-./bin/dqlcheckheck --in ast -f /tmp/dql-query.json --out build --format json --pretty
+./bin/dqlcheck --in ast -f /tmp/dql-query.json --out build --format json --pretty
 ```
 
 > Version bound: see `SKILL.md`.

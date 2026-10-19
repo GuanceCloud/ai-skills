@@ -236,7 +236,7 @@ Common validation commands:
 
 The AST workflow requires a `dqlcheck` that supports `--in ast`; check with
 `./dql/bin/dqlcheck --help | grep -q -- '--in'`. Until a build with the AST flow is published, point the
-wrapper at a local one with `DQLC_CACHE_DIR=<dir>`, or the skill falls back to text-mode validation
+wrapper at a local one with `DQLCHECK_CACHE_DIR=<dir>`, or the skill falls back to text-mode validation
 and must say so when delivering.
 
 ## Grafana Converter
