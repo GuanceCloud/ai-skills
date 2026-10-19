@@ -229,7 +229,7 @@ them build. Use it only when the user's intent is genuinely field-less: **always
 otherwise**, because which field the single-argument form resolves to is decided by the workspace and
 the source, not by you.
 
-A matching function can also be a projection, but **not in a grouped query**: `L::logs:(search(message, 'error')) [1h]` builds, and adding `BY service` to it fails with `predicate projections are not supported in aggregate queries`. Put the match in the `WHERE` clause and group normally.
+A matching function can also be a projection, but **not in a grouped query**: `L::logs:(search(message, 'error'))` builds, and adding `BY service` to it fails with `predicate projections are not supported in aggregate queries`. Put the match in the `WHERE` clause and group normally.
 
 ### `exists()` is a right-hand placeholder
 
@@ -288,9 +288,9 @@ and a late row — do not treat the template text as a stable key. Ranges for `t
 ## Time-series functions
 
 Computed over the aggregated result. Each can be written **inside the projection** —
-`M::cpu:(rate(usage)) [1h::5m] BY host` — and most can also be written as a **rollup in the time
-clause**, which is the cheaper way to say the same thing: `[rate]`, `[1h::5m:slope]`,
-`[1h::1m:ewma(0.3)]`, `[1h::1m:moving_average(5)]`, `[1h::5m:percentile(95)]`. `corr` needs two input
+`M::cpu:(rate(usage)) [::5m] BY host` — and most can also be written as a **rollup in the time
+clause**, which is the cheaper way to say the same thing: `[rate]`, `[::5m:slope]`,
+`[::1m:ewma(0.3)]`, `[::1m:moving_average(5)]`, `[::5m:percentile(95)]`. `corr` needs two input
 fields, so it has no time-clause form.
 
 | Function | Computes |
@@ -336,13 +336,13 @@ aggregation `cheap` first, then apply the outer function.
 | `abs` / `round` / `ceil` / `floor` / `log` / `log2` / `log10` / `set` / `concat` | Same computation, applied to the whole result |
 
 **Syntax detail that bites:** when the outer function takes anything besides the query, wrap the inner
-query in parentheses. `moving_average((M::cpu:(avg(usage)) [1h::1m] BY host), 5)` and
-`fill((M::cpu:(avg(usage)) [1h::5m] BY host), 0)` build; dropping the inner parentheses gives
+query in parentheses. `moving_average((M::cpu:(avg(usage)) [::1m] BY host), 5)` and
+`fill((M::cpu:(avg(usage)) [::5m] BY host), 0)` build; dropping the inner parentheses gives
 `function "moving_average" requires exactly 2 arguments, got 1`. A bare inner query is fine when it is
-the only argument: `cumsum(M::requests:(sum(count)) [1h::5m] BY service)` builds.
+the only argument: `cumsum(M::requests:(sum(count)) [::5m] BY service)` builds.
 
 > **Rollup preference:** Single-metric outer operations like `rate`, `moving_average`, `ewma`, `diff`,
-> `cumsum` are faster and simpler when written directly as a window `rollup` (e.g. `[1h::5m:rate]` or `[1h::1m:ewma(0.3)]`).
+> `cumsum` are faster and simpler when written directly as a window `rollup` (e.g. `[::5m:rate]` or `[::1m:ewma(0.3)]`).
 
 ## Show functions and `eval`
 

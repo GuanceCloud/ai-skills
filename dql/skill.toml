@@ -1,8 +1,8 @@
 id = 'dql'
 publisher = 'pe'
 name = 'dql'
-version = '0.4.0'
-description = 'Author DQL as an AST and build it with dqlcheck --in ast, so syntax is guaranteed; every delivered query must be built and validated and must follow the performance guidance.'
+version = '0.5.0'
+description = 'Author DQL as an AST and compile it with dqlcheck --in ast; every delivered query must be built and validated, and must follow the performance guidance.'
 category = 'general'
 license = 'NOASSERTION'
 homepage = ''
@@ -12,5 +12,5 @@ icon = ''
 min_codex_version = ''
 tools_required = []
 permissions = ['filesystem-read', 'filesystem-write', 'network', 'shell']
-readme_summary = 'Author DQL as an AST and build it with dqlcheck --in ast, so syntax is guaranteed; every delivered query must be built and validated and must follow the performance guidance.'
+readme_summary = 'Author DQL as an AST and compile it with dqlcheck --in ast; every delivered query must be built and validated, and must follow the performance guidance.'
 view = 'community'

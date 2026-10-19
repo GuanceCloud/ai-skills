@@ -21,17 +21,17 @@ below gives the form to prefer and what the other form costs.
 
 ## Rules
 
-1. **Set an explicit time range.** A query without one is rejected —
-   `bind error: bind DQL select: time window is required`. A range far wider than the question is the
-   single largest cost in any query; narrow it to what the question needs.
+1. **Know where the time range comes from.** A query executed through a request inherits
+   `start_time` / `end_time`; the DQL carries only `step` and `rollup`, and is built with
+   `--request-time`. A standalone query with no request behind it must declare a range — the build
+   rejects an empty window otherwise, because nothing would bound the scan. A range far wider than
+   the question is the single largest cost in any query; narrow it to what the question needs.
    For historical queries, specify absolute start and end timestamps in the DQL time window (AST
    `window.from` and `window.to`; `TimeExpr.time` in Unix milliseconds, see `recipes.md` →
-   `metric-absolute-window`). Do not rely on request-level `time_range` parameters to anchor relative
-   clauses such as `[5m]` or `[1d]`: relative windows always resolve against the server's current wall-clock
-   time, querying recent data instead of historical periods. Keep the request's `time_range` aligned with
-   the absolute DQL boundaries. While the server supports omitting the start boundary (`[::1m]`) to inherit
-   the request time range, `dqlcheck` strictly rejects this syntax; every delivered query must declare its
-   window explicitly.
+   `metric-absolute-window`). Do not anchor relative windows to a request range that ends in the past:
+   a relative `from` such as `"1h"` always resolves against the server's current wall-clock time, so a
+   query meant for a historical period needs the absolute boundaries. Keep the request's
+   `start_time` / `end_time` aligned with those boundaries.
 2. **Keep every condition in the column-vs-constant shape.** `{host = 'web-01'}` reads only the
    matching rows. Comparing two columns cannot be applied as the data is read, so the query reads the
    whole time range and compares afterwards. DQL text always treats the right-hand side of a
@@ -98,10 +98,10 @@ below gives the form to prefer and what the other form costs.
       passing the timestamp of the last row from the previous page into the `WHERE` clause:
       ```dql
       // Page 1
-      L::nginx:(*) [1h] ORDER BY time DESC LIMIT 100
+      L::nginx:(*) ORDER BY time DESC LIMIT 100
 
       // Page 2 (cursor: feed time from the 100th record of Page 1)
-      L::nginx:(*) { time < 1727000000000000000 } [1h] ORDER BY time DESC LIMIT 100
+      L::nginx:(*) { time < 1727000000000000000 } ORDER BY time DESC LIMIT 100
       ```
       This performs an O(1) index seek rather than scanning and discarding thousands of rows.
 13. **Subqueries and `SHIFT` are additional reads.** A subquery is a separate query: its own
@@ -169,9 +169,9 @@ Metric queries (`M::`) are the constrained case:
   `{host = 'web-01', usage > 80}`.
 - **Grouping, ordering and paging reduce nothing either.** The cost of a metric query is decided
   entirely by how much its string conditions narrow the data.
-- **Wildcard fields are rejected**: `M::cpu:(count(*)) [1h]` fails with
+- **Wildcard fields are rejected**: `M::cpu:(count(*))` fails with
   `bind error: metric queries do not support wildcard fields; specify metric field names explicitly`.
-  Name the field — `M::cpu:(count(usage_user)) [1h]`.
+  Name the field — `M::cpu:(count(usage_user))`.
 - The useful conditions are the string dimensions: `host`, `service`, `env`, and similar.
 
 Log queries (`L::`, `O::`, `T::`, `R::`) accept `*`, and their conditions, grouping, ordering and
@@ -273,7 +273,7 @@ An empty tail does not imply the absence of further issues.
 Ensure every warning emitted by `dqlcheck` is either resolved or documented in delivery notes. Verify the
 following criteria that the static compiler cannot infer:
 
-- [ ] Time range is explicitly specified and matches the user's intended historical window?
+- [ ] The request's `start_time` / `end_time` match the intended window (or, for a historical period, the DQL carries explicit `from`/`to`)?
 - [ ] Field names and data types are verified against the schema, not assumed?
 - [ ] Filters on **array-typed** fields comply with array operator rules (`IN` / `NOT IN` instead of `=`)?
 - [ ] No silent-failure patterns are present (tokenized field equality or unnoticed sampling)?

@@ -86,71 +86,24 @@ Notes:
 
 ## Show Queries in AST Format (`ShowExpr`)
 
-`Show` queries are represented as `ShowExpr` in DQL AST JSON.
-
-### AST Structure
+Show queries are ephemeral probes; write them as plain DQL text unless the surrounding flow builds everything through the AST. The AST form is one node:
 
 ```json
 {
   "type": "ShowExpr",
-  "function": {
-    "type": "FunctionExpr",
-    "name": "show_measurement",
-    "args": []
-  },
-  "wheres": null
+  "show": {"fn": "show_field_key", "args": {"from": ["cpu"]}}
 }
 ```
 
-- `type`: `"ShowExpr"`.
-- `function`: The Show function call (`FunctionExpr`).
-- `wheres`: Optional filter expression list; can be omitted, `null`, or `[]`.
-- `window`: Optional; Show queries do not require a time window.
-- `limit` / `offset`: Optional pagination.
-
-### Recipe: Inspect Metric Fields AST
-
-```json
-{
-  "type": "ShowExpr",
-  "function": {
-    "type": "FunctionExpr",
-    "name": "show_field_key",
-    "args": [
-      {
-        "name": "from",
-        "value": {
-          "type": "ArrayExpr",
-          "values": [{"type": "StringExpr", "value": "cpu"}]
-        }
-      }
-    ]
-  },
-  "wheres": null
-}
-```
+`show.fn` is the function name; `show.args` is either an object of named arguments (`{"from": ["cpu"], "keyin": ["host"]}`) or an array of positional ones (`["nginx"]`). Optional `wheres`, `limit`, `offset` behave as on `SelectExpr`.
 
 **Builds**:
 ``show_field_key(from=["cpu"])``
 
-### Recipe: Discover Log Source Fields AST
+A positional argument is a plain string:
 
 ```json
-{
-  "type": "ShowExpr",
-  "function": {
-    "type": "FunctionExpr",
-    "name": "show_logging_field",
-    "args": [
-      {
-        "name": "",
-        "value": {"type": "StringExpr", "value": "nginx"}
-      }
-    ]
-  },
-  "wheres": null,
-  "limit": 100
-}
+{"type": "ShowExpr", "show": {"fn": "show_logging_field", "args": ["nginx"]}, "limit": 100}
 ```
 
 **Builds**:

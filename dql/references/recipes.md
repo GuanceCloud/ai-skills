@@ -1,28 +1,161 @@
 # DQL Recipes
 
-Curated AST recipes for common DQL query patterns. All examples validate via `./bin/dqlcheck --in ast` with
-exact output shown in the `Builds` section. Replace placeholder sources, fields, and windows with real workspace values.
-
-Compile recipes via:
-
-```bash
-./bin/dqlcheck --in ast -f /tmp/dql-query.json --out build --format json --pretty
-```
+Runnable AST recipes for common DQL query patterns. Every example is built by
+`./bin/dqlcheck --in ast` and the exact output is shown in its `Builds` section.
+Replace the source, field names, window and limit with real workspace values.
 
 > Version bound: see `SKILL.md`.
 
+```bash
+./bin/dqlcheck --in ast -f /tmp/dql-query.json --out build --request-time --format json --pretty
+```
+
+## The skeletons
+
+Most queries are one of these shapes. Copy the closest one and change the
+values; the schema is documented in `references/ast-schema.md`.
+
+### Metric: windowed aggregate
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["avg(usage_user) AS v"],
+  "wheres": ["host = 'web-01'"],
+  "window": {"step": "5m"},
+  "groups": ["host"],
+  "slimit": 100
+}
+```
+
+### Metric: TopN groups
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["avg(usage_user) AS v"],
+  "window": {"step": "1h"},
+  "groups": ["host"],
+  "sorder_by": "v DESC",
+  "slimit": 10
+}
+```
+
+### Metric: Counter rate
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "M",
+  "sources": ["http_requests"],
+  "projections": ["sum(request_count) AS qps"],
+  "window": {"step": "5m", "rollup": "rate"},
+  "groups": ["service"],
+  "slimit": 100
+}
+```
+
+### Log: detail list
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": ["time", "status", "message"],
+  "wheres": ["status >= 500"],
+  "order_by": ["time DESC"],
+  "limit": 100
+}
+```
+
+### Log: grouped count
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": ["count(*) AS n"],
+  "wheres": ["status >= 500"],
+  "groups": ["service"],
+  "sorder_by": "n DESC",
+  "slimit": 20
+}
+```
+
+### Multi-metric ratio
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "M",
+  "sources": {
+    "errors": {
+      "namespace": "M",
+      "sources": ["http"],
+      "projections": ["sum(error_count)"],
+      "groups": ["service"],
+      "window": {"step": "5m"}
+    },
+    "total": {
+      "namespace": "M",
+      "sources": ["http"],
+      "projections": ["sum(req_count)"],
+      "groups": ["service"],
+      "window": {"step": "5m"}
+    }
+  },
+  "projections": ["(errors / total) * 100 AS error_rate_pct"],
+  "window": {"step": "5m"},
+  "limit": 100
+}
+```
+
+## Time in recipes
+
+Recipes below omit `from` and rely on `--request-time`: the caller supplies
+`start_time` / `end_time` and the DQL carries only `step` and `rollup`. A recipe
+with an explicit `from`/`to` is a fixed historical window and overrides the
+request.
+
 ## Index (Partition) Configuration
 
-`indices` configures the data partition / table. By default use `[{"namespace": "<M/L/T/O>", "index_name": ""}]`, where `""` represents the default partition.
-To query across specific partitions, specify multiple index entries (e.g. `M("prod", "staging")::cpu`).
+`namespace` selects the default partition. To query across specific partitions,
+use the `indices` form with `index_name`:
+
+```json
+{
+  "type": "SelectExpr",
+  "indices": [
+    {
+      "namespace": "M",
+      "index_name": "prod"
+    },
+    {
+      "namespace": "M",
+      "index_name": "staging"
+    }
+  ],
+  "sources": ["cpu"],
+  "projections": ["avg(usage) AS v"],
+  "window": {"step": "5m"},
+  "groups": ["host"],
+  "slimit": 10
+}
+```
 
 ## Duration Syntax
 
-`DurationExpr.duration` directly accepts human-readable duration strings (e.g. `"1s"`, `"10s"`, `"1m"`, `"5m"`, `"15m"`, `"1h"`, `"6h"`, `"1d"`).
+Durations are strings: `"1s"`, `"10s"`, `"1m"`, `"5m"`, `"15m"`, `"1h"`, `"6h"`, `"1d"`.
+The builder turns them into `DurationExpr` nodes.
 
-Numeric nanoseconds are also supported for backwards compatibility.
-
-*Note for absolute timestamps:* When using absolute timestamps, use `TimeExpr` whose `time` field is **Unix milliseconds** (e.g. `1726800000000`).
+*Absolute timestamps* are `TimeExpr` objects whose `time` field is **Unix
+milliseconds**: `{"type": "TimeExpr", "time": 1726800000000}`.
 
 ## Pick a recipe
 
@@ -38,6 +171,8 @@ Numeric nanoseconds are also supported for backwards compatibility.
 | Ranking groups (top N / most frequent first) | [metric-topn](#metric-topn) |
 | Filtering on an aggregate result (`HAVING`) | [metric-having](#metric-having) |
 | Comparing with an earlier period (`SHIFT`) | [metric-shift](#metric-shift) |
+| Side-by-side period comparison (expression `SHIFT`) | [metric-shift-expression](#metric-shift-expression) |
+| Rolling / sliding window evaluation (`range` vs `step`) | [metric-sliding-window](#metric-sliding-window) |
 | Raw metric points, to troubleshoot a series | [metric-raw-points](#metric-raw-points) |
 
 ### 2. Log, Event & Trace Queries (`L::`, `T::`, `O::`)
@@ -49,6 +184,7 @@ Numeric nanoseconds are also supported for backwards compatibility.
 | Filtering by a set of values (`IN`) | [log-in-filter](#log-in-filter) |
 | Combining filters with AND and OR logic | [log-complex-filter](#log-complex-filter) |
 | Filtering on a field inside a JSON message | [log-json-field](#log-json-field) |
+| Deep nested JSON path filtering (`@path.key`) | [log-json-deep-path](#log-json-deep-path) |
 | Counting by a field | [log-count-by-field](#log-count-by-field) |
 | The distinct values of a field | [log-distinct-values](#log-distinct-values) |
 | Full-text search (`search()`) | [log-fulltext](#log-fulltext) |
@@ -61,6 +197,7 @@ Numeric nanoseconds are also supported for backwards compatibility.
 | Computing multi-metric ratios / arithmetic (Eval: $A/B \times 100$) | [metric-ratio-eval](#metric-ratio-eval) |
 | Aggregating the result of another query | [subquery](#subquery) |
 | Keeping only the rows another query lists | [where-subquery](#where-subquery) |
+| Post-query null filling when rollup cannot express it (`fill`) | [outer-function](#outer-function) |
 
 ## metric-windowed-avg
 
@@ -71,57 +208,15 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "M", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "IdentExpr", "value": "cpu"}
-  ],
-  "projections": [
-    {
-      "type": "AliasExpr",
-      "name": "avg_usage",
-      "value": {
-        "type": "FunctionExpr",
-        "name": "avg",
-        "args": [
-          {
-            "name": "",
-            "value": {"type": "IdentExpr", "value": "usage_user"}
-          }
-        ]
-      }
-    }
-  ],
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["avg(usage_user) AS avg_usage"],
   "wheres": [
-    {
-      "type": "BinaryExpr",
-      "left": {"type": "IdentExpr", "value": "host"},
-      "op": "IN",
-      "right": {
-        "type": "ArrayExpr",
-        "values": [
-          {"type": "StringExpr", "value": "web-01"},
-          {"type": "StringExpr", "value": "web-02"}
-        ]
-      }
-    }
+    "host IN [\"web-01\", \"web-02\"]"
   ],
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "1h"},
-    "step": {"type": "DurationExpr", "duration": "5m"}
-  },
-  "groups": [
-    {"type": "IdentExpr", "value": "host"}
-  ],
-  "having": null,
-  "order_by": [
-    {
-      "column": {"type": "IdentExpr", "value": "time"},
-      "order": "DESC"
-    }
-  ],
+  "groups": ["host"],
+  "window": {"step": "5m"},
+  "order_by": ["time DESC"],
   "limit": 100,
   "slimit": 100
 }
@@ -129,7 +224,7 @@ Numeric nanoseconds are also supported for backwards compatibility.
 
 **Builds**:
 
-``M::`cpu`:(avg(`usage_user`) AS `avg_usage`){ (`host` IN ["web-01", "web-02"]) }[1h0m0s::5m0s] BY (`host`) ORDER BY `time` DESC LIMIT 100 SLIMIT 100``
+``M::`cpu`:(avg(`usage_user`) AS `avg_usage`){ (`host` IN ["web-01", "web-02"]) }[::5m0s] BY (`host`) ORDER BY `time` DESC LIMIT 100 SLIMIT 100``
 
 **Note**: `step` is what makes this a time series; drop it and the window collapses to a single point per group. `order_by` sorts inside a group, so `time` here means the points of each host, not the hosts.
 
@@ -142,40 +237,18 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "M", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "IdentExpr", "value": "http_requests"}
-  ],
-  "projections": [
-    {
-      "type": "AliasExpr",
-      "name": "qps",
-      "value": {
-        "type": "FunctionExpr",
-        "name": "sum",
-        "args": [{"name": "", "value": {"type": "IdentExpr", "value": "request_count"}}]
-      }
-    }
-  ],
-  "wheres": null,
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "1h"},
-    "step": {"type": "DurationExpr", "duration": "5m"},
-    "rollup": "rate",
-    "rollup_args": null
-  },
-  "groups": [{"type": "IdentExpr", "value": "service"}],
-  "having": null,
+  "namespace": "M",
+  "sources": ["http_requests"],
+  "projections": ["sum(request_count) AS qps"],
+  "groups": ["service"],
+  "window": {"step": "5m", "rollup": "rate"},
   "slimit": 100
 }
 ```
 
 **Builds**:
 
-``M::`http_requests`:(sum(`request_count`) AS `qps`)[1h0m0s::5m0s:rate] BY (`service`) SLIMIT 100``
+``M::`http_requests`:(sum(`request_count`) AS `qps`)[::5m0s:rate] BY (`service`) SLIMIT 100``
 
 **Note**: For Prometheus cumulative Counter metrics, compute per-series `rate` before aggregating across dimensions (`[1h::5m:rate]`). Common rollups include `rate`, `last`, `min`, `max`, `avg`, `sum`.
 
@@ -188,88 +261,22 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {
-      "namespace": "M",
-      "index_name": ""
-    }
-  ],
-  "sources": [
-    {
-      "type": "IdentExpr",
-      "value": "cpu"
-    }
-  ],
-  "projections": [
-    {
-      "type": "AliasExpr",
-      "name": "avg_usage",
-      "value": {
-        "type": "FunctionExpr",
-        "name": "avg",
-        "args": [
-          {
-            "name": "",
-            "value": {
-              "type": "IdentExpr",
-              "value": "usage_user"
-            }
-          }
-        ]
-      }
-    }
-  ],
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["avg(usage_user) AS avg_usage"],
   "wheres": [
-    {
-      "type": "BinaryExpr",
-      "left": {
-        "type": "IdentExpr",
-        "value": "host"
-      },
-      "op": "=",
-      "right": {
-        "type": "StringExpr",
-        "value": "web-01"
-      }
-    },
-    {
-      "type": "BinaryExpr",
-      "left": {
-        "type": "IdentExpr",
-        "value": "usage_user"
-      },
-      "op": ">",
-      "right": {
-        "type": "Int64Expr",
-        "value": 50
-      }
-    }
+    "host = \"web-01\"",
+    "usage_user > 50"
   ],
-  "window": {
-    "type": "TimeWindow",
-    "from": {
-      "type": "DurationExpr",
-      "duration": "1h"
-    },
-    "step": {
-      "type": "DurationExpr",
-      "duration": "5m"
-    }
-  },
-  "groups": [
-    {
-      "type": "IdentExpr",
-      "value": "host"
-    }
-  ],
-  "having": null,
+  "groups": ["host"],
+  "window": {"step": "5m"},
   "slimit": 100
 }
 ```
 
 **Builds**:
 
-``M::`cpu`:(avg(`usage_user`) AS `avg_usage`){ (`host` = "web-01") , (`usage_user` > 50) }[1h0m0s::5m0s] BY (`host`) SLIMIT 100``
+``M::`cpu`:(avg(`usage_user`) AS `avg_usage`){ (`host` = "web-01") , (`usage_user` > 50) }[::5m0s] BY (`host`) SLIMIT 100``
 
 **Note**: A tag filter and a numeric threshold are the same node — `BinaryExpr` — and only the right-hand value differs: `StringExpr` for a tag, `Int64Expr` for a number. Both are listed as separate `wheres` entries.
 
@@ -282,32 +289,15 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "M", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "IdentExpr", "value": "cpu"}
-  ],
-  "projections": [
-    {
-      "type": "AliasExpr",
-      "name": "avg_usage",
-      "value": {
-        "type": "FunctionExpr",
-        "name": "avg",
-        "args": [{"name": "", "value": {"type": "IdentExpr", "value": "usage_user"}}]
-      }
-    }
-  ],
-  "wheres": null,
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["avg(usage_user) AS avg_usage"],
+  "groups": ["host"],
   "window": {
-    "type": "TimeWindow",
     "from": {"type": "TimeExpr", "time": 1726800000000},
     "to": {"type": "TimeExpr", "time": 1726803600000},
-    "step": {"type": "DurationExpr", "duration": "5m"}
+    "step": "5m"
   },
-  "groups": [{"type": "IdentExpr", "value": "host"}],
-  "having": null,
   "slimit": 100
 }
 ```
@@ -327,90 +317,36 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [{"namespace": "M", "index_name": ""}],
+  "namespace": "M",
   "sources": [
     {
       "type": "SelectExpr",
-      "indices": [{"namespace": "M", "index_name": ""}],
-      "sources": [{"type": "IdentExpr", "value": "http"}],
-      "projections": [
-        {
-          "type": "AliasExpr",
-          "name": "errors",
-          "value": {
-            "type": "FunctionExpr",
-            "name": "sum",
-            "args": [{"name": "", "value": {"type": "IdentExpr", "value": "error_count"}}]
-          }
-        }
-      ],
-      "wheres": null,
-      "window": {
-        "type": "TimeWindow",
-        "from": {"type": "DurationExpr", "duration": "1h"},
-        "step": {"type": "DurationExpr", "duration": "5m"}
-      },
-      "having": null,
-      "groups": [{"type": "IdentExpr", "value": "service"}],
+      "namespace": "M",
+      "sources": ["http"],
+      "projections": ["sum(error_count) AS errors"],
+      "groups": ["service"],
+      "window": {"step": "5m"},
       "slimit": 100
     },
     {
       "type": "SelectExpr",
-      "indices": [{"namespace": "M", "index_name": ""}],
-      "sources": [{"type": "IdentExpr", "value": "http"}],
-      "projections": [
-        {
-          "type": "AliasExpr",
-          "name": "total",
-          "value": {
-            "type": "FunctionExpr",
-            "name": "sum",
-            "args": [{"name": "", "value": {"type": "IdentExpr", "value": "req_count"}}]
-          }
-        }
-      ],
-      "wheres": null,
-      "window": {
-        "type": "TimeWindow",
-        "from": {"type": "DurationExpr", "duration": "1h"},
-        "step": {"type": "DurationExpr", "duration": "5m"}
-      },
-      "having": null,
-      "groups": [{"type": "IdentExpr", "value": "service"}],
+      "namespace": "M",
+      "sources": ["http"],
+      "projections": ["sum(req_count) AS total"],
+      "groups": ["service"],
+      "window": {"step": "5m"},
       "slimit": 100
     }
   ],
-  "projections": [
-    {
-      "type": "AliasExpr",
-      "name": "error_rate_pct",
-      "value": {
-        "type": "BinaryExpr",
-        "left": {
-          "type": "BinaryExpr",
-          "left": {"type": "IdentExpr", "value": "errors"},
-          "op": "/",
-          "right": {"type": "IdentExpr", "value": "total"}
-        },
-        "op": "*",
-        "right": {"type": "Int64Expr", "value": 100}
-      }
-    }
-  ],
-  "wheres": null,
-  "having": null,
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "1h"},
-    "step": {"type": "DurationExpr", "duration": "5m"}
-  },
+  "projections": ["(errors / total * 100) AS error_rate_pct"],
+  "window": {"step": "5m"},
   "limit": 100
 }
 ```
 
 **Builds**:
 
-``M::(M::`http`:(sum(`error_count`) AS `errors`)[1h0m0s::5m0s] BY (`service`) SLIMIT 100), (M::`http`:(sum(`req_count`) AS `total`)[1h0m0s::5m0s] BY (`service`) SLIMIT 100):(((`errors` / `total`) * 100) AS `error_rate_pct`)[1h0m0s::5m0s] LIMIT 100``
+``M::(M::`http`:(sum(`error_count`) AS `errors`)[::5m0s] BY (`service`) SLIMIT 100), (M::`http`:(sum(`req_count`) AS `total`)[::5m0s] BY (`service`) SLIMIT 100):(((`errors` / `total`) * 100) AS `error_rate_pct`)[::5m0s] LIMIT 100``
 
 **Note**: Multi-query arithmetic (formerly written as outer `eval(...)`) is expressed in AST by nesting named subqueries in `sources` and computing the arithmetic in top-level `projections`.
 
@@ -423,61 +359,12 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {
-      "namespace": "M",
-      "index_name": ""
-    }
-  ],
-  "sources": [
-    {
-      "type": "IdentExpr",
-      "value": "cpu"
-    }
-  ],
-  "projections": [
-    {
-      "type": "FunctionExpr",
-      "name": "max",
-      "args": [
-        {
-          "name": "",
-          "value": {
-            "type": "IdentExpr",
-            "value": "usage_user"
-          }
-        }
-      ]
-    }
-  ],
-  "wheres": null,
-  "window": {
-    "type": "TimeWindow",
-    "from": {
-      "type": "DurationExpr",
-      "duration": "1h"
-    },
-    "step": {
-      "type": "DurationExpr",
-      "duration": "10m"
-    }
-  },
-  "groups": [
-    {
-      "type": "IdentExpr",
-      "value": "host"
-    }
-  ],
-  "having": null,
-  "order_by": [
-    {
-      "column": {
-        "type": "IdentExpr",
-        "value": "time"
-      },
-      "order": "DESC"
-    }
-  ],
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["max(usage_user)"],
+  "groups": ["host"],
+  "window": {"step": "10m"},
+  "order_by": ["time DESC"],
   "limit": 3,
   "offset": 2,
   "slimit": 100
@@ -486,7 +373,7 @@ Numeric nanoseconds are also supported for backwards compatibility.
 
 **Builds**:
 
-``M::`cpu`:(max(`usage_user`))[1h0m0s::10m0s] BY (`host`) ORDER BY `time` DESC LIMIT 3 OFFSET 2 SLIMIT 100``
+``M::`cpu`:(max(`usage_user`))[::10m0s] BY (`host`) ORDER BY `time` DESC LIMIT 3 OFFSET 2 SLIMIT 100``
 
 **Note**: `offset` is a sibling of `limit` on the `SelectExpr`, applied after `order_by`, and it skips rows **inside every group** — here each host returns points 3 to 5, newest first. Paging groups instead of rows is `slimit` / `soffset`.
 
@@ -499,49 +386,19 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "M", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "IdentExpr", "value": "cpu"}
-  ],
-  "projections": [
-    {
-      "type": "AliasExpr",
-      "name": "avg_usage",
-      "value": {
-        "type": "FunctionExpr",
-        "name": "avg",
-        "args": [
-          {
-            "name": "",
-            "value": {"type": "IdentExpr", "value": "usage_user"}
-          }
-        ]
-      }
-    }
-  ],
-  "wheres": null,
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "1h"},
-    "step": {"type": "DurationExpr", "duration": "1h"}
-  },
-  "groups": [
-    {"type": "IdentExpr", "value": "host"}
-  ],
-  "having": null,
-  "sorder_by": {
-    "value": {"type": "IdentExpr", "value": "avg_usage"},
-    "order": "DESC"
-  },
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["avg(usage_user) AS avg_usage"],
+  "groups": ["host"],
+  "window": {"step": "1h"},
+  "sorder_by": "avg_usage DESC",
   "slimit": 10
 }
 ```
 
 **Builds**:
 
-``M::`cpu`:(avg(`usage_user`) AS `avg_usage`)[1h0m0s::1h0m0s] BY (`host`) SORDER BY `avg_usage` DESC SLIMIT 10``
+``M::`cpu`:(avg(`usage_user`) AS `avg_usage`)[::1h0m0s] BY (`host`) SORDER BY `avg_usage` DESC SLIMIT 10``
 
 **Note**: Ranking groups is `sorder_by` + `slimit`, not `order_by` + `limit`. The sort key is the projection alias; for an unaliased aggregate, repeat the aggregate expression itself.
 
@@ -554,119 +411,19 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {
-      "namespace": "M",
-      "index_name": ""
-    }
-  ],
-  "sources": [
-    {
-      "type": "IdentExpr",
-      "value": "cpu"
-    }
-  ],
-  "projections": [
-    {
-      "type": "AliasExpr",
-      "name": "avg_usage",
-      "value": {
-        "type": "FunctionExpr",
-        "name": "avg",
-        "args": [
-          {
-            "name": "",
-            "value": {
-              "type": "IdentExpr",
-              "value": "usage_user"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "AliasExpr",
-      "name": "max_usage",
-      "value": {
-        "type": "FunctionExpr",
-        "name": "max",
-        "args": [
-          {
-            "name": "",
-            "value": {
-              "type": "IdentExpr",
-              "value": "usage_user"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "AliasExpr",
-      "name": "n",
-      "value": {
-        "type": "FunctionExpr",
-        "name": "count",
-        "args": [
-          {
-            "name": "",
-            "value": {
-              "type": "IdentExpr",
-              "value": "usage_user"
-            }
-          }
-        ]
-      }
-    }
-  ],
-  "wheres": null,
-  "window": {
-    "type": "TimeWindow",
-    "from": {
-      "type": "DurationExpr",
-      "duration": "1h"
-    },
-    "step": {
-      "type": "DurationExpr",
-      "duration": "1h"
-    }
-  },
-  "groups": [
-    {
-      "type": "IdentExpr",
-      "value": "host"
-    }
-  ],
-  "having": [
-    {
-      "type": "BinaryExpr",
-      "left": {
-        "type": "FunctionExpr",
-        "name": "avg",
-        "args": [
-          {
-            "name": "",
-            "value": {
-              "type": "IdentExpr",
-              "value": "usage_user"
-            }
-          }
-        ]
-      },
-      "op": ">",
-      "right": {
-        "type": "Int64Expr",
-        "value": 60
-      }
-    }
-  ],
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["avg(usage_user) AS avg_usage", "max(usage_user) AS max_usage", "count(usage_user) AS n"],
+  "groups": ["host"],
+  "having": ["(avg(usage_user) > 60)"],
+  "window": {"step": "1h"},
   "slimit": 100
 }
 ```
 
 **Builds**:
 
-``M::`cpu`:(avg(`usage_user`) AS `avg_usage`, max(`usage_user`) AS `max_usage`, count(`usage_user`) AS `n`)[1h0m0s::1h0m0s] BY (`host`) HAVING ((avg(`usage_user`) > 60))  SLIMIT 100``
+``M::`cpu`:(avg(`usage_user`) AS `avg_usage`, max(`usage_user`) AS `max_usage`, count(`usage_user`) AS `n`)[::1h0m0s] BY (`host`) HAVING ((avg(`usage_user`) > 60))  SLIMIT 100``
 
 **Note**: `having` is a list of `BinaryExpr` like `wheres`, but it filters groups after aggregation instead of rows before it. Either repeat the aggregate expression, as here, or use the projection alias — the alias form builds to `HAVING ((\`n\` > 1000))`. On a metric source `count(*)` is a bind error, so name a field.
 
@@ -679,69 +436,72 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {
-      "namespace": "M",
-      "index_name": ""
-    }
-  ],
-  "sources": [
-    {
-      "type": "IdentExpr",
-      "value": "cpu"
-    }
-  ],
-  "projections": [
-    {
-      "type": "AliasExpr",
-      "name": "avg_usage",
-      "value": {
-        "type": "FunctionExpr",
-        "name": "avg",
-        "args": [
-          {
-            "name": "",
-            "value": {
-              "type": "IdentExpr",
-              "value": "usage_user"
-            }
-          }
-        ]
-      }
-    }
-  ],
-  "wheres": null,
-  "window": {
-    "type": "TimeWindow",
-    "from": {
-      "type": "DurationExpr",
-      "duration": "1h"
-    },
-    "step": {
-      "type": "DurationExpr",
-      "duration": "1h"
-    }
-  },
-  "groups": [
-    {
-      "type": "IdentExpr",
-      "value": "host"
-    }
-  ],
-  "having": null,
-  "shift": {
-    "type": "DurationExpr",
-    "duration": "1d"
-  },
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["avg(usage_user) AS avg_usage"],
+  "groups": ["host"],
+  "window": {"step": "1h"},
+  "shift": "1d",
   "slimit": 100
 }
 ```
 
 **Builds**:
 
-``M::`cpu`:(avg(`usage_user`) AS `avg_usage`)[1h0m0s::1h0m0s] SHIFT 24h0m0s BY (`host`) SLIMIT 100``
+``M::`cpu`:(avg(`usage_user`) AS `avg_usage`)[::1h0m0s] SHIFT 24h0m0s BY (`host`) SLIMIT 100``
 
 **Note**: `shift` is a `DurationExpr` on the `SelectExpr`, beside `window`. Human-readable strings such as `"1d"` or `"24h"` are preferred.
+
+## metric-shift-expression
+
+### Metric: expression-level SHIFT (period-over-period comparison)
+
+**Ask**: Average CPU per host over the last hour (5-minute points) compared side-by-side with the same period 24 hours ago.
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": [
+    "avg(usage_user) AS today",
+    "avg(usage_user) SHIFT 1d AS yesterday"
+  ],
+  "window": {"step": "5m"},
+  "groups": ["host"],
+  "slimit": 10
+}
+```
+
+**Builds**:
+
+``M::`cpu`:(avg(`usage_user`) AS `today`, avg(`usage_user`) SHIFT 24h0m0s AS `yesterday`)[::5m0s] BY (`host`) SLIMIT 10``
+
+**Note**: Expression-level `SHIFT` allows plotting current and historical series side-by-side in a single query. Contrast with the top-level `"shift": "1d"` field in `metric-shift`, which shifts the entire query window.
+
+## metric-sliding-window
+
+### Metric: sliding window aggregation (range vs step)
+
+**Ask**: Compute a 5-minute rolling average of CPU usage evaluated every 1 minute.
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["avg(usage_user) AS v"],
+  "window": {"step": "1m", "range": "5m"},
+  "groups": ["host"],
+  "slimit": 10
+}
+```
+
+**Builds**:
+
+``M::`cpu`:(avg(`usage_user`) AS `v`)[::1m0s:5m0s] BY (`host`) SLIMIT 10``
+
+**Note**: `range` defines the lookback bucket width (5 minutes), while `step` defines the reporting interval (1 minute). Because `range > step`, points overlap, which reads the entire window into compute memory (emits the `sliding_window` warning). Use this when smooth rolling trends or anomaly alert rules require overlapping evaluation.
 
 ## subquery
 
@@ -752,112 +512,27 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {
-      "namespace": "M",
-      "index_name": ""
-    }
-  ],
+  "namespace": "M",
   "sources": [
     {
       "type": "SelectExpr",
-      "indices": [
-        {
-          "namespace": "M",
-          "index_name": ""
-        }
-      ],
-      "sources": [
-        {
-          "type": "IdentExpr",
-          "value": "cpu"
-        }
-      ],
-      "projections": [
-        {
-          "type": "AliasExpr",
-          "name": "avg_usage",
-          "value": {
-            "type": "FunctionExpr",
-            "name": "avg",
-            "args": [
-              {
-                "name": "",
-                "value": {
-                  "type": "IdentExpr",
-                  "value": "usage_user"
-                }
-              }
-            ]
-          }
-        }
-      ],
-      "wheres": null,
-      "window": {
-        "type": "TimeWindow",
-        "from": {
-          "type": "DurationExpr",
-          "duration": "1h"
-        },
-        "step": {
-          "type": "DurationExpr",
-          "duration": "5m"
-        }
-      },
-      "groups": [
-        {
-          "type": "IdentExpr",
-          "value": "host"
-        }
-      ],
-      "having": null
+      "namespace": "M",
+      "sources": ["cpu"],
+      "projections": ["avg(usage_user) AS avg_usage"],
+      "groups": ["host"],
+      "window": {"step": "5m"}
     }
   ],
-  "projections": [
-    {
-      "type": "AliasExpr",
-      "name": "avg_of_avg",
-      "value": {
-        "type": "FunctionExpr",
-        "name": "avg",
-        "args": [
-          {
-            "name": "",
-            "value": {
-              "type": "IdentExpr",
-              "value": "avg_usage"
-            }
-          }
-        ]
-      }
-    }
-  ],
-  "wheres": null,
-  "window": {
-    "type": "TimeWindow",
-    "from": {
-      "type": "DurationExpr",
-      "duration": "1h"
-    },
-    "step": {
-      "type": "DurationExpr",
-      "duration": "1h"
-    }
-  },
-  "groups": [
-    {
-      "type": "IdentExpr",
-      "value": "host"
-    }
-  ],
-  "having": null,
+  "projections": ["avg(avg_usage) AS avg_of_avg"],
+  "groups": ["host"],
+  "window": {"step": "1h"},
   "slimit": 100
 }
 ```
 
 **Builds**:
 
-``M::(M::`cpu`:(avg(`usage_user`) AS `avg_usage`)[1h0m0s::5m0s] BY (`host`)):(avg(`avg_usage`) AS `avg_of_avg`)[1h0m0s::1h0m0s] BY (`host`) SLIMIT 100``
+``M::(M::`cpu`:(avg(`usage_user`) AS `avg_usage`)[::5m0s] BY (`host`)):(avg(`avg_usage`) AS `avg_of_avg`)[::1h0m0s] BY (`host`) SLIMIT 100``
 
 **Note**: A nested `SelectExpr` inside `sources` is the subquery. It carries its own `indices` and `window`, and the outer query reads its columns by name (`avg_usage`), so the inner projections must be aliased.
 
@@ -870,134 +545,62 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {
-      "namespace": "M",
-      "index_name": ""
-    }
-  ],
+  "namespace": "M",
   "sources": [
-    {
-      "type": "IdentExpr",
-      "value": "cpu"
-    },
+    "cpu",
     {
       "type": "SelectExpr",
-      "indices": [
-        {
-          "namespace": "O",
-          "index_name": ""
-        }
-      ],
-      "sources": [
-        {
-          "type": "IdentExpr",
-          "value": "HOST"
-        }
-      ],
-      "projections": [
-        {
-          "type": "AliasExpr",
-          "name": "@__sub_cloud_a",
-          "value": {
-            "type": "FunctionExpr",
-            "name": "collect_distinct",
-            "args": [
-              {
-                "name": "",
-                "value": {
-                  "type": "IdentExpr",
-                  "value": "hostname"
-                }
-              },
-              {
-                "name": "",
-                "value": {
-                  "type": "Int64Expr",
-                  "value": 5000
-                }
-              }
-            ]
-          }
-        }
-      ],
+      "namespace": "O",
+      "sources": ["HOST"],
+      "projections": ["collect_distinct(hostname, 5000) AS @__sub_cloud_a"],
       "wheres": [
-        {
-          "type": "BinaryExpr",
-          "left": {
-            "type": "IdentExpr",
-            "value": "provider"
-          },
-          "op": "=",
-          "right": {
-            "type": "StringExpr",
-            "value": "cloud-a"
-          }
-        }
-      ],
-      "window": {
-        "type": "TimeWindow",
-        "from": {
-          "type": "DurationExpr",
-          "duration": "1h"
-        }
-      },
-      "groups": null,
-      "having": null
-    }
-  ],
-  "projections": [
-    {
-      "type": "FunctionExpr",
-      "name": "avg",
-      "args": [
-        {
-          "name": "",
-          "value": {
-            "type": "IdentExpr",
-            "value": "usage_user"
-          }
-        }
+        "provider = \"cloud-a\""
       ]
     }
   ],
-  "wheres": [
-    {
-      "type": "BinaryExpr",
-      "left": {
-        "type": "IdentExpr",
-        "value": "host"
-      },
-      "op": "IN",
-      "right": {
-        "type": "IdentExpr",
-        "value": "@__sub_cloud_a"
-      }
-    }
-  ],
-  "window": {
-    "type": "TimeWindow",
-    "from": {
-      "type": "DurationExpr",
-      "duration": "1h"
-    }
-  },
-  "groups": [
-    {
-      "type": "IdentExpr",
-      "value": "host"
-    }
-  ],
-  "having": null,
+  "projections": ["avg(usage_user)"],
+  "wheres": ["host IN @__sub_cloud_a"],
+  "groups": ["host"],
   "slimit": 100
 }
 ```
 
 **Builds**:
 
-``M::`cpu`, (O::`HOST`:(collect_distinct(`hostname`, 5000) AS `@__sub_cloud_a`){ (`provider` = "cloud-a") }[1h0m0s::]):(avg(`usage_user`)){ (`host` IN `@__sub_cloud_a`) }[1h0m0s::] BY (`host`) SLIMIT 100``
+``M::`cpu`, (O::`HOST`:(collect_distinct(`hostname`, 5000) AS `@__sub_cloud_a`){ (`provider` = "cloud-a") }):(avg(`usage_user`)){ (`host` IN `@__sub_cloud_a`) } BY (`host`) SLIMIT 100``
 
 **Note**: The subquery is a **second entry in `sources`**, beside the main source — it is not a node inside `wheres`. Its projection is one aliased value list (`collect_distinct(field, cap)`), and `wheres` compares the outer field to that alias name with `IN` (or `NOT IN`); the alias name is yours to choose. Note the namespace switch: the subquery reads `O`, the outer query reads `M`.
+
+## outer-function
+
+### Outer function: post-query null filling (`fill`)
+
+**Ask**: Fill missing metric data points with 0 across a 5-minute aggregation window.
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["avg(usage_user) AS v"],
+  "window": {"step": "5m"},
+  "groups": ["host"],
+  "slimit": 10,
+  "outer": {
+    "fn": "fill",
+    "args": [0]
+  }
+}
+```
+
+**Builds**:
+
+``fill((M::`cpu`:(avg(`usage_user`) AS `v`)[::5m0s] BY (`host`) SLIMIT 10), 0)``
+
+**Note**: Use `"outer"` only when a calculation cannot be expressed as a window `rollup`.
+- **Always prefer `rollup`**: Single-metric transformations like `rate`, `moving_average(5)`, `ewma(0.3)`, and `cumsum` should ALWAYS be written directly in `window.rollup` (e.g. `[::1m:moving_average(5)]`), running efficiently inside the storage engine.
+- **When to use `outer`**: Use `"outer"` primarily for result-level interpolation like `fill(..., 0)` or post-query scalar math where no rollup equivalent exists.
+- **Syntax**: Parameterized outer calls use `{"fn": "fill", "args": [0]}`. Parameter-less outer calls use a string, e.g. `"outer": "cumsum"`.
 
 ## log-detail
 
@@ -1008,44 +611,18 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "L", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "IdentExpr", "value": "nginx"}
-  ],
-  "projections": [
-    {"type": "IdentExpr", "value": "time"},
-    {"type": "IdentExpr", "value": "status"},
-    {"type": "IdentExpr", "value": "message"}
-  ],
-  "wheres": [
-    {
-      "type": "BinaryExpr",
-      "left": {"type": "IdentExpr", "value": "status"},
-      "op": ">=",
-      "right": {"type": "Int64Expr", "value": 400}
-    }
-  ],
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "1h"}
-  },
-  "groups": null,
-  "having": null,
-  "order_by": [
-    {
-      "column": {"type": "IdentExpr", "value": "time"},
-      "order": "DESC"
-    }
-  ],
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": ["time", "status", "message"],
+  "wheres": ["status >= 400"],
+  "order_by": ["time DESC"],
   "limit": 100
 }
 ```
 
 **Builds**:
 
-``L::`nginx`:(`time`, `status`, `message`){ (`status` >= 400) }[1h0m0s::] ORDER BY `time` DESC LIMIT 100``
+``L::`nginx`:(`time`, `status`, `message`){ (`status` >= 400) } ORDER BY `time` DESC LIMIT 100``
 
 **Note**: A detail query has no aggregate and no `groups`, but it still needs a window. Its `projections` is a plain list of `IdentExpr`; include `time` when the user needs to see when each row happened.
 
@@ -1058,32 +635,17 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "L", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "WildcardExpr"}
-  ],
-  "projections": [
-    {"type": "WildcardExpr"}
-  ],
-  "wheres": null,
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "15m"}
-  },
-  "groups": null,
-  "having": null,
-  "order_by": [
-    {"column": {"type": "IdentExpr", "value": "time"}, "order": "DESC"}
-  ],
+  "namespace": "L",
+  "sources": ["*"],
+  "projections": ["*"],
+  "order_by": ["time DESC"],
   "limit": 100
 }
 ```
 
 **Builds**:
 
-``L::*:(*)[15m0s::] ORDER BY `time` DESC LIMIT 100``
+``L::*:(*) ORDER BY `time` DESC LIMIT 100``
 
 **Note**: A wildcard source (`WildcardExpr`) reads all sources in the index. Use it as a fallback when the source name is unknown, and replace it with a named source once discovered via `show_logging_source()`.
 
@@ -1096,50 +658,20 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "L", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "IdentExpr", "value": "nginx"}
-  ],
-  "projections": [
-    {"type": "IdentExpr", "value": "time"},
-    {"type": "IdentExpr", "value": "service"},
-    {"type": "IdentExpr", "value": "message"}
-  ],
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": ["time", "service", "message"],
   "wheres": [
-    {
-      "type": "BinaryExpr",
-      "left": {"type": "IdentExpr", "value": "service"},
-      "op": "IN",
-      "right": {
-        "type": "ArrayExpr",
-        "values": [
-          {"type": "StringExpr", "value": "api"},
-          {"type": "StringExpr", "value": "auth"}
-        ]
-      }
-    }
+    "service IN [\"api\", \"auth\"]"
   ],
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "1h"}
-  },
-  "groups": null,
-  "having": null,
-  "order_by": [
-    {
-      "column": {"type": "IdentExpr", "value": "time"},
-      "order": "DESC"
-    }
-  ],
+  "order_by": ["time DESC"],
   "limit": 100
 }
 ```
 
 **Builds**:
 
-``L::`nginx`:(`time`, `service`, `message`){ (`service` IN ["api", "auth"]) }[1h0m0s::] ORDER BY `time` DESC LIMIT 100``
+``L::`nginx`:(`time`, `service`, `message`){ (`service` IN ["api", "auth"]) } ORDER BY `time` DESC LIMIT 100``
 
 **Note**: A set of values is `IN` with an `ArrayExpr` on the right; the same node with `op` set to `NOT IN` excludes the set instead. Each element is a full value node — `StringExpr`, `Int64Expr`, and so on — one per element.
 
@@ -1152,56 +684,20 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "L", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "IdentExpr", "value": "nginx"}
-  ],
-  "projections": [{"type": "WildcardExpr"}],
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": ["*"],
   "wheres": [
-    {
-      "type": "BinaryExpr",
-      "left": {
-        "type": "BinaryExpr",
-        "left": {"type": "IdentExpr", "value": "status"},
-        "op": ">=",
-        "right": {"type": "Int64Expr", "value": 500}
-      },
-      "op": "OR",
-      "right": {
-        "type": "BinaryExpr",
-        "left": {"type": "IdentExpr", "value": "status"},
-        "op": "=",
-        "right": {"type": "Int64Expr", "value": 400}
-      }
-    },
-    {
-      "type": "BinaryExpr",
-      "left": {"type": "IdentExpr", "value": "service"},
-      "op": "=",
-      "right": {"type": "StringExpr", "value": "order"}
-    }
+    "status >= 500 OR status = 400",
+    "service = \"order\""
   ],
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "15m"},
-    "step": null
-  },
-  "groups": null,
-  "having": null,
-  "order_by": null,
-  "limit": 100,
-  "offset": null,
-  "sorder_by": null,
-  "slimit": null,
-  "soffset": null
+  "limit": 100
 }
 ```
 
 **Builds**:
 
-``L::`nginx`:(*){ ((`status` >= 500) OR (`status` = 400)) , (`service` = "order") }[15m0s::] LIMIT 100``
+``L::`nginx`:(*){ ((`status` >= 500) OR (`status` = 400)) , (`service` = "order") } LIMIT 100``
 
 **Note**: `wheres` elements are joined by `AND`. To nest an `OR`, nest two `BinaryExpr` nodes under a parent `BinaryExpr` with `"op": "OR"`.
 
@@ -1214,46 +710,52 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "L", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "IdentExpr", "value": "nginx"}
-  ],
-  "projections": [
-    {"type": "IdentExpr", "value": "time"},
-    {"type": "IdentExpr", "value": "message@request.path"},
-    {"type": "IdentExpr", "value": "message@response.status"}
-  ],
-  "wheres": [
-    {
-      "type": "BinaryExpr",
-      "left": {"type": "IdentExpr", "value": "message@response.status"},
-      "op": ">=",
-      "right": {"type": "Int64Expr", "value": 400}
-    }
-  ],
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "1h"}
-  },
-  "groups": null,
-  "having": null,
-  "order_by": [
-    {
-      "column": {"type": "IdentExpr", "value": "time"},
-      "order": "DESC"
-    }
-  ],
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": ["time", "message@request.path", "message@response.status"],
+  "wheres": ["message@response.status >= 400"],
+  "order_by": ["time DESC"],
   "limit": 100
 }
 ```
 
 **Builds**:
 
-``L::`nginx`:(`time`, `message@request.path`, `message@response.status`){ (`message@response.status` >= 400) }[1h0m0s::] ORDER BY `time` DESC LIMIT 100``
+``L::`nginx`:(`time`, `message@request.path`, `message@response.status`){ (`message@response.status` >= 400) } ORDER BY `time` DESC LIMIT 100``
 
 **Note**: There is no node for JSON extraction — `message@response.status` is the entire `IdentExpr` value, and it is used in `wheres` and `groups` exactly like any other field name. The path subset is `.key`, `["key"]` when the key holds spaces or punctuation, and `[index]` for an array position.
+
+## log-json-deep-path
+
+### Log: deep nested JSON path filtering and extraction
+
+**Ask**: Nginx logs where HTTP response status is >= 500 and the JSON user object indicates an admin, extracting nested request URL and user ID.
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": [
+    "time",
+    "message@request.url",
+    "message@http.status",
+    "message@user.id"
+  ],
+  "wheres": [
+    "message@http.status >= 500",
+    "message@user.is_admin = 'true'"
+  ],
+  "order_by": ["time DESC"],
+  "limit": 100
+}
+```
+
+**Builds**:
+
+``L::`nginx`:(`time`, `message@request.url`, `message@http.status`, `message@user.id`){ (`message@http.status` >= 500) , (`message@user.is_admin` = "true") } ORDER BY `time` DESC LIMIT 100``
+
+**Note**: Use `field@path.to.key` to access nested JSON keys directly in projections and wheres. JSON field extraction avoids full-table string matching and leverages tokenized indexing where available.
 
 ## log-count-by-field
 
@@ -1264,67 +766,20 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "L", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "IdentExpr", "value": "nginx"}
-  ],
-  "projections": [
-    {
-      "type": "FunctionExpr",
-      "name": "count",
-      "args": [
-        {
-          "name": "",
-          "value": {"type": "WildcardExpr"}
-        }
-      ]
-    }
-  ],
-  "wheres": [
-    {
-      "type": "BinaryExpr",
-      "left": {"type": "IdentExpr", "value": "status"},
-      "op": ">=",
-      "right": {"type": "Int64Expr", "value": 500}
-    },
-    {
-      "type": "BinaryExpr",
-      "left": {"type": "IdentExpr", "value": "status"},
-      "op": "<",
-      "right": {"type": "Int64Expr", "value": 600}
-    }
-  ],
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "1h"},
-    "step": {"type": "DurationExpr", "duration": "1h"}
-  },
-  "groups": [
-    {"type": "IdentExpr", "value": "status"}
-  ],
-  "having": null,
-  "sorder_by": {
-    "value": {
-      "type": "FunctionExpr",
-      "name": "count",
-      "args": [
-        {
-          "name": "",
-          "value": {"type": "WildcardExpr"}
-        }
-      ]
-    },
-    "order": "DESC"
-  },
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": ["count(*)"],
+  "wheres": ["status >= 500", "status < 600"],
+  "groups": ["status"],
+  "window": {"step": "1h"},
+  "sorder_by": "count(*) DESC",
   "slimit": 100
 }
 ```
 
 **Builds**:
 
-``L::`nginx`:(count(*)){ (`status` >= 500) , (`status` < 600) }[1h0m0s::1h0m0s] BY (`status`) SORDER BY count(*) DESC SLIMIT 100``
+``L::`nginx`:(count(*)){ (`status` >= 500) , (`status` < 600) }[::1h0m0s] BY (`status`) SORDER BY count(*) DESC SLIMIT 100``
 
 **Note**: There is no `BETWEEN`: a 5xx range is two `wheres` entries, `>= 500` and `< 600`. The projection is unaliased, so `sorder_by` repeats the aggregate expression — `WildcardExpr` and all.
 
@@ -1337,48 +792,10 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {
-      "namespace": "L",
-      "index_name": ""
-    }
-  ],
-  "sources": [
-    {
-      "type": "IdentExpr",
-      "value": "nginx"
-    }
-  ],
-  "projections": [
-    {
-      "type": "FunctionExpr",
-      "name": "distinct",
-      "args": [
-        {
-          "name": "",
-          "value": {
-            "type": "IdentExpr",
-            "value": "status"
-          }
-        }
-      ]
-    }
-  ],
-  "wheres": null,
-  "window": {
-    "type": "TimeWindow",
-    "from": {
-      "type": "DurationExpr",
-      "duration": "1h"
-    }
-  },
-  "groups": [
-    {
-      "type": "IdentExpr",
-      "value": "service"
-    }
-  ],
-  "having": null,
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": ["distinct(status)"],
+  "groups": ["service"],
   "limit": 100,
   "slimit": 100
 }
@@ -1386,7 +803,7 @@ Numeric nanoseconds are also supported for backwards compatibility.
 
 **Builds**:
 
-``L::`nginx`:(distinct(`status`))[1h0m0s::] BY (`service`) LIMIT 100 SLIMIT 100``
+``L::`nginx`:(distinct(`status`)) BY (`service`) LIMIT 100 SLIMIT 100``
 
 **Note**: `distinct(x)` returns **one row per distinct value**, so `limit` bounds how many values come back — there is no array to cap. With `BY` you get the group key plus one row per value inside it, which is why `limit` counts rows per group here. For a single array value per group instead of rows, see `collect_distinct` in `function-matrix.md`.
 
@@ -1399,51 +816,20 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "L", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "IdentExpr", "value": "nginx"}
-  ],
-  "projections": [
-    {"type": "IdentExpr", "value": "time"},
-    {"type": "IdentExpr", "value": "message"}
-  ],
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": ["time", "message"],
   "wheres": [
-    {
-      "type": "FunctionExpr",
-      "name": "search",
-      "args": [
-        {
-          "name": "",
-          "value": {"type": "IdentExpr", "value": "message"}
-        },
-        {
-          "name": "",
-          "value": {"type": "StringExpr", "value": "connection timeout"}
-        }
-      ]
-    }
+    "search(message, \"connection timeout\")"
   ],
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "1h"}
-  },
-  "groups": null,
-  "having": null,
-  "order_by": [
-    {
-      "column": {"type": "IdentExpr", "value": "time"},
-      "order": "DESC"
-    }
-  ],
+  "order_by": ["time DESC"],
   "limit": 100
 }
 ```
 
 **Builds**:
 
-``L::`nginx`:(`time`, `message`){ search(`message`, "connection timeout") }[1h0m0s::] ORDER BY `time` DESC LIMIT 100``
+``L::`nginx`:(`time`, `message`){ search(`message`, "connection timeout") } ORDER BY `time` DESC LIMIT 100``
 
 **Note**: Full-text search is a `FunctionExpr` in `wheres`, not a `BinaryExpr` — the field is the first argument and the phrase the second. The field argument is optional: `search("connection timeout")` builds as written.
 
@@ -1456,39 +842,18 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [
-    {"namespace": "L", "index_name": ""}
-  ],
-  "sources": [
-    {"type": "IdentExpr", "value": "nginx"}
-  ],
-  "projections": [
-    {"type": "WildcardExpr"}
-  ],
-  "wheres": [
-    {
-      "type": "BinaryExpr",
-      "left": {"type": "IdentExpr", "value": "time"},
-      "op": "<",
-      "right": {"type": "TimeExpr", "time": 1727000000000}
-    }
-  ],
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "1h"}
-  },
-  "groups": null,
-  "having": null,
-  "order_by": [
-    {"column": {"type": "IdentExpr", "value": "time"}, "order": "desc"}
-  ],
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": ["*"],
+  "wheres": ["time < 1727000000000000000"],
+  "order_by": ["time desc"],
   "limit": 100
 }
 ```
 
 **Builds**:
 
-``L::`nginx`:(*){ (`time` < 1727000000000000000) }[1h0m0s::] ORDER BY `time` desc LIMIT 100``
+``L::`nginx`:(*){ (`time` < 1727000000000000000) } ORDER BY `time` DESC LIMIT 100``
 
 **Note**: For high-volume log and trace list pagination, avoid `OFFSET 10000`. Use cursor pagination by passing the `time` timestamp from the last record of the previous page into a `{ time < <last_time> }` filter with `ORDER BY time DESC`. This achieves O(1) seek performance.
 
@@ -1501,36 +866,25 @@ Numeric nanoseconds are also supported for backwards compatibility.
 ```json
 {
   "type": "SelectExpr",
-  "indices": [{"namespace": "M", "index_name": ""}],
-  "sources": [{"type": "IdentExpr", "value": "cpu"}],
-  "projections": [{"type": "IdentExpr", "value": "usage_user"}],
+  "namespace": "M",
+  "sources": ["cpu"],
+  "projections": ["usage_user"],
   "wheres": [
-    {
-      "type": "BinaryExpr",
-      "left": {"type": "IdentExpr", "value": "host"},
-      "op": "=",
-      "right": {"type": "StringExpr", "value": "web-01"}
-    }
+    "host = \"web-01\""
   ],
-  "groups": null,
-  "having": null,
-  "order_by": [{"column": {"type": "IdentExpr", "value": "time"}, "order": "desc"}],
-  "limit": 100,
-  "window": {
-    "type": "TimeWindow",
-    "from": {"type": "DurationExpr", "duration": "1h"}
-  }
+  "order_by": ["time desc"],
+  "limit": 100
 }
 ```
 
 **Builds**:
 
-``M::`cpu`:(`usage_user`){ (`host` = "web-01") }[1h0m0s::] ORDER BY `time` desc LIMIT 100``
+``M::`cpu`:(`usage_user`){ (`host` = "web-01") } ORDER BY `time` DESC LIMIT 100``
 
 **Note**: No aggregate and no `BY` means the raw stored points, which is the right shape for a gap, a spike, or a value that looks wrong. `LIMIT` is mandatory — without it the query returns every point in the range. The `ORDER BY` is optional (the server orders by time), and written out here because newest-first is the point of the query. See `metrics.md` for the other metric shapes.
 
 ## Global Query Invariants
 
-1. **Time window required**: Every runnable query requires an explicit `window` (`DurationExpr` or `TimeExpr`).
+1. **Time comes from the request**: the request supplies `start_time` / `end_time`; the AST carries `step` and `rollup` and is built with `--request-time`. Write an explicit `from`/`to` only for a fixed historical period.
 2. **Result bounding**: Include `LIMIT` for row counts and `SLIMIT` for group counts to prevent driver memory overflow.
 3. **Validation**: Validate built output with `dqlcheck` before delivery. Note that `--format json` escapes `<`, `>`, and `&` in the `build` string.

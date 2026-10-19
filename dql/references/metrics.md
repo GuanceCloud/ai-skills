@@ -18,8 +18,11 @@ Pick the shape from what the user is asking for.
 ### 1. Aggregated over a window — the normal case
 
 ```dql
-M::cpu:(avg(usage_user)) [1h::5m] BY host
+M::cpu:(avg(usage_user)) [::5m] BY host
 ```
+
+The request supplies `start_time` / `end_time`; the DQL carries only `step`
+(`::5m`) and `rollup`. Build it with `--request-time`.
 
 `step` (`::5m`) defines the rollup granularity (one point per 5 minutes per group). If omitted, the entire
 window collapses to a single point per group — unless the query request specifies `interval` or `max_point`
@@ -29,7 +32,7 @@ the DQL query. `BY` names the grouping tags.
 ### 2. Raw points — for troubleshooting
 
 ```dql
-M::cpu:(usage_user) { host = 'web-01' } [1h] ORDER BY time DESC LIMIT 100
+M::cpu:(usage_user) { host = 'web-01' } ORDER BY time DESC LIMIT 100
 ```
 
 **No aggregate and no `BY` means you are reading the raw stored points.** That is a legitimate query,
@@ -46,13 +49,13 @@ instead of relying on the default.
 Adding `BY` keeps it raw and groups the points by tag:
 
 ```dql
-M::cpu:(usage_user) [1h] BY host ORDER BY time DESC LIMIT 100 SLIMIT 100
+M::cpu:(usage_user) BY host ORDER BY time DESC LIMIT 100 SLIMIT 100
 ```
 
 ### 3. Projection-only — `M::(field)`
 
 ```dql
-M::(usage_user) [1h::5m] LIMIT 100
+M::(usage_user) [::5m] LIMIT 100
 ```
 
 `M::` with no source reads the field across every measurement in the index. Use it when you want a
@@ -71,10 +74,10 @@ raw points → WHERE → rollup (per series) → aggregate (per group) → HAVIN
 
 ```dql
 // Correct: rate on each series, then sum across services → QPS
-M::http_requests:(sum(request_count)) [1h::5m:rate] BY service
+M::http_requests:(sum(request_count)) [::5m:rate] BY service
 
 // Wrong result: sums the cumulative values
-M::http_requests:(sum(request_count)) [1h::5m] BY service
+M::http_requests:(sum(request_count)) [::5m] BY service
 ```
 
 Both build. The second one is not slower — it is **the wrong number**, which is worse. Know which kind
@@ -86,17 +89,17 @@ The most common rollup functions for metrics monitoring are:
 
 | Rollup | Purpose (Prometheus pattern) | Example |
 | --- | --- | --- |
-| `rate` / `irate` | Converts cumulative Counter to per-second rate | `[1h::5m:rate]` |
-| `last` | Takes the latest point in each step bucket | `[1h::5m:last]` |
-| `max` / `min` | Takes the peak or lowest point in each step bucket | `[1h::5m:max]` |
-| `avg` / `sum` | Averages or sums points in each step bucket per series | `[1h::5m:avg]` |
+| `rate` / `irate` | Converts cumulative Counter to per-second rate | `[::5m:rate]` |
+| `last` | Takes the latest point in each step bucket | `[::5m:last]` |
+| `max` / `min` | Takes the peak or lowest point in each step bucket | `[::5m:max]` |
+| `avg` / `sum` | Averages or sums points in each step bucket per series | `[::5m:avg]` |
 
 > For additional and parameterized rollups (e.g. `ewma(0.3)`, `moving_average(5)`, `percentile(95)`, `increase`, `deriv`), consult the official DQL Functions reference.
 
-> **Rollup replaces single-metric outer functions.** Do not wrap queries in outer functions for simple series preprocessing; specify the rollup directly in the window (`[1h::5m:rate]`, `[1h::5m:last]`). Multi-metric math (ratios, formulas) uses subqueries in `sources` (see `recipes.md` → `metric-ratio-eval`).
+> **Rollup replaces single-metric outer functions.** Do not wrap queries in outer functions for simple series preprocessing; specify the rollup directly in the window (`[::5m:rate]`, `[::5m:last]`). Multi-metric math (ratios, formulas) uses subqueries in `sources` (see `recipes.md` → `metric-ratio-eval`).
 
 The input field of a time-clause rollup is decided by the projection, the window and the series — so a
-rollup **never takes a field name** (e.g. `[1h::5m:rate]`, never `[1h::5m:rate(usage)]`).
+rollup **never takes a field name** (e.g. `[::5m:rate]`, never `[::5m:rate(usage)]`).
 
 The official DQL Functions reference lists the complete public rollup set and which rollups take
 algorithm arguments.
