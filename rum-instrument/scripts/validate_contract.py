@@ -645,8 +645,8 @@ def validate_https_origin(value: Any, location: str, errors: list[str]) -> None:
 
 
 def is_valid_origin(value: str, schemes: set[str]) -> bool:
-    parsed = urlsplit(value)
     try:
+        parsed = urlsplit(value)
         parsed.port
     except ValueError:
         return False
@@ -674,6 +674,55 @@ def validate_http_origin(value: Any, location: str, errors: list[str]) -> None:
         return
     if not is_valid_origin(endpoint, {"http", "https"}):
         errors.append(f"{location}.value must be an HTTP(S) origin")
+
+
+def service_origin(value: str, service: str) -> str | None:
+    """Rewrite only the first DNS label of the documented OpenWay naming pattern."""
+    if not is_valid_origin(value, {"http", "https"}):
+        return None
+    parsed = urlsplit(value)
+    host = parsed.hostname or ""
+    label, sep, suffix = host.partition(".")
+    if not sep or not all(re.fullmatch(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?", part) for part in host.split(".")):
+        return None
+    if label in {"openway", "rum-openway"}:
+        prefix = ""
+    elif label.endswith("-rum-openway"):
+        prefix = label[:-len("-rum-openway")]
+    elif label.endswith("-openway"):
+        prefix = label[:-len("-openway")]
+    else:
+        return None
+    if prefix and not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", prefix):
+        return None
+    new_host = (prefix + "-" if prefix else "") + service + "." + suffix
+    port = f":{parsed.port}" if parsed.port is not None else ""
+    return f"{parsed.scheme}://{new_host}{port}"
+
+
+def deployment_endpoint(record: Any) -> str:
+    """Validate a non-secret, same-deployment configuration/contract snapshot."""
+    if not isinstance(record, dict):
+        raise ValueError("endpoint_resolution must be an object")
+    method = record.get("method")
+    expected = {"method", "dataway_url", "evidence"}
+    if method == "configured":
+        expected.add("ai_api_url")
+    elif method != "service_name":
+        raise ValueError("endpoint_resolution.method must be configured or service_name")
+    if set(record) != expected:
+        raise ValueError("endpoint_resolution contains missing or unsupported fields")
+    evidence = record.get("evidence")
+    if not isinstance(evidence, str) or not re.fullmatch(r"(?:existing|task):[^\r\n]+", evidence) or not evidence.split(":", 1)[1].strip():
+        raise ValueError("endpoint_resolution requires existing: or task: evidence for this deployment")
+    receiver = record.get("dataway_url")
+    if not isinstance(receiver, str) or not is_valid_origin(receiver, {"http", "https"}):
+        raise ValueError("endpoint_resolution.dataway_url must be an HTTP(S) origin")
+    api = record.get("ai_api_url") if method == "configured" else service_origin(receiver, "ai-api")
+    if not isinstance(api, str) or not is_valid_origin(api, {"https"}):
+        raise ValueError("endpoint_resolution must determine an HTTPS AI API origin; use configured for independent addresses")
+    parsed = urlsplit(api)
+    return f"{parsed.scheme}://{parsed.netloc.lower()}"
 
 
 def validate_control_plane(value: Any, errors: list[str]) -> str | None:
@@ -733,6 +782,17 @@ def validate_control_plane(value: Any, errors: list[str]) -> str | None:
                 errors.append(
                     f"{location}.tls_verification must remain verified for official catalogs"
                 )
+        elif catalog == "deployment_config":
+            if tls_verification != "verified" or value.get("test_only") or "catalog_source" in value:
+                errors.append(f"{location}: deployment configuration requires verified TLS and no test/catalog override")
+            if value.get("site_code") != "deployment":
+                errors.append(f"{location}.site_code must be deployment")
+            try:
+                expected_api = deployment_endpoint(value.get("endpoint_resolution"))
+                if value.get("ai_api_endpoint") != {"value": expected_api}:
+                    errors.append(f"{location}.ai_api_endpoint does not match deployment evidence")
+            except ValueError as exc:
+                errors.append(f"{location}: {exc}")
         elif catalog == TESTING_CONTROL_PLANE_CATALOG:
             if value.get("test_only") is not True:
                 errors.append(
@@ -748,8 +808,10 @@ def validate_control_plane(value: Any, errors: list[str]) -> str | None:
                 )
         else:
             errors.append(
-                f"{location}.catalog must be an official catalog URL or builtin_testing"
+                f"{location}.catalog must be an official catalog URL, deployment_config or builtin_testing"
             )
+        if catalog != "deployment_config" and "endpoint_resolution" in value:
+            errors.append(f"{location}.endpoint_resolution is only valid with deployment_config")
         if not is_nonempty_string(value.get("site_code")):
             errors.append(f"{location}.site_code must be a non-empty string")
         validate_source(
@@ -765,7 +827,7 @@ def validate_control_plane(value: Any, errors: list[str]) -> str | None:
             or "source" in ai_api_endpoint
         ):
             errors.append(
-                f"{location}.ai_api_endpoint must contain the literal catalog-matched value"
+                f"{location}.ai_api_endpoint must contain the literal catalog-matched value or deployment-evidenced value"
             )
         validate_https_origin(
             ai_api_endpoint,
@@ -1231,6 +1293,13 @@ def _validate_plan_legacy(plan: Any, phase: str, *, modern: bool = False) -> tup
             "request.receiver.endpoint",
             errors,
         )
+        control = receiver.get("control_plane", {})
+        if isinstance(control, dict) and control.get("catalog") == "deployment_config":
+            record = control.get("endpoint_resolution")
+            endpoint = receiver.get("endpoint", {})
+            if isinstance(record, dict) and isinstance(endpoint, dict) and "value" in endpoint:
+                if receiver_origin(record.get("dataway_url")) != receiver_origin(endpoint["value"]):
+                    errors.append("deployment evidence does not match the receiver")
         if mode == "public_dataway":
             client_tokens = receiver.get("client_tokens")
             if client_tokens is None:
@@ -1740,6 +1809,9 @@ def _validate_control_plane_state_legacy(
                     f"control-plane state site.{state_field} does not match the plan"
                 )
 
+    if isinstance(site, dict) and isinstance(control_plane, dict):
+        if site.get("endpoint_resolution") != control_plane.get("endpoint_resolution"):
+            errors.append("control-plane state endpoint_resolution does not match the plan")
     network_preflight = state.get("network_preflight")
     if (
         not isinstance(network_preflight, dict)
@@ -1749,10 +1821,11 @@ def _validate_control_plane_state_legacy(
     else:
         for endpoint in ("dataway", "ai_api"):
             result = network_preflight.get(endpoint)
-            if not isinstance(result, dict) or result.get("status") != "reachable":
-                errors.append(
-                    f"control-plane state network_preflight.{endpoint} must be reachable"
-                )
+            allowed = {"reachable", "unverified"} if endpoint == "dataway" else {"reachable"}
+            if not isinstance(result, dict) or result.get("status") not in allowed:
+                errors.append(f"control-plane state network_preflight.{endpoint} must be " + " or ".join(sorted(allowed)))
+            elif endpoint == "dataway" and result.get("status") == "unverified":
+                warnings.append("DataWay reachability is unverified; local integration is not evidence of remote ingestion")
 
     credential_resolution = state.get("credential_resolution")
     if not isinstance(credential_resolution, dict):
@@ -2910,6 +2983,8 @@ def credential_binding(plan: dict[str, Any], slot: str, repository: Path, *, nor
         "slot": slot, "app_id": target["application_ids"][slot], "sink": sink,
         "source": receiver["client_tokens"][slot]["source"],
     }
+    if "endpoint_resolution" in receiver["control_plane"]:
+        identity["control_plane"]["endpoint_resolution"] = receiver["control_plane"]["endpoint_resolution"]
     return "sha256:" + hashlib.sha256(json.dumps(identity, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 

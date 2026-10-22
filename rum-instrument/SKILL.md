@@ -40,7 +40,7 @@ Read the matching platform adapter below. Infer package manager, entry, service,
 
 ### Prepare and resolve
 
-For Public DataWay, first read [control-plane.md](references/control-plane.md), resolve the non-secret receiver reference into concrete `endpoint.value`, and obtain official site metadata with `resolve_rum_application.py --dataway-url <origin> --site-only`.
+For Public DataWay, first read [control-plane.md](references/control-plane.md), resolve the non-secret receiver reference into concrete `endpoint.value`, and discover the AI API from associated project/task configuration, otherwise official catalogs or an evidenced deployment naming rule, using `resolve_rum_application.py --dataway-url <origin> --site-only`.
 
 Use [contracts.md](references/contracts.md) to create a v3 plan from discovered facts; its draft-completion command fills structural defaults. Keep the full target list. A single target gets one batch; shared edits or dependent targets need explicit batches. Never invent SDK compatibility evidence or approval receipts.
 
@@ -54,7 +54,7 @@ After the declared non-secret preparation, resolve Public DataWay credentials:
 python3 <skill-dir>/scripts/resolve_rum_application.py --plan .rum/plan.json --repository <root> --temporary-auth-code-stdin
 ```
 
-The helper checks host support and secure file creation/replacement, then performs credential-free network preflight before reading a code. It never polls mapping state and restores the previous sink if checkpoint persistence fails. Public DataWay credential storage currently requires macOS/Linux POSIX permissions; native Windows must use WSL with a Linux filesystem or a supported host. Add `--resume` when state exists. DataKit skips resolution. Unknown DataKit reachability does not prevent local implementation.
+The helper checks host support and secure file creation/replacement, then performs credential-free network preflight before reading a code. AI API reachability/TLS is required; DataWay probe failure is reported as unverified and does not block local integration. It never polls mapping state and restores the previous sink if checkpoint persistence fails. Public DataWay credential storage currently requires macOS/Linux POSIX permissions; native Windows must use WSL with a Linux filesystem or a supported host. Add `--resume` when state exists. DataKit skips resolution. Unknown DataKit reachability does not prevent local implementation.
 
 ### Implement and verify
 

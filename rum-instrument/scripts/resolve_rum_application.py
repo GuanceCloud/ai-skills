@@ -30,9 +30,6 @@ CATALOGS = (
 TESTING_DATAWAY_URL = "http://testing-openway.dataflux.cn"
 TESTING_AI_API_URL = "https://testing-ft2x-ai-api.dataflux.cn"
 TESTING_CATALOG = "builtin_testing"
-DEFAULT_RUM_OPENWAY_ALIASES = {
-    "https://rum-openway.guance.com": ("guance", "default"),
-}
 APPLICATION_TYPES = {
     "web",
     "miniapp",
@@ -70,6 +67,7 @@ class Site:
     ai_api_url: str
     catalog_kind: str = "official"
     tls_verification: str = "verified"
+    endpoint_resolution: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -90,7 +88,10 @@ Sleeper = Callable[[float], None]
 def normalize_origin(value: str, field: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ResolutionError(f"{field} must be a non-empty absolute URL")
-    parsed = urlsplit(value.strip())
+    try:
+        parsed = urlsplit(value.strip())
+    except ValueError:
+        raise ResolutionError(f"{field} contains an invalid host") from None
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
         raise ResolutionError(f"{field} must be an absolute http(s) URL")
     try:
@@ -109,6 +110,12 @@ def normalize_origin(value: str, field: str) -> str:
     if parsed.path not in {"", "/"}:
         raise ResolutionError(f"{field} must be an origin without a path")
     return f"{parsed.scheme.lower()}://{parsed.netloc.lower()}"
+
+
+def _origin_key(origin: str) -> tuple[str, str | None, int]:
+    parsed = urlsplit(origin)
+    port = parsed.port if parsed.port is not None else (443 if parsed.scheme == "https" else 80)
+    return parsed.scheme, parsed.hostname, port
 
 
 def _read_json_response(
@@ -191,76 +198,64 @@ def resolve_site(
     catalogs: tuple[tuple[str, str], ...] = CATALOGS,
     catalog_kind: str = "official",
     tls_verification: str = "verified",
+    endpoint_resolution: dict[str, Any] | None = None,
 ) -> Site:
     requested_origin = normalize_origin(dataway_url, "datawayUrl")
-    if requested_origin == TESTING_DATAWAY_URL:
+    testing_site = _origin_key(requested_origin) == _origin_key(TESTING_DATAWAY_URL)
+    deployment_api = None
+    if endpoint_resolution is not None:
+        try:
+            deployment_api = load_validator().deployment_endpoint(endpoint_resolution)
+        except ValueError as exc:
+            raise ResolutionError(str(exc)) from None
+        if normalize_origin(endpoint_resolution["dataway_url"], "deployment datawayUrl") != requested_origin:
+            raise ResolutionError("deployment evidence does not match the receiver")
+        if testing_site:
+            raise ResolutionError("built-in testing site cannot use deployment overrides")
+        if endpoint_resolution["method"] == "configured":
+            return Site("deployment", "deployment", "deployment_config", requested_origin, deployment_api,
+                        catalog_kind="configured", endpoint_resolution=copy.deepcopy(endpoint_resolution))
+    if testing_site:
         return Site(
             brand="guance",
             code="testing",
             catalog_url=TESTING_CATALOG,
-            dataway_url=TESTING_DATAWAY_URL,
+            dataway_url=requested_origin,
             ai_api_url=TESTING_AI_API_URL,
             catalog_kind="testing",
             tls_verification=tls_verification,
         )
-    loaded: dict[tuple[str, str], tuple[str, dict[str, Any]]] = {}
+    # Catalogs contain only ordinary OpenWay. Normalize the service label for
+    # comparison, never the receiver stored in SDK configuration or state.
+    ordinary = load_validator().service_origin(requested_origin, "openway")
+    candidates = {_origin_key(origin) for origin in (requested_origin, ordinary) if origin is not None}
+    matches: list[Site] = []
     unavailable_catalogs: list[str] = []
-
     for brand, catalog_url in catalogs:
         try:
             entries = _catalog_entries(catalog_fetcher(catalog_url), catalog_url)
         except ResolutionError:
             unavailable_catalogs.append(catalog_url)
             continue
-        for code, raw_entry in entries.items():
-            if not isinstance(code, str) or not isinstance(raw_entry, dict):
+        for code, entry in entries.items():
+            if not isinstance(code, str) or not isinstance(entry, dict):
                 continue
-            openway = raw_entry.get("openway")
-            ai_api = raw_entry.get("ai_api")
-            if not isinstance(openway, str) or not isinstance(ai_api, str):
+            if not isinstance(entry.get("openway"), str) or not isinstance(entry.get("ai_api"), str):
                 continue
             try:
-                openway_origin = normalize_origin(openway, f"{catalog_url}:{code}.openway")
+                openway = normalize_origin(entry["openway"], "catalog openway")
             except ResolutionError:
                 continue
-            loaded[(brand, code)] = (catalog_url, raw_entry)
-            if requested_origin == openway_origin:
-                return _site_from_entry(
-                    brand,
-                    code,
-                    catalog_url,
-                    requested_origin,
-                    raw_entry,
-                    catalog_kind=catalog_kind,
-                    tls_verification=tls_verification,
-                )
-        alias = DEFAULT_RUM_OPENWAY_ALIASES.get(requested_origin)
-        if alias and alias[0] == brand and alias in loaded:
-            alias_brand, alias_code = alias
-            alias_catalog_url, entry = loaded[alias]
-            return _site_from_entry(
-                alias_brand,
-                alias_code,
-                alias_catalog_url,
-                requested_origin,
-                entry,
-                catalog_kind=catalog_kind,
-                tls_verification=tls_verification,
-            )
-
-    alias = DEFAULT_RUM_OPENWAY_ALIASES.get(requested_origin)
-    if alias and alias in loaded:
-        brand, code = alias
-        catalog_url, entry = loaded[alias]
-        return _site_from_entry(
-            brand,
-            code,
-            catalog_url,
-            requested_origin,
-            entry,
-            catalog_kind=catalog_kind,
-            tls_verification=tls_verification,
-        )
+            if _origin_key(openway) in candidates:
+                matches.append(_site_from_entry(brand, code, catalog_url, requested_origin, entry,
+                    catalog_kind=catalog_kind, tls_verification=tls_verification))
+    if len(matches) > 1:
+        raise ResolutionError("ambiguous site metadata; conflicting catalog entries must be resolved before supplying a code")
+    if matches:
+        return matches[0]
+    if deployment_api is not None:
+        return Site("deployment", "deployment", "deployment_config", requested_origin, deployment_api,
+                    catalog_kind="service_name", endpoint_resolution=copy.deepcopy(endpoint_resolution))
 
     checked = ", ".join(catalog_url for _, catalog_url in catalogs)
     unavailable = (
@@ -269,7 +264,7 @@ def resolve_site(
         else ""
     )
     raise ResolutionError(
-        f"datawayUrl origin {requested_origin} did not match an openway entry; "
+        f"cannot determine AI API for datawayUrl origin {requested_origin}; "
         f"catalogs checked: {checked}{unavailable}"
     )
 
@@ -340,14 +335,12 @@ def preflight_site(
     *,
     ai_api_tls_context: ssl.SSLContext | None = None,
 ) -> dict[str, Any]:
-    return {
-        "status": "passed",
-        "dataway": probe_http_origin(site.dataway_url),
-        "ai_api": probe_http_origin(
-            site.ai_api_url,
-            tls_context=ai_api_tls_context,
-        ),
-    }
+    ai_api = probe_http_origin(site.ai_api_url, tls_context=ai_api_tls_context)
+    try:
+        dataway = probe_http_origin(site.dataway_url)
+    except ResolutionError:
+        dataway = {"status": "unverified", "reason": "receiver probe failed; verify reporting from the application environment"}
+    return {"status": "passed", "dataway": dataway, "ai_api": ai_api}
 
 
 def _response_item(payload: dict[str, Any], operation: str) -> dict[str, Any]:
@@ -518,6 +511,7 @@ def resolve_applications(
             "dataway_url": site.dataway_url,
             "ai_api": site.ai_api_url,
             "tls_verification": site.tls_verification,
+            **({"endpoint_resolution": copy.deepcopy(site.endpoint_resolution)} if site.endpoint_resolution is not None else {}),
         },
         "applications": applications,
         "credential_resolution": {
@@ -1014,6 +1008,7 @@ def site_metadata(site: Site) -> dict[str, Any]:
             "dataway_url": site.dataway_url,
             "ai_api": site.ai_api_url,
             "tls_verification": site.tls_verification,
+            **({"endpoint_resolution": copy.deepcopy(site.endpoint_resolution)} if site.endpoint_resolution is not None else {}),
         },
         "credential_resolution": {
             "status": "catalog_resolved",
@@ -1223,8 +1218,8 @@ def resolve_plan(
         return {"status": "reused", "resolved_slots": sorted(receiver["client_tokens"]), "state_file": str(state_path)}
     preflight_destinations([state_path, *(snapshot.path for snapshot in snapshots.values())])
     # Refresh destination snapshots at checkpoint time; all preflight checks precede input.
-    site = resolve_site(receiver["endpoint"]["value"])
     control = receiver["control_plane"]
+    site = resolve_site(receiver["endpoint"]["value"], endpoint_resolution=control.get("endpoint_resolution"))
     if (site.catalog_url != control["catalog"] or site.code != control["site_code"] or site.ai_api_url != control["ai_api_endpoint"]["value"]):
         raise ResolutionError("official site metadata changed; revise the plan before supplying a code")
     insecure = control.get("tls_verification") == "disabled_for_testing"
@@ -1299,6 +1294,7 @@ def resolve_plan(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataway-url")
+    parser.add_argument("--site-config", type=Path, help="non-secret same-deployment endpoint resolution JSON prepared from verified project/task evidence")
     parser.add_argument(
         "--app-id",
         action="append",
@@ -1307,7 +1303,7 @@ def main() -> int:
     parser.add_argument(
         "--site-only",
         action="store_true",
-        help="resolve only the official site catalog; do not exchange credentials or look up applications",
+        help="resolve only the control-plane endpoint; do not exchange credentials or look up applications",
     )
     parser.add_argument(
         "--application-type",
@@ -1374,7 +1370,7 @@ def main() -> int:
         if arguments.plan is None and not arguments.site_only:
             require_secure_storage()
         if arguments.plan is not None:
-            if any((arguments.dataway_url, arguments.app_id, arguments.application_type, arguments.client_token_key, arguments.client_token_sink, arguments.sink_format, arguments.plan_digest, arguments.site_only, arguments.allow_external_secret_sink, arguments.insecure_test_tls)):
+            if any((arguments.site_config, arguments.dataway_url, arguments.app_id, arguments.application_type, arguments.client_token_key, arguments.client_token_sink, arguments.sink_format, arguments.plan_digest, arguments.site_only, arguments.allow_external_secret_sink, arguments.insecure_test_tls)):
                 raise ResolutionError("--plan cannot be mixed with legacy receiver/sink/review options")
             if arguments.repository is None:
                 raise ResolutionError("--plan requires --repository")
@@ -1483,7 +1479,15 @@ def main() -> int:
             )
         if not arguments.site_only:
             preflight_destinations([arguments.state_file, sink_snapshot.path])
-        site = resolve_site(arguments.dataway_url)
+        endpoint_resolution = None
+        if arguments.site_config is not None:
+            try:
+                endpoint_resolution = json.loads(arguments.site_config.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                raise ResolutionError("site configuration could not be read") from None
+            if not isinstance(endpoint_resolution, dict):
+                raise ResolutionError("site configuration must be an object")
+        site = resolve_site(arguments.dataway_url, endpoint_resolution=endpoint_resolution)
         testing_site = site.catalog_url == TESTING_CATALOG
         tls_context = build_ai_api_tls_context(
             insecure_test_tls=arguments.insecure_test_tls,

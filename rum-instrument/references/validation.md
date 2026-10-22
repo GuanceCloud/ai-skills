@@ -14,12 +14,12 @@ For Revision Review, recompute the canonical plan digest and verify it equals `a
 
 For Public DataWay, also validate:
 
-- normalized origin matches `openway` in a supported official catalog or the documented default Web RUM alias;
-- `ai_api` comes from the matched catalog entry rather than hostname rewriting;
+- receiver is a valid HTTP(S) origin and is preserved independently of control-plane resolution;
+- `ai_api` comes from a unique official catalog entry (ordinary or normalized RUM service name), associated deployment configuration, or a documented deployment naming contract; deployment evidence is bound to the same receiver and retained in plan/state;
 - the exchange and application lookup paths are exact;
 - stdout, execution state, plans, diffs, and Git status contain no temporary code, API Key, or Client Token value;
 - an in-repository restricted runtime/build configuration file is ignored and mode `0600`;
-- the helper verifies both receiver origins without credentials before reading the temporary code;
+- the helper verifies AI API reachability/TLS without credentials before reading the temporary code; an unsuccessful DataWay probe records `unverified` and a delivery caveat, rather than blocking local integration;
 - the application lookup used a supported create-or-update configuration sink and a distinct Git-ignored state file; a simulated state-write failure restores the previous sink;
 - one code exchange and one successful lookup occur per Application ID; only transient lookup transport failures are retried;
 - Token acceptance checks only `token_expired: false` plus a present non-empty `client_token`; sync/mapping observations do not trigger polling or block implementation;

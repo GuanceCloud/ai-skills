@@ -125,6 +125,21 @@ class RumInstrumentPortabilityTests(unittest.TestCase):
             sys.modules[spec.name] = resolver
             self.addCleanup(sys.modules.pop, spec.name, None)
             spec.loader.exec_module(resolver)
+            # Exercise discovery in the unpacked package, with no source tests
+            # or evals available and no credentials/network requests required.
+            catalog = {'urls': {'cn3': {'openway': 'https://cn3-openway.guance.com',
+                                      'ai_api': 'https://cn3-ai-api.guance.com'}}}
+            discovered = resolver.resolve_site('https://cn3-rum-openway.guance.com',
+                catalogs=(('guance', 'https://urls.guance.com/'),), catalog_fetcher=lambda _: catalog)
+            self.assertEqual('cn3', discovered.code)
+            config_path = project / '.rum/site.json'
+            config_path.write_text(json.dumps({'method': 'configured',
+                'dataway_url': 'https://ingest.example.org', 'ai_api_url': 'https://control.example.net',
+                'evidence': 'existing:deploy/production.yaml#rum (synthetic deployment)'}))
+            discovered = json.loads(self.run_command(sys.executable, '-B', str(scripts / 'resolve_rum_application.py'),
+                '--site-only', '--dataway-url', 'https://ingest.example.org', '--site-config', str(config_path), cwd=project))
+            self.assertEqual('https://control.example.net', discovered['site']['ai_api'])
+            self.assertEqual('deployment_config', discovered['site']['catalog'])
             receiver = plan['request']['receiver']
             sink_path = project / receiver['client_tokens']['web']['sink']['path']
             control = receiver['control_plane']
