@@ -23,8 +23,10 @@ below gives the form to prefer and what the other form costs.
 
 1. **Know where the time range comes from.** A query executed through a request inherits
    `start_time` / `end_time`; the DQL carries only `step` and `rollup`, and is built with
-   `--request-time`. A standalone query with no request behind it must declare a range — the build
-   rejects an empty window otherwise, because nothing would bound the scan. A range far wider than
+   `--request-time`. The server itself **requires a window** and takes the boundaries from the request
+   `time_range` (ms); the step comes from an explicit `step`, else the request `interval` / `max_point`,
+   else the range collapses to one point per group. A standalone query with no request behind it must
+   declare a range — the build rejects an empty window otherwise, because nothing would bound the scan. A range far wider than
    the question is the single largest cost in any query; narrow it to what the question needs.
    For historical queries, specify absolute start and end timestamps in the DQL time window (AST
    `window.from` and `window.to`; `TimeExpr.time` in Unix milliseconds, see `recipes.md` →
@@ -103,7 +105,9 @@ below gives the form to prefer and what the other form costs.
       // Page 2 (cursor: feed time from the 100th record of Page 1)
       L::nginx:(*) { time < 1727000000000000000 } ORDER BY time DESC LIMIT 100
       ```
-      This performs an O(1) index seek rather than scanning and discarding thousands of rows.
+      This performs an O(1) index seek rather than scanning and discarding thousands of rows. The
+      literal above is nanoseconds; the response's `next_cursor_time` is microseconds and works just as
+      well, because a `time` comparison detects the unit by magnitude (seconds, ms, µs, ns).
 13. **Subqueries and `SHIFT` are additional reads.** A subquery is a separate query: its own
     conditions decide its own cost, and a condition in the outer query does not reduce what the inner
     query reads. `SHIFT` runs the query twice — the current window and the shifted one — so it
@@ -195,15 +199,17 @@ workspace you are querying, treat the right column as expensive and prefer the l
 ## Silent failures
 
 The rules above are about cost — breaking them is slow but correct. The rows below are different: they
-produce **wrong or empty results with no error**, so nothing catches them and the output looks
-plausible. All three can be addressed by rewriting the query: using `IN` instead of array equality,
-confirming exact-match field semantics, or narrowing time windows and filtering by indexed dimensions to
-avoid sampling (and disclosing the estimate if a wide range is necessary).
+produce **wrong or empty results with no error**, so the output looks plausible. Each is addressed by
+rewriting the query: `IN` instead of array equality, filling in the empty list, confirming exact-match
+field semantics, or narrowing time windows and filtering by indexed dimensions to avoid sampling (and
+disclosing the estimate if a wide range is necessary). The build warns about the first and third rows
+(`eq_array`, `empty_in_list`); the rest depend on the data model and on the response metadata.
 
 | Form | What silently happens | Safe form |
 | --- | --- | --- |
 | `{host = ['a','b']}` on a scalar field | On some workspaces the condition is dropped and never applied, so you get an empty result | `{host IN ['a','b']}` |
 | `{field = 'value'}` on a tokenized log field | Matches **by token**, not by whole value, so it can return rows whose value is not equal to the literal | Confirm the field is matched by whole value, or filter on a different field |
+| `{field IN []}` | The empty list matches nothing (`NOT IN []` matches everything) with no error | Write the values you meant, or drop the condition |
 | A high-volume scan over a log-type namespace | The scan is **sampled**, so aggregate results come back as approximations rather than exact figures | Narrow the time range, add selective dimension filters (e.g. `service`, `host`), or verify `sample` in the response — see *Sampling* |
 
 ## Sampling
@@ -215,9 +221,12 @@ serves as a safeguard against timeouts and excessive memory usage rather than a 
 occurrence is reflected only in response metadata. **Metric queries (`M::`) do not use sampling**: they
 enforce strict row limits and reject oversized queries with `TooManyRows` rather than returning approximations.
 
-- **Detection.** The response envelope contains a `sample` ratio (default `1.0`); values in `(0, 1)` or
-  `datasource: "sampling"` indicate that results were sampled server-side. `sampling_required: true`
-  signifies that the scan is too extensive to allow unsampled execution.
+- **Detection.** The `/v1/query` response envelope carries `sample` (ratio, default `1.0`),
+  `sampling_required` (bool), `datasource` (`raw` / `sampling` / `streaming_aggregation`), and the
+  effective `time_range` (ms), `interval` (step ms) and `window` (range ms). A `sample` in `(0, 1)` or
+  `datasource: "sampling"` means the results were sampled server-side; `sampling_required: true` means
+  the scan is too extensive to allow unsampled execution. `is_order_by_ignored` reports a dropped
+  `ORDER BY`. Quote these fields instead of inferring behaviour from the DQL.
 - **Accuracy impact.** All aggregates evaluated over a sampled scan are statistical estimates rather than
   exact figures.
 - **How to avoid sampling.** Because DQL syntax contains no clause to disable sampling directly, queries
@@ -225,7 +234,8 @@ enforce strict row limits and reject oversized queries with `TooManyRows` rather
   - Constrain the time window to the minimum interval necessary.
   - Filter early using selective indexed or clustered dimensions (`service`, `source`, `host`, `status`, etc.).
   - Use keyset/cursor pagination (`{ time < <last_timestamp> }`) instead of deep `OFFSET`. Cursor-based scans
-    avoid scanning broad ranges of records.
+    avoid scanning broad ranges of records. The response's `next_cursor_time` is in **microseconds**;
+    pass it back into `time < …` as-is, since a `time` comparison detects the unit by magnitude.
 - **Delivery requirement.** Whenever query bounds and data volume make sampling likely, clearly state in delivery
   notes that returned figures are estimates, citing the response `sample` field as verification.
 
@@ -263,6 +273,7 @@ the prefix `critical warning:`:
 | `match_with_regex_syntax` | `match()` contains regex syntax; `match()` is strictly literal substring |
 | `regex_for_literal` | Regex without metacharacters matches a single value; use `=` or `IN` |
 | `regex_for_alternation` | Regex `a\|b\|c` over literals; use `IN ['a', 'b', 'c']` |
+| `empty_in_list` | CRITICAL: `IN []` matches no rows (and `NOT IN []` matches every row); the list lost its values |
 
 Warnings are deduplicated on `(code, message)`; duplicate violations of the same pattern collapse into a
 single entry referencing the first occurrence. Output is sorted by warning code and capped at 20 entries.

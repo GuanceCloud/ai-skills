@@ -174,6 +174,7 @@ milliseconds**: `{"type": "TimeExpr", "time": 1726800000000}`.
 | Side-by-side period comparison (expression `SHIFT`) | [metric-shift-expression](#metric-shift-expression) |
 | Rolling / sliding window evaluation (`range` vs `step`) | [metric-sliding-window](#metric-sliding-window) |
 | Raw metric points, to troubleshoot a series | [metric-raw-points](#metric-raw-points) |
+| One field across every measurement (no source named) | [metric-projection-only](#metric-projection-only) |
 
 ### 2. Log, Event & Trace Queries (`L::`, `T::`, `O::`)
 
@@ -185,6 +186,7 @@ milliseconds**: `{"type": "TimeExpr", "time": 1726800000000}`.
 | Combining filters with AND and OR logic | [log-complex-filter](#log-complex-filter) |
 | Filtering on a field inside a JSON message | [log-json-field](#log-json-field) |
 | Deep nested JSON path filtering (`@path.key`) | [log-json-deep-path](#log-json-deep-path) |
+| Selecting a field whose name contains a dash or space | [log-backticked-field](#log-backticked-field) |
 | Counting by a field | [log-count-by-field](#log-count-by-field) |
 | The distinct values of a field | [log-distinct-values](#log-distinct-values) |
 | Full-text search (`search()`) | [log-fulltext](#log-fulltext) |
@@ -624,7 +626,7 @@ milliseconds**: `{"type": "TimeExpr", "time": 1726800000000}`.
 
 ``L::`nginx`:(`time`, `status`, `message`){ (`status` >= 400) } ORDER BY `time` DESC LIMIT 100``
 
-**Note**: A detail query has no aggregate and no `groups`, but it still needs a window. Its `projections` is a plain list of `IdentExpr`; include `time` when the user needs to see when each row happened.
+**Note**: A detail query has no aggregate and no `groups`, and it needs no `window`: the request's time range bounds the scan. Its `projections` is a plain list of `IdentExpr`; include `time` when the user needs to see when each row happened. `LIMIT` is what keeps the result finite.
 
 ## log-wildcard-detail
 
@@ -647,7 +649,7 @@ milliseconds**: `{"type": "TimeExpr", "time": 1726800000000}`.
 
 ``L::*:(*) ORDER BY `time` DESC LIMIT 100``
 
-**Note**: A wildcard source (`WildcardExpr`) reads all sources in the index. Use it as a fallback when the source name is unknown, and replace it with a named source once discovered via `show_logging_source()`.
+**Note**: A wildcard source (`WildcardExpr`) reads all sources in the index. Use it as a fallback when the source name is unknown, and replace it with a named source once discovered via `show_source(namespace='L')`.
 
 ## log-in-filter
 
@@ -723,7 +725,7 @@ milliseconds**: `{"type": "TimeExpr", "time": 1726800000000}`.
 
 ``L::`nginx`:(`time`, `message@request.path`, `message@response.status`){ (`message@response.status` >= 400) } ORDER BY `time` DESC LIMIT 100``
 
-**Note**: There is no node for JSON extraction — `message@response.status` is the entire `IdentExpr` value, and it is used in `wheres` and `groups` exactly like any other field name. The path subset is `.key`, `["key"]` when the key holds spaces or punctuation, and `[index]` for an array position.
+**Note**: There is no node for JSON extraction — `message@response.status` is the entire `IdentExpr` value, and it is used in `wheres` and `groups` exactly like any other field name. The path is part of the identifier, so it may only use `[letters digits _ . @]`; a key with spaces or punctuation needs the whole path backticked: `` `message@key with spaces` ``. Bracket syntax (`message["key"]`, `tags[0]`) does not parse.
 
 ## log-json-deep-path
 
@@ -883,8 +885,57 @@ milliseconds**: `{"type": "TimeExpr", "time": 1726800000000}`.
 
 **Note**: No aggregate and no `BY` means the raw stored points, which is the right shape for a gap, a spike, or a value that looks wrong. `LIMIT` is mandatory — without it the query returns every point in the range. The `ORDER BY` is optional (the server orders by time), and written out here because newest-first is the point of the query. See `metrics.md` for the other metric shapes.
 
+## metric-projection-only
+
+### Metric: one field across every measurement
+
+**Ask**: The average of `usage_user` regardless of which measurement reports it.
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "M",
+  "sources": null,
+  "projections": ["avg(usage_user) AS v"],
+  "window": {"step": "5m"},
+  "limit": 100
+}
+```
+
+**Builds**:
+
+``M:::(avg(`usage_user`) AS `v`)[::5m0s] LIMIT 100``
+
+**Note**: `sources: null` (or `[]`) is the no-source form: the third colon in `M:::(…)` marks an empty source list, and the query reads that field from every measurement in the index. Use it only when the field name is globally unambiguous; naming the measurement is cheaper and less surprising.
+
+## log-backticked-field
+
+### Log: a field whose name contains a dash
+
+**Ask**: nginx requests whose `user-agent` field is exactly `curl`.
+
+```json
+{
+  "type": "SelectExpr",
+  "namespace": "L",
+  "sources": ["nginx"],
+  "projections": ["time", "`user-agent`"],
+  "wheres": ["`user-agent` = \"curl\""],
+  "order_by": ["time DESC"],
+  "limit": 50
+}
+```
+
+**Builds**:
+
+``L::`nginx`:(`time`, `user-agent`){ (`user-agent` = "curl") } ORDER BY `time` DESC LIMIT 50``
+
+**Note**: Unquoted, `user-agent` lexes as `user - agent` — the build succeeds and the filter silently compares a subtraction. Any identifier outside `[letters digits _ . @]` must be backticked, including JSON paths whose keys hold spaces.
+
 ## Global Query Invariants
 
 1. **Time comes from the request**: the request supplies `start_time` / `end_time`; the AST carries `step` and `rollup` and is built with `--request-time`. Write an explicit `from`/`to` only for a fixed historical period.
 2. **Result bounding**: Include `LIMIT` for row counts and `SLIMIT` for group counts to prevent driver memory overflow.
 3. **Validation**: Validate built output with `dqlcheck` before delivery. Note that `--format json` escapes `<`, `>`, and `&` in the `build` string.
+4. **Identifiers**: backtick anything outside `[letters digits _ . @]`. An unquoted dash is subtraction, and there is no bracket path syntax for JSON keys.
+5. **Units**: the AST `TimeExpr.time` and the request bounds are Unix **milliseconds**; the built window literals are **nanoseconds**; `time` comparisons accept seconds/ms/µs/ns detected by magnitude, so keep 13-digit ms.

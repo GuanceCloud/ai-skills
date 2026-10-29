@@ -290,7 +290,9 @@ and a late row — do not treat the template text as a stable key. Ranges for `t
 Computed over the aggregated result. Each can be written **inside the projection** —
 `M::cpu:(rate(usage)) [::5m] BY host` — and most can also be written as a **rollup in the time
 clause**, which is the cheaper way to say the same thing: `[rate]`, `[::5m:slope]`,
-`[::1m:ewma(0.3)]`, `[::1m:moving_average(5)]`, `[::5m:percentile(95)]`. `corr` needs two input
+`[::1m:ewma(0.3)]`, `[::1m:moving_average(5)]`, `[::5m:percentile(95)]`. A rollup written without a
+step (`[rate]`, which builds as `[:::rate]`) runs on the step the request derives from `interval` /
+`max_point`; give the step explicitly when the granularity is part of the answer. `corr` needs two input
 fields, so it has no time-clause form.
 
 | Function | Computes |
@@ -349,7 +351,7 @@ the only argument: `cumsum(M::requests:(sum(count)) [::5m] BY service)` builds.
 Two things this file does not cover, both worth knowing exist:
 
 - **Show functions** — `show_measurement()`, `show_tag_value(from=[…], keyin=[…])`,
-  `show_logging_field('*')` and friends. They list metadata (measurements, tag keys, field keys,
+  `show_field(namespace='L', source='*')` and friends. They list metadata (measurements, tag keys, field keys,
   cardinality, series counts) instead of reading data, which makes them the right first step when you
   do not know the data model. The official reference lists every `show_*` function, its required
   arguments and its return columns.

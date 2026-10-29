@@ -1,7 +1,7 @@
 id = 'dql'
 publisher = 'pe'
 name = 'dql'
-version = '0.5.0'
+version = '0.6.0'
 description = 'Author DQL as an AST and compile it with dqlcheck --in ast; every delivered query must be built and validated, and must follow the performance guidance.'
 category = 'general'
 license = 'NOASSERTION'

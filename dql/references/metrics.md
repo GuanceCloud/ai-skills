@@ -60,6 +60,8 @@ M::(usage_user) [::5m] LIMIT 100
 
 `M::` with no source reads the field across every measurement in the index. Use it when you want a
 field regardless of which measurement carries it; prefer naming the measurement as soon as you know it.
+The AST behind this shape is `"sources": null` (or `[]`), and the canonical output renders the empty
+source list as a third colon: ``M:::(avg(`usage_user`))[::5m0s]``. Both forms are the same query.
 
 ## Rollup: per-series preprocessing
 

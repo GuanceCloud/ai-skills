@@ -221,7 +221,9 @@ Write a DQL that returns the top 10 hosts by average CPU usage over the last hou
 - A standard resource dashboard must build its instance-property table from real resource-object data; metric tags are not a substitute.
 - DQL must be authored as an AST and built with `dqlcheck --in ast`; the delivered DQL must be the output of `dqlcheck --in ast --out build --request-time`, never hand-written text. The AST is internal: never show it to the user. Building validates: it decodes, expands the shorthands, builds and binds, and it rejects any AST key that is not part of that node's schema.
 - Every `warning:` line the build prints must be either fixed or explained in the delivery notes. Warnings go to stderr, never fail a build, and are also returned in the `warnings` array under `--format json`.
-- Every final executable DQL must be built item by item before delivery, and must satisfy `dql/references/performance.md`. The build validates syntax and binding only — it cannot tell whether a query reads more than it needs, so that check is manual.
+- Every final executable DQL must be built item by item before delivery, and must satisfy `dql/references/performance.md`. The build validates syntax, binding, function names and arity, and the `outer` wrapper; it cannot tell whether a query reads more than it needs, so that check is manual.
+- Backtick any identifier outside `[letters digits _ . @]` — an unquoted dash silently becomes subtraction — and never put a `#` comment inside an AST fragment string.
+- Time: request bounds and AST `TimeExpr.time` are milliseconds, the built window literals are nanoseconds, and `time` comparisons accept seconds/ms/µs/ns detected by magnitude.
 - Failed DQL should be minimally repaired and rebuilt; an item that still fails after repeated attempts must not be delivered as final.
 
 Common validation commands:
