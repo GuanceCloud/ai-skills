@@ -87,17 +87,13 @@ Official full references published from GuanceDB:
 - DQL functions: <https://zhuyun-static-files-production.oss-cn-hangzhou.aliyuncs.com/guancedb/docs/DQL%20Functions.md>
 
 > **Version bound.** The rules, capabilities, cost labels, response fields and error messages in these
-> references were verified against the **GuanceDB server build** `v1.58.0` (2026-10-28) and
-> `dqlcheck v1.58.1` (2026-10-29), reading the parser, binder and `/v1/query` handler directly. They
-> change between releases, so treat that as the expiry date of this skill's accuracy.
+> references were verified against the **GuanceDB `v1.58.1` source tree** (2026-10-29) — parser, binder,
+> `dqlcheck` and the `/v1/query` handler. They change between releases, so treat that as the expiry date
+> of this skill's accuracy.
 >
 > `dqlcheck` is versioned separately, from the download URL — its version tells you nothing about the
 > server. Check which one you have with `./bin/dqlcheck --version`, and whether it supports the AST flow
-> with the probe in *Capability check*. Some checks described here (the `outer` wrapper validation, the
-> index-condition identity check, the "did you mean" decode hint) come from the current source tree and
-> can be **newer than a published binary**: when an older build accepts a shape this document rejects,
-> the server still fails at query time — report it instead of trusting the build.
-> There is no way to query the server version from this skill.
+> with the probe in *Capability check*. There is no way to query the server version from this skill.
 > **If the user reports behaviour that contradicts a rule here, believe the user**, and record the
 > discrepancy in your delivery notes instead of insisting on the rule.
 
@@ -118,12 +114,11 @@ side-effect-free, and `rm -rf bin/.cache` deletes it.**
 
 `bin/dqlcheck` downloads whatever build is published for the version the wrapper resolves. In order:
 
-1. **Ask whether a build is available** and point the wrapper at it:
+1. **Point the wrapper at a specific build** when you have one:
    `DQLCHECK_CACHE_DIR=<dir> ./bin/dqlcheck …` — the wrapper expects `<dir>/<os>-<arch>/dqlcheck` plus a
-   matching `.version` file. `DQLCHECK_VERSION` pins a version. This is the
-   reliable path when the published artifact is older than this skill.
-2. If the download fails or `AST_UNSUPPORTED` comes back, the published artifact predates the AST
-   flow. Confirm what you have with `./bin/dqlcheck --version` before concluding anything.
+   matching `.version` file. `DQLCHECK_VERSION` pins a version.
+2. If the download fails or `AST_UNSUPPORTED` comes back, the available build lacks the AST flow.
+   Confirm what you have with `./bin/dqlcheck --version` before concluding anything.
 3. **Otherwise use Degraded mode** and say so in the delivery. Do not stall waiting for a build, and do
    not hand-write DQL while claiming the AST guarantee.
 
