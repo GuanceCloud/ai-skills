@@ -36,7 +36,7 @@ ai-skills/
 | `alert_manager` | Convert Prometheus alerting rules into Guance monitor JSON | Alerting rule plus metric mapping | `output/monitor/{{component}}/{{component}}.json` |
 | `dashboard` | Generate, repair, or review Guance Dashboard JSON from real metrics and resource-object data | Metrics CSV; resource-object CSV/JSON for standard resource dashboards; optional existing Dashboard JSON | `output/dashboard/{{type}}/{{type}}.json` |
 | `monitor` | Generate Guance monitor JSON from a metrics CSV | `csv/{{component}}*.csv` | `output/monitor/{{component}}/{{component}}.json` |
-| `dql` | Generate, fix, explain, and review DQL | User requirements or DQL queries | Validated final DQL |
+| `dql` | Author DQL as an AST and compile it with `dqlcheck --in ast`, then review it against the performance guidance; also fix, explain, and review existing DQL | User requirements or DQL queries | Built and validated DQL, its request parameters, and cost notes |
 | `grafana-to-guance-dashboard` | Convert and audit Grafana dashboards for Guance | Grafana dashboard JSON | Guance dashboard JSON and audit notes |
 | `otel-instrument` | Instrument C++, C#/.NET, Erlang/Elixir, Go, Java, JavaScript/TypeScript, Kotlin, PHP, Python, Ruby, Rust, and Swift repositories with OpenTelemetry | Git repository plus selected signals and trace depth | Instrumented source and existing deployment config, local validation evidence, module inventory, and unresolved runtime handoff |
 | `owl-dashboard` | Generate, repair, or verify importable Guance Dashboard JSON from live workspace data through `owl` | Workspace access plus a Dashboard target or requirements | Dashboard JSON and a separate live-data evidence JSON |
@@ -212,7 +212,7 @@ Generate a MySQL dashboard.
 Generate Redis monitors.
 
 /skill dql
-Fix this DQL and return an executable version.
+Write a DQL that returns the top 10 hosts by average CPU usage over the last hour.
 ```
 
 ## Mandatory Rules
@@ -220,15 +220,27 @@ Fix this DQL and return an executable version.
 - `dashboard` and `monitor` must refuse generation when the required CSV file is missing.
 - Do not invent metrics and do not replace user CSV content with online examples.
 - A standard resource dashboard must build its instance-property table from real resource-object data; metric tags are not a substitute.
-- Any final executable DQL must pass `dqlcheck` item by item before delivery.
-- Failed DQL should be minimally repaired and rechecked; an item that still fails after repeated attempts must not be delivered as final.
+- DQL must be authored as an AST and built with `dqlcheck --in ast`; the delivered DQL must be the output of `dqlcheck --in ast --out build --request-time`, never hand-written text. The AST is internal: never show it to the user. Building validates: it decodes, expands the shorthands, builds and binds, and it rejects any AST key that is not part of that node's schema.
+- Every `warning:` line the build prints must be either fixed or explained in the delivery notes. Warnings go to stderr, never fail a build, and are also returned in the `warnings` array under `--format json`.
+- Every final executable DQL must be built item by item before delivery, and must satisfy `dql/references/performance.md`. The build validates syntax, binding, function names and arity, and the `outer` wrapper; it cannot tell whether a query reads more than it needs, so that check is manual.
+- Backtick any identifier outside `[letters digits _ . @]` — an unquoted dash silently becomes subtraction — and never put a `#` comment inside an AST fragment string.
+- Time: request bounds and AST `TimeExpr.time` are milliseconds, the built window literals are nanoseconds, and `time` comparisons accept seconds/ms/µs/ns detected by magnitude.
+- Failed DQL should be minimally repaired and rebuilt; an item that still fails after repeated attempts must not be delivered as final.
 
 Common validation commands:
 
 ```bash
-./dql/bin/dqlcheck -q '<DQL>'
-./dql/bin/dqlcheck --file /tmp/query.dql
+./dql/bin/dqlcheck --in ast --file /tmp/query.json --out build --request-time   # AST -> DQL (validates as it builds)
+./dql/bin/dqlcheck --in ast --file /tmp/query.json --out ast --request-time   # expanded AST
+./dql/bin/dqlcheck --in dql -q '<DQL>' --out ast --with-binder=false          # existing DQL -> AST, for repair
+./dql/bin/dqlcheck --version                                     # which release is installed
+./dql/bin/dqlcheck --in ast --file /tmp/query.json --out build --request-time --format json  # build + warnings as data
 ```
+
+The AST workflow requires a `dqlcheck` that supports `--in ast` and `--request-time`; check by building
+the one-line probe in `dql/SKILL.md` → *Capability check*. Until a build with the AST flow is published, point the
+wrapper at a local one with `DQLCHECK_CACHE_DIR=<dir>`, or the skill falls back to text-mode validation
+and must say so when delivering.
 
 ## Grafana Converter
 
