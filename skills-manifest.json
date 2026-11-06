@@ -3,6 +3,7 @@
   "skills": [
     { "name": "alert_manager", "path": "alert_manager", "setup": {} },
     { "name": "dashboard", "path": "dashboard", "setup": {} },
+    { "name": "datadog-dashboard", "path": "datadog-dashboard", "setup": {} },
     { "name": "dql", "path": "dql", "setup": {} },
     { "name": "grafana-to-guance-dashboard", "path": "grafana-to-guance-dashboard", "setup": {} },
     { "name": "monitor", "path": "monitor", "setup": {} },
