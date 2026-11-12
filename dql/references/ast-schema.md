@@ -34,16 +34,16 @@ Every data query is a `SelectExpr` JSON object. Optional clauses may be omitted 
 | --- | --- | --- | --- |
 | `type` | yes | `"SelectExpr"` | Node discriminator |
 | `namespace` | one of these two | `string` | Data namespace (`M`, `L`, `T`, `O`, …). Expands to the default index of that namespace. **Not validated by the build**: the workspace catalog decides which namespaces exist, so a typo compiles and fails when the server resolves the index. `namespace` and `indices` are mutually exclusive — the build rejects writing both, because the decoder keeps `indices` and silently drops `namespace` |
-| `indices` | one of these two | `object[]` | Explicit partition config: `[{"namespace": "L", "index_name": "web-logs"}]`. `index_name` may be omitted (default partition). `conditions` takes the same expression strings as any clause list, but needs `tenant_id` or `workspace_uuid`: the text form carries conditions only inside the `(tenant, index, …)` tuple and drops them without that identity, so the build rejects conditions that have no identity. Delivered queries normally leave partitions to the request's `indices` |
+| `indices` | one of these two | `object[]` | Explicit partition config: `[{"namespace": "L", "index_name": "web-logs"}]`. `index_name` may be omitted (default partition). `conditions` takes the same expression strings as any clause list, but needs `tenant_id` or `workspace_uuid`: the text form carries conditions only inside the `(tenant, index, …)` tuple and drops them without that identity, so the build rejects conditions that have no identity. **Delivered queries use `namespace`, not `indices`**: the request selects the index, and a pinned `index_name` overrides it (warning `hardcoded_partition`) — keep it only for an explicit multi-partition request from the user |
 | `sources` | yes | `string` \| `string[]` \| `object` | Metric measurement, log source, wildcard `["*"]`, regex `["re(\"cpu.*\")"]`, or an alias map of subqueries. A single string is a one-element list. **`null` means "no source condition"** and builds `M:::(...)` — every measurement of the index; `[]` behaves the same, so name a source unless that read is intended |
 | `projections` | yes | `string[]` | Selected columns and expressions: `["avg(val) AS v", "count(*) AS n"]` |
 | `wheres` | no | `string[]` | Filters: `["status >= 500", "host IN ['a', 'b']"]`. Joined by AND; OR is written inside one expression |
-| `window` | no | `object` | Aggregation window: `{"step": "5m", "rollup": "rate"}`. Relative `from`/`to` are omitted when inheriting request time. Also accepts `range` (sliding lookback), `time_keyword` (`"now-1h"`) and parameterized rollups via `rollup_args`: `{"step": "1m", "rollup": "ewma", "rollup_args": [0.3]}` |
+| `window` | no | `object` | Aggregation window: `{"step": "5m", "rollup": "rate"}`. **Omit `from`/`to`**: the request supplies the range, and a window written here replaces it (warning `relative_window`). Also accepts `range` (sliding lookback), `time_keyword` (only the presets `TODAY`, `YESTERDAY`, `THIS WEEK`, `LAST WEEK`, `THIS MONTH`, `LAST MONTH`) and parameterized rollups via `rollup_args`: `{"step": "1m", "rollup": "ewma", "rollup_args": [0.3]}` |
 | `groups` | no | `string[]` | Dimensions to group by: `["host", "drain(message, 0.7, 1000) AS template"]` |
 | `having` | no | `string[]` | Filter evaluated after aggregation: `["avg_usage > 80"]` |
 | `order_by` | no | `string` \| `string[]` | In-group ordering: `["time DESC"]`. A single string is a one-element list; the expression may contain spaces, only the trailing direction is structural |
 | `limit` / `offset` | no | `int` | In-group pagination (points per series) |
-| `sorder_by` | no | `string` \| `object` | Cross-group ranking: `"avg_usage DESC"`, same direction rule as `order_by`. The object form is `{"value": <Expr>, "order": "DESC"}`; a **scalar** `value` is rejected, so either write the string form or a full expression object |
+| `sorder_by` | no | `string` \| `object` | Cross-group ranking: `"avg_usage DESC"`, same direction rule as `order_by`. Rank by a **projection alias**: an aggregate expression (`SORDER BY count(*)`) is not pushed down and ranks an arbitrary set of groups (warning `sorder_by_expression`). The object form is `{"value": <Expr>, "order": "DESC"}`; a **scalar** `value` is rejected, so either write the string form or a full expression object |
 | `slimit` / `soffset` | no | `int` | Cross-group pagination (number of groups) |
 | `shift` | no | `string` | Period comparison duration: `"1d"`, `"7d"` |
 | `outer` | no | `string` \| `object` | Outer wrapper function: `"cumsum"` or `{"fn": "moving_average", "args": [5]}`. The wrapped query is still bound, validated and linted |
@@ -83,7 +83,7 @@ Accepted expressions per clause:
 | `having` | `"v > 80"` | Conditions on aggregate results or aliases |
 | `sources` | `"cpu"`, `"re(\"cpu.*\")"`, `"*"` | Target measurement or source name |
 | `order_by` | `"time DESC"`, `"time ASC"` | Must specify direction (`ASC` or `DESC`) |
-| `sorder_by` | `"v DESC"`, `"v ASC"` | Cross-group sort by aggregate alias or expression |
+| `sorder_by` | `"v DESC"`, `"v ASC"` | Cross-group sort by projection alias (never by the aggregate expression itself) |
 
 ### Identifier and literal rules inside a fragment
 
@@ -121,7 +121,10 @@ Always compile with `--request-time`:
 Builds `[::5m0s:percentile(95)]`. The same form covers `ewma(0.3)` and `moving_average(5)`.
 
 **When to write explicit time range in DQL:**
-Only specify `from` / `to` when querying a fixed historical time window or performing `SHIFT`:
+By default, never: pass `start_time` / `end_time` to the query request. Only specify absolute `from` / `to` for
+a fixed historical window or for `SHIFT`, because anything written here replaces the caller's range — a
+relative `from` (`"15m"`, `[15m::5m]`) pins the query to the server's clock and the build warns
+`relative_window`.
 ```text
 "window": {
   "from": {"type": "TimeExpr", "time": 1726800000000},
@@ -135,7 +138,7 @@ Only specify `from` / `to` when querying a fixed historical time window or perfo
 | Field | Meaning |
 | --- | --- |
 | `from` / `to` | Absolute (`TimeExpr`, Unix **ms**) or relative (`"1h"`) boundaries. Relative values resolve against the server's wall clock at parse time — never use them for a historical period |
-| `time_keyword` | Preset keyword instead of `from`, e.g. `"now-1h"`; builds `[now-1h:5m0s]` |
+| `time_keyword` | Preset keyword instead of `from`: `TODAY`, `YESTERDAY`, `THIS WEEK`, `LAST WEEK`, `THIS MONTH`, `LAST MONTH`. Anything else is rejected by the build, because the parser only knows these |
 | `step` | Point granularity. Optional: without it the request `interval` supplies the step, and with neither the range collapses to one point per group |
 | `range` | Sliding lookback, defaulting to `step`. `range > step` overlaps points and reads the whole window into compute (the `sliding_window` warning) |
 | `rollup` / `rollup_args` | Per-series preprocessing applied before the aggregation |

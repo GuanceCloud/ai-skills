@@ -227,6 +227,7 @@ Write a DQL that returns the top 10 hosts by average CPU usage over the last hou
 - Every final executable DQL must be built item by item before delivery, and must satisfy `dql/references/performance.md`. The build validates syntax, binding, function names and arity, and the `outer` wrapper; it cannot tell whether a query reads more than it needs, so that check is manual.
 - Backtick any identifier outside `[letters digits _ . @]` — an unquoted dash silently becomes subtraction — and never put a `#` comment inside an AST fragment string.
 - Time: request bounds and AST `TimeExpr.time` are milliseconds, the built window literals are nanoseconds, and `time` comparisons accept seconds/ms/µs/ns detected by magnitude.
+- The delivered DQL must not carry the caller's state: no `from`/`to` (or relative window) in the query — the time range goes to the owl request; no pinned `indices`/`index_name` — the request selects the index; groups are ranked with `SORDER BY <projection alias>`, never by the aggregate expression.
 - Failed DQL should be minimally repaired and rebuilt; an item that still fails after repeated attempts must not be delivered as final.
 
 Common validation commands:

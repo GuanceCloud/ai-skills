@@ -50,7 +50,9 @@ There is no bracket path syntax: `message["key"]` and `tags[0]` are parse errors
 
 ## Time values
 
-- **Window.** `window` may be omitted: the request's `time_range` supplies the boundaries and `interval` / `max_point` supplies the step; with neither, the range collapses to one point per group. Declare `step` explicitly when the point granularity matters.
+- **Default: no window.** Pass `start_time` / `end_time` to the query request (owl) and let the DQL carry only `step` and `rollup`. A `from`/`to` written into the DQL — absolute or relative, like `[15m::5m]` — **replaces** the caller's range instead of completing it; the build reports `relative_window`.
+- **Step.** With no `step`, the request's `interval` / `max_point` decides the point granularity; with neither, the range collapses to one point per group. Declare `step` when the granularity matters.
+- **When a window is legitimate**: a fixed historical interval (absolute `from`/`to`, Unix ms) or a period comparison via `SHIFT`. The only preset keywords are `TODAY`, `YESTERDAY`, `THIS WEEK`, `LAST WEEK`, `THIS MONTH`, `LAST MONTH`; `now-1h` is not one.
 - **`[:::rate]` is not broken.** A rollup without a step means "roll up on the request-derived step"; the empty step slot is how that is written. `[::5m0s:rate]` pins the step instead.
 - **AST vs DQL units.** `TimeExpr.time` in the AST is **Unix milliseconds**; the built DQL prints nanoseconds (`[1726800000000000000:…]`). `start_time` / `end_time` in the request are milliseconds.
 - **`time` comparisons accept any epoch magnitude** — 10-digit seconds, 13-digit ms, 16-digit µs, 19-digit ns — and are converted by magnitude. Prefer 13-digit ms so a reader can check it against the request bounds.
@@ -224,6 +226,22 @@ by hand against `references/performance.md`:
 - Does the query scan a large volume of data that may trigger **sampling**? On log-type namespaces, high-volume
   scans return estimates indicated by `sample < 1.0` in the response envelope — see *Sampling* in that file and
   disclose this in delivery notes. (Metric queries are never sampled; over-large queries are rejected instead.)
+- Is the filter on the **structured field you discovered**? Dedicated fields often have native indexes
+  (keyword, inverted, or columnar min/max) and narrow data types. Matching against `message` scans the large raw
+  text column, which is significantly more expensive when a structured equivalent exists. Use the field whenever
+  one exists, and reserve `message` matching for unstructured content.
+
+Three shapes mean the caller's own state is being overridden, so they are defects even when the DQL builds:
+
+- a `from`/`to` (or preset keyword) inside the window — `relative_window`;
+- an `indices` entry with `index_name` / `tenant_id` — `hardcoded_partition`, which reads a partition the
+  caller did not select and returns zeros when it is the wrong one;
+- `SORDER BY <aggregate expression>` instead of a projected alias — `sorder_by_expression`, which ranks an
+  arbitrary set of groups.
+
+**Zero rows is a finding, not a result.** Before reporting a count of 0, confirm the namespace, the index the
+request selected, the source name, and the echoed `time_range`; an empty response from a valid-looking query
+is usually one of those four being wrong, and calling it "normal" is the worst outcome for the user.
 
 When you can execute the query, confirm what actually ran from the response instead of inferring it:
 `sample` (ratio), `sampling_required`, `datasource` (`raw` / `sampling` / `streaming_aggregation`),
@@ -257,6 +275,12 @@ Deliver:
   path; Degraded mode is the exception.
 - **MUST NOT** write request-level `start_time` / `end_time` into the DQL statement. Use `--request-time`
   and let the query inherit the range; an explicit `from`/`to` is only for fixed historical intervals or `SHIFT`.
+  The same applies to relative windows (`[15m::5m]`): they pin the query to the server clock and discard the
+  range the caller chose.
+- **MUST NOT** put the caller's index/partition into the DQL (`indices`, `L("tw-poc")`). The request already
+  selects the index; a pinned partition silently reads different data.
+- **MUST** rank groups with `SORDER BY <projection alias>`: alias the aggregate (`count(*) AS c`) and sort by
+  `c`, never repeat the aggregate expression — the expression form is not pushed down.
 - **MUST NOT** call `owl.data.check_dql` for a query whose window is empty: it binds without request
   context and rejects `[::step]`. The compilation step above already performs semantic validation.
 - **The mandatory AST / `dqlcheck` flow applies to delivered data queries (`SelectExpr`).** Show queries

@@ -119,14 +119,18 @@ values; the schema is documented in `references/ast-schema.md`.
 ## Time in recipes
 
 Recipes below omit `from` and rely on `--request-time`: the caller supplies
-`start_time` / `end_time` and the DQL carries only `step` and `rollup`. A recipe
-with an explicit `from`/`to` is a fixed historical window and overrides the
-request.
+`start_time` / `end_time` (owl) and the DQL carries only `step` and `rollup`. Do not add a
+relative window such as `[15m::5m]` to express "last 15 minutes" — it overrides the range the
+caller selected, and the build reports `relative_window`. A recipe with an absolute `from`/`to`
+is a fixed historical window and overrides the request on purpose.
 
 ## Index (Partition) Configuration
 
-`namespace` selects the default partition. To query across specific partitions,
-use the `indices` form with `index_name`:
+`namespace` selects the default partition, and that is what a delivered query should use: the
+request already carries the index the caller selected. Pinning `index_name` overrides it, so the
+query then reads a different partition and returns zeros when the name does not hold the data
+(the build warns `hardcoded_partition`). Use the `indices` form only when the user explicitly asks
+to read several partitions at once:
 
 ```json
 {
@@ -402,7 +406,7 @@ milliseconds**: `{"type": "TimeExpr", "time": 1726800000000}`.
 
 ``M::`cpu`:(avg(`usage_user`) AS `avg_usage`)[::1h0m0s] BY (`host`) SORDER BY `avg_usage` DESC SLIMIT 10``
 
-**Note**: Ranking groups is `sorder_by` + `slimit`, not `order_by` + `limit`. The sort key is the projection alias; for an unaliased aggregate, repeat the aggregate expression itself.
+**Note**: Ranking groups is `sorder_by` + `slimit`, not `order_by` + `limit`. The sort key must be the **projection alias**: ranking by an aggregate expression (`SORDER BY count(*)`) is not pushed down, so `SLIMIT` returns an arbitrary set of groups instead of the top N.
 
 ## metric-having
 
@@ -770,20 +774,20 @@ milliseconds**: `{"type": "TimeExpr", "time": 1726800000000}`.
   "type": "SelectExpr",
   "namespace": "L",
   "sources": ["nginx"],
-  "projections": ["count(*)"],
+  "projections": ["count(*) AS n"],
   "wheres": ["status >= 500", "status < 600"],
   "groups": ["status"],
   "window": {"step": "1h"},
-  "sorder_by": "count(*) DESC",
+  "sorder_by": "n DESC",
   "slimit": 100
 }
 ```
 
 **Builds**:
 
-``L::`nginx`:(count(*)){ (`status` >= 500) , (`status` < 600) }[::1h0m0s] BY (`status`) SORDER BY count(*) DESC SLIMIT 100``
+``L::`nginx`:(count(*) AS `n`){ (`status` >= 500) , (`status` < 600) }[::1h0m0s] BY (`status`) SORDER BY `n` DESC SLIMIT 100``
 
-**Note**: There is no `BETWEEN`: a 5xx range is two `wheres` entries, `>= 500` and `< 600`. The projection is unaliased, so `sorder_by` repeats the aggregate expression — `WildcardExpr` and all.
+**Note**: There is no `BETWEEN`: a 5xx range is two `wheres` entries, `>= 500` and `< 600`. The aggregate is aliased (`count(*) AS n`) because `sorder_by` must name an alias: `SORDER BY count(*)` is not pushed down and `SLIMIT` then keeps whichever groups arrived, not the most frequent ones.
 
 ## log-distinct-values
 

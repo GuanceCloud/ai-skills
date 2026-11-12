@@ -19,13 +19,28 @@ Every query falls into one of two shapes:
 The query text alone does not tell you which shape you got; the shape of the clauses does. Each rule
 below gives the form to prefer and what the other form costs.
 
+## Optimization Rules of Thumb
+
+When authoring DQL, prioritize filtering by the most specific and indexed structures available:
+
+1. **Request Time Range & Source/Namespace**: Bounds the search to specific index partitions and time intervals before scanning rows.
+2. **Clustered / Indexed Dimensions**: High-cardinality routing tags (e.g. `service`, `status`, `host`) leverage block pruning and inverted/keyword indexes.
+3. **Structured Field Equality**: Exact match (`field = '...'` or `IN [...]`) on known columns is narrower and faster than substring matching across large text.
+4. **Targeted Text Matching**: `search(field, '#"..."')` (phrase) and `search(field, '...')` (keyword) leverage search indexes on supported fields; avoid unanchored regexes (`=~ '.*...'`) when simple keyword/equality matches suffice.
+5. **Raw `message` Scans as Fallback**: Searching or regex matching over the unbounded `message` payload should strictly be reserved for text not extracted into dedicated fields.
+6. **Aggregate Projection Aliases for Ranking**: Group ranking (`SORDER BY`) requires a projection alias to be pushed down; unaliased aggregate expressions are not pushed down.
+
+---
+
 ## Rules
 
 1. **Know where the time range comes from.** A query executed through a request inherits
    `start_time` / `end_time`; the DQL carries only `step` and `rollup`, and is built with
    `--request-time`. The server itself **requires a window** and takes the boundaries from the request
    `time_range` (ms); the step comes from an explicit `step`, else the request `interval` / `max_point`,
-   else the range collapses to one point per group. A standalone query with no request behind it must
+   else the range collapses to one point per group. **A window written into the DQL replaces the
+   request's range** — an absolute one silently ignores what the caller selected, a relative one
+   (`[15m::5m]`) pins the query to the server clock; the build warns `relative_window`. A standalone query with no request behind it must
    declare a range — the build rejects an empty window otherwise, because nothing would bound the scan. A range far wider than
    the question is the single largest cost in any query; narrow it to what the question needs.
    For historical queries, specify absolute start and end timestamps in the DQL time window (AST
@@ -112,7 +127,13 @@ below gives the form to prefer and what the other form costs.
     conditions decide its own cost, and a condition in the outer query does not reduce what the inner
     query reads. `SHIFT` runs the query twice — the current window and the shifted one — so it
     roughly doubles the cost. Keep both as cheap as possible.
-14. **Filter on clustered dimensions whenever possible.**
+14. **Filter on structured fields, not on the raw message body.**
+    Dedicated columns (like `ClientIP`, `ClientRequestPath`, `status`) benefit from narrower data types and
+    exact-match indexes (e.g. keyword or inverted index). In contrast, searching or running regular expressions
+    over `message` requires reading the full unstructured text column.
+    Whenever a relevant field exists (discovered via `show_field(namespace=…, source=…)`), filter on that
+    specific field instead of `message`.
+15. **Filter on clustered dimensions whenever possible.**
     Data blocks are physically clustered by primary routing keys. Common default clustered
     dimensions include:
     - **Logs (`L`) & Traces (`T`)**: `service`, `status`, `time`
@@ -122,7 +143,7 @@ below gives the form to prefer and what the other form costs.
     to prune entire data blocks without reading their records. Always prefer filtering on these
     dimensions over filtering solely on non-clustered free-text fields.
 
-15. **On log-type namespaces, sampled results are approximations.** When a query would scan more rows
+16. **On log-type namespaces, sampled results are approximations.** When a query would scan more rows
     than server scan limits allow, the engine reads a representative *sample* and computes
     aggregates as approximations. The query succeeds without error, and the DQL syntax does not reveal
     it. Check the response metadata: a `sample` value in `(0, 1)` or `datasource: "sampling"` indicates
@@ -210,6 +231,8 @@ disclosing the estimate if a wide range is necessary). The build warns about the
 | `{host = ['a','b']}` on a scalar field | On some workspaces the condition is dropped and never applied, so you get an empty result | `{host IN ['a','b']}` |
 | `{field = 'value'}` on a tokenized log field | Matches **by token**, not by whole value, so it can return rows whose value is not equal to the literal | Confirm the field is matched by whole value, or filter on a different field |
 | `{field IN []}` | The empty list matches nothing (`NOT IN []` matches everything) with no error | Write the values you meant, or drop the condition |
+| `SORDER BY count(*) DESC` | Ranking is not pushed down, so `SLIMIT` returns whichever groups arrived, not the top ones | `count(*) AS c … SORDER BY c DESC` |
+| `indices: [{"index_name": "…"}]` | The pinned partition replaces the caller's index selection and returns zeros when it is the wrong one | Leave the index to the request |
 | A high-volume scan over a log-type namespace | The scan is **sampled**, so aggregate results come back as approximations rather than exact figures | Narrow the time range, add selective dimension filters (e.g. `service`, `host`), or verify `sample` in the response — see *Sampling* |
 
 ## Sampling
@@ -274,6 +297,9 @@ the prefix `critical warning:`:
 | `regex_for_literal` | Regex without metacharacters matches a single value; use `=` or `IN` |
 | `regex_for_alternation` | Regex `a\|b\|c` over literals; use `IN ['a', 'b', 'c']` |
 | `empty_in_list` | CRITICAL: `IN []` matches no rows (and `NOT IN []` matches every row); the list lost its values |
+| `relative_window` | CRITICAL: the DQL starts at a relative time or preset keyword, which overrides the request's `start_time` / `end_time`; drop the window's `from` and pass the range to the request |
+| `hardcoded_partition` | The query pins `index_name` / `tenant_id`; the request selects the index, and the pinned partition wins — wrong data returns zeros with no error |
+| `sorder_by_expression` | CRITICAL: `SORDER BY <aggregate expression>` is not pushed down, so `SLIMIT` keeps an arbitrary set of groups; alias the aggregate and sort by the alias |
 
 Warnings are deduplicated on `(code, message)`; duplicate violations of the same pattern collapse into a
 single entry referencing the first occurrence. Output is sorted by warning code and capped at 20 entries.
@@ -289,5 +315,10 @@ following criteria that the static compiler cannot infer:
 - [ ] Filters on **array-typed** fields comply with array operator rules (`IN` / `NOT IN` instead of `=`)?
 - [ ] No silent-failure patterns are present (tokenized field equality or unnoticed sampling)?
 - [ ] No wildcard field projections (`*`) in metric queries (`M::`)?
+- [ ] No window `from`/`to` in the DQL (the request supplies the range)?
+- [ ] No pinned `index_name` / `tenant_id` in `indices`?
+- [ ] Every grouped ranking sorts by a projection alias, not by an aggregate expression?
+- [ ] Filters use the discovered structured fields rather than regex/`search()` over `message`?
+- [ ] If the result was empty, was the namespace/index/source/time range checked before reporting it?
 - [ ] On log-type namespaces where the query may scan large volumes of data, does the delivery note explain
       that results may be sampled and direct the caller to inspect `sample` in the response?

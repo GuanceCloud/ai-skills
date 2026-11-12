@@ -22,7 +22,8 @@ M::cpu:(avg(usage_user)) [::5m] BY host
 ```
 
 The request supplies `start_time` / `end_time`; the DQL carries only `step`
-(`::5m`) and `rollup`. Build it with `--request-time`.
+(`::5m`) and `rollup`. Build it with `--request-time`, and do not write a `from`/`to` (or a
+relative `[15m::5m]`) into the window — it replaces the caller's range.
 
 `step` (`::5m`) defines the rollup granularity (one point per 5 minutes per group). If omitted, the entire
 window collapses to a single point per group — unless the query request specifies `interval` or `max_point`
