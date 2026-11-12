@@ -1,6 +1,6 @@
 # AI Skills Usage Guide
 
-This repository contains reusable delivery skills, including Dashboard generation, Monitor generation, DQL generation and review, Grafana Dashboard conversion, SLS-to-DQL conversion, OpenTelemetry instrumentation, RUM instrumentation, and owl-based diagnostics and live-data artifact generation.
+This repository contains reusable delivery skills, including Dashboard generation, Monitor generation, DQL generation and review, Grafana and Datadog Dashboard conversion, SLS-to-DQL conversion, OpenTelemetry instrumentation, RUM instrumentation, and owl-based diagnostics and live-data artifact generation.
 
 ## Directory Structure
 
@@ -9,6 +9,7 @@ ai-skills/
 ├── .github/workflows/
 ├── alert_manager/
 ├── dashboard/
+├── datadog-dashboard/
 ├── dql/
 ├── grafana-to-guance-dashboard/
 ├── monitor/
@@ -35,6 +36,7 @@ ai-skills/
 |---|---|---|---|
 | `alert_manager` | Convert Prometheus alerting rules into Guance monitor JSON | Alerting rule plus metric mapping | `output/monitor/{{component}}/{{component}}.json` |
 | `dashboard` | Generate, repair, or review Guance Dashboard JSON from real metrics and resource-object data | Metrics CSV; resource-object CSV/JSON for standard resource dashboards; optional existing Dashboard JSON | `output/dashboard/{{type}}/{{type}}.json` |
+| `datadog-dashboard` | Convert Datadog dashboards to Guance, review query semantics, and report mappings and metric gaps | Both Guance metrics CSV and Datadog Dashboard JSON | Importable dashboard JSON, mapping/gap Markdown, and validation records |
 | `monitor` | Generate Guance monitor JSON from a metrics CSV | `csv/{{component}}*.csv` | `output/monitor/{{component}}/{{component}}.json` |
 | `dql` | Author DQL as an AST and compile it with `dqlcheck --in ast`, then review it against the performance guidance; also fix, explain, and review existing DQL | User requirements or DQL queries | Built and validated DQL, its request parameters, and cost notes |
 | `grafana-to-guance-dashboard` | Convert and audit Grafana dashboards for Guance | Grafana dashboard JSON | Guance dashboard JSON and audit notes |

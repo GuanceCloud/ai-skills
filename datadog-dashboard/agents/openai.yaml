@@ -1,0 +1,4 @@
+interface:
+  display_name: "Datadog Dashboard to Guance"
+  short_description: "Convert dashboards and review query mappings and metric gaps"
+  default_prompt: "Use $datadog-dashboard to convert a Datadog Dashboard to Guance and review metrics, filters, query semantics, and gaps."
