@@ -43,7 +43,7 @@ Every data query is a `SelectExpr` JSON object. Optional clauses may be omitted 
 | `having` | no | `string[]` | Filter evaluated after aggregation: `["avg_usage > 80"]` |
 | `order_by` | no | `string` \| `string[]` | In-group ordering: `["time DESC"]`. A single string is a one-element list; the expression may contain spaces, only the trailing direction is structural |
 | `limit` / `offset` | no | `int` | In-group pagination (points per series) |
-| `sorder_by` | no | `string` \| `object` | Cross-group ranking: `"avg_usage DESC"`, same direction rule as `order_by`. Rank by a **projection alias**: an aggregate expression (`SORDER BY count(*)`) is not pushed down and ranks an arbitrary set of groups (warning `sorder_by_expression`). The object form is `{"value": <Expr>, "order": "DESC"}`; a **scalar** `value` is rejected, so either write the string form or a full expression object |
+| `sorder_by` | no | `string` \| `object` | Cross-group ranking: `"avg_usage DESC"` or `"sum(cnt) DESC"`, same direction rule as `order_by`. Always reference a **projection alias** (`SORDER BY c` for single-window / latest-point ranking, or `SORDER BY sum(c)` to reduce across `step` buckets): an unaliased aggregate or raw-field expression (`SORDER BY count(*)`, `SORDER BY avg(usage)`) evaluates after the raw column is gone, is not pushed down, and ranks an arbitrary set of groups (warning `sorder_by_expression`). The object form is `{"value": <Expr>, "order": "DESC"}`; a **scalar** `value` is rejected, so either write the string form or a full expression object |
 | `slimit` / `soffset` | no | `int` | Cross-group pagination (number of groups) |
 | `shift` | no | `string` | Period comparison duration: `"1d"`, `"7d"` |
 | `outer` | no | `string` \| `object` | Outer wrapper function: `"cumsum"` or `{"fn": "moving_average", "args": [5]}`. The wrapped query is still bound, validated and linted |
@@ -83,7 +83,7 @@ Accepted expressions per clause:
 | `having` | `"v > 80"` | Conditions on aggregate results or aliases |
 | `sources` | `"cpu"`, `"re(\"cpu.*\")"`, `"*"` | Target measurement or source name |
 | `order_by` | `"time DESC"`, `"time ASC"` | Must specify direction (`ASC` or `DESC`) |
-| `sorder_by` | `"v DESC"`, `"v ASC"` | Cross-group sort by projection alias (never by the aggregate expression itself) |
+| `sorder_by` | `"v DESC"`, `"sum(v) DESC"` | Cross-group sort referencing a projection alias (`v` for single-window/latest point, `sum(v)` across `step` buckets; never an unaliased aggregate or raw field) |
 
 ### Identifier and literal rules inside a fragment
 

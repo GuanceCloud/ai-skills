@@ -89,7 +89,7 @@ Official full references published from GuanceDB:
 - DQL functions: <https://zhuyun-static-files-production.oss-cn-hangzhou.aliyuncs.com/guancedb/docs/DQL%20Functions.md>
 
 > **Version bound.** The rules, capabilities, cost labels, response fields and error messages in these
-> references were verified against the **GuanceDB `v1.58.1` source tree** (2026-10-29) — parser, binder,
+> references were verified against the **GuanceDB `v1.58.3` source tree** (2026-11-16) — parser, binder,
 > `dqlcheck` and the `/v1/query` handler. They change between releases, so treat that as the expiry date
 > of this skill's accuracy.
 >
@@ -236,8 +236,9 @@ Three shapes mean the caller's own state is being overridden, so they are defect
 - a `from`/`to` (or preset keyword) inside the window — `relative_window`;
 - an `indices` entry with `index_name` / `tenant_id` — `hardcoded_partition`, which reads a partition the
   caller did not select and returns zeros when it is the wrong one;
-- `SORDER BY <aggregate expression>` instead of a projected alias — `sorder_by_expression`, which ranks an
-  arbitrary set of groups.
+- `SORDER BY` on an unaliased aggregate or raw field (`SORDER BY count(*)`, `SORDER BY sum(raw_field)`) instead
+  of referencing a projection alias — `sorder_by_expression`, which evaluates after the raw column is gone,
+  is not pushed down, and ranks an arbitrary set of groups.
 
 **Zero rows is a finding, not a result.** Before reporting a count of 0, confirm the namespace, the index the
 request selected, the source name, and the echoed `time_range`; an empty response from a valid-looking query
@@ -279,8 +280,11 @@ Deliver:
   range the caller chose.
 - **MUST NOT** put the caller's index/partition into the DQL (`indices`, `L("tw-poc")`). The request already
   selects the index; a pinned partition silently reads different data.
-- **MUST** rank groups with `SORDER BY <projection alias>`: alias the aggregate (`count(*) AS c`) and sort by
-  `c`, never repeat the aggregate expression — the expression form is not pushed down.
+- **MUST** alias the projected aggregate (`count(*) AS c`) and reference that alias in `SORDER BY`:
+  write `SORDER BY c` (single-window / latest-point ranking) or `SORDER BY sum(c)` / `avg(c)` / `max(c)`
+  (whole-period ranking across `step` buckets). Never write `SORDER BY` directly on an unaliased aggregate
+  or raw field (`SORDER BY count(*)`, `SORDER BY avg(usage)`) — raw columns are gone after projection and
+  the sort key is not pushed down.
 - **MUST NOT** call `owl.data.check_dql` for a query whose window is empty: it binds without request
   context and rejects `[::step]`. The compilation step above already performs semantic validation.
 - **The mandatory AST / `dqlcheck` flow applies to delivered data queries (`SelectExpr`).** Show queries

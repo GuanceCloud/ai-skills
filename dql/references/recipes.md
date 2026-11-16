@@ -406,7 +406,7 @@ milliseconds**: `{"type": "TimeExpr", "time": 1726800000000}`.
 
 ``M::`cpu`:(avg(`usage_user`) AS `avg_usage`)[::1h0m0s] BY (`host`) SORDER BY `avg_usage` DESC SLIMIT 10``
 
-**Note**: Ranking groups is `sorder_by` + `slimit`, not `order_by` + `limit`. The sort key must be the **projection alias**: ranking by an aggregate expression (`SORDER BY count(*)`) is not pushed down, so `SLIMIT` returns an arbitrary set of groups instead of the top N.
+**Note**: Ranking groups is `sorder_by` + `slimit`, not `order_by` + `limit`. Always alias the projected aggregate (`AS avg_usage`) and reference that alias: without `step` (or to rank by the latest bucket), write `SORDER BY avg_usage DESC`; to rank multi-bucket series across the whole queried period, reduce the alias (`SORDER BY avg(avg_usage) DESC` or `sum(cnt) DESC`). Never write an unaliased aggregate or raw field (`SORDER BY count(*)`, `SORDER BY avg(usage_user)`), which evaluates after raw columns are gone and is not pushed down.
 
 ## metric-having
 
@@ -787,7 +787,7 @@ milliseconds**: `{"type": "TimeExpr", "time": 1726800000000}`.
 
 ``L::`nginx`:(count(*) AS `n`){ (`status` >= 500) , (`status` < 600) }[::1h0m0s] BY (`status`) SORDER BY `n` DESC SLIMIT 100``
 
-**Note**: There is no `BETWEEN`: a 5xx range is two `wheres` entries, `>= 500` and `< 600`. The aggregate is aliased (`count(*) AS n`) because `sorder_by` must name an alias: `SORDER BY count(*)` is not pushed down and `SLIMIT` then keeps whichever groups arrived, not the most frequent ones.
+**Note**: There is no `BETWEEN`: a 5xx range is two `wheres` entries, `>= 500` and `< 600`. The aggregate is aliased (`count(*) AS n`) so `sorder_by` can reference `n` (latest bucket) or `sum(n)` (total across `step` buckets): an unaliased `SORDER BY count(*)` evaluates after raw rows are collapsed and is not pushed down, so `SLIMIT` keeps an arbitrary set of groups.
 
 ## log-distinct-values
 

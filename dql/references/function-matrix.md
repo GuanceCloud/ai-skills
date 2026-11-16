@@ -40,9 +40,9 @@ when exceeding limits). See `references/performance.md` → *Sampling*.
 1. **Summarising a numeric field?** `avg` for a typical value, `sum` for a total, `min`/`max` for the
    extremes, `percentile`/`median` when the distribution matters, `histogram_auto` when you need the
    whole shape. All of these are `cheap`, and all of them work with `BY`.
-2. **Getting the distinct values of a text field?** `distinct` for the values, `count_distinct` for the
-   count, `field_values` if duplicates matter. See the family table below — including why there is **no
-   exact** distinct count.
+2. **Getting the distinct values of a text field?** `distinct` for the values, `count_distinct` for an
+   approximate count (or `count(distinct(x))` for an exact count), `field_values` if duplicates matter.
+   See the family table below.
 3. **Check the cost label**, and prefer `cheap`.
 
 ## Aggregate functions
@@ -60,7 +60,8 @@ when exceeding limits). See `references/performance.md` → *Sampling*.
 | `any(x)` | Any one non-null value of `x`. For sampling; the pick is not deterministic | cheap |
 | `percentile(x, n)` | Approximate `n`-th percentile. **`n` is 0-100, not 0-1**; `p50(x)` ≡ `percentile(x, 50)`, and the `pXX(x)` shorthand exists for the usual quantiles (`p95(x)` ≡ `percentile(x, 95)`) | cheap |
 | `median(x)` | `percentile(x, 50)` | cheap |
-| `count_distinct(x)` | Approximate distinct count — an estimate, not an exact figure | cheap |
+| `count_distinct(x)` | Approximate distinct count (HyperLogLog estimate, ~0.4% standard error) | cheap |
+| `count(distinct(x))` | Exact distinct count of `x` | cheap |
 | `distinct(x)` | The distinct values of `x` for the group — **one row per value**, not one array | cheap |
 | `distinct_by_collapse(field, [other…])` | One row per distinct value of `field`, additionally carrying the **last** value of each named `other` — distinct rows with context | cheap |
 | `field_values(x)` | Every value of `x` for the group, as one array | cheap |
@@ -110,7 +111,8 @@ array, and whether it is capped:
 | `field_values(x)` | one array per group, holding every value of `x` | **kept** | none |
 | `collect_distinct(x[, n])` | one array per group, deduped | removed | `n` |
 | `collect(x[, n])` | one array per group, holding every value | kept | `n` |
-| `count_distinct(x)` | the number of distinct values | — | — |
+| `count_distinct(x)` | approximate number of distinct values (HyperLogLog) | — | — |
+| `count(distinct(x))` | exact number of distinct values | — | — |
 
 **Result shape.** `distinct` and `distinct_by_collapse` change how many rows come back: one row per
 distinct value, so `LIMIT` bounds them like any other rows. `field_values`, `collect` and
@@ -120,10 +122,9 @@ high-cardinality field it can return an unbounded list; `collect_distinct(x, n)`
 the only ones with a hard cap. This file does not state how an array is serialised — if the consumer
 needs a specific format, say so rather than assuming.
 
-**There is no exact distinct count.** `count_distinct(x)` is an estimate, and the official reference
-gives it a standard error of about 0.4% — not a bound you can rely on for a precise figure. `count(distinct(x))`
-also builds, but the reference documents only `count_distinct`, so use that one. If the user needs an
-exact count, say that this skill cannot produce one.
+**Approximate vs exact distinct count.** `count_distinct(x)` is a HyperLogLog estimate (~0.4% standard
+error) with minimal memory overhead, suited for high-cardinality fields like UV or request IDs. When an
+exact figure is required (e.g. billing or reconciliation), use `count(distinct(x))`.
 
 ### Histogram functions
 
