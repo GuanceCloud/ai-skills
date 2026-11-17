@@ -28,7 +28,7 @@ When authoring DQL, prioritize filtering by the most specific and indexed struct
 3. **Structured Field Equality**: Exact match (`field = '...'` or `IN [...]`) on known columns is narrower and faster than substring matching across large text.
 4. **Targeted Text Matching**: `search(field, '#"..."')` (phrase) and `search(field, '...')` (keyword) leverage search indexes on supported fields; avoid unanchored regexes (`=~ '.*...'`) when simple keyword/equality matches suffice.
 5. **Raw `message` Scans as Fallback**: Searching or regex matching over the unbounded `message` payload should strictly be reserved for text not extracted into dedicated fields.
-6. **Aggregate Projection Aliases for Ranking**: Group ranking (`SORDER BY`) requires a projection alias to be pushed down; unaliased aggregate expressions are not pushed down.
+6. **Aggregate Projection Aliases for Ranking**: Always alias projected aggregates (`count(*) AS c`) and reference that alias in `SORDER BY` (`SORDER BY c` or `SORDER BY sum(c)` across `step` buckets); unaliased aggregates or raw fields (`SORDER BY count(*)`) evaluate after the raw column is gone and are not pushed down.
 
 ---
 
@@ -231,7 +231,7 @@ disclosing the estimate if a wide range is necessary). The build warns about the
 | `{host = ['a','b']}` on a scalar field | On some workspaces the condition is dropped and never applied, so you get an empty result | `{host IN ['a','b']}` |
 | `{field = 'value'}` on a tokenized log field | Matches **by token**, not by whole value, so it can return rows whose value is not equal to the literal | Confirm the field is matched by whole value, or filter on a different field |
 | `{field IN []}` | The empty list matches nothing (`NOT IN []` matches everything) with no error | Write the values you meant, or drop the condition |
-| `SORDER BY count(*) DESC` | Ranking is not pushed down, so `SLIMIT` returns whichever groups arrived, not the top ones | `count(*) AS c … SORDER BY c DESC` |
+| `SORDER BY count(*) DESC` or `SORDER BY avg(raw_field) DESC` | Evaluates after projection (where raw columns are gone, collapsing the sort key) and is not pushed down, so `SLIMIT` returns an arbitrary set of groups | `count(*) AS c … SORDER BY c DESC` (or `SORDER BY sum(c) DESC` across `step` buckets) |
 | `indices: [{"index_name": "…"}]` | The pinned partition replaces the caller's index selection and returns zeros when it is the wrong one | Leave the index to the request |
 | A high-volume scan over a log-type namespace | The scan is **sampled**, so aggregate results come back as approximations rather than exact figures | Narrow the time range, add selective dimension filters (e.g. `service`, `host`), or verify `sample` in the response — see *Sampling* |
 
@@ -299,7 +299,7 @@ the prefix `critical warning:`:
 | `empty_in_list` | CRITICAL: `IN []` matches no rows (and `NOT IN []` matches every row); the list lost its values |
 | `relative_window` | CRITICAL: the DQL starts at a relative time or preset keyword, which overrides the request's `start_time` / `end_time`; drop the window's `from` and pass the range to the request |
 | `hardcoded_partition` | The query pins `index_name` / `tenant_id`; the request selects the index, and the pinned partition wins — wrong data returns zeros with no error |
-| `sorder_by_expression` | CRITICAL: `SORDER BY <aggregate expression>` is not pushed down, so `SLIMIT` keeps an arbitrary set of groups; alias the aggregate and sort by the alias |
+| `sorder_by_expression` | CRITICAL: `SORDER BY` on an unaliased aggregate or raw field evaluates after projection (where raw columns are gone) and is not pushed down, so `SLIMIT` keeps an arbitrary set of groups; alias the projection (`AS c`) and write `SORDER BY c` (or `SORDER BY sum(c)` across `step` buckets) |
 
 Warnings are deduplicated on `(code, message)`; duplicate violations of the same pattern collapse into a
 single entry referencing the first occurrence. Output is sorted by warning code and capped at 20 entries.
