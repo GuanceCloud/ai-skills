@@ -220,6 +220,7 @@ Write a DQL that returns the top 10 hosts by average CPU usage over the last hou
 ## Mandatory Rules
 
 - `dashboard` and `monitor` must refuse generation when the required CSV file is missing.
+- `monitor` DQL must omit embedded query time ranges in both execution and editor queries so monitor queries can use the query cache. Configure the detection window on the monitor; preserve any required DQL step or rollup separately.
 - Do not invent metrics and do not replace user CSV content with online examples.
 - A standard resource dashboard must build its instance-property table from real resource-object data; metric tags are not a substitute.
 - DQL must be authored as an AST and built with `dqlcheck --in ast`; the delivered DQL must be the output of `dqlcheck --in ast --out build --request-time`, never hand-written text. The AST is internal: never show it to the user. Building validates: it decodes, expands the shorthands, builds and binds, and it rejects any AST key that is not part of that node's schema.

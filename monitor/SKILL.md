@@ -14,7 +14,7 @@ Generate Guance monitor configuration files from component CSV metrics.
 2. Parse metric name, type, unit, and tag columns.
 3. Select 5 to 10 key metrics that cover availability, resource usage, performance, business pressure, and error conditions.
 4. Generate monitor JSON at `output/monitor/{{component}}/{{component}}.json`.
-5. Validate every DQL in both `checkers[].jsonScript.targets[].dql` and `checkers[].extend.querylist[].query.q`.
+5. Apply the query time-range rules below, then validate every DQL in both `checkers[].jsonScript.targets[].dql` and `checkers[].extend.querylist[].query.q`.
 6. If any DQL is repaired, write the repaired query back to both locations.
 
 ## DQL Validation
@@ -68,6 +68,9 @@ Before selecting thresholds, verify the metric's actual value domain and behavio
 ## Query Configuration Rules
 
 - `targets[].dql` is the execution query, and `extend.querylist[].query.q` is the editor query. They must stay consistent.
+- Monitor DQL must not embed a query time range: the monitor's detection-window configuration supplies it. An explicit DQL range prevents the monitor query from using the query cache.
+- When generating or repairing either query location, omit or remove relative ranges such as `[300s]` and `[15m::5m]`, absolute `from`/`to` bounds, and preset date ranges. Do not replace them with `time` filters that pin the same range. Keep the intended detection window in the monitor configuration, separate from the DQL and from the consecutive-trigger duration.
+- A step or rollup is not a query time range. Preserve it when required by metric semantics; for example, remove only the range from `[15m::5m]` to obtain `[::5m]`. Do not strip filter lists, grouping, or aggregation functions when removing a range.
 - `extend.querylist[].query.fieldFunc` must match the function used in DQL.
 - Fixed label or dimension filters must be written to both the DQL filter clause and `extend.querylist[].query.filters`.
 - `extend.querylist[].query.groupBy` must match the DQL `BY` fields so the UI and alert semantics agree.
@@ -78,6 +81,7 @@ Before selecting thresholds, verify the metric's actual value domain and behavio
 - Use clear monitor titles, grouping tags, thresholds, and message templates.
 - Include component category and component name tags when available.
 - Confirm every generated query has passed validation before final delivery.
+- Confirm both query locations contain no embedded query time range and remain consistent with the monitor's detection-window configuration.
 - The generated trigger UI should not contain the extra right-hand `and` condition block shown in Guance continuous-trigger configuration.
 - Confirm every utilization or ratio threshold matches the real `0..1` or `0..100` value domain and that the message unit matches the DQL result.
 - Confirm "new occurrence" alerts use an incremental metric and high-frequency event alerts have an explicit business baseline.
